@@ -1,0 +1,146 @@
+{
+  "reviewed_on": "2026-10-17",
+  "installation": "Project-local reviewed skills; pinned source revisions, full upstream licenses and review notes. Discovered from .agents/skills (Codex) and through the .claude/skills symlink (Claude Code).",
+  "discovery_index": {
+    "repository": "https://github.com/twostraws/swift-agent-skills",
+    "revision": "a6d22db7216206f75e8e391e78b26a7500ae7aa2",
+    "note": "Discovery index only; each skill was reviewed from its own upstream repository."
+  },
+  "skills": [
+    {
+      "name": "swiftui-pro",
+      "repository": "https://github.com/twostraws/SwiftUI-Agent-Skill",
+      "source_path": "swiftui-pro",
+      "revision": "ce32af1693b9e78a7d22ff48001c97a304d32063",
+      "upstream_commit_date": "2026-10-16T10:24:27+01:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; excluded Claude plugin packaging and the nested duplicate skills/ folder."
+    },
+    {
+      "name": "swift-concurrency-pro",
+      "repository": "https://github.com/twostraws/Swift-Concurrency-Agent-Skill",
+      "source_path": "swift-concurrency-pro",
+      "revision": "bee3f69ba17142da148d3c5406f148ed62592b69",
+      "upstream_commit_date": "2026-05-17T17:07:46+01:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; excluded Claude plugin packaging and the nested duplicate skills/ folder."
+    },
+    {
+      "name": "swift-testing-pro",
+      "repository": "https://github.com/twostraws/Swift-Testing-Agent-Skill",
+      "source_path": "swift-testing-pro",
+      "revision": "2d6bba14a3c8bf3694f218b92fffe617c41ae43e",
+      "upstream_commit_date": "2026-05-17T16:49:43+01:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; excluded Claude plugin packaging and the nested duplicate skills/ folder."
+    },
+    {
+      "name": "swiftui-design-principles",
+      "repository": "https://github.com/arjitj2/swiftui-design-principles",
+      "source_path": ".",
+      "revision": "791d22d73f844167a3872530e3941185b730d8be",
+      "upstream_commit_date": "2026-03-15T22:50:20-05:00",
+      "license": "MIT",
+      "normalization": "SKILL.md and LICENSE only; no repository AGENTS.md, README or metadata. Monny's Sketch design and DESIGN.md take precedence."
+    },
+    {
+      "name": "swiftui-ui-patterns",
+      "repository": "https://github.com/Dimillian/Skills",
+      "source_path": "swiftui-ui-patterns",
+      "revision": "05ba982bfeb0d77d3c97d4542b0ee15034d05f84",
+      "upstream_commit_date": "2026-03-29T17:28:00+02:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; skill, references and agent metadata only."
+    },
+    {
+      "name": "swiftui-performance-audit",
+      "repository": "https://github.com/Dimillian/Skills",
+      "source_path": "swiftui-performance-audit",
+      "revision": "05ba982bfeb0d77d3c97d4542b0ee15034d05f84",
+      "upstream_commit_date": "2026-03-29T17:28:00+02:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; skill, references and agent metadata only. Relevant to live charts and the always-refreshing popover."
+    },
+    {
+      "name": "swiftui-liquid-glass",
+      "repository": "https://github.com/Dimillian/Skills",
+      "source_path": "swiftui-liquid-glass",
+      "revision": "05ba982bfeb0d77d3c97d4542b0ee15034d05f84",
+      "upstream_commit_date": "2026-03-29T17:28:00+02:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; skill, references and agent metadata only. Use only where the Sketch design shows a system material; check macOS availability."
+    },
+    {
+      "name": "swift-api-design-guidelines-skill",
+      "repository": "https://github.com/Erikote04/Swift-API-Design-Guidelines-Agent-Skill",
+      "source_path": "swift-api-design-guidelines-skill",
+      "revision": "36cdc1b5680f5d6c5c52c353a6857d176f4929e8",
+      "upstream_commit_date": "2026-02-18T14:32:56+01:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; skill and references only."
+    },
+    {
+      "name": "writing-for-interfaces",
+      "repository": "https://github.com/andrewgleave/skills",
+      "source_path": "writing-for-interfaces",
+      "revision": "d6c72b885a1902d4b74d4bd9beca80f2a1b96b51",
+      "upstream_commit_date": "2026-04-23T15:15:54+01:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; excluded README. Removed the Claude-only `context: fork` frontmatter line so the skill never delegates automatically."
+    },
+    {
+      "name": "swiftui-accessibility-auditor",
+      "repository": "https://github.com/rgmez/apple-accessibility-skills",
+      "source_path": "skills/swiftui-accessibility-auditor",
+      "revision": "64e5848d371b7774a4c27ffd430c02121d03e371",
+      "upstream_commit_date": "2026-10-05T21:05:37+02:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; skill and checklist only."
+    },
+    {
+      "name": "appkit-accessibility-auditor",
+      "repository": "https://github.com/rgmez/apple-accessibility-skills",
+      "source_path": "skills/appkit-accessibility-auditor",
+      "revision": "64e5848d371b7774a4c27ffd430c02121d03e371",
+      "upstream_commit_date": "2026-10-05T21:05:37+02:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; skill and checklist only. For the AppKit status item, right-click menu and any NSPopover/NSPanel hosting."
+    },
+    {
+      "name": "swift-format-style",
+      "repository": "https://github.com/n0an/Swift-FormatStyle-Agent-Skill",
+      "source_path": "swift-format-style",
+      "revision": "5cda783ac709f26893bbbfb61b31c930c1e6a300",
+      "upstream_commit_date": "2026-09-08T12:23:07+01:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; skill, references and agent metadata only. Monny formats bytes, rates, percentages, temperatures and durations on every screen."
+    },
+    {
+      "name": "observability",
+      "repository": "https://github.com/n0an/Observability-Agent-Skill",
+      "source_path": "observability",
+      "revision": "4ab4f371b03b2015767fbe9da7d4321293bfc377",
+      "upstream_commit_date": "2026-09-08T12:23:00+01:00",
+      "license": "MIT",
+      "normalization": "Added upstream LICENSE; skill, references and agent metadata only. Monny override (AGENTS.md): use Logger, signposts and OSLogStore for local diagnostics of sampling and the privileged helper; never add analytics, telemetry backends or third-party SDKs."
+    },
+    {
+      "name": "agent-workflow-setup",
+      "origin": "Locally authored reusable workflow skill; canonical source in the skills repository",
+      "source_path": ".agents/skills/agent-workflow-setup",
+      "version": "1.4.0",
+      "reviewed_on": "2026-10-17",
+      "license": "MIT",
+      "normalization": "Identical project-local snapshot, as in Rebind. Instruction-only; configures the workflow rather than activating on ordinary feature work."
+    }
+  ],
+  "reviewed_not_installed": [
+    { "name": "swift-security-expert", "repository": "https://github.com/ivan-magda/swift-security-skill", "revision": "bda2e0ccee6a64d45ec2b93790d0876c90e4eb89", "license": "MIT", "reason": "Keychain, CryptoKit and biometrics; Monny stores no secrets and the skill does not cover privileged-helper XPC client validation." },
+    { "name": "swiftdata-pro", "repository": "https://github.com/twostraws/SwiftData-Agent-Skill", "revision": "922d989473a9914210b41529a1ac5636aff4b8c1", "license": "MIT", "reason": "Metric-history storage (1h/24h/7d charts) is not chosen yet; revisit if SwiftData is selected." },
+    { "name": "background-execution", "repository": "https://github.com/n0an/Background-Execution-Agent-Skill", "revision": "a29ddf879308bc6cb0d5add020533701baa7fe67", "license": "MIT", "reason": "Mostly iOS BGTaskScheduler/push; the short macOS section (SMAppService, App Nap) is better served by Apple documentation linked from ENGINEERING." },
+    { "name": "swift-architecture-skill", "repository": "https://github.com/efremidze/swift-architecture-skill", "revision": "60e177612f4ed9dc7799b3674830e594c76fa00c", "license": "MIT", "reason": "iOS architecture playbooks (TCA, VIPER, Clean); conflicts with the project's no-overengineering rule. ENGINEERING owns architecture." },
+    { "name": "macos-menubar-tuist-app", "repository": "https://github.com/Dimillian/Skills", "revision": "05ba982bfeb0d77d3c97d4542b0ee15034d05f84", "license": "MIT", "reason": "Tuist-first workflow; Monny uses a plain Xcode project and dev.sh." },
+    { "name": "swiftui-view-refactor / swift-concurrency-expert", "repository": "https://github.com/Dimillian/Skills", "revision": "05ba982bfeb0d77d3c97d4542b0ee15034d05f84", "license": "MIT", "reason": "Overlap with swiftui-pro and swift-concurrency-pro." }
+  ],
+  "design_source": "Monny.sketch via Sketch MCP; see docs/DESIGN.md"
+}

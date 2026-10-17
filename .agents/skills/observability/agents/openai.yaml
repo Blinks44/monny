@@ -1,0 +1,8 @@
+interface:
+  display_name: "Observability"
+  short_description: "Reviews and writes Swift logging, metrics, and diagnostics code."
+  brand_color: "#F05138"
+  default_prompt: "Use $observability to review my project's logging and telemetry code."
+
+policy:
+  allow_implicit_invocation: true

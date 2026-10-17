@@ -1,0 +1,42 @@
+# Repository policy: keep source, manifests/lockfiles, shared configuration,
+# design inputs, docs/tasks/evidence, AGENTS.md, CLAUDE.md, .agents/skills and
+# the .claude/skills symlink versioned. Exclude only reproducible output and
+# workstation-local state.
+
+# macOS filesystem metadata
+.DS_Store
+.AppleDouble
+._*
+
+# Xcode build products and intermediates (dev.sh writes apps/monny/build/)
+DerivedData/
+build/
+*.xcarchive/
+*.dSYM/
+*.hmap
+
+# Xcode transient verification output; concise technical results stay in docs.
+*.xcresult/
+
+# Generated raster captures stay in temporary storage, never under docs/verification.
+# A justified versioned image needs a documented purpose and a narrow exception here.
+/docs/verification/**/*.png
+/docs/verification/**/*.jpg
+/docs/verification/**/*.jpeg
+
+# Xcode per-user state; keep xcshareddata and the shared scheme.
+*.xcuserstate
+xcuserdata/
+
+# JetBrains local project/workspace state; Monny has no shared .idea contract.
+.idea/
+
+# Swift Package Manager
+.build/
+# Cache/security state can exist at the root or in a standalone package.
+**/.swiftpm/cache/
+**/.swiftpm/security/
+# Package.swift and Package.resolved remain versioned; never ignore .swiftpm wholesale.
+
+# Claude Code per-user settings; shared .claude/skills (symlink) stays versioned.
+/.claude/settings.local.json

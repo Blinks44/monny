@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Workflow Setup"
+  short_description: "Set up durable code and design workflows"
+  default_prompt: "Use $agent-workflow-setup to configure a maintainable agent development and design workflow in this project."

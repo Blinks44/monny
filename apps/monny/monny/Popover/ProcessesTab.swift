@@ -47,8 +47,8 @@ struct ProcessesTab: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .card()
         }
-        .onAppear { sampler.showsProcesses = true }
-        .onDisappear { sampler.showsProcesses = false }
+        .onAppear { sampler.setProcessListVisible(true) }
+        .onDisappear { sampler.setProcessListVisible(false) }
     }
 
     private var color: Color {

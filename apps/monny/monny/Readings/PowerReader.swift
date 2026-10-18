@@ -14,7 +14,9 @@ nonisolated struct BatteryReading: Sendable, Equatable {
     var timeToEmpty: Duration?
     var timeToFull: Duration?
     var cycleCount: Int?
+    /// mAh. Full charge capacity is today's, design capacity the new battery's.
     var designCapacity: Int?
+    var fullChargeCapacity: Int?
     /// Power the Mac draws from the adapter, in watts.
     var systemPowerIn: Double?
 }
@@ -48,6 +50,7 @@ nonisolated struct PowerReader {
             timeToFull: Self.estimate(battery[kIOPSTimeToFullChargeKey]),
             cycleCount: registry?["CycleCount"] as? Int,
             designCapacity: batteryData?["DesignCapacity"] as? Int,
+            fullChargeCapacity: (registry?["NominalChargeCapacity"] ?? batteryData?["NominalChargeCapacity"]) as? Int,
             systemPowerIn: (telemetry?["SystemPowerIn"] as? NSNumber).map { $0.doubleValue / 1000 })
     }
 

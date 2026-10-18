@@ -1,6 +1,6 @@
 # Monny: current state
 
-Updated **2026-10-18**. Baseline: `main` with APP-002 popover and CORE-003 history store committed. No battery control yet.
+Updated **2026-10-18**. Baseline: `main` with APP-002 popover and CORE-003 history store committed, window Overview charts committed. No battery control yet.
 
 ## Product and baseline
 
@@ -28,14 +28,14 @@ Contracts: [WORKFLOW](WORKFLOW.md), [PLAN](PLAN.md), [SPEC](SPEC.md), [DESIGN](D
 ## Open work / next steps
 
 - **Next (user):** compare CPU/GPU temperatures with Stats or iStat Menus and watch the fan speed under heavy load ([CORE-002](tasks/CORE-002-temperatures-fans.md)).
-- **Next (engineering):** dashboard charts on the history store with the "Collecting history" state, then the Sensors page from Sketch ([CORE-003](tasks/CORE-003-history.md)).
+- **Next (engineering):** CPU, Memory, Disk, Network and Sensors pages from Sketch on the history store ([CORE-003](tasks/CORE-003-history.md)).
 - **Design:** complete for the first release ([DES-001](tasks/DES-001-missing-states.md)).
 - **Open product decisions:** [SPEC §9](SPEC.md#9-open-product-decisions).
 
 | Task | Stage | Owner | Concrete next step |
 | --- | --- | --- | --- |
 | [CORE-002](tasks/CORE-002-temperatures-fans.md) | awaiting_verification | Unassigned | User compares temperatures with a reference tool. |
-| [CORE-003](tasks/CORE-003-history.md) | implementing | Unassigned | Dashboard charts on the history store. |
+| [CORE-003](tasks/CORE-003-history.md) | implementing | Unassigned | Detail pages on the history store. |
 | [DES-001](tasks/DES-001-missing-states.md) | ready_for_implementation | Unassigned | Implement the drawn states with their screens in phases 3–4. |
 
 Release gates are listed in [PLAN](PLAN.md).

@@ -36,7 +36,7 @@ struct DashboardView: View {
 
     @ViewBuilder private var page: some View {
         switch model.dashboardPage {
-        case .overview: OverviewPage(snapshot: model.sampler.snapshot)
+        case .overview: OverviewPage(sampler: model.sampler)
         case .battery where !SystemInfo.hasBattery:
             NoBatteryView(openSensors: { model.dashboardPage = .sensors })
                 .frame(maxWidth: .infinity)

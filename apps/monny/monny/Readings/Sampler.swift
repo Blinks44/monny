@@ -49,8 +49,13 @@ final class Sampler {
     @ObservationIgnored private var task: Task<Void, Never>?
     @ObservationIgnored private var visible: Set<Surface> = []
     @ObservationIgnored private var healthDate: Date?
-    /// Set while a process list is on screen.
-    @ObservationIgnored var showsProcesses = false
+    /// Process lists on screen (popover Processes, window Overview); processes are read while any is.
+    @ObservationIgnored private var processLists = 0
+    var showsProcesses: Bool { processLists > 0 }
+
+    func setProcessListVisible(_ isVisible: Bool) {
+        processLists = max(processLists + (isVisible ? 1 : -1), 0)
+    }
 
     /// Starts background sampling; called once at launch.
     func start() {

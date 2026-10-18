@@ -444,6 +444,9 @@ struct SparklineSeries: Identifiable {
 /// nothing, so a fresh history never shows a flat zero line.
 struct Sparkline: View {
     let series: [SparklineSeries]
+    /// The y range; `nil` means from zero to the largest value.
+    var domain: ClosedRange<Double>?
+    var showsLiveDot = true
 
     var body: some View {
         Chart {
@@ -453,15 +456,15 @@ struct Sparkline: View {
                         AreaMark(x: .value("Time", point.date), y: .value("Value", point.value), series: .value("Series", series.id))
                             .foregroundStyle(LinearGradient(colors: [series.color.opacity(0.3), series.color.opacity(0)],
                                                             startPoint: .top, endPoint: .bottom))
-                            .interpolationMethod(.catmullRom)
+                            .interpolationMethod(.monotone)
                     }
                     LineMark(x: .value("Time", point.date), y: .value("Value", point.value), series: .value("Series", series.id))
                         .foregroundStyle(series.color)
                         .lineStyle(StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
-                        .interpolationMethod(.catmullRom)
+                        .interpolationMethod(.monotone)
                 }
             }
-            if let first = series.first, first.points.count > 1, let last = first.points.last {
+            if showsLiveDot, let first = series.first, first.points.count > 1, let last = first.points.last {
                 PointMark(x: .value("Time", last.date), y: .value("Value", last.value))
                     .symbolSize(40)
                     .foregroundStyle(first.color)
@@ -470,7 +473,8 @@ struct Sparkline: View {
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
-        .chartYScale(domain: 0...max(series.flatMap { $0.points.map(\.value) }.max() ?? 1, 1))
+        .chartPlotStyle { $0.clipped() }
+        .chartYScale(domain: domain ?? 0...max(series.flatMap { $0.points.map(\.value) }.max() ?? 1, 1))
         .opacity(series.contains { $0.points.count > 1 } ? 1 : 0)
         .accessibilityHidden(true)
     }

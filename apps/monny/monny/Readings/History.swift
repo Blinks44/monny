@@ -4,21 +4,25 @@ import OSLog
 nonisolated private let historyLogger = Logger(subsystem: "blinks44.monny", category: "History")
 
 /// A metric kept in history. Values use the snapshot's units: fractions 0…1, bytes per second,
-/// °C and rpm.
+/// °C and rpm. `charging` is 1 while charging and 0 otherwise, so a bucket's average is the
+/// share of it spent charging.
 nonisolated enum HistoryMetric: String, CaseIterable, Codable, CodingKeyRepresentable, Sendable {
-    case cpu, memory, diskRead, diskWrite, download, upload, battery
+    case cpu, cpuPerformance, cpuEfficiency, memory, diskRead, diskWrite, download, upload, battery, charging
     case cpuTemperature, gpuTemperature, ssdTemperature, batteryTemperature, fan
 
     /// The values of one snapshot; unavailable readings are left out, never stored as zero.
     static func values(of snapshot: Snapshot) -> [HistoryMetric: Double] {
         var values: [HistoryMetric: Double] = [:]
         values[.cpu] = snapshot.cpu?.total
+        values[.cpuPerformance] = snapshot.cpu?.performance
+        values[.cpuEfficiency] = snapshot.cpu?.efficiency
         values[.memory] = snapshot.memory?.fraction
         values[.diskRead] = snapshot.disk?.readRate
         values[.diskWrite] = snapshot.disk?.writeRate
         values[.download] = snapshot.network?.download
         values[.upload] = snapshot.network?.upload
         values[.battery] = snapshot.battery?.level
+        values[.charging] = snapshot.battery.map { $0.state == .charging ? 1 : 0 }
         values[.cpuTemperature] = snapshot.sensors?.cpu
         values[.gpuTemperature] = snapshot.sensors?.gpu
         values[.ssdTemperature] = snapshot.sensors?.ssd

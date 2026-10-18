@@ -1,7 +1,7 @@
 # Monny: product specification
 
 **Status:** initial specification, derived on 2026-10-17 from the saved Monny.sketch screens and the user's setup decisions. Implementation and hardware support must be independently verified; a requirement here does not mean it exists.
-**Platform:** macOS 26+, native SwiftUI/AppKit, distributed outside the Mac App Store.
+**Platform:** macOS 26+ on Apple silicon only (Intel Macs are out of scope, user decision 2026-10-18), native SwiftUI/AppKit, distributed outside the Mac App Store.
 **Companion files:** [AGENTS](../AGENTS.md), [STATE](STATE.md), [WORKFLOW](WORKFLOW.md), [PLAN](PLAN.md), [DESIGN](DESIGN.md). Visual states, layout and exact copy live in Sketch; this file owns behavior and acceptance.
 
 ## 1. Product vision
@@ -21,7 +21,7 @@ Each metric, sensor and battery mode is reported with one label: `not implemente
 ## 2. Menu bar presence
 
 - A template status item (Sketch: `05 · System · Menu bar & notifications`). States: idle, popover open, needs attention (a 7 pt badge for heat or danger; can be turned off in Settings).
-- Left click opens the popover (configurable: click or hover per Settings). Right click opens a menu: Open Dashboard (⌥⌘M), Settings…, Pause Battery Control, Charge to 100% Now, Start Calibration…, About Monny, Quit Monny. Battery items are unavailable without the helper.
+- Left click opens the popover; there is no hover mode (user decision 2026-10-18). Right click opens a menu: Open Dashboard (⌥⌘M), Settings…, Pause Battery Control, Charge to 100% Now, Start Calibration…, About Monny, Quit Monny. Battery items are disabled without the helper and hidden on a Mac without a battery.
 - A global shortcut (default ⌥⌘M, changeable) opens the dashboard.
 - Dock icon policy is an open decision (§9).
 
@@ -32,7 +32,9 @@ Header: app icon, Monny, Mac model · chip · uptime; buttons to open the dashbo
 **Overview:** CPU load with P/E split and CPU temperature chip (warns when hot), memory used with pressure chip, disk free space and read/write rates, network down/up rates with a short sparkline, per-core load bars grouped by Performance/Efficiency, and a battery card with level, current mode and a charge-limit toggle. Footer: Open Dashboard, shortcut, refresh interval.
 **Thermal alert state:** when the Mac is hot, the CPU card and battery card show it (for example “Charging paused · too hot” when heat protection acts).
 
-**Battery:** state line (adapter wattage and time to limit, or on battery with time remaining), large level gauge with limit marker, health · cycles · temperature, mode buttons Charge (up to limit) / Hold (run on adapter) / Discharge (while plugged), charge-limit slider 50–100 %, Sailing mode and Heat protection toggles, Calibrate…. States: charging, holding, on battery (modes disabled, “Connect power to switch modes”), helper required (banner, read-only controls, Install Battery Helper… with “Asks for your admin password once. Only controls charging.”).
+**Battery:** state line (adapter wattage and time to limit, or on battery with time remaining), large level gauge with limit marker, health · cycles · temperature, mode buttons Charge (up to limit) / Hold (run on adapter) / Discharge (while plugged), charge-limit slider 50–100 %, Sailing mode and Heat protection toggles, Calibrate…. States: charging, holding, on battery (modes disabled, “Connect power to switch modes”), helper required (banner, read-only controls, Install Battery Helper… with “Asks for your admin password once. Only controls charging.”), no battery (the tab stays and shows the same empty state as the dashboard Battery page).
+
+On a Mac without a battery the Overview battery strip shows the thermal state and fan speed instead.
 
 **Processes:** top processes sorted by CPU, Memory, Energy or Network, with icon, name, memory/threads or tabs/system note and value; a link to Activity Monitor. Read-only.
 
@@ -43,7 +45,10 @@ Sidebar: Overview, CPU, Memory, Disk, Network, Battery, Sensors; Settings at the
 - **Overview:** summary cards with sparklines (CPU, Memory, Temperature, Battery), CPU load & temperature chart with hover tooltip naming the top process, 24 h battery level chart with limit line, battery facts (health, cycles, capacity, system load), top processes, sensor tiles and fan speed.
 - **CPU, Memory, Disk, Network:** the detailed history and breakdowns drawn in the corresponding Sketch frames.
 - **Battery:** level, health, cycles and power cards; charging mode segmented control, charge limit, sailing mode and heat protection; calibration card with its four steps; Full charge before trips (day selection and time; charges to 100 % before then, then returns to the limit).
-- **Sensors:** CPU die, GPU, SSD and battery cards with peaks, temperature chart, thermal state (Nominal/Fair/Serious/Critical), fan speed, and tiles for each available sensor. Missing sensors are omitted or marked unavailable, never invented.
+- **Battery without a battery:** the range control and cards are replaced by one empty state (“This Mac has no battery”) with Open Sensors.
+- **Sensors:** CPU die, GPU, SSD and battery cards with peaks, temperature chart, thermal state (Nominal/Fair/Serious/Critical), fan speed, and tiles for each available sensor. Missing sensors are omitted or marked unavailable, never invented; a Mac without a fan says so.
+
+Before history exists (first launch), current values show immediately and charts show a “Collecting history” state instead of empty or zero lines.
 
 History must survive the window closing and an app restart for the 24 h and 7 d ranges. Storage mechanism is an open engineering decision (research).
 
@@ -61,15 +66,15 @@ Requires a Mac with a battery and the installed helper. All modes are explicit u
 
 ## 6. Onboarding
 
-Three steps (Sketch page `03`): Welcome (menu bar stats, charge limit, works offline), Battery helper (why, password once, only touches charging, how to remove; can be skipped), Ready (where Monny lives, ⌥⌘M, Launch at login recommended so the limit always applies). Macs without a battery skip the helper step.
+Three steps (Sketch page `03`): Welcome (menu bar stats, charge limit, works offline), Battery helper (why, password once, only touches charging, how to remove; can be skipped), Ready (where Monny lives, ⌥⌘M, Launch at login recommended so the limit always applies). Macs without a battery skip the helper step: two steps, with Sensors and history instead of Charge limit on Welcome.
 
 ## 7. Settings
 
 - **General:** Launch at login, refresh rate, temperature unit, appearance.
-- **Menu bar:** open popover with click/hover, global shortcut, show alert badge.
-- **Battery:** default charge limit, sailing range, heat protection threshold, helper status with version and Uninstall Helper….
+- **Menu bar:** global shortcut, show alert badge.
+- **Battery:** default charge limit, sailing range, heat protection threshold, helper status with version and Uninstall Helper…. Uninstalling asks for confirmation first and returns charging to macOS. If installation fails or is not approved, a banner explains it, with Open System Settings… (Login Items & Extensions) and Try Again.
 - **Notifications:** charge limit reached, Mac is running hot, calibration finished, battery below 20 %, memory pressure is high (each toggle).
-- **About:** version and build, Check for Updates (compares with the latest GitHub release), privacy note (no analytics; network only for updates).
+- **About:** version and build, Check for Updates (compares with the latest GitHub release), privacy note (no analytics; network only for updates). Results: up to date; a newer version (Download… opens the GitHub release page in the browser; Monny does not install updates itself); check failed (Try Again).
 
 ## 8. Cross-cutting requirements
 
@@ -81,6 +86,4 @@ Three steps (Sketch page `03`): Welcome (menu bar stats, charge limit, works off
 ## 9. Open product decisions
 
 - Dock icon: menu bar only, or Dock icon while the dashboard window is open.
-- “Open popover with” hover behavior and its delay.
-- Exact time-to-full/time-remaining source and when to hide estimates.
-- Intel Macs: in or out of scope (affects sensors and charge control).
+- Time estimates (“about 1 h 05 min left”, “80% in 25 min”): proposal is to show macOS's own estimate and hide it while macOS is still calculating, instead of computing our own.

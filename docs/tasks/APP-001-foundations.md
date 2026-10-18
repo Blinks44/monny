@@ -12,7 +12,7 @@
 
 Replace the Xcode template with the Monny shell: a menu bar status item that opens the popover with the Overview/Battery/Processes tabs, a dashboard window with the sidebar pages and Settings, and the design tokens and shared components the Sketch screens use. Content uses static preview values clearly marked as placeholders until CORE-001 delivers readings. Out of scope: real readings, history storage, battery helper, onboarding.
 
-Decide in this task, with the reason recorded here: `MenuBarExtra` vs `NSStatusItem` (right-click menu and attention badge are required), Dock icon policy proposal for SPEC §9, and how color variables map to code (asset catalog colors vs a token type).
+The app icon is already wired: [AppIcon.icon](../../apps/monny/monny/AppIcon.icon/) (Icon Composer) is the only app-icon input. The menu bar template imageset still needs adding here. Decide in this task, with the reason recorded here: `MenuBarExtra` vs `NSStatusItem` (right-click menu and attention badge are required), Dock icon policy proposal for SPEC §9, and how color variables map to code (asset catalog colors vs a token type).
 
 ## Acceptance
 

@@ -1,6 +1,6 @@
 # Monny: design direction and live source index
 
-Updated 2026-10-17. [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
+Updated 2026-10-18. [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
 
 ## Direction
 
@@ -12,9 +12,9 @@ Open **Monny.sketch** through Sketch MCP (load `mcp`, then `use`; resolve the op
 
 | Page | Content |
 | --- | --- |
-| 01 · Popover | Overview, Battery, Processes; Battery charging / on battery / helper required; Overview thermal alert. Light above, Dark below |
-| 02 · Window | Overview, CPU, Memory, Disk, Network, Battery, Sensors, Settings; Light/Dark pairs |
-| 03 · Flows & System | Onboarding Welcome / Battery helper / Ready, Calibration in progress, menu bar states, right-click menu and notifications, app icon |
+| 01 · Popover | Overview, Battery, Processes; Battery charging / on battery / helper required; Overview thermal alert; Overview and Battery without a battery. Light above, Dark below |
+| 02 · Window | Overview, CPU, Memory, Disk, Network, Battery, Sensors, Settings; Overview first launch, Sensors unavailable, Battery without a battery, Settings errors / update available / uninstall helper confirmation; Light/Dark pairs |
+| 03 · Flows & System | Onboarding Welcome / Battery helper / Ready, plus Welcome / Ready for a Mac without a battery, Calibration in progress, menu bar states, right-click menu and notifications, app icon |
 | 04 · Foundations | Colors, typography, spacing/radii/elevation, component overview |
 | Symbols | `Light/…` and `Dark/…` buttons, toggles, checkboxes, icon buttons, chips, popup button, banners |
 
@@ -24,7 +24,7 @@ Screens are drawn in English only; other languages are checked in the app.
 
 ## Readiness
 
-All listed frames are saved and form the target for the first release. Not yet drawn: empty/first-launch dashboard history, unavailable-sensor and Mac-without-battery variants, Settings error states (helper install failed, update check failed). Engineering can start foundations and readings; a design task should add those states before their screens are implemented.
+All listed frames are saved and form the target for the first release. Every state in SPEC has a frame, including empty, unavailable, no-battery, error, update and confirmation states ([DES-001](tasks/DES-001-missing-states.md)). Accessibility and the other five languages are accepted in the app.
 
 ## Rules that apply to every screen
 
@@ -36,7 +36,7 @@ All listed frames are saved and form the target for the first release. Not yet d
 
 ## Brand
 
-The app icon (page `03`, frame `06 · Brand · App icon`) is a dark graphite tile with three rounded bars in violet, blue and green; the menu bar uses a monochrome template of the bars (16×14 pt) with an optional 7 pt alert dot. Export the icon into an Icon Composer `.icon` asset when the foundations task adds it.
+The app icon (page `03`, frame `06 · Brand · App icon`) is a graphite tile with three rounded bars, violet, teal and green (CPU, memory, battery), and no baseline. The menu bar uses a monochrome template of the bars (16×14 pt) with an optional 7 pt alert dot. [AppIcon.icon](../apps/monny/monny/AppIcon.icon/) is the only app-icon input: a graphite linear-gradient fill plus one SVG layer per bar, composed by Icon Composer. To revise it, change the geometry in Sketch, update the SVG layers (1024 canvas = 2× the 512 frame), rebuild and inspect `Monny.app/Contents/Resources/AppIcon.icns`. Do not bake a corner mask, shadow or background into the layers. `docs/images/app-icon.png` is the README preview exported from a build.
 
 ## Updating this design contract
 

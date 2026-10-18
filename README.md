@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/images/app-icon.png" alt="Monny app icon" width="128" height="128">
+</p>
+
 <h1 align="center">Monny</h1>
 
 <p align="center">
@@ -30,7 +34,7 @@ Readings never leave the Mac: no account, analytics or telemetry. The [specifica
 
 ## Requirements
 
-- macOS **26 or later**. Battery control needs a Mac with a battery and the Monny helper.
+- A Mac with **Apple silicon** running macOS **26 or later**. Intel Macs are not supported. Battery control needs a Mac with a battery and the Monny helper.
 - Full Xcode with a **Swift 6.2+ compiler** and a **macOS 26+ SDK** to build from source.
 
 ## Build and run

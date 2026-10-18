@@ -4,7 +4,7 @@ Read before changing app code or choosing a reading/charging mechanism. Workflow
 
 ## Platform and baseline
 
-- **macOS 26+**, Apple silicon first. Intel support is an open SPEC decision; do not claim it without testing.
+- **macOS 26+ on Apple silicon only** (user decision 2026-10-18). Intel Macs are out of scope; Release builds should target `arm64` only (set in the release task).
 - Swift 6 language mode, complete strict concurrency, `MainActor` default isolation, approachable concurrency (all set in the Xcode project). Current stable Xcode toolchain.
 - SwiftUI for UI, Swift Charts for charts, AppKit only where SwiftUI is insufficient (status item with right-click menu, global shortcut, window/popover behavior). Prefer `MenuBarExtra` if it satisfies the status-item states and right-click menu; otherwise an `NSStatusItem` hosting SwiftUI content.
 - Single app process plus one privileged helper for charge control. No other helpers, XPC services, login agents or extensions without a demonstrated need.

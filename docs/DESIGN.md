@@ -18,7 +18,7 @@ Open **Monny.sketch** through Sketch MCP (load `mcp`, then `use`; resolve the op
 | 04 · Foundations | Colors, typography, spacing/radii/elevation, component overview |
 | Symbols | `Light/…` and `Dark/…` buttons, toggles, checkboxes, icon buttons, chips, popup button, banners |
 
-Colors are 88 Color Variables named `Light/<Group>/<Name>` and `Dark/<Group>/<Name>` (Text, Surface, Fill, Accent, Metric, Status, State); 12 text styles and 4 layer styles. Code mirrors these variables as one token set; change a token in both places.
+Colors are 94 Color Variables named `Light/<Group>/<Name>` and `Dark/<Group>/<Name>` (Text, Surface, Fill, Accent, Metric, Status, State); 12 text styles and 4 layer styles. Code mirrors these variables as one token set; change a token in both places.
 
 Screens are drawn in English only; other languages are checked in the app.
 

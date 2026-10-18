@@ -21,8 +21,11 @@ enum Theme {
     static let surfaceCard = Color(light: 0xFFFFFF, 0.78, dark: 0xFFFFFF, 0.05)
     static let surfaceCardStroke = Color(light: 0xFFFFFF, dark: 0xFFFFFF, 0.08)
     static let surfaceControl = Color(light: 0xFFFFFF, dark: 0xFFFFFF, 0.14)
-    static let surfaceSidebarStart = Color(light: 0xF2F2F4, 0.85, dark: 0x2A2A2E, 0.7)
-    static let surfaceSidebarEnd = Color(light: 0xF2F2F4, 0.85, dark: 0x2A2A2E, 0.7)
+    static let surfaceWindowTop = Color(light: 0xFBFBFD, 0.9, dark: 0x202023, 0.94)
+    static let surfaceWindowBottom = Color(light: 0xF5F5F7, 0.85, dark: 0x18181B, 0.92)
+    static let surfaceSidebarStart = Color(light: 0xFFFFFF, 0.7, dark: 0x3A3A3E, 0.7)
+    static let surfaceSidebarEnd = Color(light: 0xFFFFFF, 0.55, dark: 0x2A2A2E, 0.7)
+    static let surfaceSidebarSelection = Color(light: 0xFFFFFF, dark: 0xFFFFFF, 0.16)
     static let surfaceOpaque = Color(light: 0xF5F5F7, dark: 0x1C1C1E)
 
     // Fill

@@ -19,6 +19,7 @@ Contracts: [WORKFLOW](WORKFLOW.md), [PLAN](PLAN.md), [SPEC](SPEC.md), [DESIGN](D
 
 ## Recent changes
 
+- **2026-10-18:** Window glass and sidebar follow the Sketch frames; Sketch surface variables synced and linked ([APP-002](tasks/APP-002-popover-design-parity.md)).
 - **2026-10-18:** APP-002 (done, user-checked): popover brought to the Sketch frames (no arrow, glass panel, rings, capsule tabs and chips, Processes rows) ([APP-002](tasks/APP-002-popover-design-parity.md)). CORE-003: history tiers 1m–7d with 24h/7d persisted, 10 s background sampling, popover network sparkline ([CORE-003](tasks/CORE-003-history.md)).
 - **2026-10-18:** CORE-002: SMC temperatures and fans read without privileges, shown in the CPU chip, Battery tab, Temperature KPI and no-battery strip; checked under load on M1 Max ([verification](verification/sensors-smc.md)). CORE-001 closed after the user's check.
 - **2026-10-18:** CORE-001: sources researched, shared sampler and public-API readers built, compared with system tools ([verification](verification/readings-public.md)).

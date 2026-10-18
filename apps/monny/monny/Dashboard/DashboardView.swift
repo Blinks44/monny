@@ -20,7 +20,7 @@ struct DashboardView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
         .frame(minWidth: 900, minHeight: 620)
-        .background(Theme.surfaceOpaque)
+        .containerBackground(for: .window) { WindowBackground() }
         .ignoresSafeArea(.container, edges: .top)
         // An empty unified toolbar gives the window the tall titlebar of a sidebar app, so macOS
         // places the window buttons inside the sidebar panel.

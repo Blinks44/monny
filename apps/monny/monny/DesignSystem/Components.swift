@@ -397,17 +397,30 @@ struct PanelChrome<Content: View>: View {
     }
 }
 
+/// The dashboard window's glass (`Window glass`): the system blur behind the window under a
+/// translucent gradient. The window keeps the system corner, hairline and shadow.
+struct WindowBackground: View {
+    var body: some View {
+        BehindWindowBlur(cornerRadius: 0, material: .underWindowBackground)
+            .overlay {
+                LinearGradient(colors: [Theme.surfaceWindowTop, Theme.surfaceWindowBottom], startPoint: .top, endPoint: .bottom)
+            }
+            .ignoresSafeArea()
+    }
+}
+
 /// `NSVisualEffectView` blurring what is behind the window. Its mask image clips the material
 /// to the panel's continuous corners; a layer corner radius would leave square material corners.
 struct BehindWindowBlur: NSViewRepresentable {
     let cornerRadius: CGFloat
+    var material = NSVisualEffectView.Material.popover
 
     func makeNSView(context: Context) -> NSVisualEffectView {
         let view = NSVisualEffectView()
-        view.material = .popover
+        view.material = material
         view.blendingMode = .behindWindow
         view.state = .active
-        view.maskImage = Self.mask(cornerRadius: cornerRadius)
+        if cornerRadius > 0 { view.maskImage = Self.mask(cornerRadius: cornerRadius) }
         return view
     }
 

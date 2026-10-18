@@ -9,7 +9,7 @@ struct Sidebar: View {
             Text("MONITOR")
                 .font(Theme.overline)
                 .tracking(Theme.overlineTracking)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(Theme.textTertiary)
                 .padding(.leading, 12)
                 .padding(.bottom, 4)
                 .accessibilityAddTraits(.isHeader)
@@ -24,9 +24,11 @@ struct Sidebar: View {
         .padding(.bottom, 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background {
+            // `Sidebar glass`: a lighter translucent panel with a white hairline and a soft shadow.
             RoundedRectangle(cornerRadius: Theme.radiusCard, style: .continuous)
-                .fill(Theme.surfaceSidebarStart)
-                .strokeBorder(Theme.surfacePanelStroke)
+                .fill(LinearGradient(colors: [Theme.surfaceSidebarStart, Theme.surfaceSidebarEnd], startPoint: .top, endPoint: .bottom))
+                .strokeBorder(Theme.surfaceCardStroke)
+                .shadow(color: .black.opacity(0.08), radius: 7, y: 4)
         }
         .padding(8)
     }
@@ -51,9 +53,11 @@ private struct SidebarButton: View {
             .frame(height: 34)
             .background {
                 if isSelected {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Theme.surfaceControl).controlElevation()
+                    RoundedRectangle(cornerRadius: Theme.radiusControl, style: .continuous)
+                        .fill(Theme.surfaceSidebarSelection)
+                        .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
                 } else if isHovered {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Theme.stateHover)
+                    RoundedRectangle(cornerRadius: Theme.radiusControl, style: .continuous).fill(Theme.stateHover)
                 }
             }
             .contentShape(.rect)

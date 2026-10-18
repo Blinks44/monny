@@ -3,6 +3,8 @@ import SwiftUI
 /// Popover Battery. Without the helper (not built yet, PLAN phase 4) battery control is off:
 /// the banner explains it and the level stays unavailable until readings exist.
 struct BatteryTab: View {
+    let battery: BatteryReading?
+    let health: BatteryHealth?
     let openSensors: () -> Void
 
     var body: some View {
@@ -11,8 +13,19 @@ struct BatteryTab: View {
                 Banner(kind: .danger, symbol: "lock.fill", title: "Battery control is off",
                        message: "Install the helper to limit and pause charging")
                 VStack(alignment: .leading, spacing: Theme.spaceL) {
-                    UnavailableValue(font: Theme.display)
-                    Text("Health · cycles · temperature").font(Theme.footnote).foregroundStyle(Theme.textSecondary)
+                    if let battery {
+                        BatteryStatusText(battery: battery).font(Theme.label).foregroundStyle(Theme.textSecondary)
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(battery.level.percentText).font(Theme.display).foregroundStyle(Theme.textPrimary)
+                            Spacer()
+                            BatteryGlyph(level: battery.level)
+                        }
+                    } else {
+                        UnavailableValue(font: Theme.display)
+                    }
+                    BatteryFacts(battery: battery, health: health)
+                        .font(Theme.footnote)
+                        .foregroundStyle(Theme.textSecondary)
                 }
                 .padding(Theme.spaceXL)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -31,6 +44,21 @@ struct BatteryTab: View {
             NoBatteryView(openSensors: openSensors)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .card()
+        }
+    }
+}
+
+/// "Health 97% · 96 cycles", leaving out what macOS does not report.
+private struct BatteryFacts: View {
+    let battery: BatteryReading?
+    let health: BatteryHealth?
+
+    var body: some View {
+        switch (health?.maximumCapacity, battery?.cycleCount) {
+        case let (capacity?, cycles?): Text("Health \(capacity.percentText) · \(cycles) cycles")
+        case let (capacity?, nil): Text("Health \(capacity.percentText)")
+        case let (nil, cycles?): Text("\(cycles) cycles")
+        case (nil, nil): Text(verbatim: " ")
         }
     }
 }

@@ -9,7 +9,7 @@ The Xcode project (macOS 26+, Swift 6, Monny.app, unit-test target), agent workf
 ## Phases
 
 1. **Foundations** ([APP-001](tasks/APP-001-foundations.md)): menu bar status item and popover shell, dashboard window with sidebar, design tokens from the Sketch color variables, String Catalogs for six languages, logging. Exit: the shell matches the Sketch structure in Light/Dark and builds/tests pass.
-2. **Readings** ([CORE-001](tasks/CORE-001-readings-research.md) first): research and implement one shared sampler for CPU (total, P/E, per core), memory and pressure, disk space and I/O, network rates, battery/power source, thermal state, temperatures and fans, top processes. Exit: each metric has a capability label and a comparison with Activity Monitor/System Information on a named Mac.
+2. **Readings** ([CORE-001](tasks/CORE-001-readings-research.md), then [CORE-002](tasks/CORE-002-temperatures-fans.md) for temperatures and fans): research and implement one shared sampler for CPU (total, P/E, per core), memory and pressure, disk space and I/O, network rates, battery/power source, thermal state, temperatures and fans, top processes. Exit: each metric has a capability label and a comparison with Activity Monitor/System Information on a named Mac.
 3. **Popover and dashboard screens** on real readings, including history storage for 1m–7d ranges, Settings and notifications.
 4. **Battery control:** helper research, SMAppService daemon + XPC, charge limit, hold, discharge, sailing, heat protection, override/trips, calibration and fail-safe behavior. Exit: verified on a named MacBook across sleep, restart, quit and uninstall.
 5. **Onboarding, Launch at login, update check, accessibility and localization pass.**

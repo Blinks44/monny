@@ -1,35 +1,38 @@
 # CORE-001: Research reading sources and the shared sampler
 
-- Updated: 2026-10-17
-- Stage: planned
+- Updated: 2026-10-18
+- Stage: awaiting_verification (public-API readers built and compared with CLI tools; side-by-side check in the running app open)
 - Owner: unassigned
-- Ownership checked: 2026-10-17, workflow setup; released
+- Ownership checked: 2026-10-18; released
 - Owned surfaces: `docs/research/`, future `apps/monny/monny/Readings/` and sampler
 - Requirements: SPEC §§3–4, §8 (idle cost), ENGINEERING “Readings”; PLAN phase 2
-- Code baseline: workflow setup baseline on `main`
+- Code baseline: `main` after 70e1441; readers uncommitted
 
 ## Outcome and scope
 
-Choose and document, per metric, the API that produces it on Apple silicon macOS 26+: CPU total/P/E/per core, memory used and pressure, swap, disk free and read/write rates, network rates per interface, battery level/health/cycles/capacity/temperature/adapter wattage/time estimates, thermal state, temperatures (CPU die, GPU, SSD, SoC, clusters, battery, palm rest, ambient), fan speed, top processes by CPU/memory/energy/network. Then implement the sampler and readers for the public-API metrics first.
-
-Also decide history storage for the 1m–7d ranges (in-memory ring buffers persisted to a small file, SwiftData, or SQLite) with size and write-frequency estimates.
+Choose the source of every metric on Apple silicon macOS 26+ and implement the shared sampler with the public-API readers. Temperatures and fans moved to [CORE-002](CORE-002-temperatures-fans.md); history storage is decided here and built with the phase 3 charts.
 
 ## Acceptance
 
-- [ ] `docs/research/README.md` lists each metric's source, public/private status, units/semantics, model/OS limits and license of any referenced code.
-- [ ] Sampler and readers for public-API metrics implemented with fixture-based tests for the math.
-- [ ] Values compared with Activity Monitor/System Information on a named Mac and recorded in verification.
-- [ ] Idle CPU cost measured with the popover open and closed.
-- [ ] Task, STATE and affected contracts updated before final handoff.
+- [x] [research](../research/README.md#readings) lists each metric's source, public/private status, semantics and limits; history storage decided.
+- [x] Sampler and readers for public-API metrics, with fixture tests for the math (CPU ticks and wrap, memory formula, rates and counter resets, power-source estimates, `system_profiler` parsing).
+- [x] Values compared with `top`, `vm_stat`, `df`, `pmset`, `ps` and System Information on a named Mac ([verification](../verification/readings-public.md)).
+- [ ] Side-by-side check with Activity Monitor in the running app, and the app's own CPU use with the popover open (user check).
+- [x] Task, STATE and affected contracts updated.
 
 ## Implementation and verification
 
-Not started.
+`apps/monny/monny/Readings/`: `CPUReader` (ticks, P/E from the device tree), `MemoryReader`, `DiskReader` (free space every 30 s, throughput every pass), `NetworkReader` (64-bit counters), `PowerReader` + `BatteryHealthReader`, `ProcessReader` (`rusage_info_v6`, `ri_energy_nj`), `RateCounter`, and `Sampler` (actor `ReadingSource` off the main actor; runs only while the popover or dashboard is visible; the process list only while it is shown). The popover Overview, Battery and Processes tabs and the window KPI row show the readings; temperatures stay "—" until CORE-002, and charts until phase 3.
+
+2026-10-18, M1 Max, macOS 27.0.1: `scripts/dev.sh build` passed with no warnings; `scripts/dev.sh test` passed (10 tests). Offscreen render with live readings in the Russian locale checked layout, units and plural forms. Details and costs in [verification](../verification/readings-public.md).
+
+Decisions while implementing: `ri_billed_energy` gave implausible values, so energy uses `ri_energy_nj` (Rebind ≈ 3 W at a full core). Per-process network has no public source and was removed from the Processes sorts (SPEC updated).
 
 ## Open checks / dependency
 
-Temperature and fan sources on Apple silicon need hardware checks per chip family; record which Macs were available.
+- User: compare the popover with Activity Monitor and check Monny's own CPU use while the popover is open.
+- Background cadence for history and charge control is not built yet (phase 3/4).
 
 ## Next handoff
 
-Engineering: “research Monny's reading sources” can start in parallel with APP-001; they share no files until the sampler is wired into the UI.
+Engineering: CORE-002 temperatures and fans, then phase 3 history and charts.

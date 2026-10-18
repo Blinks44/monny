@@ -42,9 +42,9 @@ private struct SpacedLabelStyle: LabelStyle {
     }
 }
 
-/// Small status capsule (`Chip/Success`, `Warning`, `Danger`, `Info`, `Neutral`).
+/// Small status capsule (`Chip/Success`, `Warning`, `Danger`, `Info`, `Neutral`, `Memory`).
 struct Chip: View {
-    enum Kind { case success, warning, danger, info, neutral }
+    enum Kind { case success, warning, danger, info, neutral, memory }
 
     let title: LocalizedStringKey
     var symbol: String?
@@ -57,6 +57,7 @@ struct Chip: View {
         case .danger: (Theme.statusDangerText, Theme.statusDangerBg)
         case .info: (Theme.accentBrand, Theme.statusInfoBg)
         case .neutral: (Theme.textSecondary, Theme.fillTrack)
+        case .memory: (Theme.metricMemory, Theme.metricMemory.opacity(0.14))
         }
     }
 

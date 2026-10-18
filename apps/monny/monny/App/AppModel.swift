@@ -7,6 +7,7 @@ final class AppModel {
     var dashboardPage: DashboardPage = .overview
     /// Set when heat or a danger state needs the user; drives the menu bar badge.
     var needsAttention = false
+    let sampler = Sampler()
 
     /// Window actions, set by the app delegate, which owns the status item and the scenes.
     @ObservationIgnored var openDashboard: (DashboardPage?) -> Void = { _ in }

@@ -2,7 +2,7 @@ import Foundation
 import IOKit.ps
 
 /// Static facts about this Mac that do not change while Monny runs.
-enum SystemInfo {
+nonisolated enum SystemInfo {
     /// For example "Apple M3 Pro".
     static let chipName: String = sysctlString("machdep.cpu.brand_string") ?? "Apple silicon"
     /// Without the "Apple " prefix, for example "M3 Pro", where space is tight.

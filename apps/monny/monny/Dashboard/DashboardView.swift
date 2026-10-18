@@ -30,11 +30,13 @@ struct DashboardView: View {
         }
         .toolbar(removing: .title)
         .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
+        .onAppear { model.sampler.setVisible(.dashboard, true) }
+        .onDisappear { model.sampler.setVisible(.dashboard, false) }
     }
 
     @ViewBuilder private var page: some View {
         switch model.dashboardPage {
-        case .overview: OverviewPage()
+        case .overview: OverviewPage(snapshot: model.sampler.snapshot)
         case .battery where !SystemInfo.hasBattery:
             NoBatteryView(openSensors: { model.dashboardPage = .sensors })
                 .frame(maxWidth: .infinity)

@@ -15,7 +15,7 @@ Replace the Xcode template with the Monny shell: status item, popover with Overv
 ## Decisions
 
 - **`NSStatusItem` + `NSPopover`, not `MenuBarExtra`.** `MenuBarExtra` offers either a menu or a window, not both, and cannot draw the colored attention badge on a template icon. A left click toggles the popover; a right click or Control-click opens the menu (`NSMenu.popUp`). The badge is a 7 pt subview, so the icon stays a template image.
-- **Dock icon only while the dashboard is open** (accessory app otherwise), as in Rebind. Proposed for SPEC §9; the user has not confirmed it yet.
+- **Dock icon only while the dashboard is open** (accessory app otherwise), as in Rebind. Confirmed by the user 2026-10-18 (SPEC §2).
 - **Tokens are a Swift type, not asset colors.** [Theme.swift](../../apps/monny/monny/DesignSystem/Theme.swift) is generated from all 88 Sketch Color Variables (44 Light/Dark pairs, same names in camelCase), plus the 12 text styles, spacing and radii. This matches Rebind and keeps one reviewable file.
 - **No invented values.** Until the sampler exists, every reading shows "—" (`UnavailableValue`) and the charts show the first-launch state. Real static facts are shown: chip, P/E core counts, memory size, macOS version, uptime, battery presence (IOKit power sources).
 - Controls that need later phases are visible but disabled: Install Battery Helper…, Check for Updates, the battery menu items. The global shortcut is shown as text only. Launch at login is wired to `SMAppService.mainApp`. Preferences are stored with `@AppStorage`.
@@ -43,7 +43,6 @@ Files: `apps/monny/monny/` `monnyApp.swift` (app, delegate, Dock policy, appeara
 
 ## Open checks / dependency
 
-- The user has not yet confirmed the Dock proposal (SPEC §9).
 - Global shortcut ⌥⌘M needs a library decision (for example KeyboardShortcuts) recorded in research.
 - The Release build should target arm64 only (Apple silicon only); this is a release-task change.
 

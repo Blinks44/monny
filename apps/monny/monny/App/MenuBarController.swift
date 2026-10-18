@@ -96,8 +96,15 @@ final class MenuBarController: NSObject, NSPopoverDelegate, NSMenuDelegate {
 
     // MARK: NSPopoverDelegate
 
-    func popoverWillShow(_ notification: Notification) { statusItem.button?.highlight(true) }
-    func popoverDidClose(_ notification: Notification) { statusItem.button?.highlight(false) }
+    func popoverWillShow(_ notification: Notification) {
+        statusItem.button?.highlight(true)
+        model.sampler.setVisible(.popover, true)
+    }
+
+    func popoverDidClose(_ notification: Notification) {
+        statusItem.button?.highlight(false)
+        model.sampler.setVisible(.popover, false)
+    }
 
     // MARK: NSMenuDelegate
 

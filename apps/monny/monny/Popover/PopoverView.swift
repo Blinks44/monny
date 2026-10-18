@@ -20,9 +20,10 @@ struct PopoverView: View {
 
             Group {
                 switch model.popoverTab {
-                case .overview: OverviewTab()
-                case .battery: BatteryTab(openSensors: { model.openDashboard(.sensors) })
-                case .processes: ProcessesTab()
+                case .overview: OverviewTab(snapshot: model.sampler.snapshot)
+                case .battery: BatteryTab(battery: model.sampler.snapshot?.battery, health: model.sampler.batteryHealth,
+                                          openSensors: { model.openDashboard(.sensors) })
+                case .processes: ProcessesTab(sampler: model.sampler)
                 }
             }
             .padding(.horizontal, Theme.spaceXL)

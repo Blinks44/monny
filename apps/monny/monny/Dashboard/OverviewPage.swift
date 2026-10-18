@@ -3,14 +3,23 @@ import SwiftUI
 /// Window Overview: the KPI row with current values, then history. Until the sampler exists
 /// (CORE-001) values are unavailable and the charts show the first-launch state.
 struct OverviewPage: View {
+    let snapshot: Snapshot?
+
     var body: some View {
         VStack(spacing: Theme.spaceL) {
             HStack(spacing: Theme.spaceL) {
-                KPICard(title: "CPU", symbol: "cpu", color: Theme.metricCPU)
-                KPICard(title: "Memory", symbol: "memorychip", color: Theme.metricMemory)
-                KPICard(title: "Temperature", symbol: "thermometer.medium", color: Theme.metricHeat)
+                KPICard(title: "CPU", symbol: "cpu", color: Theme.metricCPU, value: snapshot?.cpu?.total.percentText,
+                        detail: Text("\(SystemInfo.performanceCores + SystemInfo.efficiencyCores) cores"))
+                KPICard(title: "Memory", symbol: "memorychip", color: Theme.metricMemory, value: snapshot?.memory?.used.memoryText,
+                        detail: snapshot?.memory.map { memory in
+                            memory.swapUsed > 0 ? Text("of \(memory.total.memoryText) · swap \(memory.swapUsed.memoryText)")
+                                : Text("of \(memory.total.memoryText)")
+                        })
+                KPICard(title: "Temperature", symbol: "thermometer.medium", color: Theme.metricHeat, value: nil, detail: nil)
                 if SystemInfo.hasBattery {
-                    KPICard(title: "Battery", symbol: "battery.100percent", color: Theme.metricBattery)
+                    KPICard(title: "Battery", symbol: "battery.100percent", color: Theme.metricBattery,
+                            value: snapshot?.battery?.level.percentText,
+                            detail: snapshot?.battery.map(BatteryStatusText.text(for:)))
                 }
             }
             CollectingHistoryCard()
@@ -23,11 +32,18 @@ struct KPICard: View {
     let title: LocalizedStringKey
     let symbol: String
     let color: Color
+    let value: String?
+    let detail: Text?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             MetricLabel(title: title, symbol: symbol, color: color)
-            UnavailableValue(font: Theme.metricL)
+            if let value {
+                Text(value).font(Theme.metricL).foregroundStyle(Theme.textPrimary).monospacedDigit()
+            } else {
+                UnavailableValue(font: Theme.metricL)
+            }
+            detail?.font(Theme.footnote).foregroundStyle(Theme.textSecondary).lineLimit(1)
             Spacer(minLength: 0)
             Text("Collecting history…").font(Theme.footnote).foregroundStyle(Theme.textTertiary)
             Capsule().fill(Theme.fillTrack).frame(height: 4)

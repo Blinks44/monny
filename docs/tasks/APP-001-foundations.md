@@ -1,45 +1,56 @@
 # APP-001: App foundations (menu bar, popover and dashboard shell)
 
-- Updated: 2026-10-17
-- Stage: ready_for_implementation
+- Updated: 2026-10-18
+- Stage: done (2026-10-18; keyboard and VoiceOver review moves to the PLAN accessibility gate)
 - Owner: unassigned
-- Ownership checked: 2026-10-17, workflow setup; released
+- Ownership checked: 2026-10-18; released after the shell pass
 - Owned surfaces: `apps/monny/monny/` app entry, scenes, design tokens, shared components, String Catalogs
 - Requirements: SPEC §§2–4, §7 (structure only), §8; PLAN phase 1
-- Code baseline: workflow setup baseline on `main` (Xcode template app with the Monny project settings)
+- Code baseline: committed on `main` after 13d99da
 
 ## Outcome and scope
 
-Replace the Xcode template with the Monny shell: a menu bar status item that opens the popover with the Overview/Battery/Processes tabs, a dashboard window with the sidebar pages and Settings, and the design tokens and shared components the Sketch screens use. Content uses static preview values clearly marked as placeholders until CORE-001 delivers readings. Out of scope: real readings, history storage, battery helper, onboarding.
+Replace the Xcode template with the Monny shell: status item, popover with Overview/Battery/Processes, dashboard window with sidebar pages and Settings, design tokens and shared components. Out of scope: real readings (CORE-001), history storage, battery helper, onboarding, global shortcut.
 
-The app icon is already wired: [AppIcon.icon](../../apps/monny/monny/AppIcon.icon/) (Icon Composer) is the only app-icon input. The menu bar template imageset still needs adding here. Decide in this task, with the reason recorded here: `MenuBarExtra` vs `NSStatusItem` (right-click menu and attention badge are required), Dock icon policy proposal for SPEC §9, and how color variables map to code (asset catalog colors vs a token type).
+## Decisions
+
+- **`NSStatusItem` + `NSPopover`, not `MenuBarExtra`.** `MenuBarExtra` offers either a menu or a window, not both, and cannot draw the colored attention badge on a template icon. A left click toggles the popover; a right click or Control-click opens the menu (`NSMenu.popUp`). The badge is a 7 pt subview, so the icon stays a template image.
+- **Dock icon only while the dashboard is open** (accessory app otherwise), as in Rebind. Proposed for SPEC §9; the user has not confirmed it yet.
+- **Tokens are a Swift type, not asset colors.** [Theme.swift](../../apps/monny/monny/DesignSystem/Theme.swift) is generated from all 88 Sketch Color Variables (44 Light/Dark pairs, same names in camelCase), plus the 12 text styles, spacing and radii. This matches Rebind and keeps one reviewable file.
+- **No invented values.** Until the sampler exists, every reading shows "—" (`UnavailableValue`) and the charts show the first-launch state. Real static facts are shown: chip, P/E core counts, memory size, macOS version, uptime, battery presence (IOKit power sources).
+- Controls that need later phases are visible but disabled: Install Battery Helper…, Check for Updates, the battery menu items. The global shortcut is shown as text only. Launch at login is wired to `SMAppService.mainApp`. Preferences are stored with `@AppStorage`.
 
 ## Acceptance
 
-- [ ] Status item with idle/open/attention states and the right-click menu items from SPEC §2 (battery items disabled).
-- [ ] Popover with header, tabs and footer matching Sketch `01 · Popover` structure in Light and Dark.
-- [ ] Dashboard window with sidebar, page header, time-range control and collapse button; Settings page sections present.
-- [ ] Tokens for all Sketch color variables and text styles; shared card, chip, banner and button styles reused across screens.
-- [ ] String Catalog entries for all shell copy in the six languages (or explicitly listed missing translations).
-- [ ] Build and tests pass; keyboard focus and VoiceOver labels checked for the shell controls.
-- [ ] Task, STATE and affected contracts updated before final handoff.
+- [x] Status item with idle/open/attention states and the right-click menu items from SPEC §2 (battery items disabled; hidden without a battery). *Built; clicks and menu placement not observed yet.*
+- [x] Popover with header, tabs and footer matching Sketch `01 · Popover` structure in Light and Dark (offscreen render checked).
+- [x] Dashboard window with sidebar, page header, time-range control and collapse button; Settings page sections present (offscreen render checked).
+- [x] Tokens for all Sketch color variables and text styles; shared card, chip, banner, icon button, ring, capsule bar and button styles.
+- [x] String Catalog entries for all 88 shell strings in six languages.
+- [ ] Keyboard focus and VoiceOver labels checked in the running app. Moved to the PLAN accessibility release gate; labels are set in code.
+- [x] Runtime check (user-reported 2026-10-18, works): left/right click on the status item, popover highlight, Open Dashboard from the menu and the popover, collapse back to the popover, Dock icon appearing and leaving, appearance setting, Launch at login.
+- [x] Task, STATE and affected contracts updated.
 
 ## Sketch source
 
-Monny.sketch pages `01 · Popover`, `02 · Window` (Settings frame), `03 · Flows & System` (menu bar states, right-click menu), `04 · Foundations` and `Symbols`, reviewed 2026-10-17. Inspect live through MCP.
+Monny.sketch pages `01 · Popover`, `02 · Window`, `03 · Flows & System` and `04 · Foundations`, inspected live 2026-10-18.
 
 ## Implementation and verification
 
-Not started.
+Files: `apps/monny/monny/` `monnyApp.swift` (app, delegate, Dock policy, appearance), `App/` (model, menu bar controller, preferences, system facts, login item), `DesignSystem/` (Theme, components), `Popover/`, `Dashboard/`, `Localizable.xcstrings`, `MonnyMenuBar.imageset` (16×14 template). The template `ContentView.swift` was removed.
+
+2026-10-18, Xcode 27.1, macOS 27.0.1, Apple M1 Max: `scripts/dev.sh build` passed with no warnings. `scripts/dev.sh test` passed: 3 tests (bundle identity, sidebar order, uptime text). The popover tabs and the Overview/CPU/Settings pages were rendered offscreen in Light and Dark in a temporary test (deleted afterwards) under the Russian system locale; layout matches the Sketch structure. `scripts/dev.sh run` launches Monny as an accessory app. Screen control was declined, so the agent saw no clicks, menus or the Dock. The user then reported that the status item, popover, menu and dashboard work.
 
 ## Open checks / dependency
 
-None for the shell. Real values depend on CORE-001.
+- The user has not yet confirmed the Dock proposal (SPEC §9).
+- Global shortcut ⌥⌘M needs a library decision (for example KeyboardShortcuts) recorded in research.
+- The Release build should target arm64 only (Apple silicon only); this is a release-task change.
 
 ## Review
 
-Not started.
+Self-review against the acceptance list above. Sketch details deferred to phase 3 because they need real data: sparklines, charts, core bars, mode tiles, charge slider and the process list.
 
 ## Next handoff
 
-Engineering: implement the shell (“build the Monny app shell”). Design: no blocker.
+Engineering: CORE-001 reading sources and the sampler, then phase 3 screens on real readings.

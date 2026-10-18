@@ -23,7 +23,7 @@ Each metric, sensor and battery mode is reported with one label: `not implemente
 - A template status item (Sketch: `05 · System · Menu bar & notifications`). States: idle, popover open, needs attention (a 7 pt badge for heat or danger; can be turned off in Settings).
 - Left click opens the popover; there is no hover mode (user decision 2026-10-18). Right click opens a menu: Open Dashboard (⌥⌘M), Settings…, Pause Battery Control, Charge to 100% Now, Start Calibration…, About Monny, Quit Monny. Battery items are disabled without the helper and hidden on a Mac without a battery.
 - A global shortcut (default ⌥⌘M, changeable) opens the dashboard.
-- Dock icon policy is an open decision (§9).
+- Dock icon policy is an open decision (§9); the shell shows one only while the dashboard is open.
 
 ## 3. Popover
 
@@ -85,5 +85,5 @@ Three steps (Sketch page `03`): Welcome (menu bar stats, charge limit, works off
 
 ## 9. Open product decisions
 
-- Dock icon: menu bar only, or Dock icon while the dashboard window is open.
+- Dock icon: proposal (implemented in APP-001) is no Dock icon, except while the dashboard window is open.
 - Time estimates (“about 1 h 05 min left”, “80% in 25 min”): proposal is to show macOS's own estimate and hide it while macOS is still calculating, instead of computing our own.

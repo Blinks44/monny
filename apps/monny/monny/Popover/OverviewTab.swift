@@ -1,15 +1,20 @@
 import SwiftUI
 
 /// Popover Overview: CPU, memory, disk, network, cores and the battery (or thermal) strip.
-/// Temperatures arrive with CORE-002; the network sparkline with history (phase 3).
+/// The network sparkline arrives with history (phase 3).
 struct OverviewTab: View {
     let snapshot: Snapshot?
+    @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
 
     var body: some View {
         VStack(spacing: Theme.spaceM) {
             HStack(spacing: Theme.spaceM) {
                 RingCard(title: "CPU", symbol: "cpu", color: Theme.metricCPU, unit: "load",
-                         fraction: snapshot?.cpu?.total, footnote: cpuFootnote)
+                         fraction: snapshot?.cpu?.total, footnote: cpuFootnote) {
+                    if let celsius = snapshot?.sensors?.cpu, let snapshot {
+                        TemperatureChip(text: celsius.temperatureText(temperatureUnit), state: snapshot.thermalState)
+                    }
+                }
                 RingCard(title: "Memory", symbol: "memorychip", color: Theme.metricMemory, unit: "used",
                          fraction: snapshot?.memory?.fraction, footnote: memoryFootnote) {
                     if let pressure = snapshot?.memory?.pressure { PressureChip(pressure: pressure) }
@@ -23,7 +28,7 @@ struct OverviewTab: View {
             if SystemInfo.hasBattery {
                 BatteryStrip(battery: snapshot?.battery)
             } else {
-                ThermalStrip(state: snapshot?.thermalState)
+                ThermalStrip(state: snapshot?.thermalState, fanRPM: snapshot?.sensors?.fanRPM)
             }
         }
     }
@@ -90,6 +95,20 @@ private struct RingCard<Accessory: View>: View {
         .frame(height: 152)
         .card()
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// CPU temperature; it turns amber and red with macOS's own thermal state rather than a fixed threshold.
+private struct TemperatureChip: View {
+    let text: String
+    let state: ProcessInfo.ThermalState
+
+    var body: some View {
+        switch state {
+        case .fair: Chip(title: Text(text), symbol: "thermometer.medium", kind: .warning)
+        case .serious, .critical: Chip(title: Text(text), symbol: "thermometer.high", kind: .danger)
+        default: Chip(title: Text(text), symbol: "thermometer.medium", kind: .neutral)
+        }
     }
 }
 
@@ -294,6 +313,8 @@ struct BatteryStatusText: View {
 /// Shown instead of the battery strip on a Mac without a battery.
 private struct ThermalStrip: View {
     let state: ProcessInfo.ThermalState?
+    /// `nil` while the SMC is unreadable; empty on a fanless Mac.
+    let fanRPM: [Double]?
 
     var body: some View {
         HStack(spacing: 14) {
@@ -312,6 +333,16 @@ private struct ThermalStrip: View {
                 Text("Thermal state").font(Theme.footnote).foregroundStyle(Theme.textSecondary)
             }
             Spacer(minLength: 0)
+            if let fanRPM {
+                VStack(alignment: .trailing, spacing: 2) {
+                    if let fastest = fanRPM.max() {
+                        Text(fastest.rpmText).font(Theme.metricM).foregroundStyle(Theme.textPrimary).monospacedDigit()
+                        Text("Fan").font(Theme.footnote).foregroundStyle(Theme.textSecondary)
+                    } else {
+                        Text("No fan").font(Theme.label).foregroundStyle(Theme.textSecondary)
+                    }
+                }
+            }
         }
         .padding(.horizontal, Theme.spaceXL)
         .frame(height: 68)

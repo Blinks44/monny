@@ -5,6 +5,8 @@ import SwiftUI
 struct BatteryTab: View {
     let battery: BatteryReading?
     let health: BatteryHealth?
+    /// °C from the SMC.
+    let temperature: Double?
     let openSensors: () -> Void
 
     var body: some View {
@@ -23,7 +25,7 @@ struct BatteryTab: View {
                     } else {
                         UnavailableValue(font: Theme.display)
                     }
-                    BatteryFacts(battery: battery, health: health)
+                    BatteryFacts(battery: battery, health: health, temperature: temperature)
                         .font(Theme.footnote)
                         .foregroundStyle(Theme.textSecondary)
                 }
@@ -48,18 +50,20 @@ struct BatteryTab: View {
     }
 }
 
-/// "Health 97% · 96 cycles", leaving out what macOS does not report.
+/// "Health 97% · 96 cycles · 32 °C", leaving out what macOS does not report.
 private struct BatteryFacts: View {
     let battery: BatteryReading?
     let health: BatteryHealth?
+    let temperature: Double?
+    @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
 
     var body: some View {
-        switch (health?.maximumCapacity, battery?.cycleCount) {
-        case let (capacity?, cycles?): Text("Health \(capacity.percentText) · \(cycles) cycles")
-        case let (capacity?, nil): Text("Health \(capacity.percentText)")
-        case let (nil, cycles?): Text("\(cycles) cycles")
-        case (nil, nil): Text(verbatim: " ")
-        }
+        let facts = [
+            health.map { String(localized: "Health \($0.maximumCapacity.percentText)") },
+            battery?.cycleCount.map { String(localized: "\($0) cycles") },
+            temperature?.temperatureText(temperatureUnit),
+        ].compactMap(\.self)
+        Text(verbatim: facts.isEmpty ? " " : facts.joined(separator: " · "))
     }
 }
 

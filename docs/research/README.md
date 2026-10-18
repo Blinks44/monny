@@ -23,7 +23,16 @@ Researched 2026-10-18 on a MacBook Pro M1 Max (2 E + 8 P cores) running macOS 27
 | Top processes | `proc_listallpids` + `proc_pid_rusage(RUSAGE_INFO_V6)` (public libproc) | CPU % = CPU-time delta ÷ wall time (100 % = one core, as in Activity Monitor); memory = `ri_phys_footprint` | Other users' processes are hidden for an unprivileged app, as in Activity Monitor without admin | |
 | Energy per process | `ri_energy_nj` delta from `rusage_info_v6` (public libproc) | Average watts over the interval; the kernel's estimate, not Activity Monitor's "Energy Impact" | Labelled as an estimate. `ri_billed_energy` gave implausible values (µW at a full core) | Rebind ≈ 3 W at 100 % of a core |
 | Network per process | None public (nettop uses private NetworkStatistics) | — | Not shown; SPEC updated | |
-| Temperatures, fans, battery temperature | SMC keys through the `AppleSMC` user client, HID temperature services (`IOHIDEventSystemClient`, private) | °C, rpm | Varies by chip family; private. Reference: exelban/stats (MIT) | Separate task CORE-002 |
+| Temperatures, fans, battery temperature | SMC keys through the `AppleSMC` user client (undocumented layout, no privileges) | °C, rpm | Key lists per chip generation; see below | [verification](../verification/sensors-smc.md) |
+
+### Temperatures and fans (SMC)
+
+Decided 2026-10-18 on the M1 Max ([CORE-002](../tasks/CORE-002-temperatures-fans.md)).
+
+- **Source:** `IOServiceOpen("AppleSMC")` + `IOConnectCallStructMethod` selector 2 with the 80-byte `SMCParamStruct` (read key info, then bytes). Public IOKit calls, undocumented struct and keys. Works without privileges or entitlements with App Sandbox off.
+- **Rejected:** HID temperature services. `IOHIDEventSystemClientCreateSimpleClient` lists the sensors but returns no values; reading them needs the private `IOHIDEventSystemClientCreate`/`IOHIDServiceClientCopyEvent`, and the names ("PMU tdie3") do not say which part is CPU or GPU. `powermetrics` needs root. No maintained Swift SMC package exists (beltex/SMCKit is Intel-era and unmaintained), so the reader is about 100 lines of our own code.
+- **Keys:** CPU and GPU lists per generation (M1–M5) follow exelban/stats `Modules/Sensors/values.swift` at revision 5731455 (MIT; key names only, no code copied). Chip generation comes from `machdep.cpu.brand_string`. Generic: `TH0x` SSD, `TB0T`/`TB1T`/`TB2T` battery, `FNum` and `F<n>Ac` fans. Values are `flt ` (little-endian Float) on Apple silicon; `sp78`/`fpe2`/integers are decoded too.
+- **Limits:** only M1 Max checked. Absent sensors read 0, so values outside 1–150 °C are dropped. Fans read 0 rpm while stopped. Palm rest (`Ts0P`/`Ts1P`) and airflow (`TaLP`/`TaRF`) keys exist on M1 Max but are not used until their meaning is confirmed.
 
 ### History storage (decision)
 

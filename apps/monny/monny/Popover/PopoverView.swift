@@ -22,6 +22,7 @@ struct PopoverView: View {
                 switch model.popoverTab {
                 case .overview: OverviewTab(snapshot: model.sampler.snapshot)
                 case .battery: BatteryTab(battery: model.sampler.snapshot?.battery, health: model.sampler.batteryHealth,
+                                           temperature: model.sampler.snapshot?.sensors?.battery,
                                           openSensors: { model.openDashboard(.sensors) })
                 case .processes: ProcessesTab(sampler: model.sampler)
                 }

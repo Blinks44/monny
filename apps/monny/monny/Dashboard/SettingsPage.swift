@@ -105,9 +105,7 @@ struct SettingsPage: View {
             SettingsRow("Heat protection above") {
                 Picker("Heat protection above", selection: $heatThreshold) {
                     ForEach([30, 35, 40, 45], id: \.self) { celsius in
-                        Text(Measurement(value: Double(celsius), unit: UnitTemperature.celsius)
-                            .formatted(.measurement(width: .narrow, usage: temperatureUnit == .celsius ? .asProvided : .weather)))
-                            .tag(celsius)
+                        Text(Double(celsius).temperatureText(temperatureUnit)).tag(celsius)
                     }
                 }
             }

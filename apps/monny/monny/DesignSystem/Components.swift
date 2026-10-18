@@ -46,9 +46,20 @@ private struct SpacedLabelStyle: LabelStyle {
 struct Chip: View {
     enum Kind { case success, warning, danger, info, neutral, memory }
 
-    let title: LocalizedStringKey
+    let title: Text
     var symbol: String?
     var kind: Kind = .neutral
+
+    init(title: LocalizedStringKey, symbol: String? = nil, kind: Kind = .neutral) {
+        self.init(title: Text(title), symbol: symbol, kind: kind)
+    }
+
+    /// For a formatted value such as a temperature.
+    init(title: Text, symbol: String? = nil, kind: Kind = .neutral) {
+        self.title = title
+        self.symbol = symbol
+        self.kind = kind
+    }
 
     private var colors: (text: Color, fill: Color) {
         switch kind {
@@ -64,7 +75,7 @@ struct Chip: View {
     var body: some View {
         HStack(spacing: 4) {
             if let symbol { Image(systemName: symbol).accessibilityHidden(true) }
-            Text(title)
+            title
         }
         .font(Theme.footnote.weight(.semibold))
         .foregroundStyle(colors.text)

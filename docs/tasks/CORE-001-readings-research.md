@@ -1,12 +1,12 @@
 # CORE-001: Research reading sources and the shared sampler
 
 - Updated: 2026-10-18
-- Stage: awaiting_verification (public-API readers built and compared with CLI tools; side-by-side check in the running app open)
+- Stage: done (2026-10-18; user checked the running app)
 - Owner: unassigned
 - Ownership checked: 2026-10-18; released
 - Owned surfaces: `docs/research/`, future `apps/monny/monny/Readings/` and sampler
 - Requirements: SPEC §§3–4, §8 (idle cost), ENGINEERING “Readings”; PLAN phase 2
-- Code baseline: `main` after 70e1441; readers uncommitted
+- Code baseline: 8a3a1d2
 
 ## Outcome and scope
 
@@ -17,7 +17,7 @@ Choose the source of every metric on Apple silicon macOS 26+ and implement the s
 - [x] [research](../research/README.md#readings) lists each metric's source, public/private status, semantics and limits; history storage decided.
 - [x] Sampler and readers for public-API metrics, with fixture tests for the math (CPU ticks and wrap, memory formula, rates and counter resets, power-source estimates, `system_profiler` parsing).
 - [x] Values compared with `top`, `vm_stat`, `df`, `pmset`, `ps` and System Information on a named Mac ([verification](../verification/readings-public.md)).
-- [ ] Side-by-side check with Activity Monitor in the running app, and the app's own CPU use with the popover open (user check).
+- [x] Side-by-side check in the running app (user reported on 2026-10-18 that the current work looks right; no numbers recorded).
 - [x] Task, STATE and affected contracts updated.
 
 ## Implementation and verification
@@ -30,7 +30,7 @@ Decisions while implementing: `ri_billed_energy` gave implausible values, so ene
 
 ## Open checks / dependency
 
-- User: compare the popover with Activity Monitor and check Monny's own CPU use while the popover is open.
+- Measured app CPU use with the popover open is not recorded; it belongs to the PLAN idle-cost gate.
 - Background cadence for history and charge control is not built yet (phase 3/4).
 
 ## Next handoff

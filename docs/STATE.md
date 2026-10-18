@@ -1,6 +1,6 @@
 # Monny: current state
 
-Updated **2026-10-18**. Baseline: `main` with the APP-001 shell plus uncommitted CORE-001 readers. No battery control yet.
+Updated **2026-10-18**. Baseline: `main` with CORE-002 sensors committed. No battery control yet.
 
 ## Product and baseline
 
@@ -11,13 +11,14 @@ Contracts: [WORKFLOW](WORKFLOW.md), [PLAN](PLAN.md), [SPEC](SPEC.md), [DESIGN](D
 ## What already exists
 
 - Xcode project in `apps/monny/` with Monny settings, the app icon (`AppIcon.icon`), a shared scheme, `scripts/dev.sh` and a hosted Swift Testing target (3 tests).
-- App shell ([APP-001](tasks/APP-001-foundations.md)): status item with popover and right-click menu, dashboard window with sidebar and Settings, Sketch tokens and shared components, six-language String Catalog. Public-API readings (CPU, memory, disk, network, battery, processes) are live; temperatures and fans wait for CORE-002.
+- App shell ([APP-001](tasks/APP-001-foundations.md)): status item with popover and right-click menu, dashboard window with sidebar and Settings, Sketch tokens and shared components, six-language String Catalog. Public-API readings (CPU, memory, disk, network, battery, processes) are live ([CORE-001](tasks/CORE-001-readings-research.md)); CPU/GPU/SSD/battery temperatures and fans come from the SMC ([CORE-002](tasks/CORE-002-temperatures-fans.md)).
 - Monny.sketch with popover, dashboard, settings, onboarding, calibration, menu bar/notification and foundations pages, including empty, unavailable, no-battery and error states ([DESIGN](DESIGN.md)).
 - Agent workflow (AGENTS, CLAUDE.md adapter, docs) and 14 reviewed project skills ([manifest](../.agents/skills/manifest.json)).
 - `apps/website/` is reserved; work starts after the app.
 
 ## Recent changes
 
+- **2026-10-18:** CORE-002: SMC temperatures and fans read without privileges, shown in the CPU chip, Battery tab, Temperature KPI and no-battery strip; checked under load on M1 Max ([verification](verification/sensors-smc.md)). CORE-001 closed after the user's check.
 - **2026-10-18:** CORE-001: sources researched, shared sampler and public-API readers built, compared with system tools ([verification](verification/readings-public.md)).
 - **2026-10-18:** APP-001 shell done: built, tested, and the user confirmed that it works in the running app ([APP-001](tasks/APP-001-foundations.md)).
 - **2026-10-18:** Design complete for the first release. Monny.sketch now has every SPEC state (first launch, unavailable sensors, Mac without a battery, Settings errors, update available, uninstall confirmation, onboarding without the helper). The app icon is wired via Icon Composer and shown in README. Decisions: click-only popover, Apple silicon only ([DES-001](tasks/DES-001-missing-states.md)).
@@ -25,15 +26,14 @@ Contracts: [WORKFLOW](WORKFLOW.md), [PLAN](PLAN.md), [SPEC](SPEC.md), [DESIGN](D
 
 ## Open work / next steps
 
-- **Next (user):** compare the popover with Activity Monitor ([CORE-001](tasks/CORE-001-readings-research.md)).
-- **Next (engineering):** [Temperatures and fans](tasks/CORE-002-temperatures-fans.md), then phase 3 history and charts.
+- **Next (user):** compare CPU/GPU temperatures with Stats or iStat Menus and watch the fan speed under heavy load ([CORE-002](tasks/CORE-002-temperatures-fans.md)).
+- **Next (engineering):** phase 3 history storage and charts, then the Sensors page from Sketch.
 - **Design:** complete for the first release ([DES-001](tasks/DES-001-missing-states.md)).
 - **Open product decisions:** [SPEC §9](SPEC.md#9-open-product-decisions).
 
 | Task | Stage | Owner | Concrete next step |
 | --- | --- | --- | --- |
-| [CORE-001](tasks/CORE-001-readings-research.md) | awaiting_verification | Unassigned | User compares the popover with Activity Monitor. |
-| [CORE-002](tasks/CORE-002-temperatures-fans.md) | planned | Unassigned | Research SMC/HID sensor sources on the M1 Max. |
+| [CORE-002](tasks/CORE-002-temperatures-fans.md) | awaiting_verification | Unassigned | User compares temperatures with a reference tool. |
 | [DES-001](tasks/DES-001-missing-states.md) | ready_for_implementation | Unassigned | Implement the drawn states with their screens in phases 3–4. |
 
 Release gates are listed in [PLAN](PLAN.md).

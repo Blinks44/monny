@@ -8,6 +8,7 @@ nonisolated struct Snapshot: Sendable {
     var disk: DiskUsage?
     var network: NetworkRates?
     var battery: BatteryReading?
+    var sensors: SensorReading?
     var thermalState: ProcessInfo.ThermalState
     var processes: [ProcessUsage]
 }
@@ -20,6 +21,7 @@ actor ReadingSource {
     private var processes = ProcessReader()
     private let memory = MemoryReader()
     private let power = PowerReader()
+    private let sensors = SensorReader()
     private let signposter = OSSignposter(subsystem: "blinks44.monny", category: "Sampler")
 
     /// Process enumeration is most of a pass's cost, so it runs only while a process list is shown.
@@ -27,7 +29,7 @@ actor ReadingSource {
         let state = signposter.beginInterval("Sample")
         defer { signposter.endInterval("Sample", state) }
         return Snapshot(cpu: cpu.read(), memory: memory.read(), disk: disk.read(), network: network.read(),
-                        battery: power.read(), thermalState: ProcessInfo.processInfo.thermalState,
+                        battery: power.read(), sensors: sensors.read(), thermalState: ProcessInfo.processInfo.thermalState,
                         processes: includeProcesses ? processes.read() : [])
     }
 }

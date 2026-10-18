@@ -10,6 +10,18 @@ extension Double {
         let bytes = Int64(self).formatted(.byteCount(style: .file, spellsOutZero: false))
         return String(localized: "\(bytes)/s", comment: "A transfer rate, for example 2.4 MB/s")
     }
+
+    /// °C → "54 °C" or "130 °F" in the unit chosen in Settings, whatever the locale prefers.
+    func temperatureText(_ unit: TemperatureUnit) -> String {
+        Measurement(value: self, unit: UnitTemperature.celsius)
+            .converted(to: unit == .celsius ? .celsius : .fahrenheit)
+            .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0))))
+    }
+
+    /// Fan speed → "1,500 rpm".
+    var rpmText: String {
+        String(localized: "\(Int(rounded()).formatted()) rpm", comment: "Fan speed in revolutions per minute")
+    }
 }
 
 extension Int64 {

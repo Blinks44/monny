@@ -4,6 +4,7 @@ import SwiftUI
 /// (CORE-001) values are unavailable and the charts show the first-launch state.
 struct OverviewPage: View {
     let snapshot: Snapshot?
+    @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
 
     var body: some View {
         VStack(spacing: Theme.spaceL) {
@@ -15,7 +16,9 @@ struct OverviewPage: View {
                             memory.swapUsed > 0 ? Text("of \(memory.total.memoryText) · swap \(memory.swapUsed.memoryText)")
                                 : Text("of \(memory.total.memoryText)")
                         })
-                KPICard(title: "Temperature", symbol: "thermometer.medium", color: Theme.metricHeat, value: nil, detail: nil)
+                KPICard(title: "Temperature", symbol: "thermometer.medium", color: Theme.metricHeat,
+                        value: snapshot?.sensors?.cpu?.temperatureText(temperatureUnit),
+                        detail: snapshot?.sensors?.gpu.map { Text("GPU \($0.temperatureText(temperatureUnit))") })
                 if SystemInfo.hasBattery {
                     KPICard(title: "Battery", symbol: "battery.100percent", color: Theme.metricBattery,
                             value: snapshot?.battery?.level.percentText,

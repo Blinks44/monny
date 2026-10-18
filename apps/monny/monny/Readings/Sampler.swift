@@ -35,14 +35,15 @@ actor ReadingSource {
 }
 
 /// The one shared sampler. It reads at the user's refresh rate while the popover or the
-/// dashboard is visible and stops otherwise; history and charge control will add a slower
-/// background cadence when they exist.
+/// dashboard is visible and every 10 s otherwise, which is what history needs (its 1 h tier
+/// has 10 s buckets). Every pass is recorded in `history`.
 @Observable
 final class Sampler {
     enum Surface: Hashable { case popover, dashboard }
 
     private(set) var snapshot: Snapshot?
     private(set) var batteryHealth: BatteryHealth?
+    let history = History()
 
     @ObservationIgnored private let source = ReadingSource()
     @ObservationIgnored private var task: Task<Void, Never>?
@@ -51,31 +52,38 @@ final class Sampler {
     /// Set while a process list is on screen.
     @ObservationIgnored var showsProcesses = false
 
-    func setVisible(_ surface: Surface, _ isVisible: Bool) {
-        if isVisible { visible.insert(surface) } else { visible.remove(surface) }
-        if visible.isEmpty { stop() } else { start() }
+    /// Starts background sampling; called once at launch.
+    func start() {
+        guard task == nil else { return }
+        restart(primed: false)
     }
 
-    private func start() {
-        guard task == nil else { return }
-        refreshHealthIfNeeded()
+    func setVisible(_ surface: Surface, _ isVisible: Bool) {
+        let wasVisible = !visible.isEmpty
+        if isVisible { visible.insert(surface) } else { visible.remove(surface) }
+        // Becoming visible must not wait for the rest of a 10 s background pause.
+        if !visible.isEmpty, !wasVisible { restart(primed: true) }
+    }
+
+    private func restart(primed: Bool) {
+        task?.cancel()
+        if !visible.isEmpty { refreshHealthIfNeeded() }
         task = Task { [weak self, source] in
-            // The first pass only primes the delta counters (CPU ticks, bytes, process times).
-            _ = await source.sample(includeProcesses: self?.showsProcesses ?? false)
-            try? await Task.sleep(for: .milliseconds(500))
+            if !primed {
+                // The first pass only primes the delta counters (CPU ticks, bytes, process times).
+                _ = await source.sample(includeProcesses: false)
+                try? await Task.sleep(for: .milliseconds(500))
+            }
             while !Task.isCancelled {
-                let snapshot = await source.sample(includeProcesses: self?.showsProcesses ?? false)
+                guard let isVisible = self.map({ !$0.visible.isEmpty }) else { return }
+                let snapshot = await source.sample(includeProcesses: isVisible && self?.showsProcesses == true)
                 guard let self, !Task.isCancelled else { return }
                 self.snapshot = snapshot
-                let interval = max(UserDefaults.standard.integer(forKey: PreferenceKey.refreshInterval), 1)
-                try? await Task.sleep(for: .seconds(interval))
+                history.record(snapshot)
+                let refresh = max(UserDefaults.standard.integer(forKey: PreferenceKey.refreshInterval), 1)
+                try? await Task.sleep(for: .seconds(isVisible ? refresh : 10))
             }
         }
-    }
-
-    private func stop() {
-        task?.cancel()
-        task = nil
     }
 
     /// Battery health changes over weeks; read it at most every six hours.

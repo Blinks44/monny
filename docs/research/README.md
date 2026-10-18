@@ -36,7 +36,7 @@ Decided 2026-10-18 on the M1 Max ([CORE-002](../tasks/CORE-002-temperatures-fans
 
 ### History storage (decision)
 
-In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 1h = 10 s averages (360), 24h = 1 min (1 440), 7d = 10 min (1 008). Only the 24h and 7d tiers are persisted: about 12 metrics × 2 448 points × 8 bytes ≈ 235 KB, written as a binary property list in Application Support every 5 minutes and at quit. SwiftData/SQLite were rejected as heavier than the need (fixed-size series, no queries). Implemented with the phase 3 charts.
+In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 1h = 10 s averages (360), 24h = 1 min (1 440), 7d = 10 min (1 008). Only the 24h and 7d tiers are persisted: about 12 metrics × 2 448 points × 8 bytes ≈ 235 KB, written as a binary property list in Application Support every 5 minutes and at quit. SwiftData/SQLite were rejected as heavier than the need (fixed-size series, no queries). Implemented 2026-10-18 with 1 s buckets for the 1m tier (refresh can be 1 s) and a 10 s background cadence ([CORE-003](../tasks/CORE-003-history.md)).
 
 ## Battery control
 

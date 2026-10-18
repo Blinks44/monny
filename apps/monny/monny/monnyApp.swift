@@ -41,11 +41,20 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
         model.closePopover = { [weak menuBar] in menuBar?.closePopover() }
         model.openDashboard = { [weak self] page in self?.openDashboard(page) }
         applyAppearance()
+        Task { [model] in
+            await model.sampler.history.load()
+            model.sampler.start()
+        }
 
         let center = NotificationCenter.default
         center.addObserver(self, selector: #selector(windowDidOpen), name: NSWindow.didBecomeMainNotification, object: nil)
         center.addObserver(self, selector: #selector(windowWillClose), name: NSWindow.willCloseNotification, object: nil)
         center.addObserver(self, selector: #selector(applyAppearance), name: UserDefaults.didChangeNotification, object: nil)
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        guard !Self.runningTests else { return }
+        model.sampler.history.save(synchronously: true)
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }

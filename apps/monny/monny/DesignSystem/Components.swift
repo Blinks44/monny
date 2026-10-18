@@ -1,4 +1,5 @@
 import AppKit
+import Charts
 import SwiftUI
 
 /// The white rounded card used by every popover and window section.
@@ -428,3 +429,49 @@ struct BehindWindowBlur: NSViewRepresentable {
     }
 }
 
+// MARK: - Charts
+
+/// One series of a sparkline: a line in its metric color, optionally with a soft area below.
+struct SparklineSeries: Identifiable {
+    let id: String
+    let points: [(date: Date, value: Double)]
+    let color: Color
+    var filled = false
+}
+
+/// Axis-less mini chart shared by the cards (`Card · Network` in Sketch). The series share one
+/// y scale; the newest point of the first series gets a live dot. Fewer than two points draw
+/// nothing, so a fresh history never shows a flat zero line.
+struct Sparkline: View {
+    let series: [SparklineSeries]
+
+    var body: some View {
+        Chart {
+            ForEach(series) { series in
+                ForEach(Array(series.points.enumerated()), id: \.offset) { _, point in
+                    if series.filled {
+                        AreaMark(x: .value("Time", point.date), y: .value("Value", point.value), series: .value("Series", series.id))
+                            .foregroundStyle(LinearGradient(colors: [series.color.opacity(0.3), series.color.opacity(0)],
+                                                            startPoint: .top, endPoint: .bottom))
+                            .interpolationMethod(.catmullRom)
+                    }
+                    LineMark(x: .value("Time", point.date), y: .value("Value", point.value), series: .value("Series", series.id))
+                        .foregroundStyle(series.color)
+                        .lineStyle(StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
+                        .interpolationMethod(.catmullRom)
+                }
+            }
+            if let first = series.first, first.points.count > 1, let last = first.points.last {
+                PointMark(x: .value("Time", last.date), y: .value("Value", last.value))
+                    .symbolSize(40)
+                    .foregroundStyle(first.color)
+            }
+        }
+        .chartXAxis(.hidden)
+        .chartYAxis(.hidden)
+        .chartLegend(.hidden)
+        .chartYScale(domain: 0...max(series.flatMap { $0.points.map(\.value) }.max() ?? 1, 1))
+        .opacity(series.contains { $0.points.count > 1 } ? 1 : 0)
+        .accessibilityHidden(true)
+    }
+}

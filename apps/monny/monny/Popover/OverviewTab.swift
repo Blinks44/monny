@@ -1,9 +1,9 @@
 import SwiftUI
 
 /// Popover Overview: CPU, memory, disk, network, cores and the battery (or thermal) strip.
-/// The network sparkline arrives with history (phase 3).
 struct OverviewTab: View {
     let snapshot: Snapshot?
+    let history: History
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
 
     var body: some View {
@@ -22,7 +22,7 @@ struct OverviewTab: View {
             }
             HStack(spacing: Theme.spaceM) {
                 DiskCard(disk: snapshot?.disk)
-                NetworkCard(network: snapshot?.network)
+                NetworkCard(network: snapshot?.network, history: history.minute)
             }
             CoresCard(cpu: snapshot?.cpu)
             if SystemInfo.hasBattery {
@@ -157,6 +157,8 @@ private struct DiskCard: View {
 
 private struct NetworkCard: View {
     let network: NetworkRates?
+    /// The last minute, for the sparkline.
+    let history: HistoryTier
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -167,6 +169,11 @@ private struct NetworkCard: View {
             rate(network?.upload, symbol: "arrow.up", color: Theme.metricUpload, font: Theme.bodyEmphasized)
                 .accessibilityLabel(Text("Upload"))
             Spacer(minLength: 0)
+            Sparkline(series: [
+                SparklineSeries(id: "download", points: history.series(.download), color: Theme.metricNetwork, filled: true),
+                SparklineSeries(id: "upload", points: history.series(.upload), color: Theme.metricUpload),
+            ])
+            .frame(height: 42)
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)

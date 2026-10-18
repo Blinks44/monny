@@ -1,11 +1,11 @@
 # APP-003: Working Settings, alerts and app language
 
 - Updated: 2026-10-18
-- Stage: awaiting_verification (user checks: global shortcut from another app, a real notification)
+- Stage: awaiting_verification (user check: a real notification)
 - Owner: unassigned
 - Owned surfaces: `App/Alerts.swift`, `App/UpdateChecker.swift`, `App/Preferences.swift` (shortcut name, `AppLanguage`), `Dashboard/SettingsPage.swift`, `AppModel.start()`, `Sampler.onSample`, Settings frames in Monny.sketch (General section)
 - Requirements: SPEC §2 (badge, global shortcut), §7 (General, Menu bar, Notifications, About); phase 3
-- Code baseline: `main` at 404338b, uncommitted
+- Code baseline: `main`, committed in 4a69d9d
 
 ## Outcome and scope
 
@@ -18,7 +18,8 @@ Settings controls that do not depend on the battery helper now work: notificatio
 - [x] Global shortcut (default ⌥⌘M) recorded in Settings; the menu item and popover footer show the current shortcut.
 - [x] Check for Updates queries the latest GitHub release on request only; states idle / checking / up to date / available (Download… opens the release page) / failed (offline variant), as in Sketch frames 08, 12, 13.
 - [x] Language: System or one of the six languages, stored as `AppleLanguages` in Monny's domain; a Restart row appears when the choice differs from the running language. Language row added to all eight Settings frames in Sketch.
-- [ ] User: the shortcut opens the dashboard from another app; a notification appears (for example with Battery below 20% on, or under heavy load).
+- [x] User: the global shortcut opens the dashboard from another app (user-reported, 2026-10-18).
+- [ ] User: a notification appears (for example with Battery below 20% on, or under heavy load).
 
 ## Sketch source
 
@@ -32,8 +33,8 @@ Monny.sketch, page `02 · Window`, Settings frames 08/12/13/14 Light/Dark: Gener
 - Differences from Sketch: the shortcut is the package's recorder field instead of a popup button; Privacy has no Read policy link until a policy page exists; About subtitle says "You're up to date" without "checked today".
 - Tests: `AlertTests` (heat episodes, low battery only on battery power, pressure re-arm, version comparison). `dev.sh test`: 25 tests pass. `dev.sh build` passes.
 - Agent check of the running Debug build on the M1 Max (macOS 27.0.1): Settings in Russian and English fit; Check for Updates showed up to date (API returned 404); switching the stored language showed the Restart row, Restart relaunched Monny (new process, history saved) in the chosen language. Popup menus cannot be opened in background control, so the picker itself was exercised by writing the same default. Language reset to System afterwards.
-- Not checked by the agent: global hot key from another app, delivered notifications (the hot state cannot be forced safely).
+- Not checked by the agent: delivered notifications (the hot state cannot be forced safely). The user reported that the global shortcut works.
 
 ## Next handoff
 
-User: press ⌥⌘M in another app and turn on a notification to see it arrive. Engineering: SSD health research and idle cost ([CORE-003](CORE-003-history.md)), then phase 4 battery control.
+User: turn on a notification and see it arrive. Engineering: SSD health research and idle cost ([CORE-003](CORE-003-history.md)), then phase 4 battery control.

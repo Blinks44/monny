@@ -13,6 +13,8 @@ struct ReadingMathTests {
         #expect(load.efficiency == 0.2)
         #expect(load.performance == 0.8)
         #expect(load.total == 0.5)
+        #expect(abs(load.system - 0.15) < 1e-9)
+        #expect(abs(load.user - 0.35) < 1e-9)
     }
 
     @Test func cpuTicksSurviveCounterWrap() throws {

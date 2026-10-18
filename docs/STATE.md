@@ -1,6 +1,6 @@
 # Monny: current state
 
-Updated **2026-10-18**. Baseline: `main` with APP-002 popover and CORE-003 history store committed, window Overview charts committed. No battery control yet.
+Updated **2026-10-18**. Baseline: `main` with APP-002 popover and CORE-003 history store committed, window Overview committed, detail pages committed. No battery control yet.
 
 ## Product and baseline
 
@@ -13,6 +13,7 @@ Contracts: [WORKFLOW](WORKFLOW.md), [PLAN](PLAN.md), [SPEC](SPEC.md), [DESIGN](D
 - Xcode project in `apps/monny/` with Monny settings, the app icon (`AppIcon.icon`), a shared scheme, `scripts/dev.sh` and a hosted Swift Testing target (21 tests).
 - App shell ([APP-001](tasks/APP-001-foundations.md)): status item with popover and right-click menu, dashboard window with sidebar and Settings, Sketch tokens and shared components, six-language String Catalog. Public-API readings (CPU, memory, disk, network, battery, processes) are live ([CORE-001](tasks/CORE-001-readings-research.md)); CPU/GPU/SSD/battery temperatures and fans come from the SMC ([CORE-002](tasks/CORE-002-temperatures-fans.md)).
 - Monny.sketch with popover, dashboard, settings, onboarding, calibration, menu bar/notification and foundations pages, including empty, unavailable, no-battery and error states ([DESIGN](DESIGN.md)).
+- Window pages Overview, CPU, Memory, Disk, Network and Sensors draw from the history store ([CORE-003](tasks/CORE-003-history.md)).
 - Agent workflow (AGENTS, CLAUDE.md adapter, docs) and 14 reviewed project skills ([manifest](../.agents/skills/manifest.json)).
 - `apps/website/` is reserved; work starts after the app.
 
@@ -28,14 +29,14 @@ Contracts: [WORKFLOW](WORKFLOW.md), [PLAN](PLAN.md), [SPEC](SPEC.md), [DESIGN](D
 ## Open work / next steps
 
 - **Next (user):** compare CPU/GPU temperatures with Stats or iStat Menus and watch the fan speed under heavy load ([CORE-002](tasks/CORE-002-temperatures-fans.md)).
-- **Next (engineering):** CPU, Memory, Disk, Network and Sensors pages from Sketch on the history store ([CORE-003](tasks/CORE-003-history.md)).
+- **Next (engineering):** SSD health (NVMe SMART) and extra sensor keys research, idle cost measurement; then phase 4 battery control.
 - **Design:** complete for the first release ([DES-001](tasks/DES-001-missing-states.md)).
 - **Open product decisions:** [SPEC §9](SPEC.md#9-open-product-decisions).
 
 | Task | Stage | Owner | Concrete next step |
 | --- | --- | --- | --- |
 | [CORE-002](tasks/CORE-002-temperatures-fans.md) | awaiting_verification | Unassigned | User compares temperatures with a reference tool. |
-| [CORE-003](tasks/CORE-003-history.md) | implementing | Unassigned | Detail pages on the history store. |
+| [CORE-003](tasks/CORE-003-history.md) | implementing | Unassigned | SSD health research and idle cost measurement. |
 | [DES-001](tasks/DES-001-missing-states.md) | ready_for_implementation | Unassigned | Implement the drawn states with their screens in phases 3–4. |
 
 Release gates are listed in [PLAN](PLAN.md).

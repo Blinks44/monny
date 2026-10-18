@@ -18,6 +18,9 @@ extension Double {
             .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0))))
     }
 
+    /// A process's CPU share → "14.2%" (100 % is one core, as in Activity Monitor).
+    var cpuShareText: String { formatted(.percent.precision(.fractionLength(1))) }
+
     /// Fan speed → "1,500 rpm".
     var rpmText: String {
         String(localized: "\(Int(rounded()).formatted()) rpm", comment: "Fan speed in revolutions per minute")

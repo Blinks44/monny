@@ -42,7 +42,8 @@ struct OverviewPage: View {
                 }
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
-                TopProcessesCard(processes: snapshot?.processes ?? [])
+                ProcessListCard("Top processes", columns: ("CPU", "Memory"), processes: snapshot?.processes ?? [],
+                                color: Theme.metricCPU, value: \.cpu, primary: { $0.cpu.cpuShareText }, secondary: { $0.memory.memoryText })
                 SensorsCard(sensors: snapshot?.sensors)
                     .frame(width: 244)
             }
@@ -66,9 +67,10 @@ struct KPICard: View {
     let color: Color
     let value: String?
     let detail: Text?
-    let points: [(date: Date, value: Double)]
+    /// `nil` for a value without history (no sparkline).
+    let points: [(date: Date, value: Double)]?
     /// The sparkline's y range; `nil` fits the values with some room.
-    let domain: ClosedRange<Double>?
+    var domain: ClosedRange<Double>?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -80,24 +82,24 @@ struct KPICard: View {
             }
             detail?.font(Theme.footnote).foregroundStyle(Theme.textSecondary).lineLimit(1)
             Spacer(minLength: 0)
-            if points.count > 1 {
+            if let points, points.count > 1 {
                 Sparkline(series: [SparklineSeries(id: "value", points: points, color: color, filled: true)],
                           domain: domain ?? fittedDomain, showsLiveDot: false)
                     .frame(height: 24)
-            } else {
+            } else if points != nil {
                 Text("Collecting history…").font(Theme.footnote).foregroundStyle(Theme.textTertiary)
                 Capsule().fill(Theme.fillTrack).frame(height: 4)
             }
         }
         .padding(Theme.spaceXL)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(height: 116)
+        .frame(height: 116, alignment: .top)
         .card()
         .accessibilityElement(children: .combine)
     }
 
     private var fittedDomain: ClosedRange<Double> {
-        let values = points.map(\.value)
+        let values = (points ?? []).map(\.value)
         let low = values.min() ?? 0, high = values.max() ?? 1
         let room = max((high - low) * 0.25, 1)
         return (low - room)...(high + room)
@@ -188,114 +190,6 @@ private struct BatteryDayCard: View {
         case .onAdapter: Chip(title: "On adapter", symbol: "powerplug.fill", kind: .neutral)
         case .onBattery: Chip(title: "On battery", symbol: "battery.75percent", kind: .neutral)
         }
-    }
-}
-
-/// A label and a value with a hairline below (battery facts).
-private struct FactRow: View {
-    let title: LocalizedStringKey
-    let value: Text?
-    var isLast = false
-
-    var body: some View {
-        HStack {
-            Text(title).foregroundStyle(Theme.textSecondary)
-            Spacer(minLength: Theme.spaceM)
-            if let value {
-                value.font(Theme.body.weight(.medium)).foregroundStyle(Theme.textPrimary).monospacedDigit()
-                    .lineLimit(1).minimumScaleFactor(0.8)
-            } else {
-                UnavailableValue(font: Theme.body)
-            }
-        }
-        .font(Theme.body)
-        .frame(height: 32)
-        .overlay(alignment: .bottom) {
-            if !isLast { Theme.fillSeparator.frame(height: 1) }
-        }
-        .accessibilityElement(children: .combine)
-    }
-}
-
-/// The four busiest processes by CPU, with memory (`Card · Processes`).
-private struct TopProcessesCard: View {
-    let processes: [ProcessUsage]
-
-    private var top: [ProcessUsage] { Array(processes.sorted { $0.cpu > $1.cpu }.prefix(4)) }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text("Top processes").font(Theme.headline).foregroundStyle(Theme.textPrimary)
-                    .accessibilityAddTraits(.isHeader)
-                Spacer()
-                Group {
-                    Text("CPU").frame(width: 56, alignment: .trailing)
-                    Text("Memory").frame(width: 80, alignment: .trailing)
-                }
-                .font(Theme.caption)
-                .foregroundStyle(Theme.textTertiary)
-            }
-            .padding(.bottom, 10)
-            let top = top
-            if top.isEmpty {
-                Text("No readings yet").font(Theme.body).foregroundStyle(Theme.textTertiary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                let peak = top.first?.cpu ?? 0
-                ForEach(top) { process in
-                    TopProcessRow(process: process, share: peak > 0 ? process.cpu / peak : nil)
-                }
-                Spacer(minLength: 0)
-            }
-        }
-        .padding(.horizontal, 18)
-        .padding(.top, 16)
-        .padding(.bottom, 8)
-        .frame(maxWidth: .infinity)
-        .frame(height: 176)
-        .card()
-    }
-}
-
-private struct TopProcessRow: View {
-    let process: ProcessUsage
-    let share: Double?
-
-    var body: some View {
-        let app = NSRunningApplication(processIdentifier: process.id)
-        HStack(spacing: 10) {
-            Group {
-                if let icon = app?.icon {
-                    Image(nsImage: icon).resizable()
-                } else {
-                    Image(systemName: "gearshape.fill").font(.system(size: 11)).foregroundStyle(Theme.textTertiary)
-                        .frame(width: 24, height: 24)
-                        .background(Theme.fillTrack, in: .rect(cornerRadius: 7, style: .continuous))
-                }
-            }
-            .frame(width: 24, height: 24)
-            .accessibilityHidden(true)
-            Text(app?.localizedName ?? process.name)
-                .font(Theme.body.weight(.medium))
-                .foregroundStyle(Theme.textPrimary)
-                .lineLimit(1)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            CapsuleBar(fraction: share, color: Theme.metricCPU, height: 6)
-                .frame(width: 130)
-                .accessibilityHidden(true)
-            Text(process.cpu.formatted(.percent.precision(.fractionLength(1))))
-                .font(Theme.bodyEmphasized.weight(.bold))
-                .foregroundStyle(Theme.textPrimary)
-                .frame(width: 56, alignment: .trailing)
-            Text(process.memory.memoryText)
-                .font(Theme.label.weight(.regular))
-                .foregroundStyle(Theme.textSecondary)
-                .frame(width: 80, alignment: .trailing)
-        }
-        .monospacedDigit()
-        .frame(height: 32)
-        .accessibilityElement(children: .combine)
     }
 }
 

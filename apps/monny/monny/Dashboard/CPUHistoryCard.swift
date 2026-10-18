@@ -72,7 +72,7 @@ struct CPUHistoryCard: View {
             }
             ForEach(Array(efficiency.enumerated()), id: \.offset) { _, point in
                 AreaMark(x: .value("Time", point.date), y: .value("Load", point.value), series: .value("Series", "E"))
-                    .foregroundStyle(Theme.metricCPUEfficiency.opacity(0.35))
+                    .foregroundStyle(Theme.metricCPUEfficiency.opacity(0.2))
                     .interpolationMethod(.monotone)
                 LineMark(x: .value("Time", point.date), y: .value("Load", point.value), series: .value("Series", "E"))
                     .foregroundStyle(Theme.metricCPUEfficiency)

@@ -9,6 +9,8 @@ nonisolated struct SensorReading: Sendable, Equatable {
     var battery: Double?
     /// One speed per fan in rpm, empty on a fanless Mac. 0 means stopped, which is normal at low load.
     var fanRPM: [Double]
+    /// Each fan's maximum rpm (`F<n>Mx`), when the SMC reports it.
+    var fanMaxRPM: [Double] = []
 }
 
 /// SMC temperature keys per Apple silicon generation. The keys are undocumented; the lists follow
@@ -74,6 +76,7 @@ nonisolated final class SensorReader {
             gpu: generation.flatMap { temperature(SensorKeys.gpu(generation: $0)) },
             ssd: temperature(SensorKeys.ssd),
             battery: temperature(SensorKeys.battery),
-            fanRPM: fans)
+            fanRPM: fans,
+            fanMaxRPM: (0..<fanCount).compactMap { smc.read("F\($0)Mx")?.number }.filter { $0 > 0 })
     }
 }

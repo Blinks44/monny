@@ -23,6 +23,17 @@ Researched 2026-10-18 on a MacBook Pro M1 Max (2 E + 8 P cores) running macOS 27
 | Top processes | `proc_listallpids` + `proc_pid_rusage(RUSAGE_INFO_V6)` (public libproc) | CPU % = CPU-time delta ÷ wall time (100 % = one core, as in Activity Monitor); memory = `ri_phys_footprint` | Other users' processes are hidden for an unprivileged app, as in Activity Monitor without admin | |
 | Energy per process | `ri_energy_nj` delta from `rusage_info_v6` (public libproc) | Average watts over the interval; the kernel's estimate, not Activity Monitor's "Energy Impact" | Labelled as an estimate. `ri_billed_energy` gave implausible values (µW at a full core) | Rebind ≈ 3 W at 100 % of a core |
 | Network per process | None public (nettop uses private NetworkStatistics) | — | Not shown; SPEC updated | |
+| CPU user/system | Same ticks as CPU total | System = system ticks ÷ all; user = busy − system | — | Unit test |
+| Load average | `getloadavg` (public libc) | Runnable threads over 1/5/15 min | — | `sysctl vm.loadavg` |
+| GPU utilization, cores | `IOAccelerator` registry: `PerformanceStatistics."Device Utilization %"`, `gpu-core-count` (public registry) | Percent of the last interval; core count | M1 Max: 32 cores | `ioreg -rc IOAccelerator` |
+| CPU frequency | None public: `powermetrics` needs root, IOReport is private | — | Shown as unavailable | |
+| Memory composition, pressure % | `vm_statistics64` (app = internal − purgeable, wired, compressor pages, external = cached files, free, purgeable, `total_uncompressed_pages_in_compressor`, `pageins`, `swapins`); `kern.memorystatus_level` (public) | Bytes; pressure = 100 − level; page-ins/s and swap-ins/min as deltas | — | `sysctl kern.memorystatus_level` |
+| Volumes | `FileManager.mountedVolumeURLs(.skipHiddenVolumes)` with volume resource keys (public) | Name, format, internal/network, free/total; refreshed every 30 s with free space | — | Finder |
+| Process disk I/O | `ri_diskio_bytesread/byteswritten` deltas in `rusage_info_v6` (public libproc) | Bytes per second | Own user's processes only | |
+| SSD wear, S.M.A.R.T., lifetime writes; space by category | Not researched yet (NVMe SMART user client; category sizes need a scan or private API) | — | Not shown; Disk page shows SSD temperature and used/free instead | |
+| Connection details | `SCDynamicStore` `State:/Network/Global/IPv4` and `/DNS`, `getifaddrs`, CoreWLAN `rssiValue`, `transmitRate`, `wlanChannel`, `activePHYMode` (public) | Read every 10 s while the Network page is open | The Wi-Fi name needs Location Services and is not shown | `scutil` |
+| Open connections | No cheap public count | — | Not shown | |
+| Fan maximum | SMC `F<n>Mx` | rpm | Same SMC caveats as below | |
 | Temperatures, fans, battery temperature | SMC keys through the `AppleSMC` user client (undocumented layout, no privileges) | °C, rpm | Key lists per chip generation; see below | [verification](../verification/sensors-smc.md) |
 
 ### Temperatures and fans (SMC)

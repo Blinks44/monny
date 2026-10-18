@@ -10,12 +10,15 @@ nonisolated struct ProcessUsage: Sendable, Equatable, Identifiable {
     var power: Double
     /// `nil` when the task info cannot be read.
     var threads: Int?
+    /// Bytes per second read from and written to storage over the interval.
+    var diskRead: Double = 0
+    var diskWrite: Double = 0
 }
 
 /// Per-process CPU time, memory footprint and energy (`ri_energy_nj`, nanojoules) from libproc. Processes of other
 /// users cannot be read by an unprivileged app and are skipped.
 nonisolated struct ProcessReader {
-    private var previous: [pid_t: (cpu: UInt64, energy: UInt64)] = [:]
+    private var previous: [pid_t: (cpu: UInt64, energy: UInt64, read: UInt64, written: UInt64)] = [:]
     private var lastTime: ContinuousClock.Instant?
     private let timebase: mach_timebase_info_data_t = {
         var info = mach_timebase_info_data_t()
@@ -29,7 +32,7 @@ nonisolated struct ProcessReader {
         lastTime = now
         let seconds = elapsed.map { Double($0.components.seconds) + Double($0.components.attoseconds) / 1e18 } ?? 0
 
-        var current: [pid_t: (cpu: UInt64, energy: UInt64)] = [:]
+        var current: [pid_t: (cpu: UInt64, energy: UInt64, read: UInt64, written: UInt64)] = [:]
         var usages: [ProcessUsage] = []
         for pid in Self.allPIDs() where pid > 0 {
             var info = rusage_info_v6()
@@ -39,13 +42,15 @@ nonisolated struct ProcessReader {
             guard result == 0 else { continue }
             // rusage times are Mach absolute time units, not nanoseconds, on Apple silicon.
             let cpu = (info.ri_user_time + info.ri_system_time) * UInt64(timebase.numer) / UInt64(timebase.denom)
-            current[pid] = (cpu, info.ri_energy_nj)
+            current[pid] = (cpu, info.ri_energy_nj, info.ri_diskio_bytesread, info.ri_diskio_byteswritten)
             guard seconds > 0, let old = previous[pid] else { continue }
             let cpuShare = Double(cpu &- old.cpu) / 1e9 / seconds
             let power = Double(info.ri_energy_nj &- old.energy) / 1e9 / seconds
             usages.append(ProcessUsage(id: pid, name: Self.name(of: pid), cpu: max(cpuShare, 0),
                                        memory: Int64(clamping: info.ri_phys_footprint), power: max(power, 0),
-                                       threads: Self.threadCount(of: pid)))
+                                       threads: Self.threadCount(of: pid),
+                                       diskRead: Double(info.ri_diskio_bytesread &- old.read) / seconds,
+                                       diskWrite: Double(info.ri_diskio_byteswritten &- old.written) / seconds))
         }
         previous = current
         return usages

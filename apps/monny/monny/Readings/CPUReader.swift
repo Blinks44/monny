@@ -6,6 +6,9 @@ nonisolated enum CoreKind: Sendable { case performance, efficiency }
 /// CPU load over the last sampling interval. Fractions are 0...1.
 nonisolated struct CPULoad: Sendable, Equatable {
     var total: Double
+    /// User and system shares of the whole CPU (nice counts as user).
+    var user: Double
+    var system: Double
     var performance: Double?
     var efficiency: Double?
     /// One entry per logical CPU, in `logical-cpu-id` order.
@@ -21,6 +24,7 @@ nonisolated struct CPULoad: Sendable, Equatable {
         var busyByKind: [CoreKind: (busy: UInt64, all: UInt64)] = [:]
         var busyTotal: UInt64 = 0
         var allTotal: UInt64 = 0
+        var systemTotal: UInt64 = 0
         for core in 0..<(current.count / states) {
             let base = core * states
             func delta(_ state: Int32) -> UInt64 { UInt64(current[base + Int(state)] &- previous[base + Int(state)]) }
@@ -29,6 +33,7 @@ nonisolated struct CPULoad: Sendable, Equatable {
             cores.append(all == 0 ? 0 : Double(busy) / Double(all))
             busyTotal += busy
             allTotal += all
+            systemTotal += delta(CPU_STATE_SYSTEM)
             if core < kinds.count {
                 let sums = busyByKind[kinds[core], default: (0, 0)]
                 busyByKind[kinds[core]] = (sums.busy + busy, sums.all + all)
@@ -39,6 +44,8 @@ nonisolated struct CPULoad: Sendable, Equatable {
             return Double(sums.busy) / Double(sums.all)
         }
         self.total = allTotal == 0 ? 0 : Double(busyTotal) / Double(allTotal)
+        self.system = allTotal == 0 ? 0 : Double(systemTotal) / Double(allTotal)
+        self.user = self.total - self.system
         self.performance = fraction(busyByKind[.performance])
         self.efficiency = fraction(busyByKind[.efficiency])
         self.cores = cores
@@ -111,5 +118,32 @@ nonisolated enum CoreTopology {
         case let data as Data where data.count >= 4: Int(data.withUnsafeBytes { $0.loadUnaligned(as: UInt32.self) })
         default: nil
         }
+    }
+}
+
+/// The 1, 5 and 15 minute load averages (runnable threads), as `uptime` shows them.
+nonisolated enum LoadAverage {
+    static func read() -> [Double]? {
+        var values = [Double](repeating: 0, count: 3)
+        return getloadavg(&values, 3) == 3 ? values : nil
+    }
+}
+
+/// GPU utilization and core count from the `IOAccelerator` registry entry (public, no privileges).
+nonisolated struct GPUReading: Sendable, Equatable {
+    /// 0...1, "Device Utilization %".
+    var utilization: Double?
+    var cores: Int?
+
+    static func read() -> GPUReading? {
+        let service = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOAccelerator"))
+        guard service != 0 else { return nil }
+        defer { IOObjectRelease(service) }
+        func property(_ key: String) -> Any? {
+            IORegistryEntryCreateCFProperty(service, key as CFString, kCFAllocatorDefault, 0)?.takeRetainedValue()
+        }
+        let statistics = property("PerformanceStatistics") as? [String: Any]
+        let utilization = (statistics?["Device Utilization %"] as? NSNumber).map { $0.doubleValue / 100 }
+        return GPUReading(utilization: utilization, cores: (property("gpu-core-count") as? NSNumber)?.intValue)
     }
 }

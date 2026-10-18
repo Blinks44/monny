@@ -42,6 +42,11 @@ struct DashboardView: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 600)
                 .card()
+        case .cpu: CPUPage(sampler: model.sampler)
+        case .memory: MemoryPage(sampler: model.sampler)
+        case .disk: DiskPage(sampler: model.sampler)
+        case .network: NetworkPage(sampler: model.sampler)
+        case .sensors: SensorsPage(sampler: model.sampler)
         case .settings: SettingsPage()
         default: CollectingHistoryCard()
         }
@@ -85,7 +90,14 @@ private struct PageHeader: View {
             return Text("Version \(Bundle.main.shortVersion) (\(Bundle.main.buildNumber))")
         }
         let memory = SystemInfo.physicalMemory.formatted(.byteCount(style: .memory))
-        return Text(verbatim: "\(SystemInfo.chipName) · \(memory) · macOS \(SystemInfo.osVersion)")
+        switch page {
+        case .cpu:
+            return Text("\(SystemInfo.chipName) · \(SystemInfo.performanceCores) performance + \(SystemInfo.efficiencyCores) efficiency cores")
+        case .memory:
+            return Text("\(memory) unified memory")
+        default:
+            return Text(verbatim: "\(SystemInfo.chipName) · \(memory) · macOS \(SystemInfo.osVersion)")
+        }
     }
 }
 

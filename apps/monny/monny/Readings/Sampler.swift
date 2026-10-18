@@ -11,6 +11,9 @@ nonisolated struct Snapshot: Sendable {
     var sensors: SensorReading?
     var thermalState: ProcessInfo.ThermalState
     var processes: [ProcessUsage]
+    /// 1, 5 and 15 minutes.
+    var loadAverage: [Double]? = nil
+    var gpu: GPUReading? = nil
 }
 
 /// Owns the readers and their previous counters; runs off the main actor.
@@ -19,7 +22,7 @@ actor ReadingSource {
     private var disk = DiskReader()
     private var network = NetworkReader()
     private var processes = ProcessReader()
-    private let memory = MemoryReader()
+    private var memory = MemoryReader()
     private let power = PowerReader()
     private let sensors = SensorReader()
     private let signposter = OSSignposter(subsystem: "blinks44.monny", category: "Sampler")
@@ -30,7 +33,8 @@ actor ReadingSource {
         defer { signposter.endInterval("Sample", state) }
         return Snapshot(cpu: cpu.read(), memory: memory.read(), disk: disk.read(), network: network.read(),
                         battery: power.read(), sensors: sensors.read(), thermalState: ProcessInfo.processInfo.thermalState,
-                        processes: includeProcesses ? processes.read() : [])
+                        processes: includeProcesses ? processes.read() : [],
+                        loadAverage: LoadAverage.read(), gpu: GPUReading.read())
     }
 }
 

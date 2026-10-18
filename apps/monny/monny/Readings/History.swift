@@ -7,7 +7,9 @@ nonisolated private let historyLogger = Logger(subsystem: "blinks44.monny", cate
 /// °C and rpm. `charging` is 1 while charging and 0 otherwise, so a bucket's average is the
 /// share of it spent charging.
 nonisolated enum HistoryMetric: String, CaseIterable, Codable, CodingKeyRepresentable, Sendable {
-    case cpu, cpuPerformance, cpuEfficiency, memory, diskRead, diskWrite, download, upload, battery, charging
+    case cpu, cpuPerformance, cpuEfficiency, loadAverage, gpu
+    case memory, memoryPressure, swap, compressed
+    case diskRead, diskWrite, download, upload, battery, charging
     case cpuTemperature, gpuTemperature, ssdTemperature, batteryTemperature, fan
 
     /// The values of one snapshot; unavailable readings are left out, never stored as zero.
@@ -16,7 +18,12 @@ nonisolated enum HistoryMetric: String, CaseIterable, Codable, CodingKeyRepresen
         values[.cpu] = snapshot.cpu?.total
         values[.cpuPerformance] = snapshot.cpu?.performance
         values[.cpuEfficiency] = snapshot.cpu?.efficiency
+        values[.loadAverage] = snapshot.loadAverage?.first
+        values[.gpu] = snapshot.gpu?.utilization
         values[.memory] = snapshot.memory?.fraction
+        values[.memoryPressure] = snapshot.memory?.pressureLevel
+        values[.swap] = snapshot.memory.map { Double($0.swapUsed) }
+        values[.compressed] = snapshot.memory.map { Double($0.compressed) }
         values[.diskRead] = snapshot.disk?.readRate
         values[.diskWrite] = snapshot.disk?.writeRate
         values[.download] = snapshot.network?.download

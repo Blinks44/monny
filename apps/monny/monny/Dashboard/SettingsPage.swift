@@ -1,7 +1,8 @@
+import KeyboardShortcuts
 import SwiftUI
 
-/// Settings in the dashboard (Sketch `08 · Window · Settings`). Controls that depend on later
-/// phases (global shortcut, battery helper, update check) are shown disabled until they work.
+/// Settings in the dashboard (Sketch `08 · Window · Settings`, `12 · Errors`, `13 · Update available`).
+/// The battery helper status waits for battery control (PLAN phase 4).
 struct SettingsPage: View {
     @AppStorage(PreferenceKey.refreshInterval) private var refreshInterval = 2
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
@@ -16,6 +17,9 @@ struct SettingsPage: View {
     @AppStorage(PreferenceKey.notifyLowBattery) private var notifyLowBattery = false
     @AppStorage(PreferenceKey.notifyMemoryPressure) private var notifyMemoryPressure = false
     @State private var loginItem = LoginItem()
+    @State private var language = AppLanguage.current
+    @State private var updates = UpdateChecker()
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         HStack(alignment: .top, spacing: Theme.spaceL) {
@@ -49,11 +53,29 @@ struct SettingsPage: View {
                     Text("°F Fahrenheit").tag(TemperatureUnit.fahrenheit)
                 }
             }
-            SettingsRow("Appearance", isLast: true) {
+            SettingsRow("Appearance") {
                 Picker("Appearance", selection: $appearance) {
                     Text("System").tag(AppearancePreference.system)
                     Text("Light").tag(AppearancePreference.light)
                     Text("Dark").tag(AppearancePreference.dark)
+                }
+            }
+            SettingsRow("Language", isLast: !language.needsRestart) {
+                Picker("Language", selection: $language) {
+                    ForEach(AppLanguage.allCases) { language in
+                        if let name = language.nativeName {
+                            Text(verbatim: name).tag(language)
+                        } else {
+                            Text("System").tag(language)
+                        }
+                    }
+                }
+                .onChange(of: language) { _, language in language.select() }
+            }
+            if language.needsRestart {
+                SettingsRow("Applies after Monny restarts", isLast: true) {
+                    Button("Restart", action: AppLanguage.relaunch)
+                        .buttonStyle(TintedButtonStyle())
                 }
             }
         }
@@ -62,10 +84,7 @@ struct SettingsPage: View {
     private var menuBar: some View {
         SettingsSection("Menu bar") {
             SettingsRow("Global shortcut") {
-                Text(verbatim: "⌥⌘M")
-                    .font(Theme.body)
-                    .foregroundStyle(Theme.textSecondary)
-                    .accessibilityLabel(Text("Option Command M"))
+                KeyboardShortcuts.Recorder(for: .openDashboard)
             }
             SettingsRow("Show alert badge", subtitle: "Dot on the icon when something needs you", isLast: true) {
                 Toggle("Show alert badge", isOn: $showsAlertBadge)
@@ -75,15 +94,42 @@ struct SettingsPage: View {
 
     private var about: some View {
         SettingsSection("About") {
-            SettingsRow("Monny \(Bundle.main.shortVersion) (\(Bundle.main.buildNumber))") {
-                Button("Check for Updates") { }
-                    .buttonStyle(TintedButtonStyle())
-                    .disabled(true)
-            }
+            updateRow
             SettingsRow("Privacy", subtitle: "No analytics · network only for updates", isLast: true) {
                 EmptyView()
             }
         }
+    }
+
+    @ViewBuilder private var updateRow: some View {
+        let version = "\(Bundle.main.shortVersion) (\(Bundle.main.buildNumber))"
+        switch updates.status {
+        case .available(let latest, let page):
+            SettingsRow("Monny \(latest) is available", subtitle: "You have \(version)") {
+                Button("Download…") { openURL(page) }
+                    .buttonStyle(PrimaryButtonStyle())
+            }
+        case .failed(let offline):
+            SettingsRow("Monny \(version)",
+                        subtitle: offline ? "Couldn’t check for updates · offline" : "Couldn’t check for updates",
+                        subtitleColor: Theme.statusDangerText) {
+                Button("Try Again", action: checkForUpdates)
+                    .buttonStyle(TintedButtonStyle())
+            }
+        case .idle, .checking, .upToDate:
+            SettingsRow("Monny \(version)", subtitle: updates.status == .upToDate ? "You’re up to date" : nil) {
+                HStack(spacing: Theme.spaceM) {
+                    if updates.status == .checking { ProgressView().controlSize(.small) }
+                    Button("Check for Updates", action: checkForUpdates)
+                        .buttonStyle(TintedButtonStyle())
+                        .disabled(updates.status == .checking)
+                }
+            }
+        }
+    }
+
+    private func checkForUpdates() {
+        Task { await updates.check() }
     }
 
     private var battery: some View {
@@ -157,13 +203,15 @@ private struct SettingsSection<Content: View>: View {
 private struct SettingsRow<Control: View>: View {
     let title: LocalizedStringKey
     var subtitle: LocalizedStringKey?
+    var subtitleColor = Theme.textSecondary
     var isLast = false
     @ViewBuilder let control: Control
 
-    init(_ title: LocalizedStringKey, subtitle: LocalizedStringKey? = nil, isLast: Bool = false,
-         @ViewBuilder control: () -> Control) {
+    init(_ title: LocalizedStringKey, subtitle: LocalizedStringKey? = nil, subtitleColor: Color = Theme.textSecondary,
+         isLast: Bool = false, @ViewBuilder control: () -> Control) {
         self.title = title
         self.subtitle = subtitle
+        self.subtitleColor = subtitleColor
         self.isLast = isLast
         self.control = control()
     }
@@ -173,7 +221,7 @@ private struct SettingsRow<Control: View>: View {
             VStack(alignment: .leading, spacing: 1) {
                 Text(title).font(Theme.body).foregroundStyle(Theme.textPrimary)
                 if let subtitle {
-                    Text(subtitle).font(Theme.caption).foregroundStyle(Theme.textSecondary)
+                    Text(subtitle).font(Theme.caption).foregroundStyle(subtitleColor)
                 }
             }
             Spacer(minLength: Theme.spaceM)

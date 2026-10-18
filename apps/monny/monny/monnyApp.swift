@@ -1,4 +1,5 @@
 import AppKit
+import KeyboardShortcuts
 import SwiftUI
 
 @main
@@ -41,9 +42,10 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
         model.closePopover = { [weak menuBar] in menuBar?.closePopover() }
         model.openDashboard = { [weak self] page in self?.openDashboard(page) }
         applyAppearance()
+        KeyboardShortcuts.onKeyUp(for: .openDashboard) { [weak self] in self?.openDashboard(nil) }
         Task { [model] in
             await model.sampler.history.load()
-            model.sampler.start()
+            model.start()
         }
 
         let center = NotificationCenter.default

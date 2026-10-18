@@ -48,6 +48,8 @@ final class Sampler {
     private(set) var snapshot: Snapshot?
     private(set) var batteryHealth: BatteryHealth?
     let history = History()
+    /// Called on the main actor after every pass, for alerts.
+    @ObservationIgnored var onSample: ((Snapshot) -> Void)?
 
     @ObservationIgnored private let source = ReadingSource()
     @ObservationIgnored private var task: Task<Void, Never>?
@@ -89,6 +91,7 @@ final class Sampler {
                 guard let self, !Task.isCancelled else { return }
                 self.snapshot = snapshot
                 history.record(snapshot)
+                onSample?(snapshot)
                 let refresh = max(UserDefaults.standard.integer(forKey: PreferenceKey.refreshInterval), 1)
                 try? await Task.sleep(for: .seconds(isVisible ? refresh : 10))
             }

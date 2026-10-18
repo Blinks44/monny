@@ -70,10 +70,10 @@ Three steps (Sketch page `03`): Welcome (menu bar stats, charge limit, works off
 
 ## 7. Settings
 
-- **General:** Launch at login, refresh rate, temperature unit, appearance.
+- **General:** Launch at login, refresh rate, temperature unit, appearance, language (System or one of the six; applies after Monny restarts, with a Restart button; user request 2026-10-18).
 - **Menu bar:** global shortcut, show alert badge.
 - **Battery:** default charge limit, sailing range, heat protection threshold, helper status with version and Uninstall Helper…. Uninstalling asks for confirmation first and returns charging to macOS. If installation fails or is not approved, a banner explains it, with Open System Settings… (Login Items & Extensions) and Try Again.
-- **Notifications:** charge limit reached, Mac is running hot, calibration finished, battery below 20 %, memory pressure is high (each toggle).
+- **Notifications:** charge limit reached, Mac is running hot, calibration finished, battery below 20 %, memory pressure is high (each toggle). Each fires once when its condition starts and again only after it has cleared.
 - **About:** version and build, Check for Updates (compares with the latest GitHub release), privacy note (no analytics; network only for updates). Results: up to date; a newer version (Download… opens the GitHub release page in the browser; Monny does not install updates itself); check failed (Try Again).
 
 ## 8. Cross-cutting requirements

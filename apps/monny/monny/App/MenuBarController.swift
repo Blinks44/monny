@@ -1,4 +1,5 @@
 import AppKit
+import KeyboardShortcuts
 import SwiftUI
 
 /// The status item. A left click toggles the popover panel; a right click or Control-click opens
@@ -104,8 +105,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
     func menuNeedsUpdate(_ menu: NSMenu) {
         menu.removeAllItems()
         let dashboard = item(String(localized: "Open Dashboard"), #selector(openDashboard))
-        dashboard.keyEquivalent = "m"
-        dashboard.keyEquivalentModifierMask = [.option, .command]
+        dashboard.setShortcut(for: .openDashboard)
         menu.addItem(dashboard)
         let settings = item(String(localized: "Settings…"), #selector(openSettings))
         settings.keyEquivalent = ","
@@ -125,6 +125,10 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         quit.target = NSApp
         menu.addItem(quit)
     }
+
+    // While a menu tracks, hot-key events queue up and fire when it closes (KeyboardShortcuts docs).
+    func menuWillOpen(_ menu: NSMenu) { KeyboardShortcuts.disable(.openDashboard) }
+    func menuDidClose(_ menu: NSMenu) { KeyboardShortcuts.enable(.openDashboard) }
 
     private func item(_ title: String, _ action: Selector?, enabled: Bool = true) -> NSMenuItem {
         let item = NSMenuItem(title: title, action: action, keyEquivalent: "")

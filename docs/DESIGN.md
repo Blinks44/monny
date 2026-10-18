@@ -13,7 +13,7 @@ Open **Monny.sketch** through Sketch MCP (load `mcp`, then `use`; resolve the op
 | Page | Content |
 | --- | --- |
 | 01 · Popover | Overview, Battery, Processes; Battery charging / on battery / helper required; Overview thermal alert; Overview and Battery without a battery. Light above, Dark below |
-| 02 · Window | Overview, CPU, Memory, Disk, Network, Battery, Sensors, Settings; Overview first launch, Sensors unavailable, Battery without a battery, Settings errors / update available / uninstall helper confirmation; Light/Dark pairs |
+| 02 · Window | Overview, CPU, Memory, Disk, Network, Battery, Sensors, Settings; Overview first launch, Sensors unavailable, Battery without a battery, Settings errors / update available / uninstall helper confirmation (all Settings frames have the Language row since 2026-10-18); Light/Dark pairs |
 | 03 · Flows & System | Onboarding Welcome / Battery helper / Ready, plus Welcome / Ready for a Mac without a battery, Calibration in progress, menu bar states, right-click menu and notifications, app icon |
 | 04 · Foundations | Colors, typography, spacing/radii/elevation, component overview |
 | Symbols | `Light/…` and `Dark/…` buttons, toggles, checkboxes, icon buttons, chips, popup button, banners |

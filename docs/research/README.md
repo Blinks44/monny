@@ -61,8 +61,8 @@ In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 
 
 | Need | Candidates to evaluate | Decision |
 | --- | --- | --- |
-| Global shortcut | Native `NSEvent` monitors vs a maintained shortcut package | Open |
-| Update check | GitHub Releases API vs Sparkle | Open |
+| Global shortcut | Native `NSEvent` global monitors (need Accessibility permission), Carbon `RegisterEventHotKey` by hand, sindresorhus/KeyboardShortcuts | KeyboardShortcuts 1.17.0 (MIT, active, Swift 6, Carbon hot keys without permissions, recorder UI localized in our languages); 2026-10-18 ([APP-003](../tasks/APP-003-settings-alerts.md)) |
+| Update check | GitHub Releases API vs Sparkle | `GET /repos/Blinks44/monny/releases/latest` with `URLSession`, on request only; Sparkle installs updates, which SPEC rules out. 404 (no release yet) reads as up to date; 2026-10-18 |
 | History storage | Ring buffers + file, SwiftData, SQLite | Ring buffers + binary plist (see above) |
 
 ## Recording a new decision

@@ -1,0 +1,61 @@
+import Foundation
+import Testing
+@testable import monny
+
+/// When alerts fire and re-arm, and how release versions compare.
+struct AlertTests {
+    private func snapshot(thermal: ProcessInfo.ThermalState = .nominal, cpu: Double? = nil,
+                          battery: BatteryReading? = nil, pressure: MemoryUsage.Pressure? = nil) -> Snapshot {
+        Snapshot(memory: pressure.map { MemoryUsage(used: 0, total: 1, swapUsed: 0, pressure: $0) },
+                 battery: battery,
+                 sensors: cpu.map { SensorReading(cpu: $0, fanRPM: []) },
+                 thermalState: thermal, processes: [])
+    }
+
+    private func battery(_ level: Double, _ state: BatteryReading.State) -> BatteryReading {
+        BatteryReading(level: level, state: state, isFullyCharged: false)
+    }
+
+    @Test func heatFiresOncePerEpisode() {
+        var monitor = AlertMonitor()
+        #expect(monitor.update(with: snapshot()).isEmpty)
+        #expect(monitor.update(with: snapshot(thermal: .serious, cpu: 92)) == [.hot(cpuCelsius: 92)])
+        #expect(monitor.needsAttention)
+        #expect(monitor.update(with: snapshot(thermal: .critical, cpu: 95)).isEmpty)
+        // Fair is no longer hot, so the next Serious is a new episode.
+        #expect(monitor.update(with: snapshot(thermal: .fair)).isEmpty)
+        #expect(!monitor.needsAttention)
+        #expect(monitor.update(with: snapshot(thermal: .serious)) == [.hot(cpuCelsius: nil)])
+    }
+
+    @Test func lowBatteryOnlyOnBatteryPower() {
+        var monitor = AlertMonitor()
+        #expect(monitor.update(with: snapshot(battery: battery(0.15, .charging))).isEmpty)
+        #expect(monitor.update(with: snapshot(battery: battery(0.19, .onBattery))) == [.lowBattery(level: 0.19, timeToEmpty: nil)])
+        #expect(monitor.update(with: snapshot(battery: battery(0.12, .onBattery))).isEmpty)
+        #expect(monitor.update(with: snapshot(battery: battery(0.13, .charging))).isEmpty)
+        #expect(monitor.update(with: snapshot(battery: battery(0.12, .onBattery))).count == 1)
+        // A pass without a battery reading keeps the episode.
+        #expect(monitor.update(with: snapshot()).isEmpty)
+        #expect(monitor.update(with: snapshot(battery: battery(0.11, .onBattery))).isEmpty)
+    }
+
+    @Test func memoryPressureRearmsAtNormal() {
+        var monitor = AlertMonitor()
+        #expect(monitor.update(with: snapshot(pressure: .warning)) == [.memoryPressure])
+        #expect(!monitor.needsAttention)
+        #expect(monitor.update(with: snapshot(pressure: .critical)).isEmpty)
+        #expect(monitor.needsAttention)
+        #expect(monitor.update(with: snapshot(pressure: .warning)).isEmpty)
+        #expect(monitor.update(with: snapshot(pressure: .normal)).isEmpty)
+        #expect(monitor.update(with: snapshot(pressure: .critical)) == [.memoryPressure])
+    }
+
+    @Test(arguments: [
+        ("1.1", "1.0", true), ("1.10", "1.9", true), ("2", "1.9.9", true),
+        ("1.0", "1", false), ("1.0", "1.0.1", false), ("0.9", "1.0", false),
+    ])
+    func comparesVersions(candidate: String, current: String, isNewer: Bool) {
+        #expect(UpdateChecker.isVersion(candidate, newerThan: current) == isNewer)
+    }
+}

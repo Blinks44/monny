@@ -6,6 +6,10 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B2000000000000000000000E /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = B2000000000000000000000D /* KeyboardShortcuts */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		B20000000000000000000001 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -38,6 +42,7 @@
 		757258C63083E9E600FAC82A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				B2000000000000000000000E /* KeyboardShortcuts in Frameworks */,
 			);
 		};
 		B20000000000000000000004 /* Frameworks */ = {
@@ -83,6 +88,9 @@
 				757258CB3083E9E600FAC82A /* monny */,
 			);
 			name = monny;
+			packageProductDependencies = (
+				B2000000000000000000000D /* KeyboardShortcuts */,
+			);
 			productName = monny;
 			productReference = 757258C93083E9E600FAC82A /* Monny.app */;
 			productType = "com.apple.product-type.application";
@@ -141,6 +149,9 @@
 			);
 			mainGroup = 757258C03083E9E600FAC82A;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B2000000000000000000000C /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 757258CA3083E9E600FAC82A /* Products */;
 			projectDirPath = "";
@@ -346,9 +357,9 @@
 		757258D63083E9E700FAC82A /* Release configuration for PBXNativeTarget "monny" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -448,6 +459,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B2000000000000000000000C /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.17.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B2000000000000000000000D /* KeyboardShortcuts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2000000000000000000000C /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
+			productName = KeyboardShortcuts;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 757258C13083E9E600FAC82A /* Project object */;
 	validationLevel = 1;

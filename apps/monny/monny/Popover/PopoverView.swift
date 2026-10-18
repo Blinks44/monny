@@ -1,3 +1,4 @@
+import KeyboardShortcuts
 import SwiftUI
 
 /// The menu bar popover (Sketch `01 · Popover`): header, tabs, the selected tab and the footer.
@@ -62,8 +63,10 @@ struct PopoverView: View {
             HStack(spacing: 6) {
                 Button("Open Dashboard") { model.openDashboard(nil) }
                     .buttonStyle(PlainLinkButtonStyle())
-                Text(verbatim: "⌥⌘M").font(Theme.footnote).foregroundStyle(Theme.textTertiary)
-                    .accessibilityLabel(Text("Shortcut Option Command M"))
+                if let shortcut = KeyboardShortcuts.Name.openDashboard.shortcut?.description {
+                    Text(verbatim: shortcut).font(Theme.footnote).foregroundStyle(Theme.textTertiary)
+                        .accessibilityLabel(Text("Shortcut \(shortcut)"))
+                }
                 Spacer(minLength: 0)
                 if model.popoverTab == .processes {
                     Button("Activity Monitor \(Image(systemName: "arrow.up.right"))", action: openActivityMonitor)

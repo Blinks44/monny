@@ -74,17 +74,19 @@ private struct RingCard<Accessory: View>: View {
             }
             Spacer(minLength: 0)
             RingGauge(fraction: fraction, color: color)
-                .frame(width: 68, height: 68)
                 .overlay {
                     VStack(spacing: 0) {
                         if let fraction {
-                            Text(fraction.percentText).font(Theme.metricM).foregroundStyle(Theme.textPrimary)
+                            Text(fraction.percentText).font(Theme.gaugeValue).foregroundStyle(Theme.textPrimary)
                                 .monospacedDigit()
                         } else {
-                            UnavailableValue(font: Theme.metricM)
+                            UnavailableValue(font: Theme.gaugeValue)
                         }
-                        Text(unit).font(Theme.caption).foregroundStyle(Theme.textTertiary)
+                        Text(unit).font(Theme.gaugeUnit).foregroundStyle(Theme.textTertiary)
                     }
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                    .padding(.horizontal, 12)
                 }
             Spacer(minLength: 0)
             (footnote ?? Text(verbatim: " ")).font(Theme.footnote).foregroundStyle(Theme.textSecondary)
@@ -159,7 +161,7 @@ private struct NetworkCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             MetricLabel(title: "Network", symbol: "network", color: Theme.metricNetwork)
-            Spacer(minLength: 0)
+                .padding(.bottom, 10)
             rate(network?.download, symbol: "arrow.down", color: Theme.textPrimary, font: Theme.metricS)
                 .accessibilityLabel(Text("Download"))
             rate(network?.upload, symbol: "arrow.up", color: Theme.metricUpload, font: Theme.bodyEmphasized)

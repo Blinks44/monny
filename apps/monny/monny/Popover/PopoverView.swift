@@ -8,13 +8,9 @@ struct PopoverView: View {
     var body: some View {
         VStack(spacing: 0) {
             header
-            Picker("Section", selection: $model.popoverTab) {
-                Text("Overview").tag(PopoverTab.overview)
-                Text("Battery").tag(PopoverTab.battery)
-                Text("Processes").tag(PopoverTab.processes)
-            }
-            .pickerStyle(.segmented)
-            .labelsHidden()
+            SegmentedControl(title: "Section", selection: $model.popoverTab, options: [
+                (.overview, "Overview"), (.battery, "Battery"), (.processes, "Processes"),
+            ])
             .padding(.horizontal, Theme.spaceXL)
             .padding(.bottom, Theme.spaceL)
 
@@ -69,13 +65,25 @@ struct PopoverView: View {
                 Text(verbatim: "⌥⌘M").font(Theme.footnote).foregroundStyle(Theme.textTertiary)
                     .accessibilityLabel(Text("Shortcut Option Command M"))
                 Spacer(minLength: 0)
-                Text("Updated every \(Duration.seconds(refreshInterval).formatted(.units(width: .narrow)))")
-                    .font(Theme.footnote)
-                    .foregroundStyle(Theme.textTertiary)
+                if model.popoverTab == .processes {
+                    Button("Activity Monitor \(Image(systemName: "arrow.up.right"))", action: openActivityMonitor)
+                        .buttonStyle(PlainLinkButtonStyle())
+                } else {
+                    Text("Updated every \(Duration.seconds(refreshInterval).formatted(.units(width: .narrow)))")
+                        .font(Theme.footnote)
+                        .foregroundStyle(Theme.textTertiary)
+                }
             }
             .padding(.horizontal, 22)
             .frame(height: 36)
         }
         .padding(.top, Theme.spaceM)
+    }
+
+    private func openActivityMonitor() {
+        model.closePopover()
+        if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.ActivityMonitor") {
+            NSWorkspace.shared.openApplication(at: url, configuration: .init())
+        }
     }
 }

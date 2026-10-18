@@ -69,14 +69,9 @@ private struct PageHeader: View {
             }
             Spacer(minLength: Theme.spaceXL)
             if page.showsTimeRange {
-                Picker("Time range", selection: $range) {
-                    Text("1m").tag(HistoryRange.minute)
-                    Text("1h").tag(HistoryRange.hour)
-                    Text("24h").tag(HistoryRange.day)
-                    Text("7d").tag(HistoryRange.week)
-                }
-                .pickerStyle(.segmented)
-                .labelsHidden()
+                SegmentedControl(title: "Time range", selection: $range, options: [
+                    (.minute, "1m"), (.hour, "1h"), (.day, "24h"), (.week, "7d"),
+                ], height: 32)
                 .frame(width: 192)
             }
             IconButton(symbol: "arrow.down.right.and.arrow.up.left", label: "Show in the menu bar", action: collapse)

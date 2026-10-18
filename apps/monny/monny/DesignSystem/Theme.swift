@@ -11,6 +11,8 @@ enum Theme {
     static let textSecondary = Color(light: 0x6E6E73, dark: 0xA1A1A6)
     static let textTertiary = Color(light: 0x86868B, dark: 0x8E8E93)
     static let textOnAccent = Color(light: 0xFFFFFF, dark: 0xFFFFFF)
+    /// Text on a `textPrimary` fill, such as the selected sort chip (drawn in the frames, no variable).
+    static let textInverse = Color(light: 0xFFFFFF, dark: 0x1D1D1F)
 
     // Surface
     static let surfacePanelTop = Color(light: 0xFFFFFF, 0.72, dark: 0x2A2A2E, 0.78)
@@ -65,12 +67,18 @@ enum Theme {
 
     // Shadow
     static let shadowTint = Color(light: 0x000000, dark: 0x000000)
+    /// The popover panel's two shadows (`Popover glass` in Sketch).
+    static let shadowPanelAmbient = Color(light: 0x000000, 0.18, dark: 0x000000, 0.44)
+    static let shadowPanelKey = Color(light: 0x000000, 0.08, dark: 0x000000, 0.24)
 
     // Text styles (SF Pro, fixed sizes as drawn)
     static let display = Font.system(size: 32, weight: .bold)
     static let metricL = Font.system(size: 26, weight: .bold)
     static let title = Font.system(size: 24, weight: .bold)
     static let metricM = Font.system(size: 20, weight: .bold)
+    /// The value inside a ring gauge and its unit below.
+    static let gaugeValue = Font.system(size: 19, weight: .bold)
+    static let gaugeUnit = Font.system(size: 9, weight: .medium)
     static let metricS = Font.system(size: 16, weight: .bold)
     static let headline = Font.system(size: 14, weight: .semibold)
     static let bodyEmphasized = Font.system(size: 13, weight: .semibold)
@@ -94,6 +102,7 @@ enum Theme {
     static let radiusControl: CGFloat = 12
     static let radiusTile: CGFloat = 16
     static let radiusCard: CGFloat = 20
+    static let radiusPanel: CGFloat = 26
     static let radiusWindow: CGFloat = 28
 }
 

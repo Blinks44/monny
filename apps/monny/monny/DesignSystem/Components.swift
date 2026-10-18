@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 /// The white rounded card used by every popover and window section.
@@ -158,11 +159,13 @@ struct IconButton: View {
     }
 }
 
-/// Circular gauge with a track; `nil` draws only the track, never a zero.
+/// Circular gauge with a track; `nil` draws only the track, never a zero. As in Sketch, the stroke
+/// is centered on a circle of `diameter`, so the view is `diameter + lineWidth` wide.
 struct RingGauge: View {
     let fraction: Double?
     let color: Color
-    var lineWidth: CGFloat = 8
+    var diameter: CGFloat = 68
+    var lineWidth: CGFloat = 9
 
     var body: some View {
         ZStack {
@@ -174,6 +177,7 @@ struct RingGauge: View {
                     .rotationEffect(.degrees(-90))
             }
         }
+        .frame(width: diameter, height: diameter)
         .padding(lineWidth / 2)
     }
 }
@@ -274,3 +278,153 @@ struct PlainLinkButtonStyle: ButtonStyle {
             .contentShape(.rect)
     }
 }
+
+// MARK: - Selection controls
+
+/// One-of-many control drawn as in Sketch: `.tabs` is the popover's section switcher (a recessed
+/// capsule track with a raised selected pill), `.chips` the row of separate sort capsules with a
+/// dark selected one. VoiceOver and keyboard users get a standard segmented picker.
+struct SegmentedControl<Value: Hashable>: View {
+    enum Style { case tabs, chips }
+
+    let title: LocalizedStringKey
+    @Binding var selection: Value
+    let options: [(value: Value, label: LocalizedStringKey)]
+    var style = Style.tabs
+    /// Outer height of `.tabs`: 34 pt in the popover, 32 pt in the window toolbar.
+    var height: CGFloat = 34
+    @Namespace private var namespace
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        HStack(spacing: style == .tabs ? 0 : 6) {
+            ForEach(options, id: \.value) { option in
+                segment(option.value, label: option.label)
+            }
+        }
+        .padding(style == .tabs ? 3 : 0)
+        .background {
+            if style == .tabs {
+                Capsule().fill(Theme.fillTrack.shadow(.inner(color: .black.opacity(0.08), radius: 1.5, y: 1)))
+            }
+        }
+        .accessibilityRepresentation {
+            Picker(title, selection: $selection) {
+                ForEach(options, id: \.value) { Text($0.label).tag($0.value) }
+            }
+            .pickerStyle(.segmented)
+        }
+    }
+
+    private func segment(_ value: Value, label: LocalizedStringKey) -> some View {
+        let isSelected = value == selection
+        return Button {
+            withAnimation(reduceMotion ? nil : .snappy(duration: 0.25)) { selection = value }
+        } label: {
+            Text(label)
+                .font(style == .tabs ? Theme.label : Theme.footnote.weight(.semibold))
+                .foregroundStyle(foreground(isSelected))
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .frame(maxWidth: .infinity)
+                .frame(height: style == .tabs ? height - 6 : 24)
+                .background { pill(isSelected) }
+                .contentShape(.capsule)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func foreground(_ isSelected: Bool) -> Color {
+        switch style {
+        case .tabs: isSelected ? Theme.textPrimary : Theme.textSecondary
+        case .chips: isSelected ? Theme.textInverse : Theme.textSecondary
+        }
+    }
+
+    @ViewBuilder
+    private func pill(_ isSelected: Bool) -> some View {
+        switch style {
+        case .tabs:
+            if isSelected {
+                Capsule()
+                    .fill(Theme.surfaceControl)
+                    .shadow(color: .black.opacity(0.06), radius: 0.5)
+                    .controlElevation()
+                    .matchedGeometryEffect(id: "selection", in: namespace)
+            }
+        case .chips:
+            Capsule().fill(isSelected ? Theme.textPrimary : Theme.fillTrack)
+        }
+    }
+}
+
+/// The popover panel as drawn in Sketch (`Popover glass`): the system blur behind the window,
+/// the translucent gradient, a 1 pt inside hairline and two soft shadows outside the shape.
+/// `shadowInsets` is the room the shadows need around the panel.
+struct PanelChrome<Content: View>: View {
+    static var shadowInsets: EdgeInsets { EdgeInsets(top: 8, leading: 32, bottom: 56, trailing: 32) }
+
+    @ViewBuilder var content: Content
+    @Environment(\.colorSchemeContrast) private var contrast
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: Theme.radiusPanel, style: .continuous)
+        content
+            .background {
+                shape.fill(LinearGradient(colors: [Theme.surfacePanelTop, Theme.surfacePanelBottom],
+                                          startPoint: .top, endPoint: .bottom))
+            }
+            .background { BehindWindowBlur(cornerRadius: Theme.radiusPanel) }
+            .clipShape(shape)
+            .overlay { shape.strokeBorder(contrast == .increased ? Theme.textTertiary : Theme.surfacePanelStroke) }
+            .background { shadow(of: shape) }
+            .padding(Self.shadowInsets)
+    }
+
+    /// Shadows only outside the shape, so they never darken the translucent glass.
+    private func shadow(of shape: RoundedRectangle) -> some View {
+        ZStack {
+            // Sketch spread −8 pt: the larger shadow is cast by a shape inset by 8 pt.
+            shape.inset(by: 8).fill(.black).shadow(color: Theme.shadowPanelAmbient, radius: 30, y: 24)
+            shape.fill(.black).shadow(color: Theme.shadowPanelKey, radius: 3, y: 2)
+        }
+        .mask {
+            Rectangle().padding(-80)
+                .overlay { shape.blendMode(.destinationOut) }
+                .compositingGroup()
+        }
+    }
+}
+
+/// `NSVisualEffectView` blurring what is behind the window. Its mask image clips the material
+/// to the panel's continuous corners; a layer corner radius would leave square material corners.
+struct BehindWindowBlur: NSViewRepresentable {
+    let cornerRadius: CGFloat
+
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let view = NSVisualEffectView()
+        view.material = .popover
+        view.blendingMode = .behindWindow
+        view.state = .active
+        view.maskImage = Self.mask(cornerRadius: cornerRadius)
+        return view
+    }
+
+    func updateNSView(_ view: NSVisualEffectView, context: Context) { }
+
+    /// A stretchable rounded rectangle; continuous corners reach about 1.53 × the radius.
+    private static func mask(cornerRadius: CGFloat) -> NSImage {
+        let inset = (cornerRadius * 1.6).rounded(.up)
+        let size = NSSize(width: inset * 2 + 1, height: inset * 2 + 1)
+        let image = NSImage(size: size, flipped: false) { rect in
+            let path = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous).path(in: rect).cgPath
+            NSColor.black.setFill()
+            NSBezierPath(cgPath: path).fill()
+            return true
+        }
+        image.capInsets = NSEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
+        image.resizingMode = .stretch
+        return image
+    }
+}
+

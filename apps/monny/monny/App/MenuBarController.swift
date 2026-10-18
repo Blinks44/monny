@@ -1,23 +1,22 @@
 import AppKit
 import SwiftUI
 
-/// The status item. A left click toggles the popover; a right click or Control-click opens the
-/// menu. AppKit rather than `MenuBarExtra`: that scene offers either a menu or a window, not both,
-/// and cannot draw the colored attention badge on a template icon.
-final class MenuBarController: NSObject, NSPopoverDelegate, NSMenuDelegate {
+/// The status item. A left click toggles the popover panel; a right click or Control-click opens
+/// the menu. AppKit rather than `MenuBarExtra`: that scene offers either a menu or a window, not
+/// both, and cannot draw the colored attention badge on a template icon.
+final class MenuBarController: NSObject, NSMenuDelegate {
     private let model: AppModel
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-    private let popover = NSPopover()
+    private let panel: MenuBarPanel
     private let menu = NSMenu()
     private let badge = NSView()
     private var defaultsObservation: NSObjectProtocol?
 
     init(model: AppModel) {
         self.model = model
+        panel = MenuBarPanel(rootView: PopoverView(model: model))
         super.init()
-        popover.behavior = .transient
-        popover.delegate = self
-        popover.contentViewController = NSHostingController(rootView: PopoverView(model: model))
+        panel.onClose = { [weak self] in self?.popoverDidClose() }
         menu.autoenablesItems = false
         menu.delegate = self
 
@@ -40,19 +39,20 @@ final class MenuBarController: NSObject, NSPopoverDelegate, NSMenuDelegate {
     }
 
     func showPopover() {
-        guard let button = statusItem.button, !popover.isShown else { return }
-        NSApp.activate()
-        popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        guard let button = statusItem.button, !panel.isShown else { return }
+        button.highlight(true)
+        model.sampler.setVisible(.popover, true)
+        panel.show(below: button)
     }
 
-    func closePopover() { popover.performClose(nil) }
+    func closePopover() { panel.close() }
 
     @objc private func statusItemClicked() {
         let event = NSApp.currentEvent
         if event?.type == .rightMouseUp || event?.modifierFlags.contains(.control) == true {
             closePopover()
             showMenu()
-        } else if popover.isShown {
+        } else if panel.isShown {
             closePopover()
         } else {
             showPopover()
@@ -94,14 +94,7 @@ final class MenuBarController: NSObject, NSPopoverDelegate, NSMenuDelegate {
         }
     }
 
-    // MARK: NSPopoverDelegate
-
-    func popoverWillShow(_ notification: Notification) {
-        statusItem.button?.highlight(true)
-        model.sampler.setVisible(.popover, true)
-    }
-
-    func popoverDidClose(_ notification: Notification) {
+    private func popoverDidClose() {
         statusItem.button?.highlight(false)
         model.sampler.setVisible(.popover, false)
     }

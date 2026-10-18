@@ -8,6 +8,8 @@ nonisolated struct ProcessUsage: Sendable, Equatable, Identifiable {
     var memory: Int64
     /// Average power over the interval, in watts, from the kernel's per-process energy estimate.
     var power: Double
+    /// `nil` when the task info cannot be read.
+    var threads: Int?
 }
 
 /// Per-process CPU time, memory footprint and energy (`ri_energy_nj`, nanojoules) from libproc. Processes of other
@@ -42,7 +44,8 @@ nonisolated struct ProcessReader {
             let cpuShare = Double(cpu &- old.cpu) / 1e9 / seconds
             let power = Double(info.ri_energy_nj &- old.energy) / 1e9 / seconds
             usages.append(ProcessUsage(id: pid, name: Self.name(of: pid), cpu: max(cpuShare, 0),
-                                       memory: Int64(clamping: info.ri_phys_footprint), power: max(power, 0)))
+                                       memory: Int64(clamping: info.ri_phys_footprint), power: max(power, 0),
+                                       threads: Self.threadCount(of: pid)))
         }
         previous = current
         return usages
@@ -54,6 +57,13 @@ nonisolated struct ProcessReader {
         var pids = [pid_t](repeating: 0, count: Int(estimate) + 64)
         let count = proc_listallpids(&pids, Int32(pids.count * MemoryLayout<pid_t>.size))
         return Array(pids.prefix(Int(max(count, 0))))
+    }
+
+    private static func threadCount(of pid: pid_t) -> Int? {
+        var info = proc_taskinfo()
+        let size = Int32(MemoryLayout<proc_taskinfo>.size)
+        guard proc_pidinfo(pid, PROC_PIDTASKINFO, 0, &info, size) == size else { return nil }
+        return Int(info.pti_threadnum)
     }
 
     private static func name(of pid: pid_t) -> String {

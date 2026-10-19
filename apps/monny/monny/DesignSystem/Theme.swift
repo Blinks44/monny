@@ -63,6 +63,18 @@ enum Theme {
     static let statusDangerBg = Color(light: 0xF43F5E, 0.12, dark: 0xF43F5E, 0.18)
     static let statusInfoBg = Color(light: 0x007AFF, 0.1, dark: 0x0A84FF, 0.18)
 
+    // Controls (`Toggle/*`, `Checkbox/*`, `Popup Button` symbols; drawn without variables)
+    static let controlRaisedTop = Color(light: 0xFFFFFF, dark: 0xFFFFFF, 0.18)
+    static let controlRaisedBottom = Color(light: 0xF4F4F6, dark: 0xFFFFFF, 0.1)
+    /// Sketch draws these strokes 0.5 pt wide; at that width the edge lands between pixels and
+    /// parts of it vanish, so code draws 1 pt at half the opacity.
+    static let controlRaisedStroke = Color(light: 0x000000, 0.06, dark: 0xFFFFFF, 0.05)
+    static let checkboxStroke = Color(light: 0x000000, 0.1, dark: 0xFFFFFF, 0.1)
+    static let controlRaisedHighlight = Color(light: 0xFFFFFF, 0.35, dark: 0xFFFFFF, 0.2)
+    static let controlOnTop = Color(light: 0x0A6BEF, dark: 0x0A74E8)
+    static let controlOnBottom = Color(light: 0x3A93FF, dark: 0x3D9BFF)
+    static let toggleOffTrack = Color(light: 0x1D1D1F, 0.12, dark: 0xFFFFFF, 0.14)
+
     // State
     static let stateHover = Color(light: 0x000000, 0.04, dark: 0xFFFFFF, 0.06)
     static let statePressed = Color(light: 0x000000, 0.08, dark: 0xFFFFFF, 0.1)

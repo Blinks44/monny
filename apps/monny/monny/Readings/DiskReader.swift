@@ -31,11 +31,14 @@ nonisolated struct DiskReader {
     private var counter = RateCounter()
     private var space: (free: Int64, total: Int64, volumes: [DiskUsage.Volume], time: ContinuousClock.Instant)?
 
-    mutating func read() -> DiskUsage? {
-        // "Available for important usage" includes purgeable space like Finder, but costs ~50 ms,
+    /// Free space is shown only on screen and history does not keep it, so in the background
+    /// (`includeSpace` false) it is read once and then left as it is.
+    mutating func read(includeSpace: Bool) -> DiskUsage? {
+        // "Available for important usage" includes purgeable space like Finder, but costs ~25 ms,
         // so it is refreshed every 30 s; throughput is read every pass.
         let now = ContinuousClock.now
-        if space.map({ now - $0.time > .seconds(30) }) ?? true, let fresh = Self.volumeSpace() {
+        let isStale = space.map { includeSpace && now - $0.time > .seconds(30) } ?? true
+        if isStale, let fresh = Self.volumeSpace() {
             space = (fresh.free, fresh.total, Self.volumes(rootFree: fresh.free), now)
         }
         guard let space else { return nil }

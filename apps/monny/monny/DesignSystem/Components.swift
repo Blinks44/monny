@@ -282,6 +282,130 @@ struct PlainLinkButtonStyle: ButtonStyle {
 
 // MARK: - Selection controls
 
+/// The 40 × 22 switch drawn in Sketch (`Toggle/On`, `Toggle/Off`).
+struct SwitchStyle: ToggleStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func makeBody(configuration: Configuration) -> some View {
+        Button {
+            withAnimation(reduceMotion ? nil : .snappy(duration: 0.2)) { configuration.isOn.toggle() }
+        } label: {
+            Capsule()
+                .fill(track(isOn: configuration.isOn)
+                    .shadow(.inner(color: .black.opacity(configuration.isOn ? 0.15 : 0.1), radius: 1, y: 1)))
+                .overlay(alignment: configuration.isOn ? .trailing : .leading) {
+                    Circle()
+                        .fill(.white)
+                        .shadow(color: .black.opacity(0.18), radius: 1.5, y: 1)
+                        .padding(2)
+                }
+                .frame(width: 40, height: 22)
+                .opacity(isEnabled ? 1 : 0.45)
+                .contentShape(.capsule)
+        }
+        .buttonStyle(.plain)
+        .accessibilityRepresentation { Toggle(isOn: configuration.$isOn) { configuration.label } }
+    }
+
+    private func track(isOn: Bool) -> AnyShapeStyle {
+        isOn ? AnyShapeStyle(LinearGradient(colors: [Theme.controlOnTop, Theme.controlOnBottom], startPoint: .top, endPoint: .bottom))
+            : AnyShapeStyle(Theme.toggleOffTrack)
+    }
+}
+
+/// The 18 pt rounded checkbox drawn in Sketch (`Checkbox/On`, `Checkbox/Off`), followed by its label.
+struct CheckboxStyle: ToggleStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        let box = RoundedRectangle(cornerRadius: 5, style: .continuous)
+        Button { configuration.isOn.toggle() } label: {
+            HStack(spacing: 10) {
+                Group {
+                    if configuration.isOn {
+                        box.fill(LinearGradient(colors: [Theme.controlOnBottom, Theme.controlOnTop],
+                                                startPoint: .top, endPoint: .bottom))
+                            .overlay {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundStyle(.white)
+                            }
+                            .shadow(color: .black.opacity(0.15), radius: 1, y: 1)
+                    } else {
+                        box.fill(LinearGradient(colors: [Theme.controlRaisedTop, Theme.controlRaisedBottom],
+                                                startPoint: .top, endPoint: .bottom))
+                            .shadow(color: .black.opacity(0.1), radius: 0.5, y: 1)
+                            .overlay { box.strokeBorder(Theme.checkboxStroke, lineWidth: 1) }
+                    }
+                }
+                .frame(width: 18, height: 18)
+                configuration.label
+            }
+            .opacity(isEnabled ? 1 : 0.45)
+            .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .accessibilityRepresentation { Toggle(isOn: configuration.$isOn) { configuration.label } }
+    }
+}
+
+/// The raised 28 pt popup button drawn in Sketch (`Popup Button`): the current value and a
+/// chevron, opening the system menu of options.
+struct PopupPicker<Value: Hashable>: View {
+    let title: LocalizedStringKey
+    @Binding var selection: Value
+    let options: [(value: Value, label: Text)]
+
+    var body: some View {
+        Menu {
+            // Menu items are system toggles: a custom toggle style from the row would blank them.
+            Picker(title, selection: $selection) {
+                ForEach(options, id: \.value) { $0.label.tag($0.value) }
+            }
+            .pickerStyle(.inline)
+            .labelsHidden()
+            .toggleStyle(.automatic)
+        } label: {
+            options.first { $0.value == selection }?.label
+        }
+        .menuStyle(.button)
+        .buttonStyle(PopupButtonStyle())
+        .menuIndicator(.hidden)
+        .fixedSize()
+        .accessibilityLabel(Text(title))
+    }
+}
+
+private struct PopupButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 9, style: .continuous)
+        HStack(spacing: 8) {
+            configuration.label
+                .font(Theme.body)
+                .foregroundStyle(Theme.textPrimary)
+                .lineLimit(1)
+            Image(systemName: "chevron.up.chevron.down")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(Theme.textSecondary)
+        }
+        .padding(.leading, 11)
+        .padding(.trailing, 8)
+        .frame(height: 28)
+        .background {
+            shape.fill(LinearGradient(colors: [Theme.controlRaisedTop, Theme.controlRaisedBottom],
+                                      startPoint: .top, endPoint: .bottom)
+                .shadow(.inner(color: Theme.controlRaisedHighlight, radius: 0, y: 1)))
+                .shadow(color: .black.opacity(0.12), radius: 1, y: 1)
+        }
+        .overlay { shape.strokeBorder(Theme.controlRaisedStroke, lineWidth: 1) }
+        .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.45)
+        .contentShape(shape)
+    }
+}
+
 /// One-of-many control drawn as in Sketch: `.tabs` is the popover's section switcher (a recessed
 /// capsule track with a raised selected pill), `.chips` the row of separate sort capsules with a
 /// dark selected one. VoiceOver and keyboard users get a standard segmented picker.
@@ -445,6 +569,18 @@ struct BehindWindowBlur: NSViewRepresentable {
 // MARK: - Charts
 
 /// One series of a sparkline: a line in its metric color, optionally with a soft area below.
+/// A point of a vectorized plot. `LinePlot` and `AreaPlot` join every point of a chart into one
+/// line unless each point names its series.
+struct PlotPoint {
+    let series: String
+    let date: Date
+    let value: Double
+
+    static func series(_ id: String, _ points: [(date: Date, value: Double)], scale: Double = 1) -> [PlotPoint] {
+        points.map { PlotPoint(series: id, date: $0.date, value: $0.value * scale) }
+    }
+}
+
 struct SparklineSeries: Identifiable {
     let id: String
     let points: [(date: Date, value: Double)]
@@ -463,19 +599,19 @@ struct Sparkline: View {
 
     var body: some View {
         Chart {
+            // Vectorized plots: one mark per series instead of one per point, redrawn every sample.
             ForEach(series) { series in
-                ForEach(Array(series.points.enumerated()), id: \.offset) { _, point in
-                    if series.filled {
-                        AreaMark(x: .value("Time", point.date), y: .value("Value", point.value), series: .value("Series", series.id))
-                            .foregroundStyle(LinearGradient(colors: [series.color.opacity(0.3), series.color.opacity(0)],
-                                                            startPoint: .top, endPoint: .bottom))
-                            .interpolationMethod(.monotone)
-                    }
-                    LineMark(x: .value("Time", point.date), y: .value("Value", point.value), series: .value("Series", series.id))
-                        .foregroundStyle(series.color)
-                        .lineStyle(StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
+                let points = PlotPoint.series(series.id, series.points)
+                if series.filled {
+                    AreaPlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
+                        .foregroundStyle(LinearGradient(colors: [series.color.opacity(0.3), series.color.opacity(0)],
+                                                        startPoint: .top, endPoint: .bottom))
                         .interpolationMethod(.monotone)
                 }
+                LinePlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
+                    .foregroundStyle(series.color)
+                    .lineStyle(StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
+                    .interpolationMethod(.monotone)
             }
             if showsLiveDot, let first = series.first, first.points.count > 1, let last = first.points.last {
                 PointMark(x: .value("Time", last.date), y: .value("Value", last.value))

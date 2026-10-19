@@ -113,7 +113,7 @@ private struct ConnectionCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             CardHeader(info?.isWiFi == false ? "Connection" : "Wi-Fi", subtitle: subtitle)
-            Spacer(minLength: 0)
+                .padding(.bottom, 6)
             if let wifi = info?.wifi {
                 FactRow(title: "Signal", value: Text("\(wifi.rssi) dBm · \(SignalQuality(rssi: wifi.rssi).text)"),
                         valueColor: SignalQuality(rssi: wifi.rssi).color)

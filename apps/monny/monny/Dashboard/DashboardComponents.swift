@@ -19,15 +19,17 @@ struct CardHeader<Trailing: View>: View {
         self.trailing = trailing()
     }
 
+    /// As in Sketch, the trailing legend or chip shares the title's line and the subtitle spans the card.
     var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .firstTextBaseline) {
                 title.font(Theme.headline).foregroundStyle(Theme.textPrimary)
+                    .lineLimit(1)
                     .accessibilityAddTraits(.isHeader)
-                subtitle?.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(2)
+                Spacer(minLength: Theme.spaceL)
+                trailing
             }
-            Spacer(minLength: Theme.spaceL)
-            trailing
+            subtitle?.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(2)
         }
     }
 }
@@ -194,18 +196,17 @@ struct HistoryChart: View {
                     .foregroundStyle(band.color)
             }
             ForEach(series) { series in
-                ForEach(Array(series.points.enumerated()), id: \.offset) { _, point in
-                    if series.filled {
-                        AreaMark(x: .value("Time", point.date), y: .value("Value", point.value), series: .value("Series", series.id))
-                            .foregroundStyle(LinearGradient(colors: [series.color.opacity(0.3), series.color.opacity(0.02)],
-                                                            startPoint: .top, endPoint: .bottom))
-                            .interpolationMethod(.monotone)
-                    }
-                    LineMark(x: .value("Time", point.date), y: .value("Value", point.value), series: .value("Series", series.id))
-                        .foregroundStyle(series.color)
-                        .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                let points = PlotPoint.series(series.id, series.points)
+                if series.filled {
+                    AreaPlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
+                        .foregroundStyle(LinearGradient(colors: [series.color.opacity(0.3), series.color.opacity(0.02)],
+                                                        startPoint: .top, endPoint: .bottom))
                         .interpolationMethod(.monotone)
                 }
+                LinePlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
+                    .foregroundStyle(series.color)
+                    .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                    .interpolationMethod(.monotone)
             }
             if let hovered {
                 RuleMark(x: .value("Time", hovered))
@@ -236,13 +237,18 @@ struct HistoryChart: View {
             }
         }
         .chartOverlay { proxy in
-            Rectangle().fill(.clear).contentShape(.rect)
-                .onContinuousHover { phase in
-                    switch phase {
-                    case .active(let location): hovered = proxy.value(atX: location.x, as: Date.self)
-                    case .ended: hovered = nil
+            GeometryReader { geometry in
+                Rectangle().fill(.clear).contentShape(.rect)
+                    .onContinuousHover { phase in
+                        // The pointer is in overlay coordinates; the plot starts after the y axis labels.
+                        switch phase {
+                        case .active(let location):
+                            let plotX = proxy.plotFrame.map { geometry[$0].minX } ?? 0
+                            hovered = proxy.value(atX: location.x - plotX, as: Date.self)
+                        case .ended: hovered = nil
+                        }
                     }
-                }
+            }
         }
     }
 

@@ -1,15 +1,15 @@
 import AppKit
 import SwiftUI
 
-/// Window Disk (Sketch `04 · Window · Disk`). SSD wear and S.M.A.R.T. need the NVMe SMART
-/// interface and a category breakdown needs a full scan; neither is read yet, so the page shows
-/// the SSD temperature and the startup volume's used/free split instead.
+/// Window Disk (Sketch `04 · Window · Disk`). A category breakdown needs a full scan, which
+/// Monny does not do, so the startup volume card shows its used/free split instead.
 struct DiskPage: View {
     let sampler: Sampler
     @AppStorage(PreferenceKey.historyRange) private var range = HistoryRange.hour
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
 
     private var disk: DiskUsage? { sampler.snapshot?.disk }
+    private var ssd: SSDHealth? { sampler.ssdHealth }
 
     var body: some View {
         let tier = sampler.history.tier(range)
@@ -21,10 +21,11 @@ struct DiskPage: View {
                         detail: peak(tier.series(.diskRead)), points: tier.series(.diskRead))
                 KPICard(title: "Write", symbol: "arrow.up", color: Theme.metricUpload, value: disk?.writeRate?.rateText,
                         detail: peak(tier.series(.diskWrite)), points: tier.series(.diskWrite))
-                KPICard(title: "SSD temperature", symbol: "thermometer.medium", color: Theme.metricBattery,
-                        value: sampler.snapshot?.sensors?.ssd?.temperatureText(temperatureUnit),
-                        detail: tier.series(.ssdTemperature).map(\.value).max().map { Text("peak \($0.temperatureText(temperatureUnit))") },
-                        points: tier.series(.ssdTemperature))
+                KPICard(title: "SSD health", symbol: ssd?.isVerified == false ? "exclamationmark.triangle.fill" : "checkmark.circle.fill",
+                        color: ssd?.isVerified == false ? Theme.statusDanger : Theme.metricBattery,
+                        value: ssd?.health.percentText,
+                        detail: ssd.map { Text("wear \($0.wear.percentText) · \($0.isVerified ? Text("verified") : Text("failing"))") },
+                        points: nil)
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
                 VolumesCard(volumes: disk?.volumes ?? [])
@@ -35,8 +36,7 @@ struct DiskPage: View {
                                 processes: sampler.snapshot?.processes ?? [], color: Theme.metricDisk,
                                 value: { $0.diskRead + $0.diskWrite },
                                 primary: { $0.diskRead.rateText }, secondary: { $0.diskWrite.rateText })
-                StartupDiskDetailsCard(volume: disk?.volumes.first { $0.url.path == "/" },
-                                       temperature: sampler.snapshot?.sensors?.ssd, unit: temperatureUnit)
+                SSDHealthCard(health: ssd, temperature: sampler.snapshot?.sensors?.ssd, unit: temperatureUnit)
                     .frame(width: 244)
             }
         }
@@ -154,17 +154,19 @@ private struct StartupVolumeCard: View {
     }
 }
 
-private struct StartupDiskDetailsCard: View {
-    let volume: DiskUsage.Volume?
+/// NVMe SMART status of the internal SSD; "Failing" when the drive reports a critical warning.
+private struct SSDHealthCard: View {
+    let health: SSDHealth?
     let temperature: Double?
     let unit: TemperatureUnit
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            CardHeader("Startup disk").padding(.bottom, 6)
-            FactRow(title: "Format", value: volume?.format.map { Text(verbatim: $0) }, height: 30)
-            FactRow(title: "Capacity", value: volume.map { Text($0.total.storageText) }, height: 30)
-            FactRow(title: "Free", value: volume.map { Text($0.free.storageText) }, height: 30)
+            CardHeader("SSD health").padding(.bottom, 6)
+            FactRow(title: "S.M.A.R.T.", value: health.map { $0.isVerified ? Text("Verified") : Text("Failing") },
+                    valueColor: health?.isVerified == false ? Theme.statusDangerText : Theme.statusSuccessText, height: 30)
+            FactRow(title: "Wear level", value: health.map { Text($0.wear.percentText) }, height: 30)
+            FactRow(title: "Data written", value: health.map { Text($0.bytesWritten.storageText) }, height: 30)
             FactRow(title: "Temperature", value: temperature.map { Text($0.temperatureText(unit)) }, isLast: true, height: 30)
         }
         .dashboardCard(height: 176)

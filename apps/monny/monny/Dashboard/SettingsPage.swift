@@ -23,12 +23,12 @@ struct SettingsPage: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: Theme.spaceL) {
-            VStack(spacing: Theme.space3XL) {
+            VStack(spacing: 28) {
                 general
                 menuBar
                 about
             }
-            VStack(spacing: Theme.space3XL) {
+            VStack(spacing: 28) {
                 if SystemInfo.hasBattery { battery }
                 notifications
             }
@@ -41,35 +41,24 @@ struct SettingsPage: View {
                 Toggle("Launch at login", isOn: Binding(get: { loginItem.isEnabled }, set: loginItem.setEnabled))
             }
             SettingsRow("Refresh rate") {
-                Picker("Refresh rate", selection: $refreshInterval) {
-                    ForEach([1, 2, 5], id: \.self) { seconds in
-                        Text("Every \(Duration.seconds(seconds).formatted(.units(width: .narrow)))").tag(seconds)
-                    }
-                }
+                PopupPicker(title: "Refresh rate", selection: $refreshInterval, options: [1, 2, 5].map { seconds in
+                    (seconds, Text("Every \(Duration.seconds(seconds).formatted(.units(width: .narrow)))"))
+                })
             }
             SettingsRow("Temperature unit") {
-                Picker("Temperature unit", selection: $temperatureUnit) {
-                    Text("°C Celsius").tag(TemperatureUnit.celsius)
-                    Text("°F Fahrenheit").tag(TemperatureUnit.fahrenheit)
-                }
+                PopupPicker(title: "Temperature unit", selection: $temperatureUnit, options: [
+                    (.celsius, Text("°C Celsius")), (.fahrenheit, Text("°F Fahrenheit")),
+                ])
             }
             SettingsRow("Appearance") {
-                Picker("Appearance", selection: $appearance) {
-                    Text("System").tag(AppearancePreference.system)
-                    Text("Light").tag(AppearancePreference.light)
-                    Text("Dark").tag(AppearancePreference.dark)
-                }
+                PopupPicker(title: "Appearance", selection: $appearance, options: [
+                    (.system, Text("System")), (.light, Text("Light")), (.dark, Text("Dark")),
+                ])
             }
             SettingsRow("Language", isLast: !language.needsRestart) {
-                Picker("Language", selection: $language) {
-                    ForEach(AppLanguage.allCases) { language in
-                        if let name = language.nativeName {
-                            Text(verbatim: name).tag(language)
-                        } else {
-                            Text("System").tag(language)
-                        }
-                    }
-                }
+                PopupPicker(title: "Language", selection: $language, options: AppLanguage.allCases.map { language in
+                    (language, language.nativeName.map { Text(verbatim: $0) } ?? Text("System"))
+                })
                 .onChange(of: language) { _, language in language.select() }
             }
             if language.needsRestart {
@@ -84,7 +73,9 @@ struct SettingsPage: View {
     private var menuBar: some View {
         SettingsSection("Menu bar") {
             SettingsRow("Global shortcut") {
+                // The library's recorder field at its 130 pt minimum, so long titles keep one line.
                 KeyboardShortcuts.Recorder(for: .openDashboard)
+                    .frame(width: 130)
             }
             SettingsRow("Show alert badge", subtitle: "Dot on the icon when something needs you", isLast: true) {
                 Toggle("Show alert badge", isOn: $showsAlertBadge)
@@ -135,30 +126,26 @@ struct SettingsPage: View {
     private var battery: some View {
         SettingsSection("Battery") {
             SettingsRow("Default charge limit") {
-                Picker("Default charge limit", selection: $chargeLimit) {
-                    ForEach(Array(stride(from: 50, through: 100, by: 5)), id: \.self) { percent in
-                        Text((Double(percent) / 100).formatted(.percent)).tag(percent)
-                    }
-                }
+                PopupPicker(title: "Default charge limit", selection: $chargeLimit,
+                            options: stride(from: 50, through: 100, by: 5).map { ($0, Self.percentText($0)) })
             }
             SettingsRow("Sailing range") {
-                Picker("Sailing range", selection: $sailingRange) {
-                    ForEach([0, 3, 5, 10], id: \.self) { percent in
-                        Text((Double(percent) / 100).formatted(.percent)).tag(percent)
-                    }
-                }
+                PopupPicker(title: "Sailing range", selection: $sailingRange,
+                            options: [0, 3, 5, 10].map { ($0, Self.percentText($0)) })
             }
             SettingsRow("Heat protection above") {
-                Picker("Heat protection above", selection: $heatThreshold) {
-                    ForEach([30, 35, 40, 45], id: \.self) { celsius in
-                        Text(Double(celsius).temperatureText(temperatureUnit)).tag(celsius)
-                    }
-                }
+                PopupPicker(title: "Heat protection above", selection: $heatThreshold, options: [30, 35, 40, 45].map { celsius in
+                    (celsius, Text(Double(celsius).temperatureText(temperatureUnit)))
+                })
             }
             SettingsRow("Battery helper", subtitle: "Privileged helper for SMC charge control", isLast: true) {
                 Chip(title: "Not installed", kind: .neutral)
             }
         }
+    }
+
+    private static func percentText(_ percent: Int) -> Text {
+        Text((Double(percent) / 100).formatted(.percent))
     }
 
     private var notifications: some View {
@@ -183,7 +170,7 @@ private struct SettingsSection<Content: View>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Theme.spaceM) {
             Text(title)
                 .textCase(.uppercase)
                 .font(Theme.overline)
@@ -224,12 +211,14 @@ private struct SettingsRow<Control: View>: View {
                     Text(subtitle).font(Theme.caption).foregroundStyle(subtitleColor)
                 }
             }
+            .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: Theme.spaceM)
             control
                 .labelsHidden()
-                .toggleStyle(.switch)
+                .toggleStyle(SwitchStyle())
                 .fixedSize()
         }
+        .padding(.vertical, Theme.spaceM)
         .frame(minHeight: 44)
         .overlay(alignment: .bottom) {
             if !isLast { Theme.fillSeparator.frame(height: 1) }
@@ -250,7 +239,8 @@ private struct CheckboxRow: View {
 
     var body: some View {
         Toggle(isOn: $isOn) { Text(title).font(Theme.body).foregroundStyle(Theme.textPrimary) }
-            .toggleStyle(.checkbox)
+            .toggleStyle(CheckboxStyle())
+            .padding(.vertical, Theme.spaceM)
             .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
             .overlay(alignment: .bottom) {
                 if !isLast { Theme.fillSeparator.frame(height: 1) }

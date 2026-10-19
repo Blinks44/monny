@@ -54,9 +54,9 @@ In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 
 
 | Area | Decision | Evidence / open question |
 | --- | --- | --- |
-| Helper installation | SMAppService daemon (ENGINEERING) | Approval flow, signing requirement and update path to research |
-| Charging keys | Not researched | Per chip family; existing open-source tools are reference only and several are GPL |
-| Fail-safe | Restore macOS charging when control stops (SPEC §5) | Sleep/wake and restart behavior to verify on hardware |
+| Helper installation | SMAppService daemon + native authenticated NSXPCConnection implemented for status only | [BAT-002](../tasks/BAT-002-helper-connection.md); matching signed-artifact registration and approval checks pending |
+| Charging keys | Capability-based support; firmware may deny access even to root | [Sources and licensing](battery-control.md#charging-support-varies-with-firmware); no writes or hardware support verified |
+| Fail-safe | Pure app-side policy implemented; helper lease/restoration still pending | [Policy and lifecycle gates](battery-control.md); sleep/wake, crash and uninstall require hardware checks |
 
 ## Other dependencies
 

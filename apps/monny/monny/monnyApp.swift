@@ -61,6 +61,11 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 
+    func applicationDidBecomeActive(_ notification: Notification) {
+        guard !Self.runningTests, SystemInfo.hasBattery else { return }
+        Task { await model.batteryHelper.refresh() }
+    }
+
     /// Opening Monny again from Finder or Spotlight while it runs shows the dashboard.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
         openDashboard(nil)

@@ -5,7 +5,7 @@
 - Owner: unassigned (released 2026-10-19)
 - Owned surfaces: `DesignSystem/Components.swift` (switch, checkbox, popup button), `DesignSystem/Theme.swift` (control tokens), `Dashboard/SettingsPage.swift`, `Dashboard/DashboardComponents.swift` (`CardHeader`), `Dashboard/CPUHistoryCard.swift`, `Dashboard/NetworkPage.swift`
 - Requirements: [SPEC](../SPEC.md) Settings; [DESIGN](../DESIGN.md); phase 3
-- Code baseline: `main` at 1962fb7; changes uncommitted
+- Code baseline: committed on `main` in fd8ba18 (also includes SSD health and cost fixes)
 
 ## Outcome and scope
 
@@ -19,7 +19,7 @@ User request: before new features, bring the app to the drawn design. Settings u
 - `CardHeader` now puts the legend or chip on the title line and lets the subtitle span the card, as in every Sketch card; the CPU chart card uses it, so long localized summaries no longer squeeze under the legend. The Network connection card lists its rows from the top instead of pinning them to the bottom.
 - 2026-10-19, M1 Max, macOS 27.0.1, Russian UI: `dev.sh build` and `dev.sh test` (25 tests) pass. Agent-observed in the running app: Overview, CPU, Memory, Disk, Network, Sensors and Settings in Light, Settings in Dark; switch and checkbox toggle through the accessibility action.
 
-Known differences that are not visual bugs: data without a public source stays out (Disk categories, SSD health, Network connections and per-process network, extra sensor tiles, CPU frequency; see [CORE-003](CORE-003-history.md)); the Battery window page and the helper rows wait for phase 4; Sketch's Privacy "Read policy" link has no policy page to open yet, so the row has no button; in Russian the "Global shortcut" title wraps beside the 130 pt recorder. The popover was not re-captured (the panel is not reachable by the screenshot tool); it was accepted in [APP-002](APP-002-popover-design-parity.md) and uses none of the changed components.
+Known differences that are not visual bugs: data without a public source stays out (Disk categories, Network connections and per-process network, extra sensor tiles, CPU frequency; see [CORE-003](CORE-003-history.md), which also owns the subsequently added SSD health); Battery controls and helper rows wait for phase 4 ([BAT-001](BAT-001-battery-foundations.md) adds the read-only Battery window); Sketch's Privacy "Read policy" link has no policy page to open yet, so the row has no button; in Russian the "Global shortcut" title wraps beside the 130 pt recorder. The popover was not re-captured (the panel is not reachable by the screenshot tool); it was accepted in [APP-002](APP-002-popover-design-parity.md) and uses none of the changed components.
 
 ## Result
 

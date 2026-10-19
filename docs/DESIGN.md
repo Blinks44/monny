@@ -1,6 +1,6 @@
 # Monny: design direction and live source index
 
-Updated 2026-10-18. [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
+Updated 2026-10-19. [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
 
 ## Direction
 
@@ -13,12 +13,14 @@ Open **Monny.sketch** through Sketch MCP (load `mcp`, then `use`; resolve the op
 | Page | Content |
 | --- | --- |
 | 01 · Popover | Overview, Battery, Processes; Battery charging / on battery / helper required; Overview thermal alert; Overview and Battery without a battery. Light above, Dark below |
-| 02 · Window | Overview, CPU, Memory, Disk, Network, Battery, Sensors, Settings; Overview first launch, Sensors unavailable, Battery without a battery, Settings errors / update available / uninstall helper confirmation (all Settings frames have the Language row since 2026-10-18); Light/Dark pairs |
+| 02 · Window | Overview, CPU, Memory, Disk, Network, Battery, Sensors, Settings; Overview first launch, Sensors unavailable, Battery without a battery, Settings errors / update available / uninstall helper confirmation; Battery macOS charging guidance (info entry in the Charging card, standalone Light/Dark source frames); Light/Dark pairs |
 | 03 · Flows & System | Onboarding Welcome / Battery helper / Ready, plus Welcome / Ready for a Mac without a battery, Calibration in progress, menu bar states, right-click menu and notifications, app icon |
 | 04 · Foundations | Colors, typography, spacing/radii/elevation, component overview |
 | Symbols | `Light/…` and `Dark/…` buttons, toggles, checkboxes, icon buttons, chips, popup button, banners |
 
 Colors are 94 Color Variables named `Light/<Group>/<Name>` and `Dark/<Group>/<Name>` (Text, Surface, Fill, Accent, Metric, Status, State); 12 text styles and 4 layer styles. Code mirrors these variables as one token set; change a token in both places.
+
+Battery guidance was saved and reviewed live on 2026-10-19 ([APP-005](tasks/APP-005-battery-design-parity.md)); current charging controls stay off until hardware support is implemented.
 
 Screens are drawn in English only; other languages are checked in the app.
 

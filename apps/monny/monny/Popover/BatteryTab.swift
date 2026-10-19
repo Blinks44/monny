@@ -1,19 +1,18 @@
 import SwiftUI
 
-/// Popover Battery. Without the helper (not built yet, PLAN phase 4) battery control is off:
-/// the banner explains it and the level stays unavailable until readings exist.
+/// Popover Battery. The helper currently provides status only; charging stays with macOS.
 struct BatteryTab: View {
     let battery: BatteryReading?
     let health: BatteryHealth?
     /// °C from the SMC.
     let temperature: Double?
+    let helper: BatteryHelper
     let openSensors: () -> Void
 
     var body: some View {
         if SystemInfo.hasBattery {
             VStack(spacing: Theme.spaceM) {
-                Banner(kind: .danger, symbol: "lock.fill", title: "Battery control is off",
-                       message: "Install the helper to limit and pause charging")
+                BatteryHelperBanner(helper: helper)
                 VStack(alignment: .leading, spacing: Theme.spaceL) {
                     if let battery {
                         BatteryStatusText(battery: battery).font(Theme.label).foregroundStyle(Theme.textSecondary)
@@ -32,16 +31,10 @@ struct BatteryTab: View {
                 .padding(Theme.spaceXL)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .card()
-                Button("Install Battery Helper…", systemImage: "lock.fill") { }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .controlSize(.large)
-                    .disabled(true)
+                BatteryHelperActions(helper: helper)
                     .padding(.top, Theme.spaceM)
-                Text("Asks for your admin password once. Only controls charging.")
-                    .font(Theme.footnote)
-                    .foregroundStyle(Theme.textSecondary)
-                    .multilineTextAlignment(.center)
             }
+            .task { await helper.refresh() }
         } else {
             NoBatteryView(openSensors: openSensors)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

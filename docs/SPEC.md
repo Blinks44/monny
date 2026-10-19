@@ -56,6 +56,8 @@ History must survive the window closing and an app restart for the 24 h and 7 d 
 
 Requires a Mac with a battery and the installed helper. All modes are explicit user choices; defaults come from Settings.
 
+The Battery Charging card provides manual macOS charging guidance: monitoring does not require disabling system features; before active Monny control, recommend turning off Optimized Battery Charging and setting the system Charge Limit to 100% where available, to avoid conflicting targets. Include a Battery Settings link and explain that Monny does not detect or change these settings. Coexistence is verified per hardware backend before control is enabled.
+
 - **Charge limit** 50–100 %: stop charging at the limit and run on the adapter.
 - **Sailing range:** after reaching the limit, let the level drift down by the range (for example to 75 %) before topping up.
 - **Hold:** stop charging immediately at the current level. **Discharge:** run from the battery while plugged in, down to the limit.

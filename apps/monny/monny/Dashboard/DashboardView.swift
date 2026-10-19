@@ -46,9 +46,9 @@ struct DashboardView: View {
         case .memory: MemoryPage(sampler: model.sampler)
         case .disk: DiskPage(sampler: model.sampler)
         case .network: NetworkPage(sampler: model.sampler)
+        case .battery: BatteryPage(sampler: model.sampler, helper: model.batteryHelper)
         case .sensors: SensorsPage(sampler: model.sampler)
-        case .settings: SettingsPage()
-        default: CollectingHistoryCard()
+        case .settings: SettingsPage(helper: model.batteryHelper)
         }
     }
 

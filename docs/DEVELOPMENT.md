@@ -36,11 +36,27 @@ Build output is under ignored `apps/monny/build/DerivedData/`. Do not run concur
 
 ## Signing
 
-Automatic signing; no development team or credentials are stored in the repository. Local builds without a team are signed to run locally. The battery helper will need a stable signature shared with the app so the helper can validate its client; the signing identity for releases is decided in the release task (Rebind uses one stable self-signed certificate outside notarization; Monny's helper approval flow may require a Developer ID, to be researched).
+Automatic signing; no development team or credentials are stored in the repository. Default builds without a team use ad-hoc signatures and deliberately cannot register the helper. Apple-issued app/helper signatures require the Apple anchor, matching team, expected identifiers and no `com.apple.security.get-task-allow` entitlement. The experimental self-signed route requires the same exact leaf certificate and expected identifiers, also without the debugger entitlement; it is not a notarized distribution route.
 
-## Battery helper (planned)
+Build a signed package with the existing identity in the user keychain:
 
-The helper does not exist yet. When it does, this section owns: how to build and register it locally, how to approve it in System Settings → General → Login Items & Extensions, how to unregister it, and how to read its logs with `log stream --predicate 'subsystem == "blinks44.monny.helper"'`. Never leave a development helper installed with charging inhibited; uninstall restores macOS charging.
+```sh
+apps/monny/scripts/release.sh
+```
+
+The release command never creates a signing key. It resolves the exact certificate name/fingerprint (default `Monny Local Signing`), builds arm64 Release through `dev.sh`, signs the app/helper and final versioned DMG, verifies signatures and prints SHA-256. Output: `apps/monny/build/release/`. `MONNY_SIGN_IDENTITY`, `MONNY_SIGN_KEYCHAIN` and `MONNY_PACKAGE_DIR` are optional overrides. Packaging is contained in this single script.
+
+The original Monny identity is now in the user keychain. Verified encrypted backups for both apps are kept outside the repositories in `~/Documents/DeveloperSigning/`; save an off-device copy and keep the export password separately. The one-time import script has been retired. See [build, backup and macOS reinstall](SIGNING.md).
+
+Native signed fixture checks cover the running verifier's identity, app/helper signer equality, wrong identifier/pin, ad-hoc/debuggable files and tampering. Passing these checks does not establish SMAppService installation on the local or another Mac. See [BAT-003](tasks/BAT-003-self-signed-helper.md) for the open runtime gates. Default ad-hoc builds still report Xcode disabling Hardened Runtime; verify actual flags on the separately signed artifact.
+
+## Battery helper (status-only)
+
+`dev.sh build|test|release` builds the `MonnyBatteryHelper` target as an app dependency and embeds it at `Monny.app/Contents/Library/HelperTools/MonnyBatteryHelper`, with `Contents/Library/LaunchDaemons/blinks44.monny.battery-helper.plist`. Shared protocol/signing sources live in `BatteryHelperShared/`; no package was added.
+
+Registration is an explicit Install Battery Helper action in Battery/Settings. On an appropriately signed build, SMAppService requests approval in System Settings → General → Login Items & Extensions. The app refreshes status on return. Uninstall Helper asks for confirmation and, for an enabled service, requires a compatible authenticated non-controlling acknowledgement before unregistering. A pending unapproved registration can be cancelled without starting the daemon. No registration/removal was performed during BAT-002 development.
+
+The current helper only reports version/state and prepares for removal; it cannot change charging. App/helper signatures and actual SMAppService registration, approval, same-team IPC and removal still need verification on the signed artifact. Incompatible-helper replacement is not implemented; do not bypass the failed handshake. Charge writes require lease/restoration and hardware acceptance first. Local logs: `log stream --predicate 'subsystem == "blinks44.monny.helper"'` (helper) or subsystem `blinks44.monny`, category `BatteryHelper` (app). See [BAT-002](tasks/BAT-002-helper-connection.md).
 
 ## Contribution workflow
 

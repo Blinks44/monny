@@ -2,8 +2,8 @@ import KeyboardShortcuts
 import SwiftUI
 
 /// Settings in the dashboard (Sketch `08 · Window · Settings`, `12 · Errors`, `13 · Update available`).
-/// The battery helper status waits for battery control (PLAN phase 4).
 struct SettingsPage: View {
+    let helper: BatteryHelper
     @AppStorage(PreferenceKey.refreshInterval) private var refreshInterval = 2
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
     @AppStorage(PreferenceKey.appearance) private var appearance = AppearancePreference.system
@@ -33,6 +33,7 @@ struct SettingsPage: View {
                 notifications
             }
         }
+        .task { if SystemInfo.hasBattery { await helper.refresh() } }
     }
 
     private var general: some View {
@@ -124,23 +125,27 @@ struct SettingsPage: View {
     }
 
     private var battery: some View {
-        SettingsSection("Battery") {
-            SettingsRow("Default charge limit") {
-                PopupPicker(title: "Default charge limit", selection: $chargeLimit,
-                            options: stride(from: 50, through: 100, by: 5).map { ($0, Self.percentText($0)) })
+        VStack(alignment: .leading, spacing: Theme.spaceM) {
+            SettingsSection("Battery") {
+                SettingsRow("Default charge limit") {
+                    PopupPicker(title: "Default charge limit", selection: $chargeLimit,
+                                options: stride(from: 50, through: 100, by: 5).map { ($0, Self.percentText($0)) })
+                }
+                SettingsRow("Sailing range") {
+                    PopupPicker(title: "Sailing range", selection: $sailingRange,
+                                options: [0, 3, 5, 10].map { ($0, Self.percentText($0)) })
+                }
+                SettingsRow("Heat protection above") {
+                    PopupPicker(title: "Heat protection above", selection: $heatThreshold, options: [30, 35, 40, 45].map { celsius in
+                        (celsius, Text(Double(celsius).temperatureText(temperatureUnit)))
+                    })
+                }
+                SettingsRow("Battery helper", subtitle: helper.statusSubtitle, isLast: true) {
+                    Chip(title: helper.statusTitle, kind: helper.state == .failed ? .danger : .neutral)
+                }
             }
-            SettingsRow("Sailing range") {
-                PopupPicker(title: "Sailing range", selection: $sailingRange,
-                            options: [0, 3, 5, 10].map { ($0, Self.percentText($0)) })
-            }
-            SettingsRow("Heat protection above") {
-                PopupPicker(title: "Heat protection above", selection: $heatThreshold, options: [30, 35, 40, 45].map { celsius in
-                    (celsius, Text(Double(celsius).temperatureText(temperatureUnit)))
-                })
-            }
-            SettingsRow("Battery helper", subtitle: "Privileged helper for SMC charge control", isLast: true) {
-                Chip(title: "Not installed", kind: .neutral)
-            }
+            BatteryHelperBanner(helper: helper)
+            BatteryHelperActions(helper: helper)
         }
     }
 

@@ -9,9 +9,9 @@
   Free, open source, native on macOS 26+.
 </p>
 
-A native macOS menu bar utility for resource monitoring and battery charge control. A click on the menu bar icon shows CPU, memory, disk, network, cores and battery at a glance; a dashboard window adds history charts, top processes and temperature sensors. With an optional helper, Monny can stop charging at a limit, hold the charge while running on the adapter, or discharge while plugged in.
+A native macOS menu bar utility for resource monitoring and battery charge control. A click on the menu bar icon shows CPU, memory, disk, network, cores and battery at a glance; a dashboard window adds history charts, top processes and temperature sensors. Optional battery controls are in development: charge limits, holding the charge on the adapter and discharging while plugged in.
 
-**Status:** early development. The Xcode project, agent workflow and design are in place; no product feature is implemented yet. See the [current state](docs/STATE.md) and [roadmap](docs/PLAN.md).
+**Status:** early development. Monitoring, history, dashboard pages and Settings are implemented. Battery control has a tested policy and a bundled status-only helper; charging commands remain disabled. Signed helper installation and hardware behavior still need verification. See the [current state](docs/STATE.md) and [roadmap](docs/PLAN.md).
 
 ## Repository layout
 
@@ -22,7 +22,7 @@ A native macOS menu bar utility for resource monitoring and battery charge contr
 | `docs/` | Specification, design notes, roadmap, current state and verification records |
 | `AGENTS.md`, `CLAUDE.md`, `.agents/` | Instructions and skills for coding and design agents |
 
-## Planned features
+## First-release scope
 
 - **Menu bar popover** with Overview, Battery and Processes tabs, refreshed every few seconds, and a global shortcut (⌥⌘M by default).
 - **Dashboard window** with Overview, CPU, Memory, Disk, Network, Battery and Sensors pages and 1 minute to 7 day history.

@@ -41,7 +41,7 @@ Do not add protocols, dependency-injection containers or view models where a pla
 ## Battery helper
 
 - Register with `SMAppService.daemon(plistName:)`; the user approves it in System Settings. No `SMJobBless` or manual launchd plists.
-- XPC: the helper validates the connecting client's code-signing requirement (same team/identifier) before accepting any message, exposes the smallest command set (set charging allowed/inhibited, set adapter on/off, read state, version) and never runs shell commands.
+- XPC: the helper validates the connecting client's code-signing requirement (expected identifier and same validated signer: Apple anchor/team or an exact certificate pin for the experimental self-signed path) before accepting any message, exposes the smallest command set (set charging allowed/inhibited, set adapter on/off, read state, version) and never runs shell commands.
 - Fail safe: on helper start, client disconnect without an active policy, uninstall or an unknown SMC key, restore default macOS charging. Define and test behavior across sleep/wake.
 - Version the XPC protocol; the app detects an outdated helper and offers to update it.
 - SMC key choices are a research decision per chip family; do not copy GPL code (several existing battery tools are GPL). Reference only, with the license decision recorded.

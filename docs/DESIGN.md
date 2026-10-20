@@ -14,7 +14,7 @@ Open **Monny.sketch** through Sketch MCP (load `mcp`, then `use`; resolve the op
 | --- | --- |
 | 01 · Popover | Overview, Battery, Processes; Battery charging / on battery / helper required; Overview thermal alert; Overview and Battery without a battery. Light above, Dark below |
 | 02 · Window | Overview, CPU, Memory, Disk, Network, Battery, Sensors, Settings; Overview first launch, Sensors unavailable, Battery without a battery, Settings errors / update available / uninstall helper confirmation; Battery macOS charging guidance (info entry in the Charging card, standalone Light/Dark source frames); Light/Dark pairs |
-| 03 · Flows & System | Onboarding Welcome / Battery helper / Ready, plus Welcome / Ready for a Mac without a battery, Calibration in progress, menu bar states, right-click menu and notifications, app icon |
+| 03 · Flows & System | Onboarding Welcome / Battery helper / Ready, plus Welcome / Ready for a Mac without a battery, Calibration in progress, menu bar states, right-click menu and notifications, app icon; branded DMG window and standalone pending-helper-approval and connection-recovery Light/Dark references |
 | 04 · Foundations | Colors, typography, spacing/radii/elevation, component overview |
 | Symbols | `Light/…` and `Dark/…` buttons, toggles, checkboxes, icon buttons, chips, popup button, banners |
 
@@ -23,6 +23,10 @@ Colors are 94 Color Variables named `Light/<Group>/<Name>` and `Dark/<Group>/<Na
 Battery guidance was saved and reviewed live on 2026-10-19 ([APP-005](tasks/APP-005-battery-design-parity.md)); current charging controls stay off until hardware support is implemented.
 
 Screens are drawn in English only; other languages are checked in the app.
+
+The saved DMG frame/background and clearer helper-approval references were reviewed live on 2026-10-19 ([REL-002](tasks/REL-002-branded-dmg.md), [APP-006](tasks/APP-006-helper-approval-clarity.md)). DMG background is a fixed light, text-free installation canvas apart from the Monny brand; Finder owns the actual icons and filenames.
+
+Helper connection recovery card/action references were saved and reviewed live on 2026-10-19 ([BAT-008](tasks/BAT-008-helper-recovery-ui.md)); they supersede bare retry/removal links. The popover stays open through confirmation and system authorization; removal always asks for confirmation.
 
 ## Readiness
 

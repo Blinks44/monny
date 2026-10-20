@@ -8,6 +8,12 @@ import SwiftUI
 final class MenuBarPanel: NSPanel {
     /// Called once the panel has closed for any reason.
     var onClose: () -> Void = { }
+    /// Confirmation and system authorization belong to the originating popover interaction.
+    var keepsPopoverOpen: () -> Bool = { false }
+
+    var dismissesOutsideClicks: Bool {
+        !keepsPopoverOpen() && attachedSheet == nil && NSApp.modalWindow == nil
+    }
     private var monitors: [Any] = []
     private var isClosing = false
 
@@ -89,14 +95,14 @@ final class MenuBarPanel: NSPanel {
         let mask: NSEvent.EventTypeMask = [.leftMouseDown, .rightMouseDown, .otherMouseDown]
         if let global = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: { [weak self, weak button] _ in
             MainActor.assumeIsolated {
-                guard let self, !Self.isMouse(on: button) else { return }
+                guard let self, self.dismissesOutsideClicks, !Self.isMouse(on: button) else { return }
                 self.close()
             }
         }) {
             monitors.append(global)
         }
         if let local = NSEvent.addLocalMonitorForEvents(matching: mask, handler: { [weak self, weak button] event in
-            guard let self, !Self.isMouse(on: button) else { return event }
+            guard let self, self.dismissesOutsideClicks, !Self.isMouse(on: button) else { return event }
             if event.window !== self || !self.panelFrame.contains(NSEvent.mouseLocation) { self.close() }
             return event
         }) {

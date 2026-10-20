@@ -2,7 +2,7 @@ import Foundation
 import IOKit
 
 /// A raw SMC value: the four-character data type and its bytes as the SMC returns them.
-nonisolated struct SMCValue: Sendable, Equatable {
+nonisolated struct SMCValue: Codable, Sendable, Equatable {
     var type: String
     var bytes: [UInt8]
 
@@ -16,16 +16,40 @@ nonisolated struct SMCValue: Sendable, Equatable {
             Double(Int16(bitPattern: UInt16(bytes[0]) << 8 | UInt16(bytes[1]))) / 256
         case "fpe2" where bytes.count == 2:
             Double(UInt16(bytes[0]) << 8 | UInt16(bytes[1])) / 4
-        case "ui8 ", "ui16", "ui32":
-            bytes.isEmpty || bytes.count > 4 ? nil : Double(bytes.reduce(UInt32(0)) { $0 << 8 | UInt32($1) })
+        case "ui8 " where bytes.count == 1,
+             "ui16" where bytes.count == 2,
+             "ui32" where bytes.count == 4:
+            Double(bytes.reduce(UInt32(0)) { $0 << 8 | UInt32($1) })
         default:
             nil
         }
     }
 }
 
-/// Read-only connection to the `AppleSMC` user client. Any unprivileged process may open it;
-/// the call layout below is undocumented but stable across Apple silicon (see research).
+/// Raw metadata only: attributes are not treated as permission to write a key.
+nonisolated struct SMCKeyMetadata: Codable, Sendable, Equatable {
+    var type: String
+    var size: UInt32
+    var attributes: UInt8
+
+    var isValid: Bool {
+        (1...32).contains(size) && type.utf8.count == 4
+            && type.utf8.allSatisfy { (32...126).contains($0) }
+    }
+}
+
+nonisolated enum SMCReadFailure: Error, Codable, Sendable, Equatable {
+    case connectionUnavailable, invalidKey, invalidMetadata, invalidResponse
+    case kernel(Int32), smc(UInt8)
+}
+
+nonisolated enum SMCKeyInspection: Codable, Sendable, Equatable {
+    case readable(metadata: SMCKeyMetadata, value: SMCValue)
+    case unavailable(SMCReadFailure, metadata: SMCKeyMetadata? = nil)
+}
+
+/// Read-only connection to the `AppleSMC` user client, opened without privilege escalation.
+/// Access varies by key/firmware; the undocumented call layout is described in research.
 nonisolated final class SMCConnection {
     private let connection: io_connect_t
     private var infoCache: [UInt32: KeyInfo] = [:]
@@ -41,36 +65,55 @@ nonisolated final class SMCConnection {
 
     deinit { IOServiceClose(connection) }
 
-    /// `nil` when the key does not exist on this Mac or the read fails.
+    /// Existing sensor API: unavailable/failed readings stay nil.
     func read(_ key: String) -> SMCValue? {
+        guard case let .readable(_, value) = inspect(key) else { return nil }
+        return value
+    }
+
+    /// Inspect metadata and read bytes only. No SMC write command is implemented.
+    func inspect(_ key: String) -> SMCKeyInspection {
+        guard key.utf8.count == 4, key.utf8.allSatisfy({ (32...126).contains($0) }) else {
+            return .unavailable(.invalidKey)
+        }
         let code = Self.fourCC(key)
-        guard let info = keyInfo(code) else { return nil }
+        let info: KeyInfo
+        do { info = try keyInfo(code) }
+        catch { return .unavailable(error) }
+        let metadata = SMCKeyMetadata(type: Self.string(info.dataType), size: info.dataSize, attributes: info.attributes)
+        guard metadata.isValid else { return .unavailable(.invalidMetadata, metadata: metadata) }
         var input = KeyData()
         input.key = code
         input.keyInfo.dataSize = info.dataSize
         input.command = Command.readBytes
-        guard let output = call(input) else { return nil }
-        let bytes = withUnsafeBytes(of: output.bytes) { Array($0.prefix(Int(min(info.dataSize, 32)))) }
-        return SMCValue(type: Self.string(info.dataType), bytes: bytes)
+        do {
+            let output = try call(input)
+            let bytes = withUnsafeBytes(of: output.bytes) { Array($0.prefix(Int(info.dataSize))) }
+            return .readable(metadata: metadata, value: SMCValue(type: metadata.type, bytes: bytes))
+        } catch {
+            return .unavailable(error, metadata: metadata)
+        }
     }
 
-    private func keyInfo(_ code: UInt32) -> KeyInfo? {
+    private func keyInfo(_ code: UInt32) throws(SMCReadFailure) -> KeyInfo {
         if let cached = infoCache[code] { return cached }
         var input = KeyData()
         input.key = code
         input.command = Command.readKeyInfo
-        guard let output = call(input) else { return nil }
+        let output = try call(input)
         infoCache[code] = output.keyInfo
         return output.keyInfo
     }
 
-    private func call(_ input: KeyData) -> KeyData? {
+    private func call(_ input: KeyData) throws(SMCReadFailure) -> KeyData {
         var input = input
         var output = KeyData()
         var size = MemoryLayout<KeyData>.stride
         let result = IOConnectCallStructMethod(connection, Command.kernelIndex, &input, MemoryLayout<KeyData>.stride, &output, &size)
-        // `output.result` is the SMC's own status; non-zero means the key does not exist.
-        guard result == KERN_SUCCESS, output.result == 0 else { return nil }
+        guard result == KERN_SUCCESS else { throw .kernel(result) }
+        guard size == MemoryLayout<KeyData>.stride else { throw .invalidResponse }
+        // Preserve the SMC's status; non-zero can mean missing, gated or another rejection.
+        guard output.result == 0 else { throw .smc(output.result) }
         return output
     }
 

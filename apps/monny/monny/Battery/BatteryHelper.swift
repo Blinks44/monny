@@ -12,16 +12,19 @@ nonisolated struct HelperOperations: Sendable {
     var register: @Sendable () async throws -> Void
     var unregister: @Sendable () async throws -> Void
     var request: @Sendable (_ requirement: String, _ forRemoval: Bool) async throws -> HelperStatus
+    // Writer-capable releases require acknowledgement. Only explicit non-writing fixtures opt out.
+    var requiresRemovalAcknowledgement = true
 
     static let live = Self(
         signingIdentity: { await HelperSystem.signingIdentity() },
         registration: { await HelperSystem.registration() },
         register: { try await HelperSystem.register() },
         unregister: { try await HelperSystem.unregister() },
-        request: { requirement, removing in try await HelperConnection().request(requirement: requirement, forRemoval: removing) })
+        request: { requirement, removing in try await HelperConnection().request(requirement: requirement, forRemoval: removing) },
+        requiresRemovalAcknowledgement: true)
 }
 
-nonisolated private enum HelperSystem {
+nonisolated enum HelperSystem {
     @concurrent static func signingIdentity() async -> HelperSigning.Identity? {
         guard let identity = HelperSigning.currentIdentity(for: .app),
               HelperSigning.matches(at: Bundle.main.bundleURL.appending(components: "Contents", "Library", "HelperTools", HelperContract.executableName),
@@ -58,7 +61,9 @@ final class BatteryHelper {
     private(set) var isBusy = false
     private(set) var registration = HelperRegistration.notRegistered
     private(set) var failure: Failure?
+    var isPresentingRemovalConfirmation = false
     @ObservationIgnored private var identity: HelperSigning.Identity?
+    @ObservationIgnored private var connectionError: HelperConnectionError?
     @ObservationIgnored private let operations: HelperOperations
     @ObservationIgnored private let logger = Logger(subsystem: "blinks44.monny", category: "BatteryHelper")
 
@@ -102,6 +107,26 @@ final class BatteryHelper {
         }
     }
 
+    /// Explicit recovery for an approved item whose launchd job is missing. Refresh stays read-only.
+    func retryConnection() async {
+        guard !isBusy else { return }
+        await refresh()
+        guard !isBusy, registration == .enabled, state == .failed, identity != nil,
+              connectionError == .connectionFailed || connectionError == .timedOut else { return }
+        isBusy = true
+        defer { isBusy = false }
+        do {
+            try Task.checkCancellation()
+            try await operations.register()
+        } catch {
+            // Already-registered and pending-approval errors require fresh state, not a retry loop.
+            let error = error as NSError
+            logger.error("Explicit helper re-registration failed: domain=\(error.domain, privacy: .public) code=\(error.code, privacy: .public)")
+        }
+        registration = await operations.registration()
+        await readStatus()
+    }
+
     func remove() async {
         guard canRemove else { return }
         isBusy = true
@@ -113,9 +138,16 @@ final class BatteryHelper {
                 guard let identity, let requirement = HelperSigning.requirement(for: .helper, identity: identity) else {
                     throw HelperConnectionError.signingUnavailable
                 }
-                let response = try await operations.request(requirement, true)
-                _ = try response.validated()
-                guard response.controlState == .notControlling else { throw HelperConnectionError.invalidReply }
+                do {
+                    let response = try await operations.request(requirement, true)
+                    _ = try response.validated()
+                    guard response.controlState == .notControlling else { throw HelperConnectionError.invalidReply }
+                } catch let error as HelperConnectionError where error == .connectionFailed || error == .timedOut {
+                    guard !operations.requiresRemovalAcknowledgement else { throw error }
+                    // This release has no charge writer or writable IPC. An unreachable helper
+                    // cannot acknowledge removal; unregistering still goes through SMAppService.
+                    logger.notice("Removing unreachable status-only helper through SMAppService")
+                }
             } else if registration != .requiresApproval {
                 throw HelperConnectionError.connectionFailed
             }
@@ -137,6 +169,7 @@ final class BatteryHelper {
     }
 
     private func readStatus() async {
+        connectionError = nil
         guard let identity, let requirement = HelperSigning.requirement(for: .helper, identity: identity) else {
             state = .unavailable
             return
@@ -152,6 +185,7 @@ final class BatteryHelper {
                 state = .connected
                 failure = nil
             } catch {
+                connectionError = error as? HelperConnectionError
                 status = nil
                 state = error as? HelperConnectionError == .versionMismatch ? .incompatible : .failed
                 failure = .connection

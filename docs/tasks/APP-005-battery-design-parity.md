@@ -27,4 +27,4 @@ Sources and mechanism decision: [battery research](../research/battery-control.m
 
 ## Next handoff
 
-User reviews the updated Battery layout and guidance in the separate DesignReview DMG. Helper installation remains user-owned under BAT-003; monitoring and this UI do not require changing system charging settings. Hardware charge control remains disabled. No Git commit made.
+User reviews the updated Battery layout and guidance in the latest build/release DMG (the superseded DesignReview output was cleaned during BAT-004). Helper installation remains user-owned under BAT-003; monitoring and this UI do not require changing system charging settings. Hardware charge control remains disabled. No Git commit made.

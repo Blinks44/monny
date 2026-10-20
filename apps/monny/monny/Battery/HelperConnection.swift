@@ -10,6 +10,9 @@ actor HelperConnection {
     private var result: Result<HelperStatus, HelperConnectionError>?
     private var deadline: Task<Void, Never>?
     private var started = false
+    private var needsDiagnostics = false
+    private var verificationTarget: Int?
+    private enum Operation: Equatable { case status, removal, diagnostics, verification(Int) }
 
     /// Anonymous endpoints support local IPC tests without registering a privileged service.
     init(endpoint: NSXPCListenerEndpoint? = nil, timeout: Duration = .seconds(5)) {
@@ -18,12 +21,28 @@ actor HelperConnection {
     }
 
     func request(requirement: String, forRemoval: Bool = false) async throws -> HelperStatus {
+        try await request(requirement: requirement, operation: forRemoval ? .removal : .status)
+    }
+
+    /// Call only after status advertises this additive selector; legacy helpers stay removable.
+    func diagnose(requirement: String) async throws -> HelperStatus {
+        try await request(requirement: requirement, operation: .diagnostics)
+    }
+
+    /// Requires an explicit caller and a successful feature handshake first.
+    func verifyNativeLimit(_ limit: Int, requirement: String) async throws -> HelperStatus {
+        try await request(requirement: requirement, operation: .verification(limit))
+    }
+
+    private func request(requirement: String, operation: Operation) async throws -> HelperStatus {
         try await withTaskCancellationHandler {
             if let result { return try result.get() }
             guard !started else { throw HelperConnectionError.connectionFailed }
             guard HelperSigning.parse(requirement) != nil else { throw HelperConnectionError.signingUnavailable }
             guard !Task.isCancelled else { throw HelperConnectionError.cancelled }
             started = true
+            needsDiagnostics = operation == .diagnostics
+            if case .verification(let target) = operation { verificationTarget = target }
             return try await withCheckedThrowingContinuation { continuation in
                 self.continuation = continuation
                 let connection = endpoint.map(NSXPCConnection.init(listenerEndpoint:))
@@ -51,8 +70,12 @@ actor HelperConnection {
                 let reply: @Sendable (Data) -> Void = { [weak self] data in
                     Task { await self?.receive(data) }
                 }
-                if forRemoval { proxy.prepareForRemoval(withReply: reply) }
-                else { proxy.readStatus(withReply: reply) }
+                switch operation {
+                case .status: proxy.readStatus(withReply: reply)
+                case .removal: proxy.prepareForRemoval(withReply: reply)
+                case .diagnostics: proxy.readChargeDiagnostics(withReply: reply)
+                case .verification(let limit): proxy.verifyNativeChargeLimit(limit, withReply: reply)
+                }
             }
         } onCancel: {
             Task { await self.complete(.failure(.cancelled)) }
@@ -60,7 +83,14 @@ actor HelperConnection {
     }
 
     private func receive(_ data: Data) {
-        do { complete(.success(try HelperStatus.decode(data))) }
+        do {
+            let response = try HelperStatus.decode(data)
+            guard !needsDiagnostics || response.chargeDiagnostics != nil else { throw HelperConnectionError.invalidReply }
+            if let verificationTarget {
+                guard response.nativeVerification?.target == verificationTarget else { throw HelperConnectionError.invalidReply }
+            }
+            complete(.success(response))
+        }
         catch { complete(.failure(error as? HelperConnectionError ?? .invalidReply)) }
     }
 

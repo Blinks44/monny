@@ -18,7 +18,8 @@ Prepare a persistent self-signed app/helper artifact and verify native certifica
 - [x] Apple-issued identities still require the Apple anchor and matching team; a failed Apple-team check cannot fall back to the alternate route.
 - [x] Release artifact and signed positive/negative fixture verification pass.
 - [x] Persistent local identity is reused; private signing state excluded from Git and the DMG.
-- [ ] Explicit SMAppService registration, approval, status IPC, restart and removal tested locally.
+- [x] User reports local registration/approval and Connected status after updating from the DMG; screenshot corroborates the connected state.
+- [x] User confirms Connected after full app quit/reopen and Mac restart; removal shows Not installed and reinstallation returns Connected.
 - [ ] Downloaded DMG installed on a clean second Mac without the signing identity or developer credentials; Gatekeeper and daemon approval results recorded.
 
 ## Implementation and verification
@@ -29,6 +30,10 @@ Prepare a persistent self-signed app/helper artifact and verify native certifica
 
 Source research: [battery control](../research/battery-control.md#self-signed-investigation-2026-10-19). Installation claims in the upstream example conflict; they do not establish Monny's compatibility. Final 63 tests and arm64 Release build pass; signed native positive/negative fixture checks and DMG integrity verification pass. Evidence and runtime limits: [self-signed helper verification](../verification/self-signed-helper.md).
 
+## User-reported local installation — 2026-10-19
+
+User reports helper installation succeeded after the app and System Settings authentication steps, then updated the app through the DMG and observed Connected. The supplied screenshot shows the helper-connected explanation with charge control still unavailable. This supports a successful local authenticated status reply through the existing version/signature-checked client, including after an app replacement. User subsequently confirms Connected after full app quit/reopen and Mac restart, then Not installed after removal and Connected after reinstallation. These are user-reported local checks, not agent-observed process traces. Exact installed artifact hash, runtime wrong-signer rejection and clean-Mac checks remain open. Approval clarity improvements are tracked by [APP-006](APP-006-helper-approval-clarity.md).
+
 ## Next handoff
 
-After the artifact checks pass, explicitly authorize installation of this status-only helper to test SMAppService on the local Mac. Clean-machine distribution acceptance is a separate gate. Lease/restoration still precedes any charging command.
+Local lifecycle and build-3 native diagnostic success are confirmed, but repeated AMFI launch rejection makes self-signed installation unreliable even on the development Mac. The same installed binary subsequently runs after user-owned unregister/register; underlying trust/background-item cause remains unisolated. See the dated [launch verification](../verification/self-signed-helper.md#recurring-launch-rejection-on-build-3--2026-10-19). User explicitly chooses to continue development without Developer ID; retain existing self-signing for experimental local testing. A notarized comparison remains a future optional investigation when an identity is available, not a prerequisite for independent implementation. Runtime wrong-signer, clean-machine and macOS 26 checks remain open. Independent restoration-policy work can continue without charging writes. The agent has not changed the installed service; real charging tests require explicit authorization.

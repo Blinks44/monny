@@ -33,3 +33,7 @@ Live app capture after rebuilding failed with ScreenCaptureKit -3811 (the availa
 No daemon was registered, approved, removed or run as root by the agent; no charging operation occurred. Production same-team IPC, rejection of an actually differently signed/debuggable client, notarized registration, return from System Settings and real removal all require the final matching signed app/helper. Incompatible-helper replacement is not implemented.
 
 Next engineering slice: command lease/executor/restoration fixtures before any hardware writer. Separately, obtain an authorized matching signing configuration and explicit permission to install the status-only helper for native lifecycle verification. macOS 26 runtime, hardware charging fail-safe and helper runtime cost remain open.
+
+## Native lifecycle wiring follow-up — 2026-10-19
+
+[BAT-005](../tasks/BAT-005-helper-lifecycle.md) supersedes the immutable service implementation with per-connection HelperSession and native sleep/wake/termination hooks, retaining status-only protocol and no SMC backend. 85 software tests and signed Release/native fixture/app/DMG checks pass. Its task records the exact final artifact/hash, injected operations, unexecuted native observer and runtime/crash/hardware limits. Prior user-confirmed lifecycle does not validate the new observer.

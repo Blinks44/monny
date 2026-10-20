@@ -34,6 +34,16 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         guard !Self.runningTests else { return }
+        if NativeLimitVerificationCommand.isRequested {
+            NSApp.setActivationPolicy(.prohibited)
+            Task { exit(await NativeLimitVerificationCommand.run()) }
+            return
+        }
+        if BatteryDiagnosticCommand.isRequested {
+            NSApp.setActivationPolicy(.prohibited)
+            Task { exit(await BatteryDiagnosticCommand.run()) }
+            return
+        }
         // No Dock icon until a window opens (proposal for SPEC §9, matching Rebind).
         NSApp.setActivationPolicy(.accessory)
         let menuBar = MenuBarController(model: model)
@@ -55,14 +65,14 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        guard !Self.runningTests else { return }
+        guard !Self.runningTests, !BatteryDiagnosticCommand.isRequested, !NativeLimitVerificationCommand.isRequested else { return }
         model.sampler.history.save(synchronously: true)
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 
     func applicationDidBecomeActive(_ notification: Notification) {
-        guard !Self.runningTests, SystemInfo.hasBattery else { return }
+        guard !Self.runningTests, !BatteryDiagnosticCommand.isRequested, !NativeLimitVerificationCommand.isRequested, SystemInfo.hasBattery else { return }
         Task { await model.batteryHelper.refresh() }
     }
 

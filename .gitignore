@@ -41,7 +41,7 @@ xcuserdata/
 # Claude Code per-user settings; shared .claude/skills (symlink) stays versioned.
 /.claude/settings.local.json
 
-# Local persistent self-signing keychain and its private password; never distribute with a DMG.
+# Retired signing credentials: keep ignored if restored from an older checkout or backup.
 /apps/monny/.local-signing/
 
 # Private signing identity exports are credentials, never repository source.

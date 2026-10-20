@@ -40,9 +40,10 @@ Do not add protocols, dependency-injection containers or view models where a pla
 
 ## Battery helper
 
-- Register with `SMAppService.daemon(plistName:)`; the user approves it in System Settings. No `SMJobBless` or manual launchd plists.
+- Register with `SMAppService.daemon(plistName:)`; an explicit connection retry may re-register an approved item once after transport failure, without unregistering. Refresh/startup never register. The user approves it in System Settings. No `SMJobBless` or manual launchd plists. Removal requires a compatible authenticated non-controlling/restoration acknowledgement, including the manual-verification helper. No transport-failure bypass in live operations. Historical non-writing fixtures retain that explicit exception; malformed, mismatched or restoration-failure replies fail closed.
 - XPC: the helper validates the connecting client's code-signing requirement (expected identifier and same validated signer: Apple anchor/team or an exact certificate pin for the experimental self-signed path) before accepting any message, exposes the smallest command set (set charging allowed/inhibited, set adapter on/off, read state, version) and never runs shell commands.
 - Fail safe: on helper start, client disconnect without an active policy, uninstall or an unknown SMC key, restore default macOS charging. Define and test behavior across sleep/wake.
+- Native-setting transactions must checkpoint before setters and recover the original pair before new commands on restart. Never accept a journal path from IPC; the fixed root-owned private location, single executor ownership and restart availability must be verified before enabling production writes ([BAT-013](tasks/BAT-013-native-recovery-journal.md)).
 - Version the XPC protocol; the app detects an outdated helper and offers to update it.
 - SMC key choices are a research decision per chip family; do not copy GPL code (several existing battery tools are GPL). Reference only, with the license decision recorded.
 

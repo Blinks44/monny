@@ -17,6 +17,9 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         self.model = model
         panel = MenuBarPanel(rootView: PopoverView(model: model))
         super.init()
+        panel.keepsPopoverOpen = { [weak model] in
+            model?.batteryHelper.isBusy == true || model?.batteryHelper.isPresentingRemovalConfirmation == true
+        }
         panel.onClose = { [weak self] in self?.popoverDidClose() }
         menu.autoenablesItems = false
         menu.delegate = self
@@ -44,6 +47,8 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         button.highlight(true)
         model.sampler.setVisible(.popover, true)
         panel.show(below: button)
+        // A nonactivating panel does not reliably trigger applicationDidBecomeActive.
+        if SystemInfo.hasBattery { Task { await model.batteryHelper.refresh() } }
     }
 
     func closePopover() { panel.close() }

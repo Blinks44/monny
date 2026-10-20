@@ -1,32 +1,22 @@
 import Foundation
 import OSLog
 
-/// Immutable status-only service. No SMC writer is linked into this executable.
-nonisolated final class BatteryHelperService: NSObject, BatteryHelperProtocol {
-    private let response: Data
-
-    init(response: Data) { self.response = response }
-
-    func readStatus(withReply reply: @escaping @Sendable (Data) -> Void) { reply(response) }
-
-    /// This version cannot inhibit charging, so there is no state to restore. Future writable
-    /// versions must acknowledge real restoration here before the app unregisters the daemon.
-    func prepareForRemoval(withReply reply: @escaping @Sendable (Data) -> Void) { reply(response) }
-}
-
 nonisolated final class HelperListenerDelegate: NSObject, NSXPCListenerDelegate {
-    let service: BatteryHelperService
+    let executor: ChargeCommandExecutor
     let requirement: String
 
-    init(response: Data, requirement: String) {
-        self.service = BatteryHelperService(response: response)
+    init(executor: ChargeCommandExecutor, requirement: String) {
+        self.executor = executor
         self.requirement = requirement
     }
 
     func listener(_ listener: NSXPCListener, shouldAcceptNewConnection connection: NSXPCConnection) -> Bool {
         connection.setCodeSigningRequirement(requirement)
+        let session = HelperSession(executor: executor)
         connection.exportedInterface = NSXPCInterface(with: BatteryHelperProtocol.self)
-        connection.exportedObject = service
+        connection.exportedObject = session
+        connection.invalidationHandler = { Task { await session.disconnect() } }
+        connection.interruptionHandler = { Task { await session.disconnect() } }
         connection.activate()
         return true
     }
@@ -34,15 +24,33 @@ nonisolated final class HelperListenerDelegate: NSObject, NSXPCListenerDelegate 
 
 let logger = Logger(subsystem: "blinks44.monny.helper", category: "Connection")
 guard let identity = HelperSigning.currentIdentity(for: .helper),
-      let requirement = HelperSigning.requirement(for: .app, identity: identity),
-      let response = try? JSONEncoder().encode(HelperStatus.current) else {
+      let requirement = HelperSigning.requirement(for: .app, identity: identity) else {
     logger.error("Helper cannot establish a trusted signing identity; refusing connections")
     exit(EXIT_FAILURE)
 }
-let delegate = HelperListenerDelegate(response: response, requirement: requirement)
+// Ordinary status/diagnostics never apply a target. Mutation requires an explicit verification RPC.
+let executor = ChargeCommandExecutor(nativeBackendFactory: {
+    do {
+        return .init(operations: NativeChargeLimitBackend.operations,
+                     journal: try NativeChargeLimitFileJournal.systemJournal().journal)
+    } catch {
+        logger.error("Native recovery storage could not open: \(String(describing: error), privacy: .private)")
+        throw error
+    }
+}, nativeDiagnosticRead: { await NativeChargeLimitReader.read() })
+guard let powerMonitor = HelperPowerMonitor(executor: executor) else { exit(EXIT_FAILURE) }
+let delegate = HelperListenerDelegate(executor: executor, requirement: requirement)
 let listener = NSXPCListener(machServiceName: HelperContract.helperIdentifier)
 listener.setConnectionCodeSigningRequirement(requirement)
 listener.delegate = delegate
-listener.activate()
-logger.info("Status-only battery helper started")
+Task {
+    do {
+        try await executor.start()
+        listener.activate()
+        logger.info("Battery helper started with explicit native verification")
+    } catch {
+        logger.fault("Startup restoration failed; refusing connections")
+        exit(EXIT_FAILURE)
+    }
+}
 RunLoop.current.run()

@@ -101,25 +101,35 @@ private actor HelperFixture {
     var unregisterCalls = 0
     var requests: [Bool] = []
     var failsRequest = false
+    var requestFailure = HelperConnectionError.connectionFailed
     var failsRegister = false
+    var registrationAfterRegister = HelperRegistration.requiresApproval
+    var connectsAfterRegister = false
     var failsUnregister = false
     var reply = HelperStatus.current
 
     func configure(team: String? = "ABCDEFGHIJ", registration: HelperRegistration = .notRegistered,
                    failsRequest: Bool = false, failsRegister: Bool = false,
-                   failsUnregister: Bool = false, reply: HelperStatus = .current) {
+                   failsUnregister: Bool = false, reply: HelperStatus = .current,
+                   requestFailure: HelperConnectionError = .connectionFailed,
+                   registrationAfterRegister: HelperRegistration = .requiresApproval,
+                   connectsAfterRegister: Bool = false) {
         self.team = team
         self.registration = registration
         self.failsRequest = failsRequest
+        self.requestFailure = requestFailure
         self.failsRegister = failsRegister
         self.failsUnregister = failsUnregister
         self.reply = reply
+        self.registrationAfterRegister = registrationAfterRegister
+        self.connectsAfterRegister = connectsAfterRegister
     }
 
     func register() throws {
         registerCalls += 1
         if failsRegister { throw HelperConnectionError.connectionFailed }
-        registration = .requiresApproval
+        registration = registrationAfterRegister
+        if connectsAfterRegister { failsRequest = false }
     }
 
     func unregister() throws {
@@ -130,7 +140,7 @@ private actor HelperFixture {
 
     func request(removing: Bool) throws -> HelperStatus {
         requests.append(removing)
-        if failsRequest { throw HelperConnectionError.connectionFailed }
+        if failsRequest { throw requestFailure }
         return reply
     }
 
@@ -143,6 +153,53 @@ private actor HelperFixture {
 
 @MainActor
 struct HelperLifecycleTests {
+    @Test func explicitRetryCanReconnectAnApprovedMissingJobWithoutRemovingIt() async {
+        let fixture = HelperFixture()
+        await fixture.configure(registration: .enabled, failsRequest: true,
+                                registrationAfterRegister: .enabled, connectsAfterRegister: true)
+        let helper = BatteryHelper(operations: fixture.operations)
+        await helper.refresh()
+        #expect(helper.state == .failed)
+        #expect(await fixture.registerCalls == 0)
+        await helper.retryConnection()
+        #expect(helper.state == .connected)
+        #expect(await fixture.registerCalls == 1)
+        #expect(await fixture.unregisterCalls == 0)
+        #expect(await fixture.requests == [false, false, false])
+    }
+
+    @Test func failedExplicitRegistrationDoesNotLoopOrUnregister() async {
+        let fixture = HelperFixture()
+        await fixture.configure(registration: .enabled, failsRequest: true, failsRegister: true)
+        let helper = BatteryHelper(operations: fixture.operations)
+        await helper.retryConnection()
+        #expect(helper.state == .failed)
+        #expect(await fixture.registerCalls == 1)
+        #expect(await fixture.unregisterCalls == 0)
+        #expect(await fixture.requests == [false, false])
+    }
+
+    @Test(arguments: [HelperConnectionError.invalidReply, .versionMismatch, .cancelled])
+    func explicitRetryDoesNotRegisterForUntrustedOrCancelledReplies(error: HelperConnectionError) async {
+        let fixture = HelperFixture()
+        await fixture.configure(registration: .enabled, failsRequest: true, requestFailure: error)
+        let helper = BatteryHelper(operations: fixture.operations)
+        await helper.retryConnection()
+        #expect(await fixture.registerCalls == 0)
+        #expect(await fixture.unregisterCalls == 0)
+    }
+
+    @Test(arguments: [HelperRegistration.notRegistered, .requiresApproval])
+    func connectionRetryDoesNotInstallOrOverrideConsent(registration: HelperRegistration) async {
+        let fixture = HelperFixture()
+        await fixture.configure(registration: registration)
+        let helper = BatteryHelper(operations: fixture.operations)
+        await helper.retryConnection()
+        #expect(await fixture.registerCalls == 0)
+        #expect(await fixture.unregisterCalls == 0)
+        #expect(await fixture.requests.isEmpty)
+    }
+
     @Test func refreshNeverRegistersAndInstallWaitsForApproval() async {
         let fixture = HelperFixture()
         let helper = BatteryHelper(operations: fixture.operations)
@@ -242,4 +299,45 @@ struct HelperLifecycleTests {
         #expect(helper.failure == .removal)
         #expect(helper.registration == .enabled)
     }
+    @Test(arguments: [HelperConnectionError.connectionFailed, .timedOut])
+    func statusOnlyHelperCanBeUnregisteredWhenTransportIsUnavailable(error: HelperConnectionError) async {
+        let fixture = HelperFixture()
+        await fixture.configure(registration: .enabled, failsRequest: true, requestFailure: error)
+        var operations = fixture.operations
+        operations.requiresRemovalAcknowledgement = false
+        let helper = BatteryHelper(operations: operations)
+        await helper.refresh()
+        #expect(helper.state == .failed)
+        await helper.remove()
+        #expect(helper.state == .notInstalled)
+        #expect(helper.status == nil)
+        #expect(await fixture.unregisterCalls == 1)
+    }
+
+    @Test(arguments: [HelperConnectionError.invalidReply, .versionMismatch, .cancelled])
+    func statusOnlyRecoveryStillRejectsInvalidOrIncompatibleReplies(error: HelperConnectionError) async {
+        let fixture = HelperFixture()
+        await fixture.configure(registration: .enabled, failsRequest: true, requestFailure: error)
+        var operations = fixture.operations
+        operations.requiresRemovalAcknowledgement = false
+        let helper = BatteryHelper(operations: operations)
+        await helper.refresh()
+        await helper.remove()
+        #expect(helper.state != .notInstalled)
+        #expect(await fixture.unregisterCalls == 0)
+    }
+
+    @Test func failedSystemUnregisterIsNotReportedAsSuccessfulOfflineRecovery() async {
+        let fixture = HelperFixture()
+        await fixture.configure(registration: .enabled, failsRequest: true, failsUnregister: true)
+        var operations = fixture.operations
+        operations.requiresRemovalAcknowledgement = false
+        let helper = BatteryHelper(operations: operations)
+        await helper.refresh()
+        await helper.remove()
+        #expect(helper.state == .failed)
+        #expect(helper.failure == .removal)
+        #expect(await fixture.unregisterCalls == 1)
+    }
+
 }

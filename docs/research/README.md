@@ -1,6 +1,6 @@
 # Monny: mechanism and dependency decisions
 
-Updated 2026-10-18. Readings and history storage are decided ([CORE-001](../tasks/CORE-001-readings-research.md)); the battery-control task fills the helper table. Record dates, sources, revisions, licenses and what was actually tested.
+Updated 2026-10-19. Readings and history storage are decided ([CORE-001](../tasks/CORE-001-readings-research.md)); the battery-control task fills the helper table. Record dates, sources, revisions, licenses and what was actually tested.
 
 ## Readings
 
@@ -54,9 +54,11 @@ In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 
 
 | Area | Decision | Evidence / open question |
 | --- | --- | --- |
-| Helper installation | SMAppService daemon + native authenticated NSXPCConnection implemented for status only | [BAT-002](../tasks/BAT-002-helper-connection.md); matching signed-artifact registration and approval checks pending |
-| Charging keys | Capability-based support; firmware may deny access even to root | [Sources and licensing](battery-control.md#charging-support-varies-with-firmware); no writes or hardware support verified |
-| Fail-safe | Pure app-side policy implemented; helper lease/restoration still pending | [Policy and lifecycle gates](battery-control.md); sleep/wake, crash and uninstall require hardware checks |
+| Helper installation | SMAppService daemon + native authenticated NSXPCConnection implemented for status only | [BAT-002](../tasks/BAT-002-helper-connection.md); local registration/approval/lifecycle user-confirmed; clean-Mac/runtime negative-peer checks open |
+| Charging keys | Capability-based support; firmware may deny access even to root | [Sources and licensing](battery-control.md#charging-support-varies-with-firmware); unprivileged six-key metadata probe rejected locally ([BAT-006](../tasks/BAT-006-read-only-charge-probe.md)); authenticated helper diagnostics implemented ([BAT-007](../tasks/BAT-007-helper-read-only-diagnostics.md)); installed helper rejects six charge keys; CHIE reads locally, writes unverified ([BAT-009](../tasks/BAT-009-ready-charge-solutions-review.md)) |
+| Fail-safe | Pure policy, lease/session executor and native lifecycle hooks implemented; no hardware backend | [Policy and lifecycle gates](battery-control.md); sleep/wake, crash and uninstall require hardware checks |
+
+Native-limit follow-up: [BAT-010](../tasks/BAT-010-native-charge-limit-research.md) verifies PowerUI getter support locally (80/85/90/95/100), without writes or private entitlement. Its getter-only diagnostic is implemented in [BAT-011](../tasks/BAT-011-native-limit-diagnostics.md); installed-helper native reads are verified, with no writer or ready Swift package adopted.
 
 ## Other dependencies
 
@@ -65,6 +67,10 @@ In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 
 | Global shortcut | Native `NSEvent` global monitors (need Accessibility permission), Carbon `RegisterEventHotKey` by hand, sindresorhus/KeyboardShortcuts | KeyboardShortcuts 1.17.0 (MIT, active, Swift 6, Carbon hot keys without permissions, recorder UI localized in our languages); 2026-10-18 ([APP-003](../tasks/APP-003-settings-alerts.md)) |
 | Update check | GitHub Releases API vs Sparkle | `GET /repos/Blinks44/monny/releases/latest` with `URLSession`, on request only; Sparkle installs updates, which SPEC rules out. 404 (no release yet) reads as up to date; 2026-10-18 |
 | History storage | Ring buffers + file, SwiftData, SQLite | Ring buffers + binary plist (see above) |
+
+## DMG packaging — 2026-10-19
+
+Use installed [create-dmg](https://github.com/create-dmg/create-dmg) 1.3.0 (MIT), already used by Rebind, for Finder background/icon layout and Applications target. It remains a build-time tool, not an app dependency; no sources or binaries copied. Native hdiutil still verifies the final image, and existing codesign checks remain. A single shipping TIFF is exported from live Sketch, with no permanent generator. The release command stops with setup instructions if the tool is missing. Verified source/native layout and artifact: [REL-002](../tasks/REL-002-branded-dmg.md).
 
 ## Recording a new decision
 

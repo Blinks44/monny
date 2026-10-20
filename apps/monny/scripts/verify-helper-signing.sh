@@ -44,6 +44,10 @@ print("Signed artifact checks passed: runtime identity, app/helper signer, wrong
 SWIFT
 xcrun swiftc -swift-version 6 -o "$work/check" \
     "$app_root/BatteryHelperShared/HelperContract.swift" \
+    "$app_root/BatteryHelperShared/NativeChargeLimit.swift" \
+    "$app_root/BatteryHelperShared/NativeLimitVerification.swift" \
+    "$app_root/BatteryHelperShared/SMC.swift" \
+    "$app_root/BatteryHelperShared/ChargeCapabilityProbe.swift" \
     "$app_root/BatteryHelperShared/HelperSigning.swift" "$work/main.swift"
 sign=(codesign --force --options runtime --timestamp=none --sign "$signing_identity")
 if [[ -n "$signing_keychain" ]]; then sign+=(--keychain "$signing_keychain"); fi

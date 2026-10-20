@@ -23,3 +23,7 @@ Added the information entry in both Sketch Charging cards and standalone `15 · 
 Separate review package: `apps/monny/build/DesignReview/Monny-SelfSigned.dmg`, SHA-256 `576f203732ce83d0f5968709edc0272aaec2cc9be07c1f87a76ab20ce16d5602`. It uses the same persistent local certificate and status-only helper. The original BAT-003 package is unchanged (SHA-256 `4f13345f923ff7b36cca86a91e15c55d38c9d561f14c2c19bf0ae2b45aa7fc2e`). Neither package is notarized or proven installable with its daemon on a clean Mac.
 
 Next: user reviews Battery in the review build and owns helper installation. Full keyboard/VoiceOver, Increase Contrast, macOS 26 runtime, signed daemon lifecycle and clean-machine distribution remain open. Future charging-backend coexistence must be verified before enabling control; the guidance is preparation, not proof that macOS settings were detected or that disabling them is required for monitoring.
+
+## Generated artifact maintenance — 2026-10-19
+
+The dated review package described above was removed as superseded generated output during [BAT-004](../tasks/BAT-004-charge-command-safety.md). Historical checks/hashes are retained. Use the latest signed status-only apps/monny/build/release/Monny-1.0-1.dmg for new checks; current artifact evidence is in BAT-004. This cleanup does not close any visual, helper installation or hardware acceptance.

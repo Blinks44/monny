@@ -11,7 +11,7 @@
 
 A native macOS menu bar utility for resource monitoring and battery charge control. A click on the menu bar icon shows CPU, memory, disk, network, cores and battery at a glance; a dashboard window adds history charts, top processes and temperature sensors. Optional battery controls are in development: charge limits, holding the charge on the adapter and discharging while plugged in.
 
-**Status:** early development. Monitoring, history, dashboard pages and Settings are implemented. Battery control has a tested policy and a bundled status-only helper; charging commands remain disabled. Signed helper installation and hardware behavior still need verification. See the [current state](docs/STATE.md) and [roadmap](docs/PLAN.md).
+**Status:** early development. Monitoring, history, dashboard pages and Settings are implemented. Battery control has a tested policy and a bundled helper with an explicit manual setting-verification command; normal charging controls remain disabled. Current helper installation and hardware restoration still need verification. See the [current state](docs/STATE.md) and [roadmap](docs/PLAN.md).
 
 ## Repository layout
 

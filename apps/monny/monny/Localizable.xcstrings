@@ -11146,6 +11146,167 @@
           }
         }
       }
+    },
+    "Allow in macOS…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In macOS erlauben…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow in macOS…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir en macOS…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser dans macOS…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разрешить в macOS…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 macOS 中允许…"
+          }
+        }
+      }
+    },
+    "More" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ещё"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多"
+          }
+        }
+      }
+    },
+    "Open System Settings, enable Monny in Login Items & Extensions, then return here. macOS may ask for your password again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne die Systemeinstellungen, erlaube Monny unter „Anmeldeobjekte & Erweiterungen“ und kehre hierher zurück. macOS fragt möglicherweise erneut nach deinem Passwort."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open System Settings, enable Monny in Login Items & Extensions, then return here. macOS may ask for your password again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Ajustes del Sistema, permite Monny en «Ítems de inicio y extensiones» y vuelve aquí. Es posible que macOS te pida la contraseña de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez Réglages Système, autorisez Monny dans « Ouverture et extensions », puis revenez ici. macOS peut vous demander à nouveau votre mot de passe."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Откройте системные настройки, разрешите Monny в разделе «Объекты входа и расширения» и вернитесь сюда. macOS может снова запросить пароль."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开“系统设置”，在“登录项与扩展”中允许 Monny，然后返回此处。macOS 可能会再次要求输入密码。"
+          }
+        }
+      }
+    },
+    "The helper is registered but isn’t responding. Restart your Mac, or remove the helper and install it again." : {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The helper is registered but isn’t responding. Restart your Mac, or remove the helper and install it again."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Помощник зарегистрирован, но не отвечает. Перезагрузите Mac или удалите помощник и установите его снова."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Hilfsprogramm ist registriert, antwortet aber nicht. Starte deinen Mac neu oder entferne das Hilfsprogramm und installiere es erneut."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’assistant est enregistré, mais ne répond pas. Redémarrez votre Mac ou supprimez l’assistant et réinstallez-le."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El asistente está registrado, pero no responde. Reinicia el Mac o elimina el asistente y vuelve a instalarlo."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "辅助程序已注册，但没有响应。请重新启动 Mac，或移除辅助程序后重新安装。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

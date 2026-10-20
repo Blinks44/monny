@@ -32,7 +32,7 @@ Header: app icon, Monny, Mac model · chip · uptime; buttons to open the dashbo
 **Overview:** CPU load with P/E split and CPU temperature chip (warns when hot), memory used with pressure chip, disk free space and read/write rates, network down/up rates with a short sparkline, per-core load bars grouped by Performance/Efficiency, and a battery card with level, current mode and a charge-limit toggle. Footer: Open Dashboard, shortcut, refresh interval.
 **Thermal alert state:** when the Mac is hot, the CPU card and battery card show it (for example “Charging paused · too hot” when heat protection acts).
 
-**Battery:** state line (adapter wattage and time to limit, or on battery with time remaining), large level gauge with limit marker, health · cycles · temperature, mode buttons Charge (up to limit) / Hold (run on adapter) / Discharge (while plugged), charge-limit slider 50–100 %, Sailing mode and Heat protection toggles, Calibrate…. States: charging, holding, on battery (modes disabled, “Connect power to switch modes”), helper required (banner, read-only controls, Install Battery Helper… with “Asks for your admin password once. Only controls charging.”), no battery (the tab stays and shows the same empty state as the dashboard Battery page).
+**Battery:** state line (adapter wattage and time to limit, or on battery with time remaining), large level gauge with limit marker, health · cycles · temperature, mode buttons Charge (up to limit) / Hold (run on adapter) / Discharge (while plugged), charge-limit slider 50–100 %, Sailing mode and Heat protection toggles, Calibrate…. States: charging, holding, on battery (modes disabled, “Connect power to switch modes”), helper required (banner, read-only controls, Install Battery Helper… with “macOS asks for administrator approval. Only controls charging.”), no battery (the tab stays and shows the same empty state as the dashboard Battery page).
 
 On a Mac without a battery the Overview battery strip shows the thermal state and fan speed instead.
 
@@ -56,7 +56,7 @@ History must survive the window closing and an app restart for the 24 h and 7 d 
 
 Requires a Mac with a battery and the installed helper. All modes are explicit user choices; defaults come from Settings.
 
-The Battery Charging card provides manual macOS charging guidance: monitoring does not require disabling system features; before active Monny control, recommend turning off Optimized Battery Charging and setting the system Charge Limit to 100% where available, to avoid conflicting targets. Include a Battery Settings link and explain that Monny does not detect or change these settings. Coexistence is verified per hardware backend before control is enabled.
+The Battery Charging card provides manual macOS charging guidance: monitoring does not require disabling system features; before active Monny control, recommend turning off Optimized Battery Charging and setting the system Charge Limit to 100% where available, to avoid conflicting targets. Include a Battery Settings link and explain that Monny does not detect or change these settings. Coexistence is verified per hardware backend before control is enabled. The initial explicit native-limit verification is a setting/read-back/restoration test rather than sustained control: keep existing system settings beforehand, capture the current native enabled/limit pair and restore it. This diagnostic scope does not require disabling optimization or first setting the system limit to 100%.
 
 - **Charge limit** 50–100 %: stop charging at the limit and run on the adapter.
 - **Sailing range:** after reaching the limit, let the level drift down by the range (for example to 75 %) before topping up.
@@ -68,13 +68,13 @@ The Battery Charging card provides manual macOS charging guidance: monitoring do
 
 ## 6. Onboarding
 
-Three steps (Sketch page `03`): Welcome (menu bar stats, charge limit, works offline), Battery helper (why, password once, only touches charging, how to remove; can be skipped), Ready (where Monny lives, ⌥⌘M, Launch at login recommended so the limit always applies). Macs without a battery skip the helper step: two steps, with Sensors and history instead of Charge limit on Welcome.
+Three steps (Sketch page `03`): Welcome (menu bar stats, charge limit, works offline), Battery helper (why, administrator approval that can ask again in System Settings, only touches charging, how to remove; can be skipped), Ready (where Monny lives, ⌥⌘M, Launch at login recommended so the limit always applies). Macs without a battery skip the helper step: two steps, with Sensors and history instead of Charge limit on Welcome.
 
 ## 7. Settings
 
 - **General:** Launch at login, refresh rate, temperature unit, appearance, language (System or one of the six; applies after Monny restarts, with a Restart button; user request 2026-10-18).
 - **Menu bar:** global shortcut, show alert badge.
-- **Battery:** default charge limit, sailing range, heat protection threshold, helper status with version and Uninstall Helper…. Uninstalling asks for confirmation first and returns charging to macOS. If installation fails or is not approved, a banner explains it, with Open System Settings… (Login Items & Extensions) and Try Again.
+- **Battery:** default charge limit, sailing range, heat protection threshold, helper status with version and Uninstall Helper…. Uninstalling asks for confirmation first and returns charging to macOS. Any helper capable of changing settings, including explicit manual verification, requires a restoration/non-controlling acknowledgement before unregistering; transport failure, malformed or incompatible replies never bypass it. If installation fails or is not approved, a banner explains it, with Open System Settings… (Login Items & Extensions) and Try Again. For an approved item with a transport failure, explicit Try Again may attempt one SMAppService registration before checking authenticated status again; it never automatically unregisters or overrides denied consent.
 - **Notifications:** charge limit reached, Mac is running hot, calibration finished, battery below 20 %, memory pressure is high (each toggle). Each fires once when its condition starts and again only after it has cleared.
 - **About:** version and build, Check for Updates (compares with the latest GitHub release), privacy note (no analytics; network only for updates). Results: up to date; a newer version (Download… opens the GitHub release page in the browser; Monny does not install updates itself); check failed (Try Again).
 

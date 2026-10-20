@@ -31,8 +31,17 @@ struct BatteryTab: View {
                 .padding(Theme.spaceXL)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .card()
-                BatteryHelperActions(helper: helper)
-                    .padding(.top, Theme.spaceM)
+                VStack(alignment: .leading, spacing: Theme.spaceL) {
+                    HStack {
+                        Text("Battery helper").font(Theme.headline).foregroundStyle(Theme.textPrimary)
+                        Spacer(minLength: 0)
+                        Chip(title: helper.statusTitle, kind: helper.state == .failed ? .danger : .neutral)
+                    }
+                    BatteryHelperActions(helper: helper)
+                }
+                .padding(Theme.spaceXL)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .card()
             }
             .task { await helper.refresh() }
         } else {

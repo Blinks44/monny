@@ -2,6 +2,8 @@
 
 Reviewed 2026-10-19 for [BAT-001](../tasks/BAT-001-battery-foundations.md). This is source research and a software policy decision, not proof that charging can be controlled on the development Mac.
 
+Current below-80%, Hold and Discharge decision: [SMC capability research](smc-charge-control.md) (2026-10-20). Historical implementation sections below retain their dated scope; current native product sessions are owned by [BAT-018](../tasks/BAT-018-native-limit-interface.md).
+
 ## Installation and IPC
 
 Use Apple's [SMAppService daemon](https://developer.apple.com/documentation/servicemanagement/smappservice/daemon(plistname:)) with the launchd property list inside `Contents/Library/LaunchDaemons` and a bundled helper executable. Follow Apple's [Service Management sample](https://developer.apple.com/documentation/servicemanagement/updating-your-app-package-installer-to-use-the-new-service-management-api). Installation remains an explicit user action; observe service status and direct pending approval to Login Items & Extensions. Require restoration acknowledgement before unregistering any charging-capable helper. The current non-writing contract permits explicit unregister after transport failure/timeout; invalid/mismatched/restoration-failure replies remain blocked ([BAT-008](../tasks/BAT-008-helper-recovery-ui.md)). Do not use shell installers or SMJobBless.
@@ -31,7 +33,7 @@ Licensing: [batt](https://github.com/charlie0129/batt/blob/master/LICENSE) is GP
 
 1. Local status-only registration/approval, app/Mac restart and removal/reinstallation are user-confirmed in [BAT-003](../tasks/BAT-003-self-signed-helper.md). Clean-Mac and runtime negative-peer acceptance remain open.
 2. Serialized leases, authenticated session ownership and native lifecycle hooks exist in [BAT-005](../tasks/BAT-005-helper-lifecycle.md). New observer runtime acceptance and reviewed crash/restart recovery remain prerequisites for writes.
-3. Unprivileged read-only inspection is implemented in [BAT-006](../tasks/BAT-006-read-only-charge-probe.md). All six candidates rejected metadata access locally. The authenticated helper diagnostic is implemented in [BAT-007](../tasks/BAT-007-helper-read-only-diagnostics.md); obtain user-owned installation/execution evidence; no writes or support claim from this probe.
+3. Unprivileged read-only inspection is implemented in [BAT-006](../tasks/BAT-006-read-only-charge-probe.md). All six candidates rejected metadata access locally. The authenticated helper diagnostic in [BAT-007](../tasks/BAT-007-helper-read-only-diagnostics.md) also rejects all six keys in user-supplied installed evidence. The [2026-10-20 adapter follow-up](smc-charge-control.md#local-read-only-evidence) reads CHIE but rejects CH0I/CH0J; no SMC writes or control support follow.
 4. Only after a supported backend is established, add bounded writes/read-back and test restoration after each partial failure. With explicit authorization, verify limit, hold/discharge, heat and recovery across quit, crash, helper termination, sleep/wake, reboot and uninstall on a named MacBook. Calibration and trips follow reliable basic control.
 
 ## Status-only helper implementation (2026-10-19)
@@ -204,3 +206,24 @@ Apple [distinguishes Optimized Battery Charging from Charge Limit](https://suppo
 ## Authorized native setting write confirmed — 2026-10-20
 
 [BAT-016](../tasks/BAT-016-manual-native-verification.md#authorized-native-setting-round-trip-passes--2026-10-20) now has a real local one-shot result through the installed authenticated helper: target 80 applies and reads back, original enabled/limit pair restores, and a separate authenticated getter confirms the restoration. One invocation, no retries or setup-time optimization/limit changes. This confirms native setter permission and limit read-back for that local path, not sustained physical enforcement, all enabled transitions/targets, other hardware, crash timing or lifecycle recovery. The existing native backend suffices for this bounded result; no new SMC key, package, private entitlement or copied implementation is needed. Product activation remains a separate scope.
+
+
+## Native product sessions and restart availability — 2026-10-20
+
+[BAT-018](../tasks/BAT-018-native-limit-interface.md) reuses the researched PowerUI adapter, journal transaction and system NSXPCConnection; no suitable extra library is needed and no GPL source is copied. Native-limit control uses the same macOS setting, so the earlier preparatory 100%/optimization-off recommendation is superseded for this backend. Optimization can still delay charging; sustained behavior remains a hardware gate.
+
+Apple's [launchd job guide](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html) and [launchd.plist manual](https://github.com/apple-oss-distributions/launchd/blob/main/man/launchd.plist.5) define KeepAlive as a request to keep a registered daemon running. Enable it for the explicitly installed helper so a process crash can reach startup journal restoration without waiting for another client. Retain a single 30-second lease/10-second owner renewal; no custom supervisor, silent reinstallation or periodic charge writes. Identical renewals do not rewrite the setting. KeepAlive does not guarantee OS restart latency, execution while disabled or recovery from a stalled synchronous private API. Final installed-helper crash/sleep/quit/removal acceptance remains open.
+
+
+## Expired native owner admission — 2026-10-20
+
+The app-coordinator/anonymous-XPC regression in [BAT-018](../tasks/BAT-018-native-limit-interface.md) exposed that restoring on expiry alone did not revoke the connection token: its next queued renewal could start a new transaction. Build 11 removes the expired owner before attempting restoration and rechecks admission after checking time; failure/recovery cannot revive that token. Native session revision 2 makes the app require the corrected helper while preserving legacy read/removal. The app performs one fresh read after a failed renewal and on NSWorkspace wake notification, without automatically registering or applying a target. Same system APIs and no new dependencies; physical lifecycle timing remains an acceptance gate.
+
+
+## Native limit survives ordinary sleep — 2026-10-20
+
+The user changes the native sleep contract in [BAT-018](../tasks/BAT-018-native-limit-interface.md). Apple [Charge Limit](https://support.apple.com/en-gb/102338) documents a system-managed 80–100% setting, approximate stopping threshold and occasional full charging for estimation. It does not explicitly promise sleep behavior; retaining this setting across sleep is Monny's backend-specific product decision requiring runtime acceptance, not an Apple API guarantee.
+
+OpenDente revision `06c5a8199f5c0657374e667073b3aa6a75f50df8` was inspected directly: [Watchdog.swift](https://github.com/killerk3emstar/OpenDente/blob/06c5a8199f5c0657374e667073b3aa6a75f50df8/OpenDenteHelper/Watchdog.swift) suspends the watchdog and resets heartbeat time on resume; [main.swift](https://github.com/killerk3emstar/OpenDente/blob/06c5a8199f5c0657374e667073b3aa6a75f50df8/OpenDenteHelper/main.swift) wires IOKit sleep/wake and also has SMC-specific sleep inhibition. It uses a different hardware backend. GPL-3.0 reference only: no source copied, dependency installed, SMC operation or safety claim adopted.
+
+Monny keeps its native owner and original checkpoint during sleep, cancels the expiry task, then validates the actual setting and rearms its existing 30-second lease on wake without setters. Identical in-flight renewals during the sleep transition only read status; changed targets are refused. Disconnect, shutdown, restart, explicit stop/removal and awake expiry still restore or preserve external settings. A failed wake read/recovery fails closed. [Apple SuspendingClock](https://developer.apple.com/documentation/swift/suspendingclock) excludes system sleep; use it for executor lease instants and XPC/renewal timers to prevent sleeping time from producing false expiry. No custom clock or power assertion is needed. Session revision 3 prevents app 12 from claiming these semantics with an older helper. Ordinary build-12 sleep preservation is now user-confirmed in BAT-018; forced crash/helper-restart, sustained physical and broader platform acceptance remain open.

@@ -67,7 +67,7 @@ struct HelperContractTests {
         #expect((plist["MachServices"] as? [String: Bool])?[HelperContract.helperIdentifier] == true)
         #expect(plist["UserName"] as? String == "root")
         #expect(plist["ProgramArguments"] == nil)
-        #expect(plist["KeepAlive"] == nil)
+        #expect(plist["KeepAlive"] as? Bool == true)
     }
 
     @Test func lateCompletionsCannotReplaceTheFirstResult() async throws {
@@ -153,6 +153,27 @@ private actor HelperFixture {
 
 @MainActor
 struct HelperLifecycleTests {
+    @Test func restorationFailureStaysVisibleUntilFreshStatusConfirmsRecovery() async {
+        let fixture = HelperFixture()
+        var response = HelperStatus.current
+        response.nativeLimitSessionAvailable = true
+        response.nativeLimitSessionVersion = HelperContract.nativeLimitSessionVersion
+        response.nativeChargeLimit = .available(.init(availableLimits: [80, 85, 100], configuredLimit: 80, enabled: true))
+        response.controlState = .restorationRequired
+        await fixture.configure(registration: .enabled, reply: response)
+        let helper = BatteryHelper(operations: fixture.operations)
+        await helper.refresh()
+        #expect(helper.nativeFailed)
+        #expect(!helper.canControlNativeLimit)
+        response.controlState = .notControlling
+        await fixture.configure(registration: .enabled, reply: response)
+        await helper.retryConnection()
+        #expect(helper.state == .connected)
+        #expect(!helper.nativeFailed)
+        #expect(helper.canControlNativeLimit)
+        #expect(await fixture.registerCalls == 0)
+    }
+
     @Test func explicitRetryCanReconnectAnApprovedMissingJobWithoutRemovingIt() async {
         let fixture = HelperFixture()
         await fixture.configure(registration: .enabled, failsRequest: true,

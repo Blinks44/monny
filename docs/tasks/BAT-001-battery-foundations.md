@@ -10,7 +10,7 @@
 
 ## Outcome and scope
 
-Replace the Battery dashboard placeholder with real battery facts and history from the shared sampler. Establish a deterministic, software-tested policy for charge/hold/discharge, sailing and heat protection. Research helper installation, peer validation and firmware limits before adding any privileged writes.
+Replace the Battery dashboard placeholder with real battery facts and history from the shared sampler. Establish a deterministic, software-tested policy for charge/discharge with automatic holding, sailing and heat protection. Research helper installation, peer validation and firmware limits before adding any privileged writes.
 
 This slice does not install a helper, write SMC keys or change charging. The policy is not connected to hardware; controls remain disabled and explain that macOS manages charging. Helper implementation, calibration, trip schedules and hardware acceptance follow separately.
 

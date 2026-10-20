@@ -48,6 +48,16 @@ xcrun swiftc -swift-version 6 -o "$work/check" \
     "$app_root/BatteryHelperShared/NativeLimitVerification.swift" \
     "$app_root/BatteryHelperShared/SMC.swift" \
     "$app_root/BatteryHelperShared/ChargeCapabilityProbe.swift" \
+    "$app_root/BatteryHelperShared/AdapterCapabilityProbe.swift" \
+    "$app_root/BatteryHelperShared/AdapterVerificationReport.swift" \
+    "$app_root/BatteryHelperShared/AdapterBytePulseReport.swift" \
+    "$app_root/BatteryHelperShared/AdapterByteObservationReport.swift" \
+    "$app_root/BatteryHelperShared/AdapterStartupRecovery.swift" \
+    "$app_root/BatteryHelperShared/HelperLifecycleDiagnostics.swift" \
+    "$app_root/BatteryHelperShared/AdapterLifecyclePreparation.swift" \
+    "$app_root/BatteryHelperShared/AdapterVerificationTransaction.swift" \
+    "$app_root/BatteryHelperShared/AdapterIsolationCommand.swift" \
+    "$app_root/BatteryHelperShared/NativeChargeLimitJournal.swift" \
     "$app_root/BatteryHelperShared/HelperSigning.swift" "$work/main.swift"
 sign=(codesign --force --options runtime --timestamp=none --sign "$signing_identity")
 if [[ -n "$signing_keychain" ]]; then sign+=(--keychain "$signing_keychain"); fi

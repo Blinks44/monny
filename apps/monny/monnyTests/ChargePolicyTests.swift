@@ -25,7 +25,7 @@ struct ChargePolicyTests {
         }
     }
 
-    @Test(arguments: [0.5, 1.0])
+    @Test(arguments: [0.8, 1.0])
     func acceptsLimitEndpoints(limit: Double) {
         var policy = ChargePolicy()
         var settings = enabled
@@ -34,12 +34,9 @@ struct ChargePolicyTests {
                               capability: .chargeOnly).action == .hold)
     }
 
-    @Test func manualHoldAndDischargeStopWithoutRecharging() {
+    @Test func dischargeStopsAtLimitWithoutRechargingUntilModeChanges() {
         var policy = ChargePolicy()
         var settings = enabled
-        settings.mode = .hold
-        #expect(policy.update(settings: settings, reading: .init(level: 0.6, isAdapterConnected: true),
-                              capability: .chargeOnly).reason == .manualHold)
         settings.mode = .discharge
         for (level, action) in [(0.9, ChargePolicy.Action.discharge), (0.8, .hold), (0.79, .hold), (0.81, .hold)] {
             #expect(policy.update(settings: settings, reading: .init(level: level, isAdapterConnected: true),
@@ -120,7 +117,7 @@ struct ChargePolicyTests {
     @Test func rejectsInvalidSettingsWithoutClampingThem() {
         var settings = enabled
         var invalid: [ChargePolicy.Settings] = []
-        for limit in [0.49, 1.01, .nan, .infinity] {
+        for limit in [0.5, 0.79, 1.01, .nan, .infinity] {
             settings.limit = limit
             invalid.append(settings)
         }

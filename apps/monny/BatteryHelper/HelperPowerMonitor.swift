@@ -43,16 +43,16 @@ final class HelperPowerMonitor {
         let root = root
         switch message {
         case MonnyCanSystemSleep:
-            // Never veto idle sleep; the later will-sleep notification is the restoration barrier.
+            // Never veto idle sleep; will-sleep selects backend-specific preservation/recovery.
             IOAllowPowerChange(root, token)
         case MonnySystemWillSleep:
             let previous = pendingPowerEvent
             pendingPowerEvent = Task {
                 await previous?.value
                 do { try await executor.willSleep() }
-                catch { logger.fault("Pre-sleep restoration failed; hardware safety is unverified") }
-                // The OS continues sleep regardless after 30 s. Acknowledge after our attempt;
-                // failure remains visible in executor state and never counts as successful restore.
+                catch { logger.fault("Sleep preparation failed; hardware safety is unverified") }
+                // Native limits retain their journal and owner; other modes attempt restoration.
+                // The OS continues sleep regardless after 30 s; acknowledge after preparation.
                 IOAllowPowerChange(root, token)
             }
         case MonnySystemHasPoweredOn:

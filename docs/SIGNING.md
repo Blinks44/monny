@@ -15,9 +15,9 @@ Use **release.sh** for installed copies. It builds Release, copies the app into 
 Open `apps/monny/monny.xcodeproj` → target **monny** → General → Identity:
 
 - **Version** (`MARKETING_VERSION`): currently `1.0`; change for a user-visible release.
-- **Build** (`CURRENT_PROJECT_VERSION`): currently `9`; increment for every candidate, including the same marketing version.
+- **Build** (`CURRENT_PROJECT_VERSION`): currently `23`; increment for every candidate, including the same marketing version.
 
-Keep Debug/Release values consistent. The script reads Info.plist and automatically names `apps/monny/build/release/Monny-1.0-9.dmg`. It never increments versions or publishes. Keep the helper target build consistent with the app; helper protocol/version is a separate compatibility contract.
+Keep Debug/Release values consistent. The script reads Info.plist and automatically names `apps/monny/build/release/Monny-1.0-23.dmg`. It never increments versions or publishes. Keep the helper target build consistent with the app; helper protocol/version is a separate compatibility contract.
 
 ## Signing key
 

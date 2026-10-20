@@ -1,6 +1,6 @@
 # Monny: design direction and live source index
 
-Updated 2026-10-19. [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
+Updated 2026-10-20. [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
 
 ## Direction
 
@@ -20,7 +20,7 @@ Open **Monny.sketch** through Sketch MCP (load `mcp`, then `use`; resolve the op
 
 Colors are 94 Color Variables named `Light/<Group>/<Name>` and `Dark/<Group>/<Name>` (Text, Surface, Fill, Accent, Metric, Status, State); 12 text styles and 4 layer styles. Code mirrors these variables as one token set; change a token in both places.
 
-Battery guidance was saved and reviewed live on 2026-10-19 ([APP-005](tasks/APP-005-battery-design-parity.md)); current charging controls stay off until hardware support is implemented.
+Battery guidance was saved and reviewed live on 2026-10-19 ([APP-005](tasks/APP-005-battery-design-parity.md)). On 2026-10-20, standalone `16 · Battery · Native limit control · Light/Dark` references were saved on `02 · Window` and screenshot-reviewed: explicit switch, supported 80/85/90/95/100 values and original-setting restoration caption ([BAT-018](tasks/BAT-018-native-limit-interface.md)). These govern the narrower native backend; the main future-mode screens remain unchanged. The app uses a native stepped slider and the shared control in both Battery surfaces. App guidance explains that this backend uses the system limit; no preparatory optimization change is needed.
 
 Screens are drawn in English only; other languages are checked in the app.
 
@@ -28,9 +28,15 @@ The saved DMG frame/background and clearer helper-approval references were revie
 
 Helper connection recovery card/action references were saved and reviewed live on 2026-10-19 ([BAT-008](tasks/BAT-008-helper-recovery-ui.md)); they supersede bare retry/removal links. The popover stays open through confirmation and system authorization; removal always asks for confirmation.
 
+## Charging controls updated — 2026-10-20
+
+Saved Monny.sketch now removes separate Hold from all 17 old mode references, including hidden no-battery source groups and Foundations. Charge and Discharge use two positions; holding at the chosen limit remains a status. All 13 reusable limit cards use 80/85/90/95/100 with matching knob/fill positions, and all six window/calibration control cards start at 80%. Native-limit standalone references are aligned too. Real battery readings/history axes and calibration discharge targets remain independent of the selectable charge limit.
+
+Reviewed live component screenshots and complete Light/Dark Battery frames; restored selected Charge icon typography and dark subtitle contrast using existing source layers/color variables. Sketch saved separately from Git; no screenshots exported into the repository. [BAT-020](tasks/BAT-020-remove-manual-hold.md) owns the decision/checks.
+
 ## Readiness
 
-All listed frames are saved and form the target for the first release. Every state in SPEC has a frame, including empty, unavailable, no-battery, error, update and confirmation states ([DES-001](tasks/DES-001-missing-states.md)). Accessibility and the other five languages are accepted in the app.
+All listed frames are saved, including the two-mode and 80–100% charging updates above. Every state in SPEC has a frame, including empty, unavailable, no-battery, error, update and confirmation states ([DES-001](tasks/DES-001-missing-states.md)). Accessibility and the other five languages are accepted in the app.
 
 ## Rules that apply to every screen
 

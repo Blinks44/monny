@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Popover Battery. The helper currently provides status only; charging stays with macOS.
+/// Battery readings and explicitly enabled, capability-gated native charge limits.
 struct BatteryTab: View {
     let battery: BatteryReading?
     let health: BatteryHealth?
@@ -32,6 +32,10 @@ struct BatteryTab: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .card()
                 VStack(alignment: .leading, spacing: Theme.spaceL) {
+                    if helper.state == .connected {
+                        NativeLimitControls(helper: helper)
+                        Divider()
+                    }
                     HStack {
                         Text("Battery helper").font(Theme.headline).foregroundStyle(Theme.textPrimary)
                         Spacer(minLength: 0)

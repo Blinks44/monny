@@ -62,12 +62,36 @@ final class BatteryHelper {
     private(set) var registration = HelperRegistration.notRegistered
     private(set) var failure: Failure?
     var isPresentingRemovalConfirmation = false
+    private(set) var nativeLimit: Int?
+    private(set) var nativeBusy = false
+    private(set) var nativeFailed = false
+    @ObservationIgnored private var nativeSession: NativeLimitSession?
+    @ObservationIgnored private var nativeRenewal: Task<Void, Never>?
+    var nativeLimits: [Int] {
+        guard status?.nativeLimitSessionAvailable == true,
+              status?.nativeLimitSessionVersion == HelperContract.nativeLimitSessionVersion,
+              case .available(let snapshot) = status?.nativeChargeLimit else { return [] }
+        return snapshot.availableLimits
+    }
+    var canControlNativeLimit: Bool {
+        state == .connected && !nativeLimits.isEmpty && status?.controlState != .restorationRequired
+    }
+
     @ObservationIgnored private var identity: HelperSigning.Identity?
     @ObservationIgnored private var connectionError: HelperConnectionError?
     @ObservationIgnored private let operations: HelperOperations
+    @ObservationIgnored private let connectNativeSession: @MainActor (String) async throws -> NativeLimitSession
     @ObservationIgnored private let logger = Logger(subsystem: "blinks44.monny", category: "BatteryHelper")
 
-    init(operations: HelperOperations = .live) { self.operations = operations }
+    init(operations: HelperOperations = .live,
+         connectNativeSession: @escaping @MainActor (String) async throws -> NativeLimitSession = { requirement in
+             let session = NativeLimitSession()
+             _ = try await session.open(requirement: requirement)
+             return session
+         }) {
+        self.operations = operations
+        self.connectNativeSession = connectNativeSession
+    }
 
     var canInstall: Bool {
         !isBusy && identity != nil && (registration == .notRegistered || registration == .notFound)
@@ -76,8 +100,89 @@ final class BatteryHelper {
         !isBusy && identity != nil && (registration == .enabled || registration == .requiresApproval)
     }
 
+    /// Explicit UI action only. UserDefaults never enables a limit at launch.
+    func setNativeLimit(_ limit: Int) async {
+        guard !nativeBusy, !isBusy, canControlNativeLimit, nativeLimits.contains(limit) else { return }
+        nativeBusy = true
+        nativeFailed = false
+        defer { nativeBusy = false }
+        nativeRenewal?.cancel()
+        nativeRenewal = nil
+        do {
+            let session: NativeLimitSession
+            if let current = nativeSession { session = current }
+            else {
+                guard let identity, let requirement = HelperSigning.requirement(for: .helper, identity: identity) else {
+                    throw HelperConnectionError.signingUnavailable
+                }
+                session = try await connectNativeSession(requirement)
+                nativeSession = session
+            }
+            status = try await session.apply(limit)
+            nativeLimit = limit
+            nativeRenewal = Task { [weak self] in
+                while !Task.isCancelled {
+                    do { try await Task.sleep(for: .seconds(10), clock: .suspending) } catch { return }
+                    guard let self, !Task.isCancelled else { return }
+                    await self.renewNativeLimit()
+                    guard self.nativeLimit != nil else { return }
+                }
+            }
+        } catch { await nativeConnectionFailed() }
+    }
+
+    func stopNativeLimit() async {
+        guard !nativeBusy else { return }
+        nativeBusy = true
+        defer { nativeBusy = false }
+        await endNativeLimit()
+    }
+
+    private func endNativeLimit() async {
+        nativeRenewal?.cancel()
+        nativeRenewal = nil
+        let session = nativeSession
+        nativeSession = nil
+        nativeLimit = nil
+        guard let session else { return }
+        do { status = try await session.stop() }
+        catch {
+            await session.close()
+            await nativeConnectionFailed()
+        }
+    }
+
+    private func renewNativeLimit() async {
+        guard !nativeBusy, let nativeSession, let nativeLimit else { return }
+        nativeBusy = true
+        defer { nativeBusy = false }
+        do { status = try await nativeSession.apply(nativeLimit) }
+        catch {
+            // This is the renewal task itself: let it finish after the read-back rather
+            // than cancelling it before HelperConnection checks task cancellation.
+            nativeRenewal = nil
+            await nativeConnectionFailed()
+            // Sleep or lease expiry invalidates the owner. A fresh read may confirm safe
+            // macOS control; it never reapplies a target or re-registers the helper.
+            nativeBusy = false
+            await refresh()
+        }
+    }
+
+    private func nativeConnectionFailed() async {
+        nativeRenewal?.cancel()
+        nativeRenewal = nil
+        await nativeSession?.close()
+        nativeSession = nil
+        nativeLimit = nil
+        nativeFailed = true
+        status = nil
+        state = .failed
+        failure = .connection
+    }
+
     func refresh() async {
-        guard !isBusy else { return }
+        guard !isBusy, !nativeBusy else { return }
         isBusy = true
         defer { isBusy = false }
         status = nil
@@ -128,9 +233,10 @@ final class BatteryHelper {
     }
 
     func remove() async {
-        guard canRemove else { return }
+        guard canRemove, !nativeBusy else { return }
         isBusy = true
         defer { isBusy = false }
+        await endNativeLimit()
         do {
             try Task.checkCancellation()
             registration = await operations.registration()
@@ -182,9 +288,18 @@ final class BatteryHelper {
             do {
                 let response = try await operations.request(requirement, false)
                 status = try response.validated()
+                if nativeSession != nil && response.controlState != .nativeLimit {
+                    nativeRenewal?.cancel()
+                    nativeRenewal = nil
+                    await nativeSession?.close()
+                    nativeSession = nil
+                    nativeLimit = nil
+                }
                 state = .connected
+                nativeFailed = response.controlState == .restorationRequired
                 failure = nil
             } catch {
+                if nativeSession != nil { await nativeConnectionFailed() }
                 connectionError = error as? HelperConnectionError
                 status = nil
                 state = error as? HelperConnectionError == .versionMismatch ? .incompatible : .failed

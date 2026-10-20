@@ -5186,46 +5186,6 @@
         }
       }
     },
-    "Hold" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Halten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hold"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mantener"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maintenir"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Удержание"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保持"
-          }
-        }
-      }
-    },
     "Hour" : {
       "localizations" : {
         "de" : {
@@ -11268,42 +11228,402 @@
       }
     },
     "The helper is registered but isn’t responding. Restart your Mac, or remove the helper and install it again." : {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The helper is registered but isn’t responding. Restart your Mac, or remove the helper and install it again."
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Hilfsprogramm ist registriert, antwortet aber nicht. Starte deinen Mac neu oder entferne das Hilfsprogramm und installiere es erneut."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Помощник зарегистрирован, но не отвечает. Перезагрузите Mac или удалите помощник и установите его снова."
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The helper is registered but isn’t responding. Restart your Mac, or remove the helper and install it again."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Das Hilfsprogramm ist registriert, antwortet aber nicht. Starte deinen Mac neu oder entferne das Hilfsprogramm und installiere es erneut."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El asistente está registrado, pero no responde. Reinicia el Mac o elimina el asistente y vuelve a instalarlo."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L’assistant est enregistré, mais ne répond pas. Redémarrez votre Mac ou supprimez l’assistant et réinstallez-le."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’assistant est enregistré, mais ne répond pas. Redémarrez votre Mac ou supprimez l’assistant et réinstallez-le."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El asistente está registrado, pero no responde. Reinicia el Mac o elimina el asistente y vuelve a instalarlo."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Помощник зарегистрирован, но не отвечает. Перезагрузите Mac или удалите помощник и установите его снова."
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "辅助程序已注册，但没有响应。请重新启动 Mac，或移除辅助程序后重新安装。"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辅助程序已注册，但没有响应。请重新启动 Mac，或移除辅助程序后重新安装。"
+          }
+        }
+      }
+    },
+    "Charge limit is on" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladelimit ist aktiv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charge limit is on"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Límite de carga activado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite de charge activée"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лимит заряда включён"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "充电上限已启用"
+          }
+        }
+      }
+    },
+    "Control charge limit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladelimit steuern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control charge limit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controlar el límite de carga"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gérer la limite de charge"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лимит заряда Monny"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控制充电上限"
+          }
+        }
+      }
+    },
+    "Couldn’t confirm charge control. Check macOS charging settings." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladesteuerung nicht bestätigt. Prüfe die macOS-Ladeeinstellungen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t confirm charge control. Check macOS charging settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo confirmar el control. Revisa los ajustes de carga de macOS."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contrôle non confirmé. Vérifiez les réglages de charge macOS."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось подтвердить управление. Проверьте настройки зарядки macOS."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法确认充电控制状态。请检查 macOS 充电设置。"
+          }
+        }
+      }
+    },
+    "Monny uses the macOS charge limit. You do not need to turn it off in System Settings first." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny verwendet das macOS-Ladelimit. Du musst es vorher nicht in den Systemeinstellungen deaktivieren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny uses the macOS charge limit. You do not need to turn it off in System Settings first."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny usa el límite de carga de macOS. No necesitas desactivarlo antes en Ajustes del Sistema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny utilise la limite de charge macOS. Il n’est pas nécessaire de la désactiver au préalable."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny использует встроенный лимит macOS. Заранее отключать его в системных настройках не нужно."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny 使用 macOS 充电上限，无需先在系统设置中将其关闭。"
+          }
+        }
+      }
+    },
+    "Optimized Battery Charging can also delay charging. Monny does not change that setting." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optimiertes Laden kann das Laden ebenfalls verzögern. Monny ändert diese Einstellung nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optimized Battery Charging can also delay charging. Monny does not change that setting."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La carga optimizada también puede retrasar la carga. Monny no cambia ese ajuste."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La recharge optimisée peut aussi différer la charge. Monny ne modifie pas ce réglage."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оптимизированная зарядка тоже может откладывать заряд. Monny не меняет эту настройку."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "优化电池充电也可能延迟充电。Monny 不会更改该设置。"
+          }
+        }
+      }
+    },
+    "The native charge limit is active." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny steuert das integrierte macOS-Ladelimit."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The native charge limit is active."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny controla el límite de carga integrado de macOS."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny gère la limite de charge intégrée à macOS."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny управляет встроенным лимитом macOS."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny 正在控制 macOS 内置充电上限。"
+          }
+        }
+      }
+    },
+    "The previous macOS settings are restored when control stops." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim Beenden werden die vorherigen macOS-Einstellungen wiederhergestellt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The previous macOS settings are restored when control stops."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al detener el control, se restauran los ajustes anteriores de macOS."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les réglages macOS précédents sont rétablis à l’arrêt du contrôle."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "При отключении возвращаются прежние настройки macOS."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止控制时恢复原来的 macOS 设置。"
+          }
+        }
+      }
+    },
+    "Turn on charge limit control when you need it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktiviere die Ladelimitsteuerung bei Bedarf."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on charge limit control when you need it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa el control del límite cuando lo necesites."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activez le contrôle de la limite selon vos besoins."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включите управление лимитом, когда оно нужно."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要时可启用充电上限控制。"
+          }
+        }
+      }
+    },
+    "Update the battery helper to use charge limits." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisiere den Batteriehelfer, um das Ladelimit zu steuern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update the battery helper to use charge limits."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualiza el asistente para controlar el límite de carga."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettez à jour l’assistant pour gérer la limite de charge."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для управления лимитом обновите помощник зарядки."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请更新电池助手以控制充电上限。"
           }
         }
       }

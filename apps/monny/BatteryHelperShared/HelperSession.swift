@@ -16,6 +16,18 @@ nonisolated final class HelperSession: NSObject, BatteryHelperProtocol, Sendable
         respond(removing: false, reply: reply)
     }
 
+    func readAdapterDiagnostics(withReply reply: @escaping @Sendable (Data) -> Void) {
+        Task {
+            do {
+                let token = try await session.value
+                reply(try JSONEncoder().encode(await executor.diagnoseAdapter(for: token)))
+            } catch {
+                logger.error("Adapter diagnostics refused: \(String(describing: error), privacy: .private)")
+                reply(Data())
+            }
+        }
+    }
+
     func readChargeDiagnostics(withReply reply: @escaping @Sendable (Data) -> Void) {
         Task {
             do {
@@ -28,6 +40,90 @@ nonisolated final class HelperSession: NSObject, BatteryHelperProtocol, Sendable
         }
     }
 
+    func prepareAdapterRemoval(withReply reply: @escaping @Sendable (Data) -> Void) {
+        Task {
+            do {
+                let token = try await session.value
+                reply(try JSONEncoder().encode(await executor.prepareAdapterRemoval(for: token)))
+            } catch {
+                logger.error("Adapter removal preparation refused: \(String(describing: error), privacy: .private)")
+                reply(Data())
+            }
+        }
+    }
+
+    func prepareAdapterSleep(withReply reply: @escaping @Sendable (Data) -> Void) {
+        Task {
+            do {
+                let token = try await session.value
+                reply(try JSONEncoder().encode(await executor.prepareAdapterSleep(for: token)))
+            } catch {
+                logger.error("Adapter sleep preparation refused: \(String(describing: error), privacy: .private)")
+                reply(Data())
+            }
+        }
+    }
+
+    func cancelAdapterSleep(withReply reply: @escaping @Sendable (Data) -> Void) {
+        Task {
+            do {
+                let token = try await session.value
+                reply(try JSONEncoder().encode(await executor.cancelAdapterSleep(for: token)))
+            } catch {
+                logger.error("Adapter sleep cancellation refused: \(String(describing: error), privacy: .private)")
+                reply(Data())
+            }
+        }
+    }
+
+    func verifyAdapterRestart(withReply reply: @escaping @Sendable (Data) -> Void) {
+        Task {
+            do {
+                let token = try await session.value
+                reply(try JSONEncoder().encode(await executor.verifyAdapterRestart(for: token)))
+            } catch {
+                logger.error("Adapter restart verification refused: \(String(describing: error), privacy: .private)")
+                reply(Data())
+            }
+        }
+    }
+
+    func observeAdapterByte(withReply reply: @escaping @Sendable (Data) -> Void) {
+        Task {
+            do {
+                let token = try await session.value
+                reply(try JSONEncoder().encode(await executor.observeAdapterByte(for: token)))
+            } catch {
+                logger.error("Adapter byte observation refused: \(String(describing: error), privacy: .private)")
+                reply(Data())
+            }
+        }
+    }
+
+    func verifyAdapterBytePulse(withReply reply: @escaping @Sendable (Data) -> Void) {
+        Task {
+            do {
+                let token = try await session.value
+                reply(try JSONEncoder().encode(await executor.verifyAdapterBytePulse(for: token)))
+            } catch {
+                logger.error("Adapter byte pulse refused: \(String(describing: error), privacy: .private)")
+                reply(Data())
+            }
+        }
+    }
+
+    func verifyAdapterIsolation(withReply reply: @escaping @Sendable (Data) -> Void) {
+        Task {
+            do {
+                let token = try await session.value
+                reply(try JSONEncoder().encode(await executor.verifyAdapterIsolation(for: token)))
+            } catch {
+                logger.error("Adapter verification refused: \(String(describing: error), privacy: .private)")
+                reply(Data())
+            }
+        }
+    }
+
     func verifyNativeChargeLimit(_ limit: Int, withReply reply: @escaping @Sendable (Data) -> Void) {
         Task {
             do {
@@ -35,6 +131,30 @@ nonisolated final class HelperSession: NSObject, BatteryHelperProtocol, Sendable
                 reply(try JSONEncoder().encode(await executor.verifyNativeLimit(limit, for: token)))
             } catch {
                 logger.error("Native verification refused: \(String(describing: error), privacy: .private)")
+                reply(Data())
+            }
+        }
+    }
+
+    func applyNativeChargeLimit(_ limit: Int, withReply reply: @escaping @Sendable (Data) -> Void) {
+        Task {
+            do {
+                let token = try await session.value
+                reply(try JSONEncoder().encode(await executor.setNativeLimit(limit, for: token)))
+            } catch {
+                logger.error("Native limit request refused: \(String(describing: error), privacy: .private)")
+                reply(Data())
+            }
+        }
+    }
+
+    func restoreNativeChargeLimit(withReply reply: @escaping @Sendable (Data) -> Void) {
+        Task {
+            do {
+                let token = try await session.value
+                reply(try JSONEncoder().encode(await executor.releaseNativeLimit(for: token)))
+            } catch {
+                logger.error("Native limit restoration refused: \(String(describing: error), privacy: .private)")
                 reply(Data())
             }
         }

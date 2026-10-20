@@ -11,8 +11,12 @@ actor HelperConnection {
     private var deadline: Task<Void, Never>?
     private var started = false
     private var needsDiagnostics = false
+    private var needsAdapterDiagnostics = false
+    private var needsAdapterVerification = false
+    private var needsAdapterBytePulse = false
+    private var needsAdapterByteObservation = false
     private var verificationTarget: Int?
-    private enum Operation: Equatable { case status, removal, diagnostics, verification(Int) }
+    private enum Operation: Equatable { case status, removal, diagnostics, adapterDiagnostics, adapterVerification, adapterBytePulse, adapterByteObservation, adapterRestart, verification(Int) }
 
     /// Anonymous endpoints support local IPC tests without registering a privileged service.
     init(endpoint: NSXPCListenerEndpoint? = nil, timeout: Duration = .seconds(5)) {
@@ -29,6 +33,28 @@ actor HelperConnection {
         try await request(requirement: requirement, operation: .diagnostics)
     }
 
+    /// Requires a positive adapter-diagnostic feature handshake before this selector.
+    func diagnoseAdapter(requirement: String) async throws -> HelperStatus {
+        try await request(requirement: requirement, operation: .adapterDiagnostics)
+    }
+
+    /// Requires a positive revisioned feature handshake and an explicit caller; never retry.
+    func verifyAdapterIsolation(requirement: String) async throws -> HelperStatus {
+        try await request(requirement: requirement, operation: .adapterVerification)
+    }
+
+    func verifyAdapterRestart(requirement: String) async throws -> HelperStatus {
+        try await request(requirement: requirement, operation: .adapterRestart)
+    }
+
+    func observeAdapterByte(requirement: String) async throws -> HelperStatus {
+        try await request(requirement: requirement, operation: .adapterByteObservation)
+    }
+
+    func verifyAdapterBytePulse(requirement: String) async throws -> HelperStatus {
+        try await request(requirement: requirement, operation: .adapterBytePulse)
+    }
+
     /// Requires an explicit caller and a successful feature handshake first.
     func verifyNativeLimit(_ limit: Int, requirement: String) async throws -> HelperStatus {
         try await request(requirement: requirement, operation: .verification(limit))
@@ -42,6 +68,10 @@ actor HelperConnection {
             guard !Task.isCancelled else { throw HelperConnectionError.cancelled }
             started = true
             needsDiagnostics = operation == .diagnostics
+            needsAdapterDiagnostics = operation == .adapterDiagnostics
+            needsAdapterVerification = operation == .adapterVerification
+            needsAdapterBytePulse = operation == .adapterBytePulse
+            needsAdapterByteObservation = operation == .adapterByteObservation
             if case .verification(let target) = operation { verificationTarget = target }
             return try await withCheckedThrowingContinuation { continuation in
                 self.continuation = continuation
@@ -57,7 +87,7 @@ actor HelperConnection {
                     Task { await self?.complete(.failure(.connectionFailed)) }
                 }
                 deadline = Task { [weak self, timeout] in
-                    do { try await Task.sleep(for: timeout) } catch { return }
+                    do { try await Task.sleep(for: timeout, clock: .suspending) } catch { return }
                     await self?.complete(.failure(.timedOut))
                 }
                 connection.activate()
@@ -74,6 +104,11 @@ actor HelperConnection {
                 case .status: proxy.readStatus(withReply: reply)
                 case .removal: proxy.prepareForRemoval(withReply: reply)
                 case .diagnostics: proxy.readChargeDiagnostics(withReply: reply)
+                case .adapterDiagnostics: proxy.readAdapterDiagnostics(withReply: reply)
+                case .adapterRestart: proxy.verifyAdapterRestart(withReply: reply)
+                case .adapterByteObservation: proxy.observeAdapterByte(withReply: reply)
+                case .adapterBytePulse: proxy.verifyAdapterBytePulse(withReply: reply)
+                case .adapterVerification: proxy.verifyAdapterIsolation(withReply: reply)
                 case .verification(let limit): proxy.verifyNativeChargeLimit(limit, withReply: reply)
                 }
             }
@@ -86,6 +121,10 @@ actor HelperConnection {
         do {
             let response = try HelperStatus.decode(data)
             guard !needsDiagnostics || response.chargeDiagnostics != nil else { throw HelperConnectionError.invalidReply }
+            guard !needsAdapterDiagnostics || response.adapterDiagnostics != nil else { throw HelperConnectionError.invalidReply }
+            guard !needsAdapterVerification || response.adapterVerification != nil else { throw HelperConnectionError.invalidReply }
+            guard !needsAdapterByteObservation || response.adapterByteObservation != nil else { throw HelperConnectionError.invalidReply }
+            guard !needsAdapterBytePulse || response.adapterBytePulse != nil else { throw HelperConnectionError.invalidReply }
             if let verificationTarget {
                 guard response.nativeVerification?.target == verificationTarget else { throw HelperConnectionError.invalidReply }
             }

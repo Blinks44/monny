@@ -33,6 +33,10 @@ struct SettingsPage: View {
                 notifications
             }
         }
+        .onAppear {
+            // Older builds allowed preferences below the supported product range.
+            if !(80...100).contains(chargeLimit) { chargeLimit = 80 }
+        }
         .task { if SystemInfo.hasBattery { await helper.refresh() } }
     }
 
@@ -129,7 +133,7 @@ struct SettingsPage: View {
             SettingsSection("Battery") {
                 SettingsRow("Default charge limit") {
                     PopupPicker(title: "Default charge limit", selection: $chargeLimit,
-                                options: stride(from: 50, through: 100, by: 5).map { ($0, Self.percentText($0)) })
+                                options: stride(from: 80, through: 100, by: 5).map { ($0, Self.percentText($0)) })
                 }
                 SettingsRow("Sailing range") {
                     PopupPicker(title: "Sailing range", selection: $sailingRange,

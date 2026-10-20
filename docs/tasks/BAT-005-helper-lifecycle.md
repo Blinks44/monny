@@ -37,6 +37,50 @@ Final release.sh: arm64 Release, runtime/strict signed app/helper positive/negat
 
 ## Limits and next action
 
-User's confirmed installation/app+Mac restart/removal/reinstall applies to the previous status-only binary (BAT-003), not these new native event handlers. The new observer's actual sleep/wake and graceful termination behavior needs user-owned runtime acceptance. Sleep acknowledgement after an attempted restore is not proof of successful physical restoration; IOKit proceeds after 30 seconds even if a process stalls. SIGKILL/crash cannot run cleanup; current launchd is on-demand without KeepAlive. Native-event/hardware/runtime negative-peer and clean-Mac gates remain open.
+User's confirmed installation/app+Mac restart/removal/reinstall applies to the previous status-only binary (BAT-003), not these new native event handlers. The new observer's actual sleep/wake and graceful termination behavior needs user-owned runtime acceptance. Sleep acknowledgement after an attempted restore is not proof of successful physical restoration; IOKit proceeds after 30 seconds even if a process stalls. SIGKILL/crash cannot run cleanup. The original observer build used on-demand launchd; build 10 adds KeepAlive to request restart and journal recovery ([BAT-018](BAT-018-native-limit-interface.md)), whose real crash timing remains unverified. Native-event/hardware/runtime negative-peer and clean-Mac gates remain open.
 
-Read-only SMC/helper diagnostics are complete in BAT-006/007, and native getter-only installed diagnostics in BAT-011. Journal-backed native settings now use this executor's lifecycle with injected operations ([BAT-014](BAT-014-native-executor-lifecycle.md)); this does not verify real native events or charging. Next review the guarded setter/storage/capability contract before supplying any real backend. Runtime observer, restart availability and physical restoration remain open; real charging tests require explicit target/rollback authorization.
+Read-only SMC/helper diagnostics are complete in BAT-006/007, and native getter-only installed diagnostics in BAT-011. Journal-backed native settings now use this executor's lifecycle with injected operations ([BAT-014](BAT-014-native-executor-lifecycle.md)); this does not verify real native events or charging. The guarded native backend is now connected in build 10 (BAT-018); setting/read-back/restoration is user-confirmed, while real lifecycle acceptance remains open. Runtime observer, restart availability and physical restoration remain open; real charging tests require explicit target/rollback authorization.
+
+
+## Native sleep contract superseded — 2026-10-20
+
+Build 12 in [BAT-018](BAT-018-native-limit-interface.md) preserves an already-active native macOS limit and original checkpoint through ordinary sleep. Wake validates read-back and rearms the awake lease without setters; older injected SMC modes retain pre-sleep restoration. Earlier sleep-restoration checks in this record describe the historical observer contract, not current native product acceptance. Real power notifications, connection survival, later explicit restoration and physical enforcement still require hardware verification.
+
+## Build-15 restart evidence — 2026-10-20
+
+The user confirms a distinct temporary native target was active before force-quit, helper reappearance in approximately 4–5 seconds, and restoration of the original enabled/value pair with no active control. This accepts bounded native restart/journal rollback on that setup. [BAT-024](BAT-024-adapter-verification-ipc.md#user-reported-helper-restart--2026-10-20) owns the evidence. App-crash, full physical enforcement, adapter-specific recovery and other-platform gates remain open. No repeat crash is requested.
+
+
+## Bounded adapter helper-exit recovery accepted — 2026-10-20
+
+[BAT-027](BAT-027-adapter-restart-recovery.md) records one authorized installed build-19 unclean helper exit after durable CHIE-eight read-back. A different authenticated instance recovers the pending record from eight to zero before serving; native settings and adapter source are preserved/confirmed. This closes that bounded adapter restart case only, not all crash boundaries, sleep/removal or sustained behavior. No repeat is requested.
+
+
+## Wake retry eligibility fixes — 2026-10-20
+
+BAT-028 makes lifecycle outcomes observable and fixes retry eligibility after pre-sleep lease rollback failure and while removal remains pending. Injected regressions pass; removal stays gated. The next idle OS callback-delivery check does not close active adapter sleep/removal acceptance.
+
+
+## Idle OS callback delivery accepted — 2026-10-20
+
+BAT-028 records one user-owned build-20 sleep/wake cycle with the same authenticated helper instance, paired counter increments, noAdapterRecoveryNeeded outcomes, CHIE=0, adapter source and unchanged native settings. This accepts actual idle callback delivery only; active adapter sleep/removal remains open.
+
+
+## Active adapter sleep observed; collector correction open — 2026-10-20
+
+[BAT-029](BAT-029-active-adapter-sleep.md#authorized-build-21-trial--2026-10-20) records one authorized build-21 sleep request. Same-instance paired callbacks report adapterRestored before sleep and noAdapterRecoveryNeeded at wake; later read-only CHIE=0/native/source endpoints confirm restoration. The command itself exits wakeNotObserved during its premature collection window, so end-to-end acceptance remains open pending a software correction and reviewed candidate. No repeat trial is authorized; removal/sustained/other-platform gates remain.
+
+
+## Bounded active sleep accepted — 2026-10-21
+
+[BAT-029](BAT-029-active-adapter-sleep.md#authorized-build-22-acceptance--2026-10-21) accepts one authorized installed build-22 active sleep/wake report, exit 0. Independent diagnostics confirm same-instance paired counters, adapterRestored/noAdapterRecoveryNeeded, CHIE=0, no control, matching native endpoints and adapter source. This closes the observed active sleep and collector timing case; actual active removal, other timing/platform boundaries and sustained behavior remain open. No additional hardware action is authorized.
+
+
+## Active removal candidate ready — 2026-10-21
+
+[BAT-030](BAT-030-active-adapter-removal.md) prepares separately advertised bounded removal preparation, same-instance restoration acknowledgement before one native unregister, and direct post-removal byte/source checks without XPC/reinstall. Build-23 software/package review passes; actual active removal is still open and separately authorized. No new hardware action performed.
+
+
+## Bounded active removal accepted — 2026-10-21
+
+[BAT-030](BAT-030-active-adapter-removal.md#authorized-installed-build-23-removal-accepted--2026-10-21) accepts one authorized installed build-23 active removal report, exit 0, with restoration/native acknowledgement before unregister, direct byte-zero/source after it and independent service/process absence. No post-removal native getter or automatic reinstall is claimed. Helper remains unregistered; client-exit/sustained/other-platform gates remain open. No further hardware action authorized.

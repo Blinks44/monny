@@ -22,9 +22,11 @@ extension BatteryHelper {
         switch state {
         case .checking: "Checking the battery helper…"
         case .unavailable: "Battery helper is not available in this build."
-        case .notInstalled: "macOS manages charging. Battery controls are not available in this build."
+        case .notInstalled: "Charging is left to macOS"
         case .needsApproval: "Open System Settings, enable Monny in Login Items & Extensions, then return here. macOS may ask for your password again."
-        case .connected: "Helper connected. Charging controls are not available in this build."
+        case .connected:
+            if canControlNativeLimit { "Turn on charge limit control when you need it." }
+            else { "Update the battery helper to use charge limits." }
         case .incompatible: "The helper version doesn’t match Monny. Battery control remains off."
         case .failed:
             switch failure {
@@ -36,14 +38,19 @@ extension BatteryHelper {
     }
 }
 
-/// Shared status in the popover, Battery window and Settings. Never implies that connecting
-/// this status-only helper enables charging writes.
+/// Shared status distinguishes a connected helper from explicitly enabled limit control.
 struct BatteryHelperBanner: View {
     let helper: BatteryHelper
 
     var body: some View {
-        Banner(kind: helper.state == .failed || helper.state == .incompatible ? .danger : .info,
-               symbol: "lock.fill", title: "Battery control is off", message: helper.explanation)
+        Banner(kind: helper.nativeFailed || helper.state == .failed || helper.state == .incompatible ? .danger
+               : .info,
+               symbol: helper.nativeLimit != nil ? "battery.100percent" : "lock.fill",
+               title: helper.nativeLimit != nil ? "Charge limit is on" : "Battery control is off",
+               message: helper.nativeFailed ? "Couldn’t confirm charge control. Check macOS charging settings."
+               : helper.nativeLimit != nil ? "The native charge limit is active."
+               : helper.state == .connected && helper.canControlNativeLimit ? "Turn on charge limit control when you need it."
+               : helper.state == .connected ? "Update the battery helper to use charge limits." : helper.explanation)
     }
 }
 

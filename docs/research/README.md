@@ -1,6 +1,6 @@
 # Monny: mechanism and dependency decisions
 
-Updated 2026-10-19. Readings and history storage are decided ([CORE-001](../tasks/CORE-001-readings-research.md)); the battery-control task fills the helper table. Record dates, sources, revisions, licenses and what was actually tested.
+Updated 2026-10-20. Readings and history storage are decided ([CORE-001](../tasks/CORE-001-readings-research.md)); the battery-control task fills the helper table. Record dates, sources, revisions, licenses and what was actually tested.
 
 ## Readings
 
@@ -58,7 +58,7 @@ In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 
 | Charging keys | Capability-based support; firmware may deny access even to root | [Sources and licensing](battery-control.md#charging-support-varies-with-firmware); unprivileged six-key metadata probe rejected locally ([BAT-006](../tasks/BAT-006-read-only-charge-probe.md)); authenticated helper diagnostics implemented ([BAT-007](../tasks/BAT-007-helper-read-only-diagnostics.md)); installed helper rejects six charge keys; CHIE reads locally, writes unverified ([BAT-009](../tasks/BAT-009-ready-charge-solutions-review.md)) |
 | Fail-safe | Pure policy, lease/session executor and native lifecycle hooks implemented; no hardware backend | [Policy and lifecycle gates](battery-control.md); sleep/wake, crash and uninstall require hardware checks |
 
-Native-limit follow-up: [BAT-010](../tasks/BAT-010-native-charge-limit-research.md) verifies PowerUI getter support locally (80/85/90/95/100), without writes or private entitlement. Its getter-only diagnostic is implemented in [BAT-011](../tasks/BAT-011-native-limit-diagnostics.md); installed-helper native reads are verified, with no writer or ready Swift package adopted.
+Current native product sessions and local sleep-preservation acceptance: [BAT-018](../tasks/BAT-018-native-limit-interface.md). Native 80/85/90/95/100 setting read-back/restoration is confirmed; sustained physical and crash/helper-restart gates remain. [SMC research](smc-charge-control.md) compares below-80%, Hold and Discharge, pinned BSD/MIT alternatives and the 2026-10-20 nine-key read-only probe. CHIE alone does not establish these modes; a separate read-only adapter diagnostic is implemented in [BAT-021](../tasks/BAT-021-adapter-diagnostics.md). Targets below 80% and manual Hold are subsequently removed from product scope; installed-helper adapter reads are user-confirmed, while adapter writes and live recovery remain unverified. [BAT-022](../tasks/BAT-022-adapter-verification-preparation.md) prepares injected verification and shared secure storage; injected helper ownership/watchdog/lifecycle is covered, and unbound helper-only setter/source readings are prepared. Unprivileged source/registry evidence collection is ready in build 14 ([BAT-023](../tasks/BAT-023-adapter-power-observation.md)); the USB-C-monitor unplug/replug baseline is accepted, but guarded verification IPC is prepared with injected backends in [BAT-024](../tasks/BAT-024-adapter-verification-ipc.md). Physical semantics under CHIE isolation and real native/adapter crash-recovery acceptance remain open.
 
 ## Other dependencies
 
@@ -75,3 +75,5 @@ Use installed [create-dmg](https://github.com/create-dmg/create-dmg) 1.3.0 (MIT)
 ## Recording a new decision
 
 Use the affected task for a small decision; a broad mechanism can have a focused file here. Record the problem, sources with URLs/revisions, license/maintenance/platform limits, alternatives (including native APIs), the choice and what was tested. Explicitly supersede a previous decision. Any third-party code adopted gets a bundled notice and an entry here.
+
+The [OpenDente/AlDente CHIE review](opendente-aldente-chie.md) records the open Sonoma fallback PR, modern closed-source limits, dock/oscillation reports and the bounded observation decision for BAT-026.

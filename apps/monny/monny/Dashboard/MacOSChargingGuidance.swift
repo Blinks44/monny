@@ -8,17 +8,10 @@ struct MacOSChargingGuidance: View {
                 .font(Theme.headline)
                 .foregroundStyle(Theme.textPrimary)
                 .accessibilityAddTraits(.isHeader)
-            Text("Monitoring works with macOS charging settings on. Before using Monny’s charging controls, avoid competing charging targets:")
-            VStack(alignment: .leading, spacing: Theme.spaceM) {
-                Label("Turn off Optimized Battery Charging.", systemImage: "1.circle")
-                Label("Set the macOS Charge Limit to 100%, if available.", systemImage: "2.circle")
-            }
-            Text("In System Settings → Battery, click the info button next to Charging or Battery Health. Monny does not check or change these settings.")
-                .font(Theme.footnote)
-                .foregroundStyle(Theme.textSecondary)
-            Text("When you stop using Monny’s charging controls, you can turn macOS charging features back on.")
-                .font(Theme.footnote)
-                .foregroundStyle(Theme.textSecondary)
+            Text("Monny uses the macOS charge limit. You do not need to turn it off in System Settings first.")
+            Text("Optimized Battery Charging can also delay charging. Monny does not change that setting.")
+            Text("The previous macOS settings are restored when control stops.")
+                .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
             Link("Open Battery Settings…", destination: Self.settingsURL)
                 .buttonStyle(SecondaryButtonStyle())
         }

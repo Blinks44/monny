@@ -3,12 +3,12 @@ import Foundation
 /// App-side decisions only. This type performs no I/O and is not yet connected to a helper.
 /// A future helper must acknowledge commands and restore macOS control when its lease expires.
 nonisolated struct ChargePolicy: Sendable {
-    enum Mode: Sendable, Hashable { case charge, hold, discharge }
+    enum Mode: Sendable, Hashable { case charge, discharge }
     enum Capability: Sendable { case unavailable, chargeOnly, chargeAndDischarge }
     enum Action: Sendable { case macOS, charge, hold, discharge }
     enum Reason: Sendable {
         case disabled, unavailable, invalidSettings, invalidReading, onBattery
-        case chargingToLimit, atLimit, manualHold, dischargingToLimit, tooHot
+        case chargingToLimit, atLimit, dischargingToLimit, tooHot
     }
 
     struct Decision: Sendable, Equatable {
@@ -19,14 +19,14 @@ nonisolated struct ChargePolicy: Sendable {
     struct Settings: Sendable, Equatable {
         var isEnabled = false
         var mode = Mode.charge
-        /// Fractions: limit 0.5...1, sailing range 0...0.1 (zero means off).
+        /// Fractions: limit 0.8...1, sailing range 0...0.1 (zero means off).
         var limit = 0.8
         var sailingRange = 0.0
         /// °C; nil means heat protection is off.
         var heatThreshold: Double?
 
         var isValid: Bool {
-            limit.isFinite && (0.5...1).contains(limit)
+            limit.isFinite && (0.8...1).contains(limit)
                 && sailingRange.isFinite && (0...0.1).contains(sailingRange)
                 && (heatThreshold.map { $0.isFinite && (30...45).contains($0) } ?? true)
         }
@@ -78,8 +78,6 @@ nonisolated struct ChargePolicy: Sendable {
         }
 
         switch settings.mode {
-        case .hold:
-            return Decision(action: .hold, reason: .manualHold)
         case .discharge:
             if reading.level <= settings.limit { reachedLimit = true }
             return reachedLimit ? Decision(action: .hold, reason: .atLimit)

@@ -2,7 +2,8 @@ import Foundation
 
 /// Developer diagnostic: machine-readable output only, no registration, monitoring or writes.
 nonisolated enum BatteryDiagnosticCommand {
-    static var isRequested: Bool { ProcessInfo.processInfo.arguments.contains("--battery-diagnostics") }
+    static var isRequested: Bool { ProcessInfo.processInfo.arguments.contains("--battery-diagnostics")
+        || ProcessInfo.processInfo.arguments.contains("--adapter-diagnostics") }
     enum Failure: Error, Sendable, Equatable { case helperNotEnabled, helperUpdateRequired }
     private struct ErrorOutput: Encodable { var error: String }
 
@@ -13,7 +14,11 @@ nonisolated enum BatteryDiagnosticCommand {
                 throw HelperConnectionError.signingUnavailable
             }
             guard await HelperSystem.registration() == .enabled else { throw Failure.helperNotEnabled }
-            let response = try await collect(requirement: requirement)
+            let response = if ProcessInfo.processInfo.arguments.contains("--adapter-diagnostics") {
+                try await collectAdapter(requirement: requirement)
+            } else {
+                try await collect(requirement: requirement)
+            }
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             try FileHandle.standardOutput.write(contentsOf: encoder.encode(response))
@@ -41,4 +46,20 @@ nonisolated enum BatteryDiagnosticCommand {
         guard response.chargeDiagnostics != nil, response.nativeChargeLimit != nil else { throw HelperConnectionError.invalidReply }
         return response
     }
+
+    /// Adapter access has its own handshake; old six-key/native diagnostics remain independent.
+    static func collectAdapter(requirement: String,
+                               status: @Sendable (String) async throws -> HelperStatus = {
+                                   try await HelperConnection().request(requirement: $0)
+                               },
+                               diagnostics: @Sendable (String) async throws -> HelperStatus = {
+                                   try await HelperConnection().diagnoseAdapter(requirement: $0)
+                               }) async throws -> HelperStatus {
+        let handshake = try await status(requirement).validated()
+        guard handshake.adapterDiagnosticsAvailable == true else { throw Failure.helperUpdateRequired }
+        let response = try await diagnostics(requirement).validated()
+        guard response.adapterDiagnostics != nil else { throw HelperConnectionError.invalidReply }
+        return response
+    }
+
 }

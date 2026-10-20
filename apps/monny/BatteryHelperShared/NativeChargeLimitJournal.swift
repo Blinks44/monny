@@ -2,7 +2,7 @@ import Foundation
 import Darwin
 
 /// Checkpoint I/O owned by one serialized transaction. No default or global storage location.
-nonisolated struct NativeChargeLimitJournal: Sendable {
+nonisolated struct ChargeRecoveryJournal: Sendable {
     var load: @Sendable () throws -> Data?
     var save: @Sendable (Data) throws -> Void
     var clear: @Sendable () throws -> Void
@@ -10,20 +10,26 @@ nonisolated struct NativeChargeLimitJournal: Sendable {
 
 /// Atomic process-restart checkpoints in an existing private directory owned by this effective uid.
 /// Production must supply a trusted fixed directory; concurrent transaction owners are unsupported.
-nonisolated final class NativeChargeLimitFileJournal: Sendable {
+nonisolated final class ChargeRecoveryFileJournal: Sendable {
+    /// Fixed namespaces only; neither a filename nor a directory may come from IPC.
+    enum Record: String, Sendable {
+        case nativeLimit = "native-charge-recovery.json"
+        case adapterVerification = "adapter-verification-recovery.json"
+    }
+
     private let directory: Int32
-    private static let filename = "native-charge-recovery.json"
+    private let record: Record
 
     /// Fixed production location; only the privileged helper may create/open it.
-    /// Preparation only: the shipped helper never calls this factory.
-    static func systemJournal() throws -> NativeChargeLimitFileJournal {
+    /// The helper uses fixed independent native and adapter records.
+    static func systemJournal(record: Record = .nativeLimit) throws -> ChargeRecoveryFileJournal {
         guard geteuid() == 0 else { throw POSIXError(.EPERM) }
-        return try inTrustedRoot(URL(fileURLWithPath: "/", isDirectory: true), owner: 0)
+        return try inTrustedRoot(URL(fileURLWithPath: "/", isDirectory: true), owner: 0, record: record)
     }
 
     /// Allows isolated fixtures to reproduce the same traversal in a private temporary root.
     /// The root and its ancestors must be trusted; no path may originate from IPC.
-    static func inTrustedRoot(_ root: URL, owner: uid_t) throws -> NativeChargeLimitFileJournal {
+    static func inTrustedRoot(_ root: URL, owner: uid_t, record: Record = .nativeLimit) throws -> ChargeRecoveryFileJournal {
         var current = open(root.path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)
         guard current >= 0 else { throw posixError() }
         defer { close(current) }
@@ -43,10 +49,13 @@ nonisolated final class NativeChargeLimitFileJournal: Sendable {
         // Duplicate ownership so the traversal's deferred close cannot invalidate the journal.
         let owned = fcntl(current, F_DUPFD_CLOEXEC, 0)
         guard owned >= 0 else { throw posixError() }
-        return NativeChargeLimitFileJournal(directoryDescriptor: owned)
+        return ChargeRecoveryFileJournal(directoryDescriptor: owned, record: record)
     }
 
-    private init(directoryDescriptor: Int32) { directory = directoryDescriptor }
+    private init(directoryDescriptor: Int32, record: Record) {
+        directory = directoryDescriptor
+        self.record = record
+    }
 
     private static func validateDirectory(_ descriptor: Int32, owner: uid_t, privateAccess: Bool) throws {
         var metadata = stat()
@@ -56,7 +65,7 @@ nonisolated final class NativeChargeLimitFileJournal: Sendable {
         }
     }
 
-    init(privateDirectory: URL) throws {
+    init(privateDirectory: URL, record: Record = .nativeLimit) throws {
         let descriptor = open(privateDirectory.path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)
         guard descriptor >= 0 else { throw Self.posixError() }
         var metadata = stat()
@@ -66,16 +75,17 @@ nonisolated final class NativeChargeLimitFileJournal: Sendable {
             throw POSIXError(.EACCES)
         }
         directory = descriptor
+        self.record = record
     }
 
     deinit { close(directory) }
 
-    var journal: NativeChargeLimitJournal {
+    var journal: ChargeRecoveryJournal {
         .init(load: { try self.load() }, save: { try self.save($0) }, clear: { try self.clear() })
     }
 
     private func load() throws -> Data? {
-        let descriptor = openat(directory, Self.filename, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC)
+        let descriptor = openat(directory, record.rawValue, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC)
         guard descriptor >= 0 else {
             if errno == ENOENT { return nil }
             throw Self.posixError()
@@ -93,21 +103,25 @@ nonisolated final class NativeChargeLimitFileJournal: Sendable {
 
     private func save(_ data: Data) throws {
         guard !data.isEmpty, data.count <= 4096 else { throw POSIXError(.EINVAL) }
-        let temporary = ".native-charge-\(UUID().uuidString).tmp"
+        let temporary = ".\(record.rawValue).\(UUID().uuidString).tmp"
         let descriptor = openat(directory, temporary, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, 0o600)
         guard descriptor >= 0 else { throw Self.posixError() }
         defer { unlinkat(directory, temporary, 0) }
         let handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
         try handle.write(contentsOf: data)
         try handle.synchronize()
-        guard renameat(directory, temporary, directory, Self.filename) == 0 else { throw Self.posixError() }
+        guard renameat(directory, temporary, directory, record.rawValue) == 0 else { throw Self.posixError() }
         guard fsync(directory) == 0 else { throw Self.posixError() }
     }
 
     private func clear() throws {
-        if unlinkat(directory, Self.filename, 0) != 0, errno != ENOENT { throw Self.posixError() }
+        if unlinkat(directory, record.rawValue, 0) != 0, errno != ENOENT { throw Self.posixError() }
         guard fsync(directory) == 0 else { throw Self.posixError() }
     }
 
     private static func posixError() -> POSIXError { POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
 }
+
+// Preserve existing native transaction call sites, record path and schema.
+typealias NativeChargeLimitJournal = ChargeRecoveryJournal
+typealias NativeChargeLimitFileJournal = ChargeRecoveryFileJournal

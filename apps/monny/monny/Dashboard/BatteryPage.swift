@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// Sketch's Battery window, using the shared sampler. No charging command leaves this page.
-/// Hardware control and verification are still pending, so controls remain visibly off.
+/// Sketch's Battery window, using the shared sampler and bounded native limit controls.
 struct BatteryPage: View {
     let sampler: Sampler
     let helper: BatteryHelper
@@ -85,73 +84,23 @@ struct BatteryPage: View {
     }
 
     private var chargingControls: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: Theme.spaceL) {
             CardHeader("battery.charging.title") {
-                HStack(spacing: Theme.spaceM) {
-                    Button { showsChargingGuidance = true } label: {
-                        Image(systemName: "info.circle").font(Theme.body)
-                            .foregroundStyle(Theme.textSecondary)
-                    }
-                    .buttonStyle(.plain)
-                    .help(Text("macOS charging settings"))
-                    .accessibilityLabel(Text("macOS charging settings"))
-                    .popover(isPresented: $showsChargingGuidance) { MacOSChargingGuidance() }
-                    Chip(title: "Off", kind: .neutral)
+                Button { showsChargingGuidance = true } label: {
+                    Image(systemName: "info.circle").foregroundStyle(Theme.textSecondary)
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("macOS charging settings"))
+                .popover(isPresented: $showsChargingGuidance) { MacOSChargingGuidance() }
             }
-            .padding(.bottom, 12)
-            SegmentedControl(title: "Charging mode", selection: .constant(ChargePolicy.Mode.charge), options: [
-                (.charge, "Charge"), (.hold, "Hold"), (.discharge, "Discharge"),
-            ], height: 32)
-            .disabled(true)
-            .padding(.bottom, 14)
-            VStack(spacing: 8) {
-                HStack {
-                    Text("Charge limit").font(Theme.body)
-                    Spacer()
-                    Text((Double(limit) / 100).percentText)
-                        .font(Theme.bodyEmphasized).foregroundStyle(Theme.metricBattery)
-                }
-                chargeLimitPreview
-                HStack {
-                    Text(0.5, format: .percent)
-                    Spacer()
-                    Text(1.0, format: .percent)
-                }
-                .font(Theme.caption).foregroundStyle(Theme.textTertiary)
-            }
-            .padding(.bottom, 10)
+            NativeLimitControls(helper: helper)
             Divider()
             unavailableToggle("Sailing mode", detail: Text("Drift to \(Double(max(50, limit - sailingRange)) / 100, format: .percent) before topping up"))
-                .padding(.vertical, 8)
-            Divider()
             unavailableToggle("Heat protection", detail: Text("Pause charging above \(Double(heatThreshold).temperatureText(temperatureUnit))"))
-                .padding(.top, 8)
         }
         .foregroundStyle(Theme.textPrimary)
         .fixedSize(horizontal: false, vertical: true)
         .batteryCard(minHeight: 284)
-    }
-
-    /// A non-interactive preview of the saved limit, matching Sketch's 6 pt track and 20 pt knob.
-    /// The accessible representation stays a disabled slider until hardware control is available.
-    private var chargeLimitPreview: some View {
-        GeometryReader { proxy in
-            let fraction = min(max((Double(limit) - 50) / 50, 0), 1)
-            let travel = max(0, proxy.size.width - 20)
-            ZStack(alignment: .leading) {
-                Capsule().fill(Theme.fillTrack).frame(height: 6)
-                Capsule().fill(Theme.metricBattery).frame(width: 10 + travel * fraction, height: 6)
-                Circle().fill(.white).controlElevation()
-                    .frame(width: 20, height: 20).offset(x: travel * fraction)
-            }
-            .frame(height: 20)
-        }
-        .frame(height: 20)
-        .accessibilityRepresentation {
-            Slider(value: .constant(Double(limit)), in: 50...100, step: 5) { Text("Charge limit") }
-                .disabled(true)
-        }
     }
 
     private var calibration: some View {

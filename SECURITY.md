@@ -1,13 +1,12 @@
 # Security
 
-Monny reads system statistics and, with an optional privileged helper, changes how the Mac charges its battery. The helper runs with administrator rights, so security reports are especially welcome.
+Monny reads system statistics and can change the macOS battery charge limit, the same setting as System Settings › Battery. It runs as an ordinary app without administrator rights or a background helper.
 
 ## What Monny does and does not do
 
 - Readings come from your Mac and stay on it. There is no account, analytics or telemetry; the only network request is the update check.
 - Monny shows process names and resource use but does not read file contents, keystrokes or network traffic.
-- The battery helper is installed only when you ask for it, after the standard macOS administrator prompt. It only accepts charging commands from the signed Monny app and can be removed in Settings → Battery.
-- If the helper or a reading is unavailable, Monny leaves charging to macOS.
+- The charge limit changes only when you change it. macOS enforces it; if the setting cannot be read, Monny does not write it.
 
 ## Reporting a vulnerability
 

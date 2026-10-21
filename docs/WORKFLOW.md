@@ -88,7 +88,7 @@ Before the final answer or interruption handoff:
 1. Update the affected task/evidence with the final deliverables, real revision or baseline plus uncommitted files, actual checks/failures, limits and one next action per applicable role. Keep historical tests dated; a document edit is not a rerun.
 2. Update STATE's affected facts/rows and concise recent outcomes. Update SPEC for changed requirements, DESIGN for direction/source/readiness, PLAN for priorities/gates and research for mechanism decisions. Touch only relevant records.
 3. Add a short dated history entry for substantive work, linking detailed evidence. Apply incremental maintenance above so current handoffs describe the final result.
-4. Review the final diff against acceptance and affected design states. Build after app changes; run meaningful behavioral tests for changed logic. Keep unresolved runtime/hardware/accessibility/localization gates explicit.
+4. Review the final diff against acceptance and affected design states. After app changes, increment the build number, run tests and `release.sh` so the user receives a signed DMG ([AGENTS §4](../AGENTS.md#4-finish-or-hand-off)). Keep unresolved runtime/hardware/accessibility/localization gates explicit.
 5. Report the meaningful outcome, what is ready/open and the next action/role. A receiving-role request such as “Verify the charge limit on a MacBook” must resolve from saved records without IDs or the old chat.
 
 ### Documentation review

@@ -4,7 +4,7 @@ Updated 2026-10-21. [STATE](STATE.md) indexes current evidence; [SPEC](SPEC.md) 
 
 ## Current slice
 
-[APP-007](tasks/APP-007-native-simplification-design-parity.md): simplify main, use the system charge-limit preference without a helper where supported, reconcile the app with unchanged live Sketch, review all six localizations and prepare a signed candidate. Build 25 is packaged; 34 tests and constrained multilingual renders pass. Next is installed user review. Discharge/helper experiments are preserved on **experiments/discharge** at abe3a80 and are outside the first-release implementation. No further adapter-isolation work runs on main.
+[APP-007](tasks/APP-007-native-simplification-design-parity.md): native-only main with the system charge limit, reviewed and simplified for production on 2026-10-21. Next is an installed review of a fresh build. Discharge/helper work stays on **experiments/discharge** (abe3a80) until it is planned again.
 
 ## App phases
 
@@ -14,14 +14,14 @@ Updated 2026-10-21. [STATE](STATE.md) indexes current evidence; [SPEC](SPEC.md) 
 4. Onboarding, accessibility/localization and performance/release review. Existing login item and manual update check remain.
 5. Signed release preparation, then website in apps/website.
 
-Sailing, manual heat-driven charge control, forced Discharge, calibration and trip automation remain deferred. Existing Sketch future-mode frames are not edited in this slice and cannot be used as evidence of working controls.
+Sailing, manual heat-driven charge control, forced Discharge, calibration and trip automation remain deferred. The app does not show them; their Sketch frames remain for later.
 
 ## Release gates
 
-- [ ] Every current SPEC requirement implemented or explicitly limited.
-- [ ] Direct native setting verified on supported OS/hardware, including read-back, persistence and System Settings coexistence. No unsupported immediate-discharge claim.
-- [ ] CPU/memory/network/disk and sensor comparisons accepted; history/hover reviewed.
+- [ ] Every current SPEC requirement implemented or explicitly limited (onboarding open).
+- [x] Direct native setting verified: user changed the limit in build 27 and saw it in System Settings (2026-10-21).
+- [x] Reading comparisons accepted by the user (2026-10-21, informal check).
 - [ ] Idle cost measured with popover, dashboard and background.
-- [ ] Keyboard, VoiceOver, Increase Contrast, Reduce Motion and all six languages at minimum width.
-- [ ] macOS 26 monitoring / macOS 26.4+ native limit checked, not only macOS 27.
-- [ ] Clean-Mac signed DMG installation and selected distribution/notarization route verified; user-initiated update check points to the public repository.
+- [ ] Keyboard, VoiceOver, Increase Contrast, Reduce Motion. Six languages reviewed by the user (2026-10-21).
+- [x] Works on macOS 26 (user report 2026-10-21; minor version not recorded) and macOS 27.0.1.
+- [ ] Clean-Mac DMG installation. Distribution route chosen: Apple Development signature without notarization until a Developer ID exists; first launch per [README](../README.md#install).

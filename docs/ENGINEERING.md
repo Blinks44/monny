@@ -8,7 +8,7 @@ Read before changing app code or choosing a reading/charging mechanism. Workflow
 - Swift 6 language mode, complete strict concurrency, `MainActor` default isolation, approachable concurrency (all set in the Xcode project). Current stable Xcode toolchain.
 - SwiftUI for UI, Swift Charts for charts, AppKit only where SwiftUI is insufficient (status item with right-click menu, global shortcut, window/popover behavior). Prefer `MenuBarExtra` if it satisfies the status-item states and right-click menu; otherwise an `NSStatusItem` hosting SwiftUI content.
 - One app process; no privileged helper/XPC service on main. Native limit is a direct system preference; experimental helper/SMC control is on experiments/discharge.
-- App Sandbox off (helper and system readings), Hardened Runtime on, no custom entitlements unless a mechanism requires one and research records why.
+- App Sandbox off (system readings), Hardened Runtime on, no custom entitlements unless a mechanism requires one and research records why.
 - No Electron/web UI, accounts, cloud backend, analytics or telemetry.
 
 ## Architecture
@@ -26,7 +26,7 @@ Do not add protocols, dependency-injection containers or view models where a pla
 ## Swift rules
 
 - `@Observable` for shared UI state, `@State` for owned models, `@Bindable`/`@Environment` as appropriate; no new `ObservableObject`.
-- Structured concurrency for sampling and XPC. Do not silence data-race diagnostics with unjustified `@unchecked Sendable` or `nonisolated(unsafe)`; wrap C/IOKit handles in a narrowly owned type.
+- Structured concurrency for sampling. Do not silence data-race diagnostics with unjustified `@unchecked Sendable` or `nonisolated(unsafe)`; wrap C/IOKit handles in a narrowly owned type.
 - FormatStyle for every displayed value (bytes, rates, percentages, temperatures with `Measurement`, durations, dates); no `String(format:)` or legacy formatters.
 - `Logger` with a subsystem per component; mark process names and paths `.private` unless they are the user's own visible data in the UI.
 - Avoid force-unwraps/force-tries, singletons and polling where a notification or callback exists (power source changes, thermal state).
@@ -46,7 +46,6 @@ Do not add protocols, dependency-injection containers or view models where a pla
 - Enable only if needed, before setting the target: the locally observed enable call resets the target. Disabling does not require writing an irrelevant target. Do not conflate a setter acknowledgement with read-back.
 - The user-selected system preference persists through app quit/sleep/restart; macOS enforces it. No old-setting restoration on quit. Lowering the target does not imply forced discharge or an exact battery threshold.
 - Monitoring SMC is read-only and remains shared with sensor readers. No root, process-kill, framework patch, preference-file or entitlement workaround.
-- On older installations, remove the old helper using the old app before replacing it; no automatic unregister or unsafe journal deletion in the new app.
 
 ## UI rules
 

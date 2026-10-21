@@ -23,7 +23,6 @@ enum DashboardWindow {
 }
 
 final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
-    // Diagnostics must not initialize readers (including the SMC connection) before routing.
     private(set) lazy var model = AppModel()
     private var menuBar: MenuBarController?
     /// Opens the dashboard scene; set by the first SwiftUI view that has `openWindow`.
@@ -65,18 +64,18 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 
     func applicationDidBecomeActive(_ notification: Notification) {
-        guard !Self.runningTests, SystemInfo.hasBattery else { return }
+        guard !Self.runningTests else { return }
         Task { await model.chargeLimit.refresh() }
     }
 
     @objc private func systemDidWake() {
-        guard !Self.runningTests, SystemInfo.hasBattery else { return }
+        guard !Self.runningTests else { return }
         Task { await model.chargeLimit.refresh() }
     }
 
     /// Opening Monny again from Finder or Spotlight while it runs shows the dashboard.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
-                openDashboard(nil)
+        openDashboard(nil)
         return false
     }
 

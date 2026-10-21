@@ -36,14 +36,14 @@ Build output is under ignored `apps/monny/build/DerivedData/`. Do not run concur
 
 ## Signing and packaging
 
-Default developer builds are ad-hoc signed. Installed review candidates use the existing Apple Development identity with Hardened Runtime via `apps/monny/scripts/release.sh`; no helper is bundled or registered. The script builds arm64 Release, signs the app and DMG, checks signatures/image integrity and prints SHA-256. It never creates signing keys, installs the app or changes charging. See [SIGNING](SIGNING.md) for the existing backup/distribution limitations.
+Default developer builds are ad-hoc signed. Installed review candidates use the existing Apple Development identity with Hardened Runtime via `apps/monny/scripts/release.sh`. The script builds arm64 Release, signs the app and DMG, checks signatures/image integrity and prints SHA-256. See [SIGNING](SIGNING.md) for the existing backup/distribution limitations.
 
 ## Native charge limit
 
-Main uses macOS's persistent system preference through a small runtime-checked PowerUI bridge. Monitoring supports macOS 26+; charge limit requires macOS 26.4+ and a compatible runtime. Native settings are read on startup/activation/wake; setters run only for explicit user actions, serially off main. Enabled/target read-back is mandatory. macOS owns enforcement after app quit; no helper/session/journal or adapter-isolation writes remain. The local ordinary-user probe validates access on macOS 27.0.1, not every supported Mac/OS.
+`Battery/NativeChargeLimitBridge.m` calls the private `PowerUISmartChargeClient` (macOS 26.4+) as the ordinary user, after checking every method signature at runtime; a mismatch reads as unavailable. `ChargeLimitStore` makes the calls off the main actor one at a time and confirms each change by reading it back. Launch, wake and opening a view only read. macOS enforces the limit and keeps it after Monny quits. Verified on macOS 27.0.1 only.
 
-The complete build-23 helper/Discharge implementation, engineering commands and tests are preserved on **experiments/discharge** at abe3a80. Historical BAT task/research evidence remains dated and does not describe current main. Do not invoke removed commands or resume experiments on main. Users of old builds must remove their helper using that old app before replacing it; the new app never silently uninstalls or edits recovery journals.
+The helper/Discharge implementation and its tests are on **experiments/discharge** (abe3a80).
 
 ## Contribution checks
 
-Read [STATE](STATE.md), [WORKFLOW](WORKFLOW.md) and affected contracts. Use dev.sh for build/test. Inspect live Sketch before visual changes, preserve source design, and render both appearances/all languages. Keep temporary snapshots, logs, raw machine data and probe binaries outside Git. Run meaningful injected native-setting tests; actual system-setting trials need bounded scope/read-back and truthful evidence. Research private runtime/SMC mechanisms before adding code; no blind library or toolchain migration.
+Read [STATE](STATE.md), [WORKFLOW](WORKFLOW.md) and affected contracts. Use dev.sh for build/test. Inspect live Sketch before visual changes, preserve source design, and render both appearances/all languages. Keep temporary snapshots, logs, raw machine data and probe binaries outside Git. Run the injected charge-limit tests; a real system-setting change is a manual check. Research private runtime/SMC mechanisms before adding code; no blind library or toolchain migration.

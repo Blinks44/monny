@@ -1,6 +1,8 @@
 # OpenDente and AlDente: CHIE and physical observation
 
-Reviewed **2026-10-20** for [BAT-026](../tasks/BAT-026-bounded-adapter-observation.md), after BAT-025's real byte round trip produced no sampled source change and no clear visible effect. Public GitHub REST responses, issue/PR discussions and vendor documentation were read; no releases installed, attached debug archives downloaded or upstream code copied.
+> Battery helper and Discharge task/verification records referenced here (BAT-*, APP-005/006, helper verification) were retired from main on 2026-10-21; they are preserved on the `experiments/discharge` branch.
+
+Reviewed **2026-10-20** for BAT-026, after BAT-025's real byte round trip produced no sampled source change and no clear visible effect. Public GitHub REST responses, issue/PR discussions and vendor documentation were read; no releases installed, attached debug archives downloaded or upstream code copied.
 
 ## OpenDente
 

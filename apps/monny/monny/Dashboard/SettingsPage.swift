@@ -10,7 +10,6 @@ struct SettingsPage: View {
     @AppStorage(PreferenceKey.showsAlertBadge) private var showsAlertBadge = true
     @AppStorage(PreferenceKey.notifyChargeLimit) private var notifyChargeLimit = true
     @AppStorage(PreferenceKey.notifyHot) private var notifyHot = true
-    @AppStorage(PreferenceKey.notifyCalibration) private var notifyCalibration = true
     @AppStorage(PreferenceKey.notifyLowBattery) private var notifyLowBattery = false
     @AppStorage(PreferenceKey.notifyMemoryPressure) private var notifyMemoryPressure = false
     @State private var loginItem = LoginItem()
@@ -32,7 +31,7 @@ struct SettingsPage: View {
             }
             .frame(minWidth: 0, maxWidth: .infinity)
         }
-        .task { if SystemInfo.hasBattery { await controller.refresh() } }
+        .task { await controller.refresh() }
     }
 
     private var general: some View {
@@ -129,16 +128,11 @@ struct SettingsPage: View {
         }
     }
 
-    private static func percentText(_ percent: Int) -> Text {
-        Text((Double(percent) / 100).formatted(.percent))
-    }
-
     private var notifications: some View {
         SettingsSection("Notifications") {
-            CheckboxRow("Charge limit reached", isOn: $notifyChargeLimit)
+            if SystemInfo.hasBattery { CheckboxRow("Charge limit reached", isOn: $notifyChargeLimit) }
             CheckboxRow("Mac is running hot", isOn: $notifyHot)
-            CheckboxRow("Calibration finished", isOn: $notifyCalibration).disabled(true)
-            CheckboxRow("Battery below 20%", isOn: $notifyLowBattery)
+            if SystemInfo.hasBattery { CheckboxRow("Battery below 20%", isOn: $notifyLowBattery) }
             CheckboxRow("Memory pressure is high", isOn: $notifyMemoryPressure, isLast: true)
         }
     }

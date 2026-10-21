@@ -5,17 +5,17 @@ The [root README](../README.md) is the public project overview: what Monny does,
 | Document | Purpose |
 | --- | --- |
 | [SIGNING](SIGNING.md) | Three build/test/release commands, encrypted key backups and macOS reinstall |
-| [DEVELOPMENT](DEVELOPMENT.md) | Build/test commands, toolchain, signing and the helper's local setup |
+| [DEVELOPMENT](DEVELOPMENT.md) | Build/test commands, toolchain and signing |
 | [SPEC](SPEC.md) | Required product behavior and acceptance |
 | [PLAN](PLAN.md) | Roadmap and remaining phase gates |
 | [DESIGN](DESIGN.md) | Visual direction and current Sketch source/readiness |
-| [ENGINEERING](ENGINEERING.md) | Platform, sampling/concurrency, helper security, localization and dependency conventions |
+| [ENGINEERING](ENGINEERING.md) | Platform, sampling/concurrency, charge-limit safety, localization and dependency conventions |
 | [verification](verification/README.md) | Software/native/hardware checks with dated results |
 | [research](research/README.md) | Current mechanism decisions and dependency/license references |
 
 For agents and multi-session contribution, start with [AGENTS](../AGENTS.md) and [STATE](STATE.md), then the relevant [task](tasks/README.md). [WORKFLOW](WORKFLOW.md) defines ownership, fresh context, design/code handoff and completion updates. [History](history/README.md) records dated technical outcomes, which may contain superseded decisions.
 
-Live readings and their comparison limits are indexed in [STATE](STATE.md) and [verification](verification/README.md). The Battery page is read-only; policy and helper software checks do not establish hardware charge control.
+Live readings and their comparison limits are indexed in [STATE](STATE.md) and [verification](verification/README.md).
 
 Reusable setup: [Agent Workflow Setup](../.agents/skills/agent-workflow-setup/README.md) is a self-contained MIT skill for configuring this pattern in other projects. Its license covers only that folder.
 

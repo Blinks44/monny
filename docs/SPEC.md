@@ -32,7 +32,7 @@ Header: app icon, Monny, Mac model · chip · uptime; buttons to open the dashbo
 **Overview:** CPU load with P/E split and CPU temperature chip (warns when hot), memory used with pressure chip, disk free space and read/write rates, network down/up rates with a short sparkline, per-core load bars grouped by Performance/Efficiency, and a battery card with level, current mode and a charge-limit toggle. Footer: Open Dashboard, shortcut, refresh interval.
 **Thermal alert state:** when the Mac is hot, the CPU card and battery card show it (for example “Charging paused · too hot” when heat protection acts).
 
-**Battery:** measured adapter/source state, large level gauge with system limit marker, health · cycles · temperature, supported native charge-limit slider and enable switch, system charging guidance. Missing readings stay unavailable/loading. No helper banner/install flow on main. Discharge and advanced automation in the unchanged Sketch frames remain deferred; current main omits mode tiles and may show disabled future controls only with availability guidance. A no-battery Mac keeps the same empty state as the dashboard Battery page. Do not invent a time-to-limit from a time-to-full estimate.
+**Battery:** measured adapter/source state, large level gauge with system limit marker, health · cycles · temperature, supported native charge-limit slider and enable switch, system charging guidance. Missing readings stay unavailable/loading. Discharge and advanced automation in the Sketch frames are deferred and not shown (production review 2026-10-21). A no-battery Mac keeps the same empty state as the dashboard Battery page. Do not invent a time-to-limit from a time-to-full estimate.
 
 On a Mac without a battery the Overview battery strip shows the thermal state and fan speed instead.
 
@@ -44,7 +44,7 @@ Sidebar: Overview, CPU, Memory, Disk, Network, Battery, Sensors; Settings at the
 
 - **Overview:** summary cards with sparklines (CPU, Memory, Temperature, Battery), CPU load & temperature chart with hover tooltip naming the top process, 24 h battery level chart with limit line, battery facts (health, cycles, capacity, system load), top processes, sensor tiles and fan speed.
 - **CPU, Memory, Disk, Network:** the detailed history and breakdowns drawn in the corresponding Sketch frames.
-- **Battery:** level, health, cycles and power cards, history and native charge-limit controls. Existing future sailing/heat/calibration/trip cards stay visibly disabled until implemented; they do not imply a working schedule or controller. No Charge/Discharge selector on main.
+- **Battery:** level, health, cycles and power cards, history and native charge-limit controls. Sailing, heat protection, calibration and trip cards from Sketch are not shown until implemented (production review 2026-10-21: no disabled placeholders in the release).
 - **Battery without a battery:** the range control and cards are replaced by one empty state (“This Mac has no battery”) with Open Sensors.
 - **Sensors:** CPU die, GPU, SSD and battery cards with peaks, temperature chart, thermal state (Nominal/Fair/Serious/Critical), fan speed, and tiles for each available sensor. Missing sensors are omitted or marked unavailable, never invented; a Mac without a fan says so.
 
@@ -60,7 +60,7 @@ Monny changes the same system preference shown in Battery Settings. macOS owns c
 
 Enable only when necessary, before setting the target (enable can reset it); require actual enabled/target read-back. Optimized Battery Charging may independently delay charging and is not changed. The system may charge within a few percentage points of the target and occasionally reach 100% for estimation. Do not claim exact thresholds, immediate forced discharge on lowering a target or a fabricated time-to-limit. Provide a Battery Settings link and explain that the setting persists.
 
-Discharge, sailing, manual heat protection, calibration and trip automation are deferred to **experiments/discharge**, preserved at abe3a80. Existing Sketch future-mode frames remain unchanged; unsupported controls may remain visibly disabled with an availability explanation, never imply implemented automation. Main shows the supported native control and monitoring faithfully. Full physical Discharge verification remains unverified.
+Discharge, sailing, manual heat protection, calibration and trip automation are deferred to **experiments/discharge**, preserved at abe3a80. Their Sketch frames remain for later work; the app does not show them.
 
 Users of historical helper builds remove that helper through the old app before replacement. The new app never silently installs/uninstalls a daemon or deletes old recovery storage.
 
@@ -72,8 +72,8 @@ Use existing Welcome and Ready source frames (Sketch page `03`) for the native-o
 
 - **General:** Launch at login, refresh rate, temperature unit, appearance, language (System or one of the six; applies after Monny restarts, with a Restart button; user request 2026-10-18).
 - **Menu bar:** global shortcut, show alert badge.
-- **Battery:** the same supported native limit/enable setting as the Battery page; no helper status, installation or removal. Advanced automation preferences are deferred.
-- **Notifications:** charge limit reached, Mac is running hot, calibration finished, battery below 20 %, memory pressure is high (each toggle). Heat, low-battery, memory-pressure and measured charge-limit attainment notifications work; calibration notification remains visibly unavailable. Each implemented alert fires once per episode.
+- **Battery:** the same supported native limit/enable setting as the Battery page. Advanced automation preferences are deferred.
+- **Notifications:** charge limit reached, Mac is running hot, battery below 20 %, memory pressure is high (each toggle; battery ones only on a Mac with a battery). Each alert fires once per episode; charge limit reached fires once per plug-in, because macOS lets the level drift slightly below the limit. Calibration finished comes with calibration.
 - **About:** version and build, Check for Updates (compares with the latest GitHub release), privacy note (no analytics; network only for updates). Results: up to date; a newer version (Download… opens the GitHub release page in the browser; Monny does not install updates itself); check failed (Try Again).
 
 ## 8. Cross-cutting requirements

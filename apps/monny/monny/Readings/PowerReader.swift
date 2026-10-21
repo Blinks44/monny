@@ -80,7 +80,8 @@ nonisolated struct BatteryHealth: Sendable, Equatable {
 /// Battery health exactly as System Information reports it. `system_profiler` is the only
 /// unprivileged source of Apple's "Maximum Capacity"; it takes about a second, so it runs rarely.
 nonisolated enum BatteryHealthReader {
-    static func read() async -> BatteryHealth? {
+    /// Runs off the main actor: `system_profiler` blocks for about a second.
+    @concurrent static func read() async -> BatteryHealth? {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/sbin/system_profiler")
         process.arguments = ["SPPowerDataType", "-json"]

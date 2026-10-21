@@ -3,7 +3,7 @@
 - Updated: 2026-10-18
 - Stage: awaiting_verification (adapter built and checked on M1 Max; independent reference, spinning fan and fanless Mac open)
 - Owner: unassigned
-- Owned surfaces: `apps/monny/BatteryHelperShared/SMC.swift` (shared since BAT-007), `SensorReader.swift`, `docs/research/`
+- Owned surfaces: `apps/monny/monny/Readings/SMC.swift`, `SensorReader.swift`, `docs/research/`
 - Requirements: SPEC §3 (CPU temperature chip, thermal alert), §4 Sensors page, §5 heat protection; PLAN phase 2
 - Code baseline: commit "feat: read temperatures and fans from the SMC"
 

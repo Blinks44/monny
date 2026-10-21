@@ -1,19 +1,14 @@
 #import "NativeChargeLimitBridge.h"
 #import <dlfcn.h>
 #import <objc/runtime.h>
-#import <math.h>
 
-// Signatures were independently verified on the installed runtime (BAT-010).
-// All private API use stays here; missing/changed methods fail unavailable.
-@protocol MonnyNativeLimitGetters
+// PowerUISmartChargeClient signatures as verified on macOS 27.0.1 (research/battery-control.md).
+@protocol MonnyChargeLimitClient
 - (id)initWithClientName:(NSString *)name;
 - (BOOL)isMCLSupported;
 - (unsigned char)getMCLLimitWithError:(NSError **)error;
 - (unsigned long long)isMCLCurrentlyEnabled:(NSError **)error;
 - (NSArray<NSNumber *> *)availableChargeLimitsWithError:(NSError **)error;
-@end
-
-@protocol MonnyNativeLimitSetters <MonnyNativeLimitGetters>
 - (BOOL)setMCLLimit:(unsigned char)limit error:(NSError **)error;
 - (BOOL)enableMCL:(NSError **)error;
 - (BOOL)disableMCL:(NSError **)error;
@@ -33,116 +28,85 @@ static BOOL methodMatches(Class type, SEL selector, const char *result, NSArray<
     return matches;
 }
 
-static BOOL gettersMatch(Class type) {
-    return type && [type isSubclassOfClass:[NSObject class]] &&
-        methodMatches(type, @selector(initWithClientName:), "@", @[@"@"]) &&
-        methodMatches(type, @selector(isMCLSupported), "B", @[]) &&
-        methodMatches(type, @selector(getMCLLimitWithError:), "C", @[@"^@"]) &&
-        methodMatches(type, @selector(isMCLCurrentlyEnabled:), "Q", @[@"^@"]) &&
-        methodMatches(type, @selector(availableChargeLimitsWithError:), "@", @[@"^@"]);
-}
-
-static BOOL settersMatch(Class type) {
-    return gettersMatch(type) &&
-        methodMatches(type, @selector(setMCLLimit:error:), "B", @[@"C", @"^@"]) &&
-        methodMatches(type, @selector(enableMCL:), "B", @[@"^@"]) &&
-        methodMatches(type, @selector(disableMCL:), "B", @[@"^@"]);
-}
-
-static BOOL loadFramework(void) {
-    static void *framework;
+/// The client class when the framework loads and every method has the verified signature.
+static Class clientClass(void) {
+    static Class type;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        // Retain the system framework for the process lifetime; no shared client state.
-        framework = dlopen("/System/Library/PrivateFrameworks/PowerUI.framework/Versions/A/PowerUI", RTLD_NOW | RTLD_LOCAL);
+        if (!dlopen("/System/Library/PrivateFrameworks/PowerUI.framework/Versions/A/PowerUI", RTLD_NOW | RTLD_LOCAL)) return;
+        Class candidate = NSClassFromString(@"PowerUISmartChargeClient");
+        if (candidate &&
+            methodMatches(candidate, @selector(initWithClientName:), "@", @[@"@"]) &&
+            methodMatches(candidate, @selector(isMCLSupported), "B", @[]) &&
+            methodMatches(candidate, @selector(getMCLLimitWithError:), "C", @[@"^@"]) &&
+            methodMatches(candidate, @selector(isMCLCurrentlyEnabled:), "Q", @[@"^@"]) &&
+            methodMatches(candidate, @selector(availableChargeLimitsWithError:), "@", @[@"^@"]) &&
+            methodMatches(candidate, @selector(setMCLLimit:error:), "B", @[@"C", @"^@"]) &&
+            methodMatches(candidate, @selector(enableMCL:), "B", @[@"^@"]) &&
+            methodMatches(candidate, @selector(disableMCL:), "B", @[@"^@"])) {
+            type = candidate;
+        }
     });
-    return framework != NULL;
+    return type;
 }
 
-MonnyNativeLimitSnapshot MonnyReadNativeChargeLimit(void) {
+static id<MonnyChargeLimitClient> makeClient(void) {
+    Class type = clientClass();
+    if (!type) return nil;
+    id client = [[type alloc] initWithClientName:@"Monny"];
+    return [client isKindOfClass:type] ? client : nil;
+}
+
+MonnyChargeLimitState MonnyReadChargeLimit(void) {
+    MonnyChargeLimitState state = {0};
     @autoreleasepool {
-        MonnyNativeLimitSnapshot report = {.status = MonnyNativeLimitFrameworkUnavailable};
-        if (!loadFramework()) return report;
-        report.status = MonnyNativeLimitInterfaceUnavailable;
-        Class type = NSClassFromString(@"PowerUISmartChargeClient");
-        if (!gettersMatch(type)) return report;
         @try {
-            id<MonnyNativeLimitGetters> client = [(id<MonnyNativeLimitGetters>)[type alloc] initWithClientName:@"MonnyReadOnlyDiagnostics"];
-            if (!client || !gettersMatch(object_getClass(client))) return report;
-            report.status = MonnyNativeLimitUnsupported;
-            if (![client isMCLSupported]) return report;
-            report.status = MonnyNativeLimitQueryFailed;
+            id<MonnyChargeLimitClient> client = makeClient();
+            if (!client || ![client isMCLSupported]) return state;
             NSError *error = nil;
             id limits = [client availableChargeLimitsWithError:&error];
-            if (error) return report;
-            report.configuredLimit = [client getMCLLimitWithError:&error];
-            if (error) return report;
-            report.enabled = [client isMCLCurrentlyEnabled:&error];
-            if (error) return report;
-            report.status = MonnyNativeLimitInvalidReply;
-            if (![limits isKindOfClass:[NSArray class]] || [limits count] < 1 || [limits count] > 21) return report;
+            if (error || ![limits isKindOfClass:[NSArray class]] || [limits count] == 0 || [limits count] > 21) return state;
             for (id value in limits) {
-                if (![value isKindOfClass:[NSNumber class]] || CFGetTypeID((__bridge CFTypeRef)value) == CFBooleanGetTypeID()) return report;
-                double number = [value doubleValue];
-                if (!isfinite(number) || trunc(number) != number || number < 80 || number > 100) return report;
-                report.limits[report.count++] = (uint8_t)number;
+                if (![value isKindOfClass:[NSNumber class]]) return state;
+                NSInteger limit = [value integerValue];
+                if (limit < 0 || limit > 100) return state;
+                state.limits[state.count++] = (uint8_t)limit;
             }
-            report.status = MonnyNativeLimitAvailable;
+            state.limit = [client getMCLLimitWithError:&error];
+            if (error) return state;
+            unsigned long long enabled = [client isMCLCurrentlyEnabled:&error];
+            if (error || enabled > 1) return state;
+            state.enabled = enabled == 1;
+            state.available = true;
         } @catch (NSException *exception) {
-            report.status = MonnyNativeLimitQueryFailed;
+            state.available = false;
         }
-        return report;
     }
+    return state;
 }
 
-// One synchronous write with fresh validation; the store verifies actual read-back.
-static MonnyNativeLimitStatus writeNativeClient(id<MonnyNativeLimitSetters> client, BOOL changingLimit,
-                                               uint8_t limit, BOOL enabled) {
-    if (!client || !settersMatch(object_getClass(client))) return MonnyNativeLimitInterfaceUnavailable;
-    if (changingLimit && (limit < 80 || limit > 100)) return MonnyNativeLimitInvalidTarget;
-    if (![client isMCLSupported]) return MonnyNativeLimitUnsupported;
-    NSError *error = nil;
-    // Use fresh getter validation before a write; no cached diagnostic snapshot is consulted.
-    id limits = [client availableChargeLimitsWithError:&error];
-    if (error) return MonnyNativeLimitQueryFailed;
-    if (![limits isKindOfClass:[NSArray class]] || [limits count] < 1 || [limits count] > 21) return MonnyNativeLimitInvalidReply;
-    NSMutableSet *seen = [NSMutableSet set];
-    for (id item in limits) {
-        if (![item isKindOfClass:[NSNumber class]] || CFGetTypeID((__bridge CFTypeRef)item) == CFBooleanGetTypeID()) return MonnyNativeLimitInvalidReply;
-        double value = [item doubleValue];
-        if (!isfinite(value) || trunc(value) != value || value < 80 || value > 100 || [seen containsObject:item]) return MonnyNativeLimitInvalidReply;
-        [seen addObject:item];
-    }
-    unsigned char currentLimit = [client getMCLLimitWithError:&error];
-    if (error) return MonnyNativeLimitQueryFailed;
-    unsigned long long currentEnabled = [client isMCLCurrentlyEnabled:&error];
-    if (error) return MonnyNativeLimitQueryFailed;
-    if (![seen containsObject:@(currentLimit)] || currentEnabled > 1) return MonnyNativeLimitInvalidReply;
-    if (changingLimit && ![seen containsObject:@(limit)]) return MonnyNativeLimitInvalidTarget;
-    BOOL acknowledged = changingLimit ? [client setMCLLimit:limit error:&error]
-        : (enabled ? [client enableMCL:&error] : [client disableMCL:&error]);
-    // A failure may still have changed settings; the surrounding transaction owns read-back/recovery.
-    return acknowledged && !error ? MonnyNativeLimitAvailable : MonnyNativeLimitOperationFailed;
-}
-
-static MonnyNativeLimitStatus writeNative(BOOL changingLimit, uint8_t limit, BOOL enabled) {
+bool MonnySetChargeLimit(uint8_t limit) {
     @autoreleasepool {
-        if (!loadFramework()) return MonnyNativeLimitFrameworkUnavailable;
-        Class type = NSClassFromString(@"PowerUISmartChargeClient");
-        if (!settersMatch(type)) return MonnyNativeLimitInterfaceUnavailable;
         @try {
-            id<MonnyNativeLimitSetters> client = [(id<MonnyNativeLimitSetters>)[type alloc] initWithClientName:@"MonnyChargeControl"];
-            return writeNativeClient(client, changingLimit, limit, enabled);
+            NSError *error = nil;
+            id<MonnyChargeLimitClient> client = makeClient();
+            return client && [client setMCLLimit:limit error:&error] && !error;
         } @catch (NSException *exception) {
-            return MonnyNativeLimitOperationFailed;
+            return false;
         }
     }
 }
 
-MonnyNativeLimitStatus MonnySetNativeChargeLimit(uint8_t limit) {
-    return writeNative(YES, limit, NO);
-}
-
-MonnyNativeLimitStatus MonnySetNativeChargeLimitEnabled(BOOL enabled) {
-    return writeNative(NO, 0, enabled);
+bool MonnySetChargeLimitEnabled(bool enabled) {
+    @autoreleasepool {
+        @try {
+            NSError *error = nil;
+            id<MonnyChargeLimitClient> client = makeClient();
+            if (!client) return false;
+            BOOL done = enabled ? [client enableMCL:&error] : [client disableMCL:&error];
+            return done && !error;
+        } @catch (NSException *exception) {
+            return false;
+        }
+    }
 }

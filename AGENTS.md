@@ -58,6 +58,8 @@ An explicit request to continue/create design authorizes scoped edits to the est
 
 ## 4. Finish or hand off
 
+After any app code change (fix, refinement or feature), finish with a ready DMG for the user: increment `CURRENT_PROJECT_VERSION` (Debug and Release), run `apps/monny/scripts/dev.sh test`, then `apps/monny/scripts/release.sh`, and report the DMG path and SHA-256. Documentation-only work does not need a build. If the release fails (for example a missing signing identity), report it instead of skipping silently.
+
 Follow WORKFLOW's completion contract **before the final response**. Update the affected task/evidence, STATE, and any changed SPEC/DESIGN/PLAN/research record. Record tests/builds actually run, exact evidence, unresolved checks and one actionable next step. Use `awaiting_verification` when implementation exists but required runtime/hardware acceptance (real sensors, charging on a named Mac) is open; never mark a feature done just because the build passes.
 
 For design-only work, make the saved Sketch document self-contained and review it live. Keep repository completion notes short: source/date, ready scope, remaining work and next step. Do not routinely export PNGs or duplicate frame/style inventories.

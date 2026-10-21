@@ -40,12 +40,17 @@ struct AlertTests {
         #expect(monitor.update(with: snapshot(battery: battery(0.11, .onBattery))).isEmpty)
     }
 
-    @Test func chargeLimitNotificationRequiresMeasuredAdapterLevelAndRearms() {
+    @Test func chargeLimitFiresOncePerPlugIn() {
         var monitor = AlertMonitor()
         #expect(monitor.update(with: snapshot(battery: battery(0.80, .onBattery)), chargeLimit: 80).isEmpty)
         #expect(monitor.update(with: snapshot(battery: battery(0.79, .onAdapter)), chargeLimit: 80).isEmpty)
         #expect(monitor.update(with: snapshot(battery: battery(0.80, .onAdapter)), chargeLimit: 80) == [.chargeLimitReached(80)])
         #expect(monitor.update(with: snapshot(battery: battery(0.80, .onAdapter)), chargeLimit: 80).isEmpty)
+        // macOS lets the level drift below the limit while plugged in; that is the same episode.
+        #expect(monitor.update(with: snapshot(battery: battery(0.79, .onAdapter)), chargeLimit: 80).isEmpty)
+        #expect(monitor.update(with: snapshot(battery: battery(0.80, .onAdapter)), chargeLimit: 80).isEmpty)
+        #expect(monitor.update(with: snapshot(battery: battery(0.78, .onBattery)), chargeLimit: 80).isEmpty)
+        #expect(monitor.update(with: snapshot(battery: battery(0.80, .onAdapter)), chargeLimit: 80) == [.chargeLimitReached(80)])
         #expect(monitor.update(with: snapshot(battery: battery(0.80, .onAdapter))).isEmpty)
         #expect(monitor.update(with: snapshot(battery: battery(0.80, .onAdapter)), chargeLimit: 80) == [.chargeLimitReached(80)])
     }

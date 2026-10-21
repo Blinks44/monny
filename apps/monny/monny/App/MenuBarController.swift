@@ -17,9 +17,6 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         self.model = model
         panel = MenuBarPanel(rootView: PopoverView(model: model))
         super.init()
-        panel.keepsPopoverOpen = { [weak model] in
-            model?.chargeLimit.isBusy == true
-        }
         panel.onClose = { [weak self] in self?.popoverDidClose() }
         menu.autoenablesItems = false
         menu.delegate = self
@@ -48,7 +45,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         model.sampler.setVisible(.popover, true)
         panel.show(below: button)
         // A nonactivating panel does not reliably trigger applicationDidBecomeActive.
-        if SystemInfo.hasBattery { Task { await model.chargeLimit.refresh() } }
+        Task { await model.chargeLimit.refresh() }
     }
 
     func closePopover() { panel.close() }
@@ -117,11 +114,13 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         menu.addItem(settings)
 
         if SystemInfo.hasBattery {
+            let chargeLimit = model.chargeLimit
+            let setting = chargeLimit.isBusy ? nil : chargeLimit.setting
             menu.addItem(.separator())
             menu.addItem(item(String(localized: "Turn Off Charge Limit"), #selector(disableLimit),
-                              enabled: model.chargeLimit.snapshot?.enabled == true && !model.chargeLimit.isBusy))
+                              enabled: setting?.isEnabled == true))
             menu.addItem(item(String(localized: "Set Limit to 100%"), #selector(fullLimit),
-                              enabled: model.chargeLimit.snapshot != nil && !model.chargeLimit.isBusy))
+                              enabled: setting.map { $0.available.contains(100) && !($0.isEnabled && $0.limit == 100) } ?? false))
         }
 
         menu.addItem(.separator())
@@ -146,8 +145,8 @@ final class MenuBarController: NSObject, NSMenuDelegate {
     @objc private func openSettings() { model.openDashboard(.settings) }
 
     @objc private func disableLimit() {
-        guard let snapshot = model.chargeLimit.snapshot else { return }
-        Task { await model.chargeLimit.set(limit: snapshot.configuredLimit, enabled: false) }
+        guard let setting = model.chargeLimit.setting else { return }
+        Task { await model.chargeLimit.set(limit: setting.limit, enabled: false) }
     }
     @objc private func fullLimit() {
         Task { await model.chargeLimit.set(limit: 100, enabled: true) }

@@ -8,12 +8,8 @@ import SwiftUI
 final class MenuBarPanel: NSPanel {
     /// Called once the panel has closed for any reason.
     var onClose: () -> Void = { }
-    /// Confirmation and system authorization belong to the originating popover interaction.
-    var keepsPopoverOpen: () -> Bool = { false }
 
-    var dismissesOutsideClicks: Bool {
-        !keepsPopoverOpen() && attachedSheet == nil && NSApp.modalWindow == nil
-    }
+    private var dismissesOutsideClicks: Bool { attachedSheet == nil && NSApp.modalWindow == nil }
     private var monitors: [Any] = []
     private var isClosing = false
 

@@ -12,7 +12,7 @@ struct BatteryTab: View {
         if SystemInfo.hasBattery {
             VStack(spacing: 10) {
                 BatteryHero(battery: battery, health: health, temperature: temperature,
-                            limit: controller.snapshot.flatMap { $0.enabled ? $0.configuredLimit : nil })
+                            limit: controller.activeLimit)
                 VStack(alignment: .leading, spacing: 12) {
                     NativeLimitControls(controller: controller)
                     Button("macOS charging settings") { showsGuidance = true }
@@ -24,7 +24,6 @@ struct BatteryTab: View {
                     .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 16)
             }
-            .task { await controller.refresh() }
         } else {
             NoBatteryView(openSensors: openSensors).frame(maxWidth: .infinity, maxHeight: .infinity).card()
         }

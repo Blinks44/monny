@@ -1,27 +1,17 @@
 #import <Foundation/Foundation.h>
+#import <stdbool.h>
 
-// Isolated native runtime bridge; called off the main actor by the setting controller.
-typedef NS_ENUM(uint8_t, MonnyNativeLimitStatus) {
-    MonnyNativeLimitAvailable,
-    MonnyNativeLimitFrameworkUnavailable,
-    MonnyNativeLimitInterfaceUnavailable,
-    MonnyNativeLimitUnsupported,
-    MonnyNativeLimitQueryFailed,
-    MonnyNativeLimitInvalidReply,
-    MonnyNativeLimitInvalidTarget,
-    MonnyNativeLimitOperationFailed
-};
-
+// The macOS 26.4+ charge limit (System Settings › Battery › Charge Limit) through the private
+// PowerUI client. Every call checks the runtime signatures and fails instead of guessing.
+// Calls are synchronous; ChargeLimitStore makes them off the main actor, one at a time.
 typedef struct {
-    MonnyNativeLimitStatus status;
+    bool available;
+    bool enabled;
+    uint8_t limit;
     uint8_t count;
     uint8_t limits[21];
-    uint8_t configuredLimit;
-    uint64_t enabled;
-} MonnyNativeLimitSnapshot;
+} MonnyChargeLimitState;
 
-MonnyNativeLimitSnapshot MonnyReadNativeChargeLimit(void);
-
-// Serialized by NativeChargeLimitStore; no privileged process or SMC writer.
-MonnyNativeLimitStatus MonnySetNativeChargeLimit(uint8_t limit);
-MonnyNativeLimitStatus MonnySetNativeChargeLimitEnabled(BOOL enabled);
+MonnyChargeLimitState MonnyReadChargeLimit(void);
+bool MonnySetChargeLimit(uint8_t limit);
+bool MonnySetChargeLimitEnabled(bool enabled);

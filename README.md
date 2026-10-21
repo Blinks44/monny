@@ -11,7 +11,7 @@
 
 A native macOS menu bar utility for resource monitoring and battery charge control. A click on the menu bar icon shows CPU, memory, disk, network, cores and battery at a glance; a dashboard window adds history charts, top processes and temperature sensors. Battery controls use the built-in macOS charge limit where available; macOS manages charging.
 
-**Status:** early development. Monitoring, history, dashboard pages and Settings are implemented. The native-only charge-limit setting and design/copy cleanup are under review. Discharge experiments are preserved separately on `experiments/discharge`. See the [current state](docs/STATE.md) and [roadmap](docs/PLAN.md).
+**Status:** release candidate under review. Monitoring, history, dashboard pages, Settings and the native charge limit are implemented. Discharge experiments are kept separately on `experiments/discharge`. See the [current state](docs/STATE.md) and [roadmap](docs/PLAN.md).
 
 ## Repository layout
 
@@ -50,15 +50,29 @@ apps/monny/scripts/dev.sh run
 
 ## Install
 
-There is no release yet. Monny will be distributed as a signed DMG on GitHub Releases, outside the Mac App Store, because battery control needs a privileged helper that the App Store does not allow.
+Monny is distributed as a DMG on [GitHub Releases](https://github.com/Blinks44/monny/releases), outside the Mac App Store: system monitoring needs App Sandbox off. There is no release yet.
+
+1. Download `Monny-<version>.dmg`, open it and drag **Monny** to **Applications**.
+2. Open Monny from Applications.
+
+Monny is signed, but not yet notarized by Apple: that needs a paid Apple Developer ID, which the project does not have yet. So on first launch macOS says it cannot verify the app. Allow it once in either way:
+
+- **System Settings:** try to open Monny, close the message, then go to **System Settings → Privacy & Security**, scroll to Security and click **Open Anyway** next to Monny. Confirm with your password.
+- **Terminal:** remove the download quarantine flag, then open Monny as usual:
+
+  ```sh
+  xattr -dr com.apple.quarantine /Applications/Monny.app
+  ```
+
+This is needed once per downloaded version. Updates keep the same signature, so permissions such as notifications and launch at login stay granted.
 
 ## Technology
 
 | Area | Stack |
 | --- | --- |
 | Language and UI | Swift 6 language mode, SwiftUI, Swift Charts, AppKit for the menu bar item |
-| Readings | Mach host statistics, IOKit, `ProcessInfo`, Network and power-source APIs (to be confirmed per metric in [research](docs/research/README.md)) |
-| Battery control | Privileged helper registered with Service Management, XPC |
+| Readings | Mach host statistics, IOKit, SMC sensors, `ProcessInfo` and power-source APIs ([research](docs/research/README.md)) |
+| Battery control | The macOS 26.4+ system charge limit, changed as the ordinary user |
 | Localization | String Catalogs |
 | Tests | Swift Testing with an Xcode-hosted test target |
 | Design | Sketch, SF Symbols |

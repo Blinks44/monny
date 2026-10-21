@@ -7,11 +7,11 @@ Thanks for your interest. Monny is a small, free macOS app maintained in spare t
 Open an issue and include:
 
 - your Monny version, macOS version and Mac model with its chip;
-- whether the battery helper is installed;
+- for a battery problem, the charge limit shown in System Settings › Battery;
 - what you did, what you expected and what happened;
 - for a wrong reading, what Activity Monitor or System Information shows for the same value.
 
-For security problems, especially anything involving the battery helper, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
+For security problems, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
 
 ## Proposing a change
 
@@ -32,7 +32,7 @@ See the [development guide](docs/DEVELOPMENT.md) for details.
 
 - Keep one topic per pull request and describe how you checked it. Say plainly what you could not test, for example a Mac model or sensor you do not have.
 - Follow the existing style: Swift 6 strict concurrency, SwiftUI with AppKit only where needed, no new dependencies without discussion.
-- Changes to the battery helper or charging logic must keep the fail-safe rules in [docs/ENGINEERING.md](docs/ENGINEERING.md): when anything is unknown, macOS keeps control of charging.
+- Changes to charging logic must keep the fail-safe rules in [docs/ENGINEERING.md](docs/ENGINEERING.md): when anything is unknown, macOS keeps control of charging.
 - User-facing text goes into the String Catalogs in every supported language. If you cannot translate one, say so in the pull request.
 - Add or update tests for behavior you change.
 

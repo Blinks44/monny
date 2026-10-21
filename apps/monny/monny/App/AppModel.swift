@@ -21,11 +21,11 @@ final class AppModel {
     func start() {
         sampler.onSample = { [weak self] snapshot in self?.handle(snapshot) }
         sampler.start()
-        if SystemInfo.hasBattery { Task { await chargeLimit.refresh() } }
+        Task { await chargeLimit.refresh() }
     }
 
     private func handle(_ snapshot: Snapshot) {
-        notifier.post(alerts.update(with: snapshot, chargeLimit: chargeLimit.snapshot.flatMap { $0.enabled ? $0.configuredLimit : nil }))
+        notifier.post(alerts.update(with: snapshot, chargeLimit: chargeLimit.activeLimit))
         if needsAttention != alerts.needsAttention { needsAttention = alerts.needsAttention }
     }
 }

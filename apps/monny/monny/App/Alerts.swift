@@ -37,12 +37,14 @@ nonisolated struct AlertMonitor {
             isLow = low
         }
 
-        if let chargeLimit, let battery = snapshot.battery,
-           battery.state == .onAdapter, battery.level >= Double(chargeLimit) / 100 {
-            if reachedLimit != chargeLimit { alerts.append(.chargeLimitReached(chargeLimit)) }
-            reachedLimit = chargeLimit
-        } else if chargeLimit == nil || snapshot.battery != nil {
+        // macOS lets the level drift a little below the limit while plugged in, so the alert
+        // re-arms only when the Mac is unplugged or the limit changes.
+        if chargeLimit == nil || snapshot.battery?.state == .onBattery {
             reachedLimit = nil
+        } else if let chargeLimit, let battery = snapshot.battery, reachedLimit != chargeLimit,
+                  battery.state == .onAdapter, battery.level >= Double(chargeLimit) / 100 {
+            alerts.append(.chargeLimitReached(chargeLimit))
+            reachedLimit = chargeLimit
         }
 
         // Re-arms only at Normal: pressure often moves between Warning and Critical.

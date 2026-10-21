@@ -1,15 +1,13 @@
 import SwiftUI
 
-/// Sketch's Battery window, using the shared sampler and bounded native limit controls.
+/// Sketch's Battery window: facts, recorded level and the system charge limit. Discharge,
+/// sailing, heat protection, calibration and trips are deferred (SPEC §5), so they are not shown.
 struct BatteryPage: View {
     let sampler: Sampler
     let controller: ChargeLimitController
     @AppStorage(PreferenceKey.historyRange) private var range = HistoryRange.hour
-    @AppStorage(PreferenceKey.defaultChargeLimit) private var limit = 80
-    @AppStorage(PreferenceKey.sailingRange) private var sailingRange = 5
-    @AppStorage(PreferenceKey.heatProtectionThreshold) private var heatThreshold = 35
-    @State private var showsChargingGuidance = false
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
+    @State private var showsChargingGuidance = false
 
     private var battery: BatteryReading? { sampler.snapshot?.battery }
 
@@ -28,14 +26,12 @@ struct BatteryPage: View {
                 KPICard(title: "Power", symbol: "bolt.fill", color: Theme.metricDisk,
                         value: adapterPower, detail: Text("From adapter"), points: nil)
             }
-            BatteryCardRow(minimumHeight: 284, spacing: Theme.spaceL) {
+            // Both cards take the taller one's height, which grows with translated text.
+            HStack(alignment: .top, spacing: Theme.spaceL) {
                 chargeHistory(tier)
-                chargingControls
+                chargingControls.frame(width: 244)
             }
-            BatteryCardRow(minimumHeight: 176, spacing: Theme.spaceL) {
-                calibration
-                trips
-            }
+            .fixedSize(horizontal: false, vertical: true)
             batteryDetails
         }
         .task { await controller.refresh() }
@@ -90,110 +86,13 @@ struct BatteryPage: View {
                 .popover(isPresented: $showsChargingGuidance) { MacOSChargingGuidance() }
             }
             NativeLimitControls(controller: controller)
-            Divider()
-            unavailableToggle("Sailing mode", detail: Text("Drift to \(Double(max(50, limit - sailingRange)) / 100, format: .percent) before topping up"))
-            unavailableToggle("Heat protection", detail: Text("Pause charging above \(Double(heatThreshold).temperatureText(temperatureUnit))"))
+            Spacer(minLength: 0)
+            Text("macOS manages charging. The limit stays set when Monny quits.")
+                .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .foregroundStyle(Theme.textPrimary)
-        .fixedSize(horizontal: false, vertical: true)
         .batteryCard(minHeight: 284)
-    }
-
-    private var calibration: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            CardHeader("Calibration", subtitle: Text("No calibration history"))
-                .padding(.bottom, 14)
-            HStack(alignment: .top, spacing: 0) {
-                calibrationStep("1", title: "Charge", detail: Text("to \(1.0.percentText)"), connects: true)
-                calibrationStep("2", title: "Rest", detail: Text(Duration.seconds(3_600), format: .units(allowed: [.hours], width: .wide)), connects: true)
-                calibrationStep("3", title: "Discharge", detail: Text("to \(0.15.percentText)"), connects: true)
-                calibrationStep("4", title: "Recharge", detail: Text("to limit"), connects: false)
-            }
-            .padding(.bottom, 6)
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: Theme.spaceM) {
-                    calibrationDuration
-                    Spacer(minLength: 0)
-                    calibrationButton
-                }
-                VStack(alignment: .leading, spacing: Theme.spaceM) {
-                    calibrationDuration
-                    HStack { Spacer(); calibrationButton }
-                }
-            }
-        }
-        .fixedSize(horizontal: false, vertical: true)
-        .batteryCard(minHeight: 176)
-    }
-
-    private var calibrationDuration: some View {
-        Label("Keep the Mac plugged in", systemImage: "clock.arrow.circlepath")
-            .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
-            .fixedSize()
-    }
-
-    private var calibrationButton: some View {
-        Button("Start Calibration") { }
-            .buttonStyle(PrimaryButtonStyle())
-            .disabled(true)
-            .help(Text("Not available in this version."))
-            .fixedSize()
-    }
-
-    private func calibrationStep(_ number: String, title: LocalizedStringKey, detail: Text, connects: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 2) {
-                Text(verbatim: number)
-                    .font(Theme.bodyEmphasized)
-                    .foregroundStyle(Theme.accentBrand)
-                    .frame(width: 32, height: 32)
-                    .background(Theme.statusInfoBg, in: .circle)
-                    .overlay { Circle().strokeBorder(Theme.accentBrand.opacity(0.2), lineWidth: 1) }
-                Rectangle().fill(connects ? Theme.fillSeparator : .clear).frame(height: 2)
-            }
-            .accessibilityHidden(true)
-            Text(title).font(Theme.body).fixedSize(horizontal: false, vertical: true)
-            detail.font(Theme.footnote).foregroundStyle(Theme.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .accessibilityElement(children: .combine)
-    }
-
-    private var trips: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            unavailableToggle("Full charge before trips", detail: nil, emphasized: true)
-            Text("Charges to 100% an hour before you leave, then returns to the limit.")
-                .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-            HStack(spacing: 8) {
-                PopupPicker(title: "Days", selection: .constant(0), options: [(0, Text("Days"))])
-                PopupPicker(title: "Time", selection: .constant(0), options: [(0, Text("Time"))])
-            }
-            .disabled(true)
-            Label("No trip scheduled", systemImage: "calendar")
-                .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
-        }
-        .fixedSize(horizontal: false, vertical: true)
-        .batteryCard(minHeight: 176)
-    }
-
-    /// The row keeps explanatory text readable while the unavailable control remains disabled.
-    private func unavailableToggle(_ title: LocalizedStringKey, detail: Text?, emphasized: Bool = false) -> some View {
-        HStack(spacing: Theme.spaceM) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title).font(emphasized ? Theme.headline : Theme.body)
-                    .foregroundStyle(Theme.textPrimary)
-                detail?.font(Theme.caption).foregroundStyle(Theme.textSecondary)
-            }
-            .fixedSize(horizontal: false, vertical: true)
-            .accessibilityHidden(true)
-            Spacer(minLength: 0)
-            Toggle(title, isOn: .constant(false))
-                .labelsHidden().toggleStyle(SwitchStyle()).disabled(true)
-                .help(Text("Not available in this version."))
-                .accessibilityHint(detail ?? Text("Battery control is off"))
-        }
     }
 
     private var batteryDetails: some View {
@@ -219,7 +118,7 @@ private extension HistoryRange {
 }
 
 private extension View {
-    /// Sketch's baseline heights grow with localized content; cells in each row stay aligned.
+    /// Sketch's 284 pt card that grows with localized content.
     func batteryCard(minHeight: CGFloat) -> some View {
         padding(.horizontal, 18)
             .padding(.top, 16)

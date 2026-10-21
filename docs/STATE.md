@@ -13,7 +13,7 @@ Updated **2026-10-21**. Current work: [APP-007](tasks/APP-007-native-simplificat
 - Six-language String Catalog: EN/RU/DE/FR/ES/zh-Hans. Retired helper text removed; retained copy reviewed and terminology corrected. Light/Dark/localized renders are temporary local evidence.
 - Distribution remains signed DMG outside the App Store; existing Apple Development signer, Hardened Runtime, App Sandbox off for system monitoring. Signed does not mean notarized. Website work remains deferred.
 
-**Candidate:** `apps/monny/build/release/Monny-1.0-27.dmg` (signed Apple Development, not notarized) with the 2026-10-21 review changes, uncommitted; 33 tests/8 suites pass.
+**Candidate:** `apps/monny/build/release/Monny-1.0-28.dmg` (signed Apple Development, not notarized): build 27 review changes plus Overview cards that open their dashboard page, uncommitted; 33 tests/8 suites pass.
 
 ## Work and open checks
 
@@ -23,6 +23,7 @@ Updated **2026-10-21**. Current work: [APP-007](tasks/APP-007-native-simplificat
 | [CORE-002](tasks/CORE-002-temperatures-fans.md) | awaiting_verification | Compare temperature/fan readings with a reference on real hardware. |
 | [CORE-003](tasks/CORE-003-history.md) | awaiting_verification | User rechecks chart/hover behavior with accumulated history. |
 | [APP-003](tasks/APP-003-settings-alerts.md) | awaiting_verification | Actual notification delivery and settings acceptance. |
+| [DES-002](tasks/DES-002-native-onboarding-next-features.md) | ready_for_implementation | Implement native onboarding, then the designed next-feature items. |
 | [REL-001](tasks/REL-001-signing-workflow.md) | awaiting_verification | Clean second-Mac signing/install, signing backup restore/off-device copy. |
 
 Helper/Discharge task and verification records (BAT-*, APP-005/006) live on experiments/discharge only.
@@ -30,3 +31,5 @@ Helper/Discharge task and verification records (BAT-*, APP-005/006) live on expe
 ## Remaining release gates
 
 User-accepted on 2026-10-21: installed build 27, charge-limit change visible in System Settings, macOS 26, six languages, reading comparisons. Open: onboarding (SPEC §6), VoiceOver/keyboard/contrast/motion, idle cost, real notification delivery, clean-Mac installation. Notarization waits for a paid Developer ID. [PLAN](PLAN.md) owns release sequencing; [SPEC](SPEC.md) owns behavior.
+
+Before release (user decision 2026-10-21): native onboarding, processes grouped by app, optional menu bar readings, sustained app load alert and current power draw, all designed in [DES-002](tasks/DES-002-native-onboarding-next-features.md). Discharge research follows the release ([PLAN](PLAN.md#next-features)).

@@ -1,9 +1,11 @@
 import SwiftUI
 
 /// Popover Overview: CPU, memory, disk, network, cores and the battery (or thermal) strip.
+/// Each card opens its dashboard page.
 struct OverviewTab: View {
     let snapshot: Snapshot?
     let history: History
+    let open: (DashboardPage) -> Void
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
 
     var body: some View {
@@ -15,20 +17,22 @@ struct OverviewTab: View {
                         TemperatureChip(text: celsius.temperatureText(temperatureUnit), state: snapshot.thermalState)
                     }
                 }
+                .opens(.cpu, with: open)
                 RingCard(title: "Memory", symbol: "memorychip", color: Theme.metricMemory, unit: "used",
                          fraction: snapshot?.memory?.fraction, footnote: memoryFootnote) {
                     if let pressure = snapshot?.memory?.pressure { PressureChip(pressure: pressure) }
                 }
+                .opens(.memory, with: open)
             }
             HStack(spacing: Theme.spaceM) {
-                DiskCard(disk: snapshot?.disk)
-                NetworkCard(network: snapshot?.network, history: history.minute)
+                DiskCard(disk: snapshot?.disk).opens(.disk, with: open)
+                NetworkCard(network: snapshot?.network, history: history.minute).opens(.network, with: open)
             }
-            CoresCard(cpu: snapshot?.cpu)
+            CoresCard(cpu: snapshot?.cpu).opens(.cpu, with: open)
             if SystemInfo.hasBattery {
-                BatteryStrip(battery: snapshot?.battery)
+                BatteryStrip(battery: snapshot?.battery).opens(.battery, with: open)
             } else {
-                ThermalStrip(state: snapshot?.thermalState, fanRPM: snapshot?.sensors?.fanRPM)
+                ThermalStrip(state: snapshot?.thermalState, fanRPM: snapshot?.sensors?.fanRPM).opens(.sensors, with: open)
             }
         }
     }
@@ -41,6 +45,14 @@ struct OverviewTab: View {
     private var memoryFootnote: Text? {
         guard let memory = snapshot?.memory else { return nil }
         return Text("\(memory.used.memoryText) of \(memory.total.memoryText)")
+    }
+}
+
+private extension View {
+    /// Makes the whole card a button without changing how it looks.
+    func opens(_ page: DashboardPage, with open: @escaping (DashboardPage) -> Void) -> some View {
+        Button { open(page) } label: { self }
+            .buttonStyle(.plain)
     }
 }
 

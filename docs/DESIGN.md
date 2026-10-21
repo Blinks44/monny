@@ -1,6 +1,6 @@
 # Monny: design direction and live source index
 
-Updated 2026-10-21. [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
+Updated 2026-10-21 (DES-002). [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
 
 ## Direction
 
@@ -12,9 +12,9 @@ Open **Monny.sketch** through Sketch MCP (load `mcp`, then `use`; resolve the op
 
 | Page | Content |
 | --- | --- |
-| 01 · Popover | Overview, Battery, Processes; Battery charging / on battery / helper required; Overview thermal alert; Overview and Battery without a battery. Light above, Dark below |
-| 02 · Window | Overview, CPU, Memory, Disk, Network, Battery, Sensors, Settings; Overview first launch, Sensors unavailable, Battery without a battery, Settings errors / update available / uninstall helper confirmation; Battery macOS charging guidance (info entry in the Charging card, standalone Light/Dark source frames); Light/Dark pairs |
-| 03 · Flows & System | Onboarding Welcome / Battery helper / Ready, plus Welcome / Ready for a Mac without a battery, Calibration in progress, menu bar states, right-click menu and notifications, app icon; branded DMG window and standalone pending-helper-approval and connection-recovery Light/Dark references |
+| 01 · Popover | Overview, Battery, Processes; Battery charging / on battery / helper required; Overview thermal alert; Overview and Battery without a battery; Processes grouped by app. Light above, Dark below |
+| 02 · Window | Overview, CPU, Memory, Disk, Network, Battery, Sensors, Settings; Overview first launch, Sensors unavailable, Battery without a battery, Settings errors / update available / uninstall helper confirmation; Battery macOS charging guidance (info entry in the Charging card, standalone Light/Dark source frames); `17 · Settings · Native` (current Settings for main); `18 · Battery · Power card`; Light/Dark pairs |
+| 03 · Flows & System | Onboarding Welcome / Charge limit (`12`, native step for main) / Ready, the older Battery helper step, plus Welcome / Ready for a Mac without a battery, Calibration in progress, menu bar states, right-click menu and notifications, app icon; branded DMG window and standalone pending-helper-approval and connection-recovery Light/Dark references |
 | 04 · Foundations | Colors, typography, spacing/radii/elevation, component overview |
 | Symbols | `Light/…` and `Dark/…` buttons, toggles, checkboxes, icon buttons, chips, popup button, banners |
 
@@ -29,6 +29,8 @@ The saved DMG frame/background was reviewed live on 2026-10-19 ([REL-002](tasks/
 The app implements the native charge limit only ([APP-007](tasks/APP-007-native-simplification-design-parity.md)): the popover Battery hero (72 pt gauge, dotted limit marker), the standalone `16 · Battery · Native limit control` reference (80/85/90/95/100 slider plus an explicit switch) and the macOS charging guidance popover. Helper install/approval/recovery frames, Charge/Discharge mode tiles, sailing, heat protection, calibration and trips stay in Sketch for later work; the app does not show them, not even disabled (production review 2026-10-21). Window content begins at x=248 with a 776 pt column in a 1040 pt window; the toolbar starts at y=20.
 
 ## Readiness
+
+Native onboarding, grouped processes, menu bar readings, the sustained-load notification, native Settings and the Power card were drawn on 2026-10-21 ([DES-002](tasks/DES-002-native-onboarding-next-features.md)). Frames `08 · Settings` and `06 · Battery` keep the helper-era layout for later work; implement Settings from frame `17`.
 
 All listed frames are saved, including the two-mode and 80–100% charging updates above. Every state in SPEC has a frame, including empty, unavailable, no-battery, error, update and confirmation states ([DES-001](tasks/DES-001-missing-states.md)). Accessibility and the other five languages are checked in the app.
 

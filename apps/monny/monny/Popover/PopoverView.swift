@@ -17,7 +17,8 @@ struct PopoverView: View {
 
             Group {
                 switch model.popoverTab {
-                case .overview: OverviewTab(snapshot: model.sampler.snapshot, history: model.sampler.history)
+                case .overview: OverviewTab(snapshot: model.sampler.snapshot, history: model.sampler.history,
+                                            open: { model.openDashboard($0) })
                 case .battery: BatteryTab(battery: model.sampler.snapshot?.battery, health: model.sampler.batteryHealth,
                                            temperature: model.sampler.snapshot?.sensors?.battery,
                                           controller: model.chargeLimit,

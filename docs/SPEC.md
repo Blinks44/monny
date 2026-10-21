@@ -22,6 +22,7 @@ Each metric, sensor and battery mode is reported with one label: `not implemente
 
 - A template status item (Sketch: `05 · System · Menu bar & notifications`). States: idle, popover open, needs attention (a 7 pt badge for heat or danger; can be turned off in Settings).
 - Left click opens the popover; there is no hover mode (user decision 2026-10-18). Right click opens a menu: Open Dashboard (⌥⌘M), Settings…, Turn Off Charge Limit, Set Limit to 100%, About Monny, Quit Monny. Current battery actions disable the system limit or set it to 100%; disable them when native support is unavailable and hide them without a battery. Calibration remains deferred.
+- Optional readings next to the icon: CPU load, CPU temperature and battery level (battery only on a Mac with a battery). Each is off by default and turned on separately in Settings → Menu bar (user decision 2026-10-21). They use the shared sampler's values and refresh rate.
 - A global shortcut (default ⌥⌘M, changeable) opens the dashboard.
 - No Dock icon, except while the dashboard window is open (user decision 2026-10-18).
 
@@ -36,7 +37,9 @@ Header: app icon, Monny, Mac model · chip · uptime; buttons to open the dashbo
 
 On a Mac without a battery the Overview battery strip shows the thermal state and fan speed instead.
 
-**Processes:** top processes sorted by CPU, Memory or Energy (Energy is a relative estimate; per-process network has no public source and is not shown), with icon, name, memory/threads or tabs/system note and value; a link to Activity Monitor. Read-only.
+Each Overview card opens its dashboard page: CPU and cores → CPU, memory → Memory, disk → Disk, network → Network, battery strip → Battery, thermal strip → Sensors (user request 2026-10-21).
+
+**Processes:** top apps sorted by CPU, Memory or Energy. Helper processes are grouped under the app they belong to, with summed values and a process count; processes without an app (system) stay single rows (Energy is a relative estimate; per-process network has no public source and is not shown), with icon, name, memory/threads or tabs/system note and value; a link to Activity Monitor. Read-only.
 
 ## 4. Dashboard window
 
@@ -44,7 +47,7 @@ Sidebar: Overview, CPU, Memory, Disk, Network, Battery, Sensors; Settings at the
 
 - **Overview:** summary cards with sparklines (CPU, Memory, Temperature, Battery), CPU load & temperature chart with hover tooltip naming the top process, 24 h battery level chart with limit line, battery facts (health, cycles, capacity, system load), top processes, sensor tiles and fan speed.
 - **CPU, Memory, Disk, Network:** the detailed history and breakdowns drawn in the corresponding Sketch frames.
-- **Battery:** level, health, cycles and power cards, history and native charge-limit controls. Sailing, heat protection, calibration and trip cards from Sketch are not shown until implemented (production review 2026-10-21: no disabled placeholders in the release).
+- **Battery:** level, health, cycles and power cards (Power shows what the Mac uses now on adapter and on battery, plus watts going into the battery while charging; on-battery values are verified against a reference before they are shown), history and native charge-limit controls. Sailing, heat protection, calibration and trip cards from Sketch are not shown until implemented (production review 2026-10-21: no disabled placeholders in the release).
 - **Battery without a battery:** the range control and cards are replaced by one empty state (“This Mac has no battery”) with Open Sensors.
 - **Sensors:** CPU die, GPU, SSD and battery cards with peaks, temperature chart, thermal state (Nominal/Fair/Serious/Critical), fan speed, and tiles for each available sensor. Missing sensors are omitted or marked unavailable, never invented; a Mac without a fan says so.
 
@@ -66,14 +69,14 @@ Users of historical helper builds remove that helper through the old app before 
 
 ## 6. Onboarding
 
-Use existing Welcome and Ready source frames (Sketch page `03`) for the native-only scope; no helper step or administrator approval. Explain menu bar monitoring, offline behavior, supported native system limit and the global shortcut. Launch at login is a monitoring convenience, not required for macOS to enforce a persistent limit. Macs without a battery omit charging references. Onboarding implementation remains a separate release gate; no Sketch edits are authorized in this slice.
+Three steps from Sketch page `03`: Welcome, Charge limit and Ready; no helper step or administrator approval. Charge limit explains the native limit and offers Not Now or Use 80% Limit (an explicit gesture that enables it); it is skipped on a Mac without a battery or where the native limit is unavailable. Explain menu bar monitoring, offline behavior, supported native system limit and the global shortcut. Launch at login is a monitoring convenience, not required for macOS to enforce a persistent limit. Macs without a battery omit charging references. Onboarding implementation remains a separate release gate; no Sketch edits are authorized in this slice.
 
 ## 7. Settings
 
 - **General:** Launch at login, refresh rate, temperature unit, appearance, language (System or one of the six; applies after Monny restarts, with a Restart button; user request 2026-10-18).
-- **Menu bar:** global shortcut, show alert badge.
+- **Menu bar:** global shortcut, show alert badge, show in menu bar (CPU load, Temperature, Battery level; all off by default).
 - **Battery:** the same supported native limit/enable setting as the Battery page. Advanced automation preferences are deferred.
-- **Notifications:** charge limit reached, Mac is running hot, battery below 20 %, memory pressure is high (each toggle; battery ones only on a Mac with a battery). Each alert fires once per episode; charge limit reached fires once per plug-in, because macOS lets the level drift slightly below the limit. Calibration finished comes with calibration.
+- **Notifications:** charge limit reached, Mac is running hot, an app keeps the Mac busy (one app above a sustained CPU threshold for several minutes; proposal 80% for 5 minutes), battery below 20 %, memory pressure is high (each toggle; battery ones only on a Mac with a battery). Each alert fires once per episode; charge limit reached fires once per plug-in, because macOS lets the level drift slightly below the limit. Calibration finished comes with calibration.
 - **About:** version and build, Check for Updates (compares with the latest GitHub release), privacy note (no analytics; network only for updates). Results: up to date; a newer version (Download… opens the GitHub release page in the browser; Monny does not install updates itself); check failed (Try Again).
 
 ## 8. Cross-cutting requirements

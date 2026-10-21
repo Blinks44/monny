@@ -17,8 +17,10 @@ nonisolated struct BatteryReading: Sendable, Equatable {
     /// mAh. Full charge capacity is today's, design capacity the new battery's.
     var designCapacity: Int?
     var fullChargeCapacity: Int?
-    /// Power the Mac draws from the adapter, in watts.
-    var systemPowerIn: Double?
+    /// What the whole Mac consumes now, in watts, from the adapter or the battery.
+    var systemLoad: Double?
+    /// Watts flowing into the battery (positive while charging) or out of it (negative).
+    var batteryPower: Double?
 }
 
 /// Level, state and estimates from IOPowerSources; cycles and capacities from `AppleSmartBattery`.
@@ -51,7 +53,14 @@ nonisolated struct PowerReader {
             cycleCount: registry?["CycleCount"] as? Int,
             designCapacity: batteryData?["DesignCapacity"] as? Int,
             fullChargeCapacity: (registry?["NominalChargeCapacity"] ?? batteryData?["NominalChargeCapacity"]) as? Int,
-            systemPowerIn: (telemetry?["SystemPowerIn"] as? NSNumber).map { $0.doubleValue / 1000 })
+            systemLoad: (telemetry?["SystemLoad"] as? NSNumber).map { $0.doubleValue / 1000 },
+            batteryPower: Self.batteryPower(voltage: registry?["Voltage"], amperage: registry?["Amperage"]))
+    }
+
+    /// Millivolts × milliamps; the battery reports a negative current while it discharges.
+    static func batteryPower(voltage: Any?, amperage: Any?) -> Double? {
+        guard let voltage = voltage as? Int, let amperage = amperage as? Int, voltage > 0 else { return nil }
+        return Double(voltage) * Double(amperage) / 1_000_000
     }
 
     /// Minutes from IOPowerSources: -1 while calculating, 0 when not applicable.

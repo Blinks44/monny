@@ -67,6 +67,8 @@ struct KPICard: View {
     let color: Color
     let value: String?
     let detail: Text?
+    /// A second line under the detail, for a card without a sparkline.
+    var footnote: Text? = nil
     /// `nil` for a value without history (no sparkline).
     let points: [(date: Date, value: Double)]?
     /// The sparkline's y range; `nil` fits the values with some room.
@@ -81,6 +83,7 @@ struct KPICard: View {
                 UnavailableValue(font: Theme.metricL)
             }
             detail?.font(Theme.footnote).foregroundStyle(Theme.textSecondary).lineLimit(1)
+            footnote?.font(Theme.footnote).foregroundStyle(Theme.textSecondary).lineLimit(1)
             Spacer(minLength: 0)
             if let points, points.count > 1 {
                 Sparkline(series: [SparklineSeries(id: "value", points: points, color: color, filled: true)],
@@ -179,8 +182,9 @@ private struct BatteryDayCard: View {
     }
 
     private var systemLoad: Text? {
-        guard let battery, battery.state != .onBattery, let watts = battery.systemPowerIn else { return nil }
-        return Text("\(watts.formatted(.number.precision(.fractionLength(0)))) W from adapter")
+        guard let battery, let watts = battery.systemLoad else { return nil }
+        let number = watts.formatted(.number.precision(.fractionLength(0)))
+        return battery.state == .onBattery ? Text("\(number) W from battery") : Text("\(number) W from adapter")
     }
 
     @ViewBuilder

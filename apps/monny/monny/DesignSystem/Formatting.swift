@@ -18,6 +18,19 @@ extension Double {
             .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0))))
     }
 
+    /// °C → "54°" in the chosen unit, for the menu bar where the unit would only take room.
+    /// Watts without decimals, as in “18 W”.
+    var wattsText: String {
+        Measurement(value: self, unit: UnitPower.watts)
+            .formatted(.measurement(width: .abbreviated, usage: .asProvided,
+                                    numberFormatStyle: .number.precision(.fractionLength(0))))
+    }
+
+    func shortTemperatureText(_ unit: TemperatureUnit) -> String {
+        let value = Measurement(value: self, unit: UnitTemperature.celsius).converted(to: unit == .celsius ? .celsius : .fahrenheit).value
+        return value.formatted(.number.precision(.fractionLength(0))) + "°"
+    }
+
     /// A process's CPU share → "14.2%" (100 % is one core, as in Activity Monitor).
     var cpuShareText: String { formatted(.percent.precision(.fractionLength(1))) }
 

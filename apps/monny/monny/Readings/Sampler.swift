@@ -27,21 +27,24 @@ actor ReadingSource {
     private let sensors = SensorReader()
     private let signposter = OSSignposter(subsystem: "blinks44.monny", category: "Sampler")
 
-    /// Process enumeration is most of a pass's cost, so it runs only while a process list is shown;
+    /// Process enumeration is most of a pass's cost, so it runs only while a process list is shown,
+    /// or for the busy app alert while the whole CPU does at least the work of its threshold;
     /// free disk space is refreshed only while something is visible.
-    func sample(isVisible: Bool, includeProcesses: Bool) -> Snapshot {
+    func sample(isVisible: Bool, includeProcesses: Bool, watchesBusyApps: Bool = false) -> Snapshot {
         let state = signposter.beginInterval("Sample")
         defer { signposter.endInterval("Sample", state) }
-        return Snapshot(cpu: cpu.read(), memory: memory.read(), disk: disk.read(includeSpace: isVisible), network: network.read(),
+        let load = cpu.read()
+        let mayHaveBusyApp = load.map { $0.total * Double($0.cores.count) >= AlertMonitor.busyAppCPU } ?? false
+        return Snapshot(cpu: load, memory: memory.read(), disk: disk.read(includeSpace: isVisible), network: network.read(),
                         battery: power.read(), sensors: sensors.read(), thermalState: ProcessInfo.processInfo.thermalState,
-                        processes: includeProcesses ? processes.read() : [],
+                        processes: includeProcesses || (watchesBusyApps && mayHaveBusyApp) ? processes.read() : [],
                         loadAverage: LoadAverage.read(), gpu: GPUReading.read())
     }
 }
 
 /// The one shared sampler. It reads at the user's refresh rate while the popover or the
-/// dashboard is visible and every 10 s otherwise, which is what history needs (its 1 h tier
-/// has 10 s buckets). Every pass is recorded in `history`.
+/// dashboard is visible or readings are shown in the menu bar, and every 10 s otherwise, which
+/// is what history needs (its 1 h tier has 10 s buckets). Every pass is recorded in `history`.
 @Observable
 final class Sampler {
     enum Surface: Hashable { case popover, dashboard }
@@ -61,6 +64,12 @@ final class Sampler {
     /// Process lists on screen (popover Processes, window Overview); processes are read while any is.
     @ObservationIgnored private var processLists = 0
     var showsProcesses: Bool { processLists > 0 }
+    /// Menu bar readings follow the refresh rate, without the work done only for visible views.
+    @ObservationIgnored var updatesMenuBar = false {
+        didSet {
+            if updatesMenuBar, !oldValue, visible.isEmpty, task != nil { restart(primed: true) }
+        }
+    }
 
     func setProcessListVisible(_ isVisible: Bool) {
         processLists = max(processLists + (isVisible ? 1 : -1), 0)
@@ -90,14 +99,16 @@ final class Sampler {
             }
             while !Task.isCancelled {
                 guard let isVisible = self.map({ !$0.visible.isEmpty }) else { return }
-                let snapshot = await source.sample(isVisible: isVisible, includeProcesses: isVisible && self?.showsProcesses == true)
+                let snapshot = await source.sample(isVisible: isVisible, includeProcesses: isVisible && self?.showsProcesses == true,
+                                                   watchesBusyApps: UserDefaults.standard.bool(forKey: PreferenceKey.notifyBusyApp))
                 guard let self, !Task.isCancelled else { return }
                 self.snapshot = snapshot
                 history.record(snapshot)
                 onSample?(snapshot)
                 // Settings shows 2 s until the user picks a rate; `integer(forKey:)` would read 0 then.
                 let refresh = max(UserDefaults.standard.object(forKey: PreferenceKey.refreshInterval) as? Int ?? 2, 1)
-                try? await Task.sleep(for: .seconds(isVisible ? refresh : 10))
+                let isFrequent = isVisible || self.updatesMenuBar
+                try? await Task.sleep(for: .seconds(isFrequent ? refresh : 10))
             }
         }
     }

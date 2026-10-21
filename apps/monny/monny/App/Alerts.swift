@@ -11,19 +11,26 @@ nonisolated struct AlertMonitor {
         case lowBattery(level: Double, timeToEmpty: Duration?)
         case chargeLimitReached(Int)
         case memoryPressure
+        /// One app, helpers included, above `busyAppCPU` for `busyAppDuration`; `pid` is the app's.
+        case busyApp(pid: pid_t, name: String)
     }
 
     /// The level below which "Battery below 20%" fires.
     static let lowBatteryLevel = 0.2
+    /// "An app keeps the Mac busy": share of one core, as in Activity Monitor, and how long.
+    static let busyAppCPU = 0.8
+    static let busyAppDuration: TimeInterval = 5 * 60
 
     private(set) var needsAttention = false
     private var isHot = false
     private var isLow = false
     private var isPressured = false
     private var reachedLimit: Int?
+    private var busySince: [pid_t: Date] = [:]
+    private var reportedBusyApps: Set<pid_t> = []
 
     /// Returns the alerts that started with this snapshot, whatever the user's notification choices.
-    mutating func update(with snapshot: Snapshot, chargeLimit: Int? = nil) -> [Alert] {
+    mutating func update(with snapshot: Snapshot, chargeLimit: Int? = nil, now: Date = .now) -> [Alert] {
         var alerts: [Alert] = []
 
         // macOS's own thermal state, as the CPU chip: Serious and Critical are "hot".
@@ -53,6 +60,19 @@ nonisolated struct AlertMonitor {
             isPressured = pressure != .normal
         }
 
+        // Processes are read in the background only while this alert is on and the CPU is busy
+        // enough for one app to pass the threshold; without them no app counts as busy.
+        let busyApps = ProcessUsage.groupedByApp(snapshot.processes).filter { $0.cpu >= Self.busyAppCPU }
+        busySince = busySince.filter { pid, _ in busyApps.contains { $0.id == pid } }
+        reportedBusyApps.formIntersection(busySince.keys)
+        for app in busyApps {
+            let since = busySince[app.id, default: now]
+            busySince[app.id] = since
+            if now.timeIntervalSince(since) >= Self.busyAppDuration, reportedBusyApps.insert(app.id).inserted {
+                alerts.append(.busyApp(pid: app.id, name: app.name))
+            }
+        }
+
         needsAttention = hot || snapshot.memory?.pressure == .critical
         return alerts
     }
@@ -66,7 +86,13 @@ extension AlertMonitor.Alert {
         case .hot: PreferenceKey.notifyHot
         case .lowBattery: PreferenceKey.notifyLowBattery
         case .memoryPressure: PreferenceKey.notifyMemoryPressure
+        case .busyApp: PreferenceKey.notifyBusyApp
         }
+    }
+
+    /// Two apps can be busy at once, so each gets its own notification.
+    var identifier: String {
+        if case .busyApp(let pid, _) = self { "\(preferenceKey).\(pid)" } else { preferenceKey }
     }
 
     var title: String {
@@ -75,6 +101,7 @@ extension AlertMonitor.Alert {
         case .hot: String(localized: "Mac is running hot")
         case .lowBattery: String(localized: "Battery below 20%")
         case .memoryPressure: String(localized: "Memory pressure is high")
+        case .busyApp(_, let name): String(localized: "\(name) is keeping your Mac busy")
         }
     }
 
@@ -92,6 +119,8 @@ extension AlertMonitor.Alert {
             String(localized: "\(level.percentText) left. Connect power soon.")
         case .memoryPressure:
             String(localized: "Quit apps you don’t need to free up memory.")
+        case .busyApp:
+            String(localized: "Over \(AlertMonitor.busyAppCPU.percentText) CPU for the last 5 minutes. Quit it if you don’t need it.")
         }
     }
 }
@@ -115,7 +144,7 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
             let content = UNMutableNotificationContent()
             content.title = alert.title
             content.body = alert.body(unit: unit)
-            return UNNotificationRequest(identifier: alert.preferenceKey, content: content, trigger: nil)
+            return UNNotificationRequest(identifier: alert.identifier, content: content, trigger: nil)
         }
         Task { [center] in
             guard (try? await center.requestAuthorization(options: [.alert, .sound])) == true else { return }
@@ -135,7 +164,7 @@ private extension AlertMonitor.Alert {
     var isOnByDefault: Bool {
         switch self {
         case .hot, .chargeLimitReached: true
-        case .lowBattery, .memoryPressure: false
+        case .lowBattery, .memoryPressure, .busyApp: false
         }
     }
 }

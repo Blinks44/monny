@@ -24,7 +24,7 @@ struct BatteryPage: View {
                 KPICard(title: "Cycles", symbol: "arrow.clockwise", color: Theme.metricCPU,
                         value: battery?.cycleCount?.formatted(), detail: nil, points: nil)
                 KPICard(title: "Power", symbol: "bolt.fill", color: Theme.metricDisk,
-                        value: adapterPower, detail: Text("From adapter"), points: nil)
+                        value: battery?.systemLoad?.wattsText, detail: powerFlow, footnote: powerSupply, points: nil)
             }
             // Both cards take the taller one's height, which grows with translated text.
             HStack(alignment: .top, spacing: Theme.spaceL) {
@@ -50,11 +50,29 @@ struct BatteryPage: View {
         }
     }
 
-    private var adapterPower: String? {
-        guard let battery, battery.state != .onBattery, let watts = battery.systemPowerIn else { return nil }
-        return Measurement(value: watts, unit: UnitPower.watts)
-            .formatted(.measurement(width: .abbreviated, usage: .asProvided,
-                                    numberFormatStyle: .number.precision(.fractionLength(0))))
+    /// Where the power comes from (Sketch `18 · Battery · Power card`, without its “Mac uses ·”
+    /// prefix, which does not fit the card at the minimum window width in any language).
+    private var powerFlow: Text? {
+        guard let battery, battery.systemLoad != nil else { return nil }
+        switch battery.state {
+        case .onBattery:
+            return Text("From battery")
+        case .charging:
+            // A charge rate below 1 W rounds to “+0 W”, so it reads as from the adapter.
+            if let watts = battery.batteryPower, watts >= 1 { return Text("+\(watts.wattsText) to battery") }
+            return Text("From adapter")
+        case .onAdapter:
+            return Text("From adapter")
+        }
+    }
+
+    /// The adapter's rating, or macOS's estimate of the time left on battery.
+    private var powerSupply: Text? {
+        guard let battery else { return nil }
+        if battery.state == .onBattery {
+            return battery.timeToEmpty.map { Text("\($0.estimateText) left") }
+        }
+        return battery.adapterWatts.map { Text("Adapter \($0) W") }
     }
 
     private func chargeHistory(_ tier: HistoryTier) -> some View {

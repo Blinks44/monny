@@ -48,7 +48,7 @@ struct DashboardView: View {
         case .network: NetworkPage(sampler: model.sampler)
         case .battery: BatteryPage(sampler: model.sampler, controller: model.chargeLimit)
         case .sensors: SensorsPage(sampler: model.sampler)
-        case .settings: SettingsPage(controller: model.chargeLimit)
+        case .settings: SettingsPage(controller: model.chargeLimit, updater: model.updater)
         }
     }
 

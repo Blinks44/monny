@@ -1,21 +1,24 @@
 import KeyboardShortcuts
 import SwiftUI
 
-/// Settings in the dashboard (Sketch `08 · Window · Settings`, `12 · Errors`, `13 · Update available`).
+/// Settings in the dashboard (Sketch `17 · Window · Settings · Native`, `12 · Errors`).
 struct SettingsPage: View {
     let controller: ChargeLimitController
+    let updater: AppUpdater
     @AppStorage(PreferenceKey.refreshInterval) private var refreshInterval = 2
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
     @AppStorage(PreferenceKey.appearance) private var appearance = AppearancePreference.system
     @AppStorage(PreferenceKey.showsAlertBadge) private var showsAlertBadge = true
+    @AppStorage(PreferenceKey.menuBarCPU) private var menuBarCPU = false
+    @AppStorage(PreferenceKey.menuBarTemperature) private var menuBarTemperature = false
+    @AppStorage(PreferenceKey.menuBarBattery) private var menuBarBattery = false
     @AppStorage(PreferenceKey.notifyChargeLimit) private var notifyChargeLimit = true
     @AppStorage(PreferenceKey.notifyHot) private var notifyHot = true
     @AppStorage(PreferenceKey.notifyLowBattery) private var notifyLowBattery = false
     @AppStorage(PreferenceKey.notifyMemoryPressure) private var notifyMemoryPressure = false
+    @AppStorage(PreferenceKey.notifyBusyApp) private var notifyBusyApp = false
     @State private var loginItem = LoginItem()
     @State private var language = AppLanguage.current
-    @State private var updates = UpdateChecker()
-    @Environment(\.openURL) private var openURL
 
     var body: some View {
         HStack(alignment: .top, spacing: Theme.spaceL) {
@@ -76,50 +79,49 @@ struct SettingsPage: View {
                 KeyboardShortcuts.Recorder(for: .openDashboard)
                     .frame(width: 130)
             }
-            SettingsRow("Show alert badge", subtitle: "Dot on the icon when something needs you", isLast: true) {
+            SettingsRow("Show alert badge", subtitle: "Dot on the icon when something needs you") {
                 Toggle("Show alert badge", isOn: $showsAlertBadge)
             }
+            VStack(alignment: .leading, spacing: Theme.spaceM) {
+                Text("Show in menu bar").font(Theme.body).foregroundStyle(Theme.textPrimary)
+                HStack(spacing: Theme.spaceXL) {
+                    Toggle("CPU load", isOn: $menuBarCPU)
+                    Toggle("Temperature", isOn: $menuBarTemperature)
+                    if SystemInfo.hasBattery { Toggle("Battery level", isOn: $menuBarBattery) }
+                }
+                .font(Theme.body)
+                .foregroundStyle(Theme.textPrimary)
+                .toggleStyle(CheckboxStyle())
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, Theme.spaceM)
         }
     }
 
     private var about: some View {
         SettingsSection("About") {
             updateRow
+            automaticUpdatesRow
             SettingsRow("Privacy", subtitle: "No analytics · network only for updates", isLast: true) {
                 EmptyView()
             }
         }
     }
 
-    @ViewBuilder private var updateRow: some View {
+    private var updateRow: some View {
         let version = "\(Bundle.main.shortVersion) (\(Bundle.main.buildNumber))"
-        switch updates.status {
-        case .available(let latest, let page):
-            SettingsRow("Monny \(latest) is available", subtitle: "You have \(version)") {
-                Button("Download…") { openURL(page) }
-                    .buttonStyle(PrimaryButtonStyle())
-            }
-        case .failed(let offline):
-            SettingsRow("Monny \(version)",
-                        subtitle: offline ? "Couldn’t check for updates · offline" : "Couldn’t check for updates",
-                        subtitleColor: Theme.statusDangerText) {
-                Button("Try Again", action: checkForUpdates)
-                    .buttonStyle(TintedButtonStyle())
-            }
-        case .idle, .checking, .upToDate:
-            SettingsRow("Monny \(version)", subtitle: updates.status == .upToDate ? "You’re up to date" : nil) {
-                HStack(spacing: Theme.spaceM) {
-                    if updates.status == .checking { ProgressView().controlSize(.small) }
-                    Button("Check for Updates", action: checkForUpdates)
-                        .buttonStyle(TintedButtonStyle())
-                        .disabled(updates.status == .checking)
-                }
-            }
+        return SettingsRow("Monny \(version)") {
+            Button("Check for Updates", action: updater.checkForUpdates)
+                .buttonStyle(TintedButtonStyle())
+                .disabled(!updater.canCheckForUpdates)
         }
     }
 
-    private func checkForUpdates() {
-        Task { await updates.check() }
+    private var automaticUpdatesRow: some View {
+        SettingsRow("Check for updates automatically", subtitle: "Monny asks before installing a new version") {
+            Toggle("Check for updates automatically", isOn: Binding(get: { updater.automaticallyChecksForUpdates },
+                                                                     set: { updater.automaticallyChecksForUpdates = $0 }))
+        }
     }
 
     private var battery: some View {
@@ -132,6 +134,7 @@ struct SettingsPage: View {
         SettingsSection("Notifications") {
             if SystemInfo.hasBattery { CheckboxRow("Charge limit reached", isOn: $notifyChargeLimit) }
             CheckboxRow("Mac is running hot", isOn: $notifyHot)
+            CheckboxRow("An app keeps the Mac busy", isOn: $notifyBusyApp)
             if SystemInfo.hasBattery { CheckboxRow("Battery below 20%", isOn: $notifyLowBattery) }
             CheckboxRow("Memory pressure is high", isOn: $notifyMemoryPressure, isLast: true)
         }

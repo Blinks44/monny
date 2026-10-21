@@ -2,9 +2,11 @@ import SwiftUI
 
 /// Inset sidebar panel: the monitor pages, then Settings at the bottom. Like a source list it is
 /// one keyboard stop, focused when the window opens, and the up and down arrows change the page.
+/// The focus outline appears only once the keyboard is used.
 struct Sidebar: View {
     @Binding var selection: DashboardPage
     @FocusState private var isFocused: Bool
+    private var showsFocus: Bool { isFocused && FocusVisibility.shared.isVisible }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -16,10 +18,10 @@ struct Sidebar: View {
                 .padding(.bottom, 4)
                 .accessibilityAddTraits(.isHeader)
             ForEach(DashboardPage.allCases.filter { $0 != .settings }, id: \.self) { page in
-                SidebarButton(page: page, isSelected: selection == page, isFocused: isFocused) { selection = page }
+                SidebarButton(page: page, isSelected: selection == page, isFocused: showsFocus) { selection = page }
             }
             Spacer(minLength: Theme.spaceXL)
-            SidebarButton(page: .settings, isSelected: selection == .settings, isFocused: isFocused) { selection = .settings }
+            SidebarButton(page: .settings, isSelected: selection == .settings, isFocused: showsFocus) { selection = .settings }
         }
         .padding(.horizontal, 8)
         .padding(.top, 52)

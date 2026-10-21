@@ -28,7 +28,7 @@ Monny.sketch, page `02 · Window`, Settings frames 08/12/13/14 Light/Dark: Gener
 ## Implementation and verification
 
 - Dependency: [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) 1.17.0 (MIT, maintained, Swift 6, Carbon hot keys without Accessibility permission, own recorder and six of our languages). Decision in [research](../research/README.md#other-dependencies).
-- Update check: plain GitHub Releases API with `URLSession` (Sparkle installs updates, which SPEC rules out). 404 (nothing published) counts as up to date.
+- Update check: plain GitHub Releases API with `URLSession` (Sparkle installs updates, which SPEC rules out). 404 (nothing published) counts as up to date. Superseded 2026-10-21 by Sparkle ([APP-012](APP-012-sparkle-updates.md)); `UpdateChecker.swift` was removed.
 - Language change applies after a restart: Restart waits for the current process to exit, then reopens the bundle, so history is saved before the new instance loads it.
 - Differences from Sketch: the shortcut is the package's recorder field instead of a popup button; Privacy has no Read policy link until a policy page exists; About subtitle says "You're up to date" without "checked today".
 - Tests: `AlertTests` (heat episodes, low battery only on battery power, pressure re-arm, version comparison). `dev.sh test`: 25 tests pass. `dev.sh build` passes.

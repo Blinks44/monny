@@ -51,4 +51,11 @@ struct ReadingMathTests {
         #expect(health.maximumCapacity == 0.97)
         #expect(health.condition == "Good")
     }
+
+    @Test func batteryPowerIsSignedByCurrent() {
+        // 12.6 V at 2.5 A charging, then 1.5 A discharging; millivolts × milliamps.
+        #expect(PowerReader.batteryPower(voltage: 12_600, amperage: 2_500) == 31.5)
+        #expect(PowerReader.batteryPower(voltage: 12_000, amperage: -1_500) == -18)
+        #expect(PowerReader.batteryPower(voltage: nil, amperage: 100) == nil)
+    }
 }

@@ -42,3 +42,15 @@ Open: the popover was not measured (it cannot be opened without the screen); the
 Cause: every sample changed the in-progress bucket of all four history tiers, so every chart redrew (24 h and 7 d too), and the CPU chart animated each new point with a spring, which rendered many extra frames per tick (about half of the main thread's busy time). Tiers now notify views only when a bucket closes; the per-point animation is gone. Readers themselves are about 2 % of the busy time; the rest is SwiftUI layout and rendering.
 
 Open: popover cost (it needs a click; UI automation was unavailable).
+
+## 2026-10-21, build 31: menu bar readings
+
+- Revision: main at 037d588 plus uncommitted APP-009/APP-010 changes; signed Release build 31; same Mac and OS; refresh 2 s; no window or popover open.
+- Method: agent-observed `top -l 13 -s 5 -stats cpu` after 15 s settling, CPU load, temperature and battery level all shown.
+- Result: 1.2–2.1 %, about 1.6 % on average (background without readings stays 0.0–0.2 % at the 10 s cadence). The sampler pass now runs every 2 s instead of every 10 s; which part of the pass dominates has not been profiled.
+
+## 2026-10-21, build 33: busy app alert
+
+- Revision: as build 31 plus APP-011; Debug build; same Mac and OS; no window or popover open; “An app keeps the Mac busy” on; menu bar readings off.
+- Method: agent-observed `top -l 30 -s 10 -stats cpu`. Total CPU on this Mac stayed above one core, so processes were read on every 10 s background pass.
+- Result: 0.2–0.5 % (0.0–0.2 % with the alert off).

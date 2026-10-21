@@ -52,4 +52,9 @@ struct SensorDecodingTests {
         #expect(fahrenheit.contains("F"))
         #expect(54.4.temperatureText(.celsius).contains("54"))
     }
+
+    @Test @MainActor func menuBarTemperatureDropsTheUnitLetter() {
+        #expect(54.4.shortTemperatureText(.celsius) == "54°")
+        #expect(54.4.shortTemperatureText(.fahrenheit) == "130°")
+    }
 }

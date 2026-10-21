@@ -32,10 +32,14 @@ final class MenuBarController: NSObject, NSMenuDelegate {
             button.addSubview(NSHostingView(rootView: DashboardWindowOpener()))
         }
         updateBadge()
-        // The badge preference lives in UserDefaults; Settings changes it while the app runs.
+        observeReadings()
+        // The badge and readings preferences live in UserDefaults; Settings changes them while the app runs.
         defaultsObservation = NotificationCenter.default.addObserver(
             forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            MainActor.assumeIsolated { self?.updateBadge() }
+            MainActor.assumeIsolated {
+                self?.updateBadge()
+                self?.showReadings()
+            }
         }
     }
 
@@ -77,10 +81,11 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         badge.layer?.cornerRadius = 3.5
         badge.translatesAutoresizingMaskIntoConstraints = false
         button.addSubview(badge)
+        // Anchored to the icon's square, which stays leading when readings follow it.
         NSLayoutConstraint.activate([
             badge.widthAnchor.constraint(equalToConstant: 7),
             badge.heightAnchor.constraint(equalToConstant: 7),
-            badge.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -2),
+            badge.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: NSStatusBar.system.thickness - 9),
             badge.topAnchor.constraint(equalTo: button.topAnchor, constant: 3),
         ])
     }
@@ -95,6 +100,67 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         badge.effectiveAppearance.performAsCurrentDrawingAppearance {
             badge.layer?.backgroundColor = NSColor(Theme.metricHeat).cgColor
         }
+    }
+
+    // MARK: Readings
+
+    private func observeReadings() {
+        withObservationTracking {
+            showReadings()
+        } onChange: { [weak self] in
+            Task { @MainActor in self?.observeReadings() }
+        }
+    }
+
+    /// CPU load, CPU temperature and battery level after the icon, each when enabled in Settings.
+    private func showReadings() {
+        guard let button = statusItem.button else { return }
+        let defaults = UserDefaults.standard
+        let snapshot = model.sampler.snapshot
+        var readings: [(symbol: String, text: String)] = []
+        if defaults.bool(forKey: PreferenceKey.menuBarCPU) {
+            readings.append(("cpu", snapshot?.cpu.map { $0.total.percentText } ?? "—"))
+        }
+        if defaults.bool(forKey: PreferenceKey.menuBarTemperature) {
+            let unit = TemperatureUnit(rawValue: defaults.string(forKey: PreferenceKey.temperatureUnit) ?? "") ?? .celsius
+            readings.append(("thermometer.medium", snapshot?.sensors?.cpu.map { $0.shortTemperatureText(unit) } ?? "—"))
+        }
+        if SystemInfo.hasBattery, defaults.bool(forKey: PreferenceKey.menuBarBattery) {
+            let battery = snapshot?.battery
+            readings.append((battery.map(Self.batterySymbol) ?? "battery.100percent", battery.map { $0.level.percentText } ?? "—"))
+        }
+        model.sampler.updatesMenuBar = !readings.isEmpty
+
+        guard !readings.isEmpty else {
+            statusItem.length = NSStatusItem.squareLength
+            button.imagePosition = .imageOnly
+            button.attributedTitle = NSAttributedString()
+            return
+        }
+        let font = NSFont.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .regular)
+        let symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 11, weight: .regular)
+        let title = NSMutableAttributedString()
+        for (index, reading) in readings.enumerated() {
+            title.append(NSAttributedString(string: index == 0 ? " " : "  "))
+            if let image = NSImage(systemSymbolName: reading.symbol, accessibilityDescription: nil)?
+                .withSymbolConfiguration(symbolConfiguration) {
+                let attachment = NSTextAttachment()
+                attachment.image = image
+                title.append(NSAttributedString(attachment: attachment))
+            }
+            title.append(NSAttributedString(string: " " + reading.text))
+        }
+        title.addAttributes([.font: font, .baselineOffset: 0], range: NSRange(location: 0, length: title.length))
+        statusItem.length = NSStatusItem.variableLength
+        button.imagePosition = .imageLeading
+        button.attributedTitle = title
+        button.setAccessibilityValue(readings.map(\.text).joined(separator: ", "))
+    }
+
+    private static func batterySymbol(_ battery: BatteryReading) -> String {
+        if battery.state == .charging { return "battery.100percent.bolt" }
+        let quarter = Int((battery.level * 4).rounded()) * 25
+        return "battery.\(quarter)percent"
     }
 
     private func popoverDidClose() {

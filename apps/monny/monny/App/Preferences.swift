@@ -11,7 +11,12 @@ enum PreferenceKey {
     static let notifyHot = "notifyHot"
     static let notifyLowBattery = "notifyLowBattery"
     static let notifyMemoryPressure = "notifyMemoryPressure"
+    static let notifyBusyApp = "notifyBusyApp"
     static let historyRange = "historyRange"
+    /// Readings next to the status item (Settings › Menu bar), all off by default.
+    static let menuBarCPU = "menuBarCPU"
+    static let menuBarTemperature = "menuBarTemperature"
+    static let menuBarBattery = "menuBarBattery"
 }
 
 enum TemperatureUnit: String, CaseIterable {

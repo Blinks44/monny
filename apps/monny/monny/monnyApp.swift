@@ -15,6 +15,15 @@ struct monnyApp: App {
         // Monny lives in the menu bar; the dashboard opens on request, not at launch or login.
         .defaultLaunchBehavior(.suppressed)
         .restorationBehavior(.disabled)
+
+        Window("Welcome to Monny", id: OnboardingWindow.id) {
+            OnboardingView(model: delegate.model)
+                .windowMinimizeBehavior(.disabled)
+        }
+        .windowStyle(.hiddenTitleBar)
+        .windowResizability(.contentSize)
+        .defaultLaunchBehavior(OnboardingWindow.isNeeded && !MonnyAppDelegate.runningTests ? .presented : .suppressed)
+        .restorationBehavior(.disabled)
     }
 }
 
@@ -28,20 +37,22 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
     /// Opens the dashboard scene; set by the first SwiftUI view that has `openWindow`.
     fileprivate static var openWindow: (() -> Void)?
 
-    private static var runningTests: Bool {
+    static var runningTests: Bool {
         ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         guard !Self.runningTests else { return }
-        // No Dock icon until a window opens (proposal for SPEC §9, matching Rebind).
-        NSApp.setActivationPolicy(.accessory)
+        // No Dock icon until a window opens (proposal for SPEC §9, matching Rebind). The first
+        // launch opens onboarding, which must come to the front like any app window.
+        NSApp.setActivationPolicy(OnboardingWindow.isNeeded ? .regular : .accessory)
         let menuBar = MenuBarController(model: model)
         self.menuBar = menuBar
         model.showPopover = { [weak menuBar] in menuBar?.showPopover() }
         model.closePopover = { [weak menuBar] in menuBar?.closePopover() }
         model.openDashboard = { [weak self] page in self?.openDashboard(page) }
         applyAppearance()
+        if OnboardingWindow.isNeeded { NSApp.activate() }
         KeyboardShortcuts.onKeyUp(for: .openDashboard) { [weak self] in self?.openDashboard(nil) }
         Task { [model] in
             await model.sampler.history.load()

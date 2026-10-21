@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B2000000000000000000000E /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = B2000000000000000000000D /* KeyboardShortcuts */; };
+		B20000000000000000000012 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = B20000000000000000000011 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				B2000000000000000000000E /* KeyboardShortcuts in Frameworks */,
+				B20000000000000000000012 /* Sparkle in Frameworks */,
 			);
 		};
 		B20000000000000000000004 /* Frameworks */ = {
@@ -95,6 +97,7 @@
 			name = monny;
 			packageProductDependencies = (
 				B2000000000000000000000D /* KeyboardShortcuts */,
+				B20000000000000000000011 /* Sparkle */,
 			);
 			productName = monny;
 			productReference = 757258C93083E9E600FAC82A /* Monny.app */;
@@ -156,6 +159,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				B2000000000000000000000C /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
+				B20000000000000000000010 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 757258CA3083E9E600FAC82A /* Products */;
@@ -332,12 +336,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 35;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Monny;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Sergey V. MIT License.";
@@ -368,12 +373,13 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 35;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Monny;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Sergey V. MIT License.";
@@ -476,6 +482,14 @@
 				minimumVersion = 1.17.0;
 			};
 		};
+		B20000000000000000000010 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.10.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -483,6 +497,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B2000000000000000000000C /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
 			productName = KeyboardShortcuts;
+		};
+		B20000000000000000000011 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B20000000000000000000010 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

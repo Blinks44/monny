@@ -1,7 +1,7 @@
 # DES-002: Native onboarding and next-feature screens
 
 - Updated: 2026-10-21
-- Stage: ready_for_implementation (design saved; nothing implemented)
+- Stage: done (design saved; all its features implemented through build 35; Settings › About update switch still undrawn)
 - Owner: unassigned (design pass released 2026-10-21)
 - Owned surfaces: Monny.sketch pages `01 · Popover`, `02 · Window`, `03 · Flows & System` (frames listed below)
 - Requirements: [SPEC](../SPEC.md) §2, §3, §4, §6, §7; [PLAN](../PLAN.md#next-features) items 1–3 and 5, onboarding release gate
@@ -30,11 +30,11 @@ Design only. Each new or changed frame was checked by MCP screenshot in Light an
 
 ## Open checks / dependency
 
-- Sustained-load threshold (proposal: over 80% CPU for 5 minutes) needs a SPEC decision. Grouping is implemented with the responsible PID ([APP-008](APP-008-grouped-processes-keyboard-idle-cost.md)).
-- Power values on battery must be compared with `powermetrics`/System Information before they are shown.
-- Settings › About in frame `17` still needs the “Check for updates automatically” toggle; the old custom “update available” Settings state is replaced by Sparkle's standard window.
+- Sustained-load alert implemented with 80 % of one core for 5 minutes ([APP-011](APP-011-busy-app-alert.md)).
+- Power card implemented with shorter copy (no “Mac uses ·”, fits the minimum window width); on-battery values are compared against the battery's own output ([APP-013](APP-013-power-draw.md)).
+- Settings › About in frame `17` still lacks the “Check for updates automatically” row; build 34 adds it as an ordinary switch row with the onboarding copy. The old custom “update available” Settings state is replaced by Sparkle's standard window.
 - The menu bar label width in German/French and the readings layout on a crowded menu bar are checked in the app.
 
 ## Next handoff
 
-Engineering: implement onboarding from the `01`/`12`/`03` frames, then the PLAN next-feature items using the frames above. Read them live through Sketch MCP.
+Engineering: onboarding is implemented ([APP-009](APP-009-native-onboarding.md)); implement the remaining PLAN next-feature items using the frames above. Read them live through Sketch MCP.

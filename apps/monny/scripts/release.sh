@@ -1,6 +1,7 @@
 #!/bin/bash
 # Builds an arm64 Release, signs it with the existing identity under Hardened Runtime and
-# packages the branded DMG in build/release/. Never creates keys, installs or publishes.
+# packages the branded DMG in build/release/ with its Sparkle appcast. Never creates keys,
+# installs or publishes.
 set -euo pipefail
 
 app_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -22,7 +23,20 @@ rm -rf "$app"
 ditto "$app_root/build/DerivedData/Build/Products/Release/Monny.app" "$app"
 # DerivedData can keep owner-only modes from older builds; installed apps must be world-readable.
 chmod -R u+rwX,go+rX,go-w "$app"
-codesign --force --options runtime --timestamp=none --sign "$identity" "$app"
+sign=(codesign --force --options runtime --timestamp=none --sign "$identity")
+# Sparkle is the only embedded framework; anything else needs a signing review first.
+frameworks="$(ls "$app/Contents/Frameworks")"
+[[ "$frameworks" == "Sparkle.framework" ]] && [[ -z "$(find "$app" -name '*.dylib')" ]] \
+    || { echo "Review nested code signing: unexpected frameworks or dylibs in the app" >&2; exit 1; }
+# Hardened Runtime library validation needs Sparkle signed with the app's identity, inside out
+# (https://sparkle-project.org/documentation/sandboxing/#code-signing).
+sparkle="$app/Contents/Frameworks/Sparkle.framework"
+"${sign[@]}" "$sparkle/Versions/Current/XPCServices/Installer.xpc"
+"${sign[@]}" --preserve-metadata=entitlements "$sparkle/Versions/Current/XPCServices/Downloader.xpc"
+"${sign[@]}" "$sparkle/Versions/Current/Autoupdate"
+"${sign[@]}" "$sparkle/Versions/Current/Updater.app"
+"${sign[@]}" "$sparkle"
+"${sign[@]}" "$app"
 codesign --verify --strict --deep "$app"
 
 info="$app/Contents/Info.plist"
@@ -45,4 +59,18 @@ codesign --verify --strict "$dmg"
 hdiutil verify -quiet "$dmg"
 
 shasum -a 256 "$dmg"
+
+# Sparkle signs the finished DMG with Monny's EdDSA key from the login keychain (account
+# "monny", docs/SIGNING.md). Each release uploads its own appcast with only its DMG, and the app
+# reads it from the latest GitHub release, so an older local build is never listed.
+appcast="$output/appcast.xml"
+rm -f "$appcast"
+cp "$dmg" "$staging/"
+rm -rf "$staging/Monny.app"
+"$app_root/build/DerivedData/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_appcast" --account monny \
+    --download-url-prefix "https://github.com/Blinks44/monny/releases/download/v$version/" \
+    --full-release-notes-url "https://github.com/Blinks44/monny/releases/tag/v$version" \
+    --link "https://github.com/Blinks44/monny" -o "$appcast" "$staging" > "$output/appcast.log" 2>&1 \
+    || { echo "Appcast failed (is the update signing key in the keychain?); see $output/appcast.log" >&2; exit 1; }
 echo "Package: $dmg (signed, not notarized)"
+echo "Appcast: $appcast"

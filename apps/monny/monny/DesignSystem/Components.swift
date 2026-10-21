@@ -410,7 +410,8 @@ private struct PopupButtonStyle: ButtonStyle {
 /// capsule track with a raised selected pill), `.chips` the row of separate sort capsules with a
 /// dark selected one. VoiceOver gets a standard segmented picker. For the keyboard the control is
 /// one stop that the arrow keys move along, like a native segmented control; it takes focus even
-/// with Keyboard navigation off in System Settings, as text fields and lists do.
+/// with Keyboard navigation off in System Settings, as text fields and lists do, and shows its ring
+/// only once the keyboard is used.
 struct SegmentedControl<Value: Hashable>: View {
     enum Style { case tabs, chips }
 
@@ -437,6 +438,7 @@ struct SegmentedControl<Value: Hashable>: View {
         }
         .contentShape(.focusEffect, style == .tabs ? AnyShape(.capsule) : AnyShape(.rect(cornerRadius: 14)))
         .focusable(interactions: .edit)
+        .focusEffectDisabled(!FocusVisibility.shared.isVisible)
         .onKeyPress(keys: [.leftArrow, .rightArrow]) { press in
             move(by: press.key == .leftArrow ? -1 : 1)
             return .handled

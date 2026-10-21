@@ -9,6 +9,7 @@ final class AppModel {
     var needsAttention = false
     let sampler = Sampler()
     let chargeLimit = ChargeLimitController()
+    let updater = AppUpdater(startsUpdater: !MonnyAppDelegate.runningTests)
     @ObservationIgnored private var alerts = AlertMonitor()
     @ObservationIgnored private lazy var notifier = Notifier()
 

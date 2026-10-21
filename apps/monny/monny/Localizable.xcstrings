@@ -1279,7 +1279,7 @@
         }
       }
     },
-    "%lld threads" : {
+    "%lld processes" : {
       "localizations" : {
         "de" : {
           "variations" : {
@@ -1287,13 +1287,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Thread"
+                  "value" : "%lld Prozess"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Threads"
+                  "value" : "%lld Prozesse"
                 }
               }
             }
@@ -1305,13 +1305,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld thread"
+                  "value" : "%lld process"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld threads"
+                  "value" : "%lld processes"
                 }
               }
             }
@@ -1323,13 +1323,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld hilo"
+                  "value" : "%lld proceso"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld hilos"
+                  "value" : "%lld procesos"
                 }
               }
             }
@@ -1341,13 +1341,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld fil"
+                  "value" : "%lld processus"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld fils"
+                  "value" : "%lld processus"
                 }
               }
             }
@@ -1359,25 +1359,25 @@
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld потока"
+                  "value" : "%lld процесса"
                 }
               },
               "many" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld потоков"
+                  "value" : "%lld процессов"
                 }
               },
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld поток"
+                  "value" : "%lld процесс"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld потока"
+                  "value" : "%lld процесса"
                 }
               }
             }
@@ -1389,7 +1389,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld 个线程"
+                  "value" : "%lld 个进程"
                 }
               }
             }
@@ -10314,6 +10314,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "换入 %lld / 分钟"
+          }
+        }
+      }
+    },
+    "system" : {
+      "comment" : "A process that belongs to no app",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "system"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sistema"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "système"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "системный"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统"
           }
         }
       }

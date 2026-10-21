@@ -43,6 +43,19 @@ struct HistoryTests {
         #expect(values == [.download: 10, .upload: 2])
     }
 
+    /// Views see a tier change only when a bucket closes, not on every sample.
+    @MainActor @Test func publishesATierWhenABucketCloses() {
+        let history = History()
+        let snapshot = Snapshot(cpu: nil, memory: nil, disk: nil, network: NetworkRates(download: 10, upload: 2), battery: nil,
+                                sensors: nil, thermalState: .nominal, processes: [])
+        history.record(snapshot, at: start)
+        history.record(snapshot, at: start.addingTimeInterval(2))
+        #expect(history.minute.series(.download).count == 2)
+        #expect(history.hour.series(.download).isEmpty)
+        history.record(snapshot, at: start.addingTimeInterval(10))
+        #expect(history.hour.series(.download).count == 2)
+    }
+
     @Test func roundTripsThroughAPropertyList() throws {
         var tier = HistoryTier(span: 86_400, step: 60)
         tier.add([.battery: 0.8], at: start)

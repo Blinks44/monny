@@ -408,7 +408,9 @@ private struct PopupButtonStyle: ButtonStyle {
 
 /// One-of-many control drawn as in Sketch: `.tabs` is the popover's section switcher (a recessed
 /// capsule track with a raised selected pill), `.chips` the row of separate sort capsules with a
-/// dark selected one. VoiceOver and keyboard users get a standard segmented picker.
+/// dark selected one. VoiceOver gets a standard segmented picker. For the keyboard the control is
+/// one stop that the arrow keys move along, like a native segmented control; it takes focus even
+/// with Keyboard navigation off in System Settings, as text fields and lists do.
 struct SegmentedControl<Value: Hashable>: View {
     enum Style { case tabs, chips }
 
@@ -432,6 +434,12 @@ struct SegmentedControl<Value: Hashable>: View {
             if style == .tabs {
                 Capsule().fill(Theme.fillTrack.shadow(.inner(color: .black.opacity(0.08), radius: 1.5, y: 1)))
             }
+        }
+        .contentShape(.focusEffect, style == .tabs ? AnyShape(.capsule) : AnyShape(.rect(cornerRadius: 14)))
+        .focusable(interactions: .edit)
+        .onKeyPress(keys: [.leftArrow, .rightArrow]) { press in
+            move(by: press.key == .leftArrow ? -1 : 1)
+            return .handled
         }
         .accessibilityRepresentation {
             Picker(title, selection: $selection) {
@@ -457,6 +465,14 @@ struct SegmentedControl<Value: Hashable>: View {
                 .contentShape(.capsule)
         }
         .buttonStyle(.plain)
+        // The control is the keyboard stop, not each segment.
+        .focusable(false)
+    }
+
+    private func move(by offset: Int) {
+        guard let index = options.firstIndex(where: { $0.value == selection }) else { return }
+        let next = min(max(index + offset, 0), options.count - 1)
+        withAnimation(reduceMotion ? nil : .snappy(duration: 0.25)) { selection = options[next].value }
     }
 
     private func foreground(_ isSelected: Bool) -> Color {

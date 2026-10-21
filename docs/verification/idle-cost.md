@@ -28,3 +28,17 @@ Fix check (window on screen, 1m): 5.3 % after the series fix below.
 Causes found: every chart drew one `LineMark`/`AreaMark` per point and was rebuilt on every sample (the in-progress bucket changes each pass); and with no saved refresh rate the sampler ran every 1 s while Settings showed 2 s. Charts now use vectorized `LinePlot`/`AreaPlot` with a series key per point (without it Charts joins every line of a chart into one path, which the user caught on the first try), and the sampler defaults to 2 s.
 
 Open: the popover was not measured (it cannot be opened without the screen); the remaining dashboard cost is mostly SwiftUI view updates (process rows, cards) and needs a view-level audit. Agent-observed after the fix: Overview, CPU, Memory and Network charts draw separate series, and the hover line sits under the pointer.
+
+## 2026-10-21, build 29
+
+- Revision: main at fb2080e plus uncommitted APP-008 changes; signed Release build 29. Same Mac and OS as above; window on screen; refresh 2 s.
+- Method: agent-observed `top -l N -s 30|60 -stats cpu,idlew,power,mem` after the app settled; `sample` for main-thread profiles.
+
+| State | Build 28 | Build 29 |
+| --- | --- | --- |
+| Background, 60 s | 0.2 % | 0.0 % |
+| Dashboard Overview, 1h range, 30 s | 6.7 % | 2.8–2.9 % |
+
+Cause: every sample changed the in-progress bucket of all four history tiers, so every chart redrew (24 h and 7 d too), and the CPU chart animated each new point with a spring, which rendered many extra frames per tick (about half of the main thread's busy time). Tiers now notify views only when a bucket closes; the per-point animation is gone. Readers themselves are about 2 % of the busy time; the rest is SwiftUI layout and rendering.
+
+Open: popover cost (it needs a click; UI automation was unavailable).

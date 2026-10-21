@@ -9,7 +9,6 @@ struct CPUHistoryCard: View {
     let range: HistoryRange
     @State private var hovered: Date?
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var performance: [(date: Date, value: Double)] { tier.series(.cpuPerformance) }
     private var efficiency: [(date: Date, value: Double)] { tier.series(.cpuEfficiency) }
@@ -137,7 +136,6 @@ struct CPUHistoryCard: View {
                     }
             }
         }
-        .animation(reduceMotion ? nil : .default, value: load.count)
         .accessibilityLabel(Text("CPU load & temperature"))
         .accessibilityValue(summary)
     }

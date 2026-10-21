@@ -11,7 +11,7 @@ Updated 2026-10-21. [STATE](STATE.md) indexes current evidence; [SPEC](SPEC.md) 
 1. Native shell, readings and history are implemented; complete real sensor/chart acceptance.
 2. Reconcile all implemented popover/dashboard/settings surfaces with Sketch; finish feasible interactions, natural copy and loading/unavailable states.
 3. Native-only battery limit: supported 80–100% system setting, ordinary-user read/write/read-back, explicit user gestures, no recurring control loop or setter at startup/wake. macOS owns enforcement and persistence. Validate macOS 26.4+ and private-runtime limitations.
-4. Onboarding, accessibility/localization and performance/release review. Existing login item and manual update check remain.
+4. Onboarding, accessibility/localization and performance/release review. Existing login item remains; the manual update check moves to Sparkle (next feature 6).
 5. Signed release preparation, then website in apps/website.
 
 Sailing, manual heat-driven charge control, forced Discharge, calibration and trip automation remain deferred. The app does not show them; their Sketch frames remain for later.
@@ -20,20 +20,22 @@ Sailing, manual heat-driven charge control, forced Discharge, calibration and tr
 
 Chosen by the user on 2026-10-21 after a comparison with Vitals-style monitors. Items 1–3 and 5 plus native onboarding are designed ([DES-002](tasks/DES-002-native-onboarding-next-features.md)) and planned before the first release; item 4 is research after it. Each item still needs an implementation task record.
 
-1. **Processes grouped by app.** Helper processes roll up into their owning app (one row for Chrome with summed CPU, memory and energy), as Activity Monitor does. Research the public source first (coalition/responsible-process info via `proc_pidinfo`); read-only.
+1. **Processes grouped by app.** Helper processes roll up into their owning app (one row for Chrome with summed CPU, memory and energy), as Activity Monitor does. Implemented in the popover on 2026-10-21 ([APP-008](tasks/APP-008-grouped-processes-keyboard-idle-cost.md)); read-only.
 2. **Readings in the menu bar.** Optional CPU %, temperature and battery level next to the status item. Off by default; enabled per value in Settings → Menu bar. Must not raise idle cost beyond the shared sampler.
 3. **Sustained app load notification.** Alert when one app keeps high CPU or memory for several minutes; once per episode, toggle in Settings → Notifications. Builds on item 1.
 4. **Discharge to a lower level on adapter.** Research whether Monny can run the Mac from battery down to a user target (for example 20%) while plugged in, then let it charge again. The earlier helper/SMC experiment is preserved on **experiments/discharge** (abe3a80). Main currently forbids a helper and SMC writes ([AGENTS](../AGENTS.md#3-non-negotiable-boundaries), [SPEC §5](SPEC.md#5-battery-control)); first record the mechanism, safety (fail to charging) and distribution impact in [research](research/README.md), then let the user decide before any code on main.
 5. **Current power draw on the Battery page.** Show what the Mac consumes now in watts both on adapter and on battery, and the battery charge/discharge rate. Today the Battery card shows only `SystemPowerIn` while on adapter and the popover shows the adapter's rated watts. `AppleSmartBattery` already exposes `PowerTelemetryData.SystemLoad` (mW, total consumption) and `Voltage` × `Amperage` (battery flow); confirm the on-battery values against `powermetrics`/System Information on a real Mac before showing them. The popover keeps the adapter's rated watts for now.
 
+6. **Automatic updates with Sparkle.** Replace the GitHub Releases check with [Sparkle 2](https://sparkle-project.org) (user decision 2026-10-21) before the first public release, so 1.0 users can update in place. Check automatically at launch and periodically when enabled; use Sparkle's standard window for release notes, download, user-confirmed installation and relaunch. Settings › About keeps Check for Updates and adds the automatic-check toggle; the toggle is drawn in onboarding Ready ([DES-002](tasks/DES-002-native-onboarding-next-features.md)), but Settings › About still needs design. Release flow gains an EdDSA key (private key outside the repository), an appcast published with GitHub releases and update-archive signing in `release.sh`. First verify same-signer updates with the current Apple Development signature without notarization. [SPEC §7](SPEC.md#7-settings) and [AGENTS](../AGENTS.md#3-non-negotiable-boundaries) already reflect this decision; integration research remains open in [research](research/README.md#other-dependencies).
+
 Other comparison ideas (GPU load, battery health trend, widgets) are not planned for now.
 
 ## Release gates
 
-- [ ] Every current SPEC requirement implemented or explicitly limited (onboarding and next-feature items 1–3, 5 open).
+- [ ] Every current SPEC requirement implemented or explicitly limited (onboarding and next-feature items 2, 3, 5, 6 open).
 - [x] Direct native setting verified: user changed the limit in build 27 and saw it in System Settings (2026-10-21).
 - [x] Reading comparisons accepted by the user (2026-10-21, informal check).
-- [ ] Idle cost measured with popover, dashboard and background.
-- [ ] Keyboard, VoiceOver, Increase Contrast, Reduce Motion. Six languages reviewed by the user (2026-10-21).
+- [ ] Idle cost measured with popover, dashboard and background. Background 0.0 % and dashboard 2.9 % on build 29 ([verification](verification/idle-cost.md)); popover open.
+- [ ] Keyboard (arrow-key stops implemented in build 29, user check open), VoiceOver, Increase Contrast, Reduce Motion. Six languages reviewed by the user (2026-10-21).
 - [x] Works on macOS 26 (user report 2026-10-21; minor version not recorded) and macOS 27.0.1.
 - [ ] Clean-Mac DMG installation. Distribution route chosen: Apple Development signature without notarization until a Developer ID exists; first launch per [README](../README.md#install).

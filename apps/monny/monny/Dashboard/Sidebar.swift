@@ -1,8 +1,10 @@
 import SwiftUI
 
-/// Inset sidebar panel: the monitor pages, then Settings at the bottom.
+/// Inset sidebar panel: the monitor pages, then Settings at the bottom. Like a source list it is
+/// one keyboard stop, focused when the window opens, and the up and down arrows change the page.
 struct Sidebar: View {
     @Binding var selection: DashboardPage
+    @FocusState private var isFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -14,10 +16,10 @@ struct Sidebar: View {
                 .padding(.bottom, 4)
                 .accessibilityAddTraits(.isHeader)
             ForEach(DashboardPage.allCases.filter { $0 != .settings }, id: \.self) { page in
-                SidebarButton(page: page, isSelected: selection == page) { selection = page }
+                SidebarButton(page: page, isSelected: selection == page, isFocused: isFocused) { selection = page }
             }
             Spacer(minLength: Theme.spaceXL)
-            SidebarButton(page: .settings, isSelected: selection == .settings) { selection = .settings }
+            SidebarButton(page: .settings, isSelected: selection == .settings, isFocused: isFocused) { selection = .settings }
         }
         .padding(.horizontal, 8)
         .padding(.top, 52)
@@ -31,12 +33,24 @@ struct Sidebar: View {
                 .shadow(color: .black.opacity(0.08), radius: 7, y: 4)
         }
         .padding(8)
+        // The selected row shows focus, as in a source list, instead of a ring around the panel.
+        .focusable(interactions: .edit)
+        .focusEffectDisabled()
+        .focused($isFocused)
+        .defaultFocus($isFocused, true)
+        .onKeyPress(keys: [.upArrow, .downArrow]) { press in
+            let pages = DashboardPage.allCases
+            guard let index = pages.firstIndex(of: selection) else { return .ignored }
+            selection = pages[min(max(index + (press.key == .upArrow ? -1 : 1), 0), pages.count - 1)]
+            return .handled
+        }
     }
 }
 
 private struct SidebarButton: View {
     let page: DashboardPage
     let isSelected: Bool
+    let isFocused: Bool
     let action: () -> Void
     @State private var isHovered = false
 
@@ -56,6 +70,12 @@ private struct SidebarButton: View {
                     RoundedRectangle(cornerRadius: Theme.radiusControl, style: .continuous)
                         .fill(Theme.surfaceSidebarSelection)
                         .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
+                        .overlay {
+                            if isFocused {
+                                RoundedRectangle(cornerRadius: Theme.radiusControl, style: .continuous)
+                                    .strokeBorder(Color(nsColor: .keyboardFocusIndicatorColor), lineWidth: 2)
+                            }
+                        }
                 } else if isHovered {
                     RoundedRectangle(cornerRadius: Theme.radiusControl, style: .continuous).fill(Theme.stateHover)
                 }
@@ -63,6 +83,7 @@ private struct SidebarButton: View {
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
+        .focusable(false)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .onHover { isHovered = $0 }
     }

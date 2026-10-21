@@ -69,7 +69,7 @@ Users of historical helper builds remove that helper through the old app before 
 
 ## 6. Onboarding
 
-Three steps from Sketch page `03`: Welcome, Charge limit and Ready; no helper step or administrator approval. Charge limit explains the native limit and offers Not Now or Use 80% Limit (an explicit gesture that enables it); it is skipped on a Mac without a battery or where the native limit is unavailable. Explain menu bar monitoring, offline behavior, supported native system limit and the global shortcut. Launch at login is a monitoring convenience, not required for macOS to enforce a persistent limit. Macs without a battery omit charging references. Onboarding implementation remains a separate release gate; no Sketch edits are authorized in this slice.
+Three steps from Sketch page `03`: Welcome, Charge limit and Ready; no helper step or administrator approval. Charge limit explains the native limit and offers Not Now or Use 80% Limit (an explicit gesture that enables it); it is skipped on a Mac without a battery or where the native limit is unavailable. Explain menu bar monitoring, offline behavior, supported native system limit and the global shortcut. Launch at login is a monitoring convenience, not required for macOS to enforce a persistent limit. Ready also offers Check for updates automatically (on by default, user decision 2026-10-21); it is the same setting as in Settings › About and replaces Sparkle's own permission prompt. Macs without a battery omit charging references. Onboarding implementation remains a separate release gate; no Sketch edits are authorized in this slice.
 
 ## 7. Settings
 
@@ -77,13 +77,13 @@ Three steps from Sketch page `03`: Welcome, Charge limit and Ready; no helper st
 - **Menu bar:** global shortcut, show alert badge, show in menu bar (CPU load, Temperature, Battery level; all off by default).
 - **Battery:** the same supported native limit/enable setting as the Battery page. Advanced automation preferences are deferred.
 - **Notifications:** charge limit reached, Mac is running hot, an app keeps the Mac busy (one app above a sustained CPU threshold for several minutes; proposal 80% for 5 minutes), battery below 20 %, memory pressure is high (each toggle; battery ones only on a Mac with a battery). Each alert fires once per episode; charge limit reached fires once per plug-in, because macOS lets the level drift slightly below the limit. Calibration finished comes with calibration.
-- **About:** version and build, Check for Updates (compares with the latest GitHub release), privacy note (no analytics; network only for updates). Results: up to date; a newer version (Download… opens the GitHub release page in the browser; Monny does not install updates itself); check failed (Try Again).
+- **About:** version and build, Check for Updates, Check for updates automatically (toggle), privacy note (no analytics; network only for updates). Updates use Sparkle (user decision 2026-10-21): Sparkle's standard window shows release notes and Install Update / Skip This Version / Remind Me Later; Monny installs and relaunches only after the user confirms. Automatic checks run in the background (daily) only while the toggle is on; no silent installs and no system profile is sent. Updates are verified with an EdDSA signature. Up to date and check failed use Sparkle's standard alerts.
 
 ## 8. Cross-cutting requirements
 
 - Light and Dark appearance; Increase Contrast, Reduce Motion, VoiceOver and full keyboard navigation in popover and window.
 - Localized in English, Russian, German, French, Spanish and Simplified Chinese; numbers, units, temperatures and dates use the user's locale and chosen temperature unit.
-- Readings never leave the Mac. The update check is the only network request.
+- Readings never leave the Mac. Update checks (manual, or automatic when enabled) and update downloads are the only network requests.
 - Idle cost: the popover and dashboard must not keep the CPU busy; target and measurement method are defined in the sampling task.
 
 ## 9. Open product decisions

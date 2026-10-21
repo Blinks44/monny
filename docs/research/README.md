@@ -24,6 +24,7 @@ Researched 2026-10-18 on a MacBook Pro M1 Max (2 E + 8 P cores) running macOS 27
 | Thermal state | `ProcessInfo.thermalState` + `thermalStateDidChangeNotification` (public) | Nominal/Fair/Serious/Critical | — | |
 | Top processes | `proc_listallpids` + `proc_pid_rusage(RUSAGE_INFO_V6)` (public libproc) | CPU % = CPU-time delta ÷ wall time (100 % = one core, as in Activity Monitor); memory = `ri_phys_footprint` | Other users' processes are hidden for an unprivileged app, as in Activity Monitor without admin | |
 | Energy per process | `ri_energy_nj` delta from `rusage_info_v6` (public libproc) | Average watts over the interval; the kernel's estimate, not Activity Monitor's "Energy Impact" | Labelled as an estimate. `ri_billed_energy` gave implausible values (µW at a full core) | Rebind ≈ 3 W at 100 % of a core |
+| Processes grouped by app | Responsible process from `responsibility_get_pid_responsible_for_pid` (exported by libsystem, no public header; looked up with `dlsym`, missing symbol = each process is its own), then the outermost `.app` in its `proc_pidpath` (public). Coalition info (`PROC_PIDCOALITIONINFO`) is not in the SDK either | Owner looked up once per PID; helpers, XPC/WebKit content and tools an app launched sum into it, as in Activity Monitor; no `.app` = system process | Checked 2026-10-21 on M1 Max, macOS 27.0.1: Chrome helpers and crashpad → Chrome, Mail's WebKit processes → Mail, `SafariPlatformSupport.Helper` → the app using it. Bundle-path-only grouping missed WebKit and shared helpers | [APP-008](../tasks/APP-008-grouped-processes-keyboard-idle-cost.md) |
 | Network per process | None public (nettop uses private NetworkStatistics) | — | Not shown; SPEC updated | |
 | CPU user/system | Same ticks as CPU total | System = system ticks ÷ all; user = busy − system | — | Unit test |
 | Load average | `getloadavg` (public libc) | Runnable threads over 1/5/15 min | — | `sysctl vm.loadavg` |
@@ -64,7 +65,7 @@ In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 
 | Need | Candidates to evaluate | Decision |
 | --- | --- | --- |
 | Global shortcut | Native `NSEvent` global monitors (need Accessibility permission), Carbon `RegisterEventHotKey` by hand, sindresorhus/KeyboardShortcuts | KeyboardShortcuts 1.17.0 (MIT, active, Swift 6, Carbon hot keys without permissions, recorder UI localized in our languages); 2026-10-18 ([APP-003](../tasks/APP-003-settings-alerts.md)) |
-| Update check | GitHub Releases API vs Sparkle | `GET /repos/Blinks44/monny/releases/latest` with `URLSession`, on request only; Sparkle installs updates, which SPEC rules out. 404 (no release yet) reads as up to date; 2026-10-18 |
+| Update check | GitHub Releases API vs Sparkle | 2026-10-21: switch to [Sparkle](https://github.com/sparkle-project/Sparkle) 2 (MIT) for checks and installs (user decision; replaces the 2026-10-18 GitHub Releases API check, which only opened the release page). To research before code: current version and SPM integration with Swift 6/macOS 26, appcast hosting (GitHub Releases/Pages), EdDSA key storage and backup, DMG vs zip archive, `generate_appcast` in `release.sh`, updates of an Apple Development–signed, non-notarized app |
 | History storage | Ring buffers + file, SwiftData, SQLite | Ring buffers + binary plist (see above) |
 
 ## DMG packaging — 2026-10-19

@@ -30,7 +30,7 @@ The app implements the native charge limit only ([APP-007](tasks/APP-007-native-
 
 ## Readiness
 
-Native onboarding, grouped processes, menu bar readings, the sustained-load notification, native Settings and the Power card were drawn on 2026-10-21 ([DES-002](tasks/DES-002-native-onboarding-next-features.md)). Frames `08 · Settings` and `06 · Battery` keep the helper-era layout for later work; implement Settings from frame `17`.
+The onboarding Ready step gained the automatic updates toggle on 2026-10-21 (Sparkle). Native onboarding, grouped processes, menu bar readings, the sustained-load notification, native Settings and the Power card were drawn on 2026-10-21 ([DES-002](tasks/DES-002-native-onboarding-next-features.md)). Frames `08 · Settings` and `06 · Battery` keep the helper-era layout for later work; implement Settings from frame `17`.
 
 All listed frames are saved, including the two-mode and 80–100% charging updates above. Every state in SPEC has a frame, including empty, unavailable, no-battery, error, update and confirmation states ([DES-001](tasks/DES-001-missing-states.md)). Accessibility and the other five languages are checked in the app.
 

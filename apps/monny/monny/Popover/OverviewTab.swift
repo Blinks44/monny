@@ -53,6 +53,7 @@ private extension View {
     func opens(_ page: DashboardPage, with open: @escaping (DashboardPage) -> Void) -> some View {
         Button { open(page) } label: { self }
             .buttonStyle(.plain)
+            .contentShape(.focusEffect, .rect(cornerRadius: Theme.radiusCard, style: .continuous))
     }
 }
 

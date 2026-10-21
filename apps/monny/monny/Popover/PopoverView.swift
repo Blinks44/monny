@@ -5,6 +5,8 @@ import SwiftUI
 struct PopoverView: View {
     @Bindable var model: AppModel
     @AppStorage(PreferenceKey.refreshInterval) private var refreshInterval = 2
+    /// The tabs take focus when the popover opens, so the arrow keys switch them right away.
+    @FocusState private var tabsFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
@@ -12,6 +14,7 @@ struct PopoverView: View {
             SegmentedControl(title: "Section", selection: $model.popoverTab, options: [
                 (.overview, "Overview"), (.battery, "Battery"), (.processes, "Processes"),
             ])
+            .focused($tabsFocused)
             .padding(.horizontal, Theme.spaceXL)
             .padding(.bottom, Theme.spaceL)
 
@@ -33,6 +36,7 @@ struct PopoverView: View {
             footer
         }
         .frame(width: 360)
+        .defaultFocus($tabsFocused, true)
     }
 
     private var header: some View {

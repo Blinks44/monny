@@ -60,12 +60,16 @@ nonisolated struct HistoryTier: Codable, Equatable, Sendable {
         self.step = step
     }
 
-    mutating func add(_ values: [HistoryMetric: Double], at date: Date) {
+    /// Returns true when the sample closed the previous bucket.
+    @discardableResult
+    mutating func add(_ values: [HistoryMetric: Double], at date: Date) -> Bool {
         let start = Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / step).rounded(.down) * step)
+        var closed = false
         if let pending, pending.date != start {
             points.append(average(pending))
             self.pending = nil
             counts = [:]
+            closed = true
         }
         var bucket = pending ?? HistoryPoint(date: start, values: [:])
         for (metric, value) in values where value.isFinite {
@@ -79,6 +83,7 @@ nonisolated struct HistoryTier: Codable, Equatable, Sendable {
         } else {
             points.removeAll()
         }
+        return closed
     }
 
     /// Finished buckets plus the one being filled, oldest first.
@@ -99,14 +104,26 @@ nonisolated struct HistoryTier: Codable, Equatable, Sendable {
 
 /// History for the 1m, 1h, 24h and 7d ranges ([research](docs/research/README.md#history-storage-decision)).
 /// The 24h and 7d tiers survive a restart in a small file in Application Support.
+///
+/// Samples go into working copies; a tier views observe changes only when one of its buckets
+/// closes. Otherwise every sample would redraw the 24 h and 7 d charts for a point that moves a
+/// few pixels per minute, which was most of the dashboard's cost.
 @Observable
 final class History {
-    private(set) var minute = HistoryTier(span: 60, step: 1)
-    private(set) var hour = HistoryTier(span: 3_600, step: 10)
-    private(set) var day = HistoryTier(span: 86_400, step: 60)
-    private(set) var week = HistoryTier(span: 7 * 86_400, step: 600)
+    private(set) var minute: HistoryTier
+    private(set) var hour: HistoryTier
+    private(set) var day: HistoryTier
+    private(set) var week: HistoryTier
 
+    @ObservationIgnored private var working: [HistoryTier]
     @ObservationIgnored private var lastSave = Date.now
+
+    init() {
+        let tiers = [HistoryTier(span: 60, step: 1), HistoryTier(span: 3_600, step: 10),
+                     HistoryTier(span: 86_400, step: 60), HistoryTier(span: 7 * 86_400, step: 600)]
+        (minute, hour, day, week) = (tiers[0], tiers[1], tiers[2], tiers[3])
+        working = tiers
+    }
 
     func tier(_ range: HistoryRange) -> HistoryTier {
         switch range {
@@ -119,10 +136,11 @@ final class History {
 
     func record(_ snapshot: Snapshot, at date: Date = .now) {
         let values = HistoryMetric.values(of: snapshot)
-        minute.add(values, at: date)
-        hour.add(values, at: date)
-        day.add(values, at: date)
-        week.add(values, at: date)
+        let closed = working.indices.map { working[$0].add(values, at: date) }
+        if closed[0] { minute = working[0] }
+        if closed[1] { hour = working[1] }
+        if closed[2] { day = working[2] }
+        if closed[3] { week = working[3] }
         if date.timeIntervalSince(lastSave) >= 300 {
             lastSave = date
             save()
@@ -150,11 +168,13 @@ final class History {
         guard let saved, saved.day.step == day.step, saved.week.step == week.step else { return }
         day = saved.day
         week = saved.week
+        working[2] = saved.day
+        working[3] = saved.week
     }
 
     /// Writes in the background; `synchronously` is for quitting, when there is no later.
     func save(synchronously: Bool = false) {
-        let saved = Saved(day: day, week: week)
+        let saved = Saved(day: working[2], week: working[3])
         let url = Self.fileURL
         let write: @Sendable () -> Void = {
             do {

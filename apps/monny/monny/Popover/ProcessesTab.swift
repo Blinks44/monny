@@ -1,15 +1,16 @@
 import AppKit
 import SwiftUI
 
-/// Popover Processes: the top processes by CPU, memory or energy. Read-only. Per-process network
-/// has no public source, so there is no Network sort (SPEC §4).
+/// Popover Processes: the top apps by CPU, memory or energy, each with its helper processes summed
+/// in (Sketch `10 · Popover · Processes · Grouped by app`). Read-only. Per-process network has no
+/// public source, so there is no Network sort (SPEC §3).
 struct ProcessesTab: View {
     let sampler: Sampler
     private enum Sort: Hashable { case cpu, memory, energy }
     @State private var sort = Sort.cpu
 
     private var rows: [ProcessUsage] {
-        let processes = sampler.snapshot?.processes ?? []
+        let processes = ProcessUsage.groupedByApp(sampler.snapshot?.processes ?? [])
         let sorted: [ProcessUsage] = switch sort {
         case .cpu: processes.sorted { $0.cpu > $1.cpu }
         case .memory: processes.sorted { $0.memory > $1.memory }
@@ -77,11 +78,13 @@ struct ProcessesTab: View {
         }
     }
 
-    /// The second line: memory (or CPU when sorted by memory) and the thread count.
+    /// The second line: memory (or CPU when sorted by memory), then how many processes an app
+    /// sums or that a process belongs to no app.
     private func detail(of process: ProcessUsage) -> String {
         let first = sort == .memory ? process.cpu.formatted(.percent.precision(.fractionLength(1))) : process.memory.memoryText
-        guard let threads = process.threads else { return first }
-        return "\(first) · " + String(localized: "\(threads) threads")
+        if process.app == nil { return "\(first) · " + String(localized: "system", comment: "A process that belongs to no app") }
+        guard process.count > 1 else { return first }
+        return "\(first) · " + String(localized: "\(process.count) processes")
     }
 }
 

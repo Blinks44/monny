@@ -23,10 +23,13 @@ nonisolated struct BatteryReading: Sendable, Equatable {
     var batteryPower: Double?
 }
 
-/// Level, state and estimates from IOPowerSources; cycles and capacities from `AppleSmartBattery`.
+/// Level, state and estimates from IOPowerSources; cycles, capacities and power from `AppleSmartBattery`.
 /// Battery temperature is no longer readable here on macOS 27 (see research).
 nonisolated struct PowerReader {
-    func read() -> BatteryReading? {
+    /// When the Mac was last plugged in or unplugged; `distantPast` for the state found at launch.
+    private var sourceChange: (onAC: Bool, date: Date)?
+
+    mutating func read() -> BatteryReading? {
         guard let info = IOPSCopyPowerSourcesInfo()?.takeRetainedValue(),
               let sources = IOPSCopyPowerSourcesList(info)?.takeRetainedValue() as? [CFTypeRef] else { return nil }
         let battery = sources.lazy
@@ -42,6 +45,8 @@ nonisolated struct PowerReader {
         let registry = Self.smartBattery()
         let telemetry = registry?["PowerTelemetryData"] as? [String: Any]
         let batteryData = registry?["BatteryData"] as? [String: Any]
+        if sourceChange?.onAC != onAC { sourceChange = (onAC, sourceChange == nil ? .distantPast : .now) }
+        let hasFreshPower = Self.isPowerFresh(updated: registry?["UpdateTime"] as? Int, sourceChange: sourceChange?.date ?? .distantPast)
 
         return BatteryReading(
             level: Double(current) / Double(maximum),
@@ -53,8 +58,16 @@ nonisolated struct PowerReader {
             cycleCount: registry?["CycleCount"] as? Int,
             designCapacity: batteryData?["DesignCapacity"] as? Int,
             fullChargeCapacity: (registry?["NominalChargeCapacity"] ?? batteryData?["NominalChargeCapacity"]) as? Int,
-            systemLoad: (telemetry?["SystemLoad"] as? NSNumber).map { $0.doubleValue / 1000 },
-            batteryPower: Self.batteryPower(voltage: registry?["Voltage"], amperage: registry?["Amperage"]))
+            systemLoad: hasFreshPower ? (telemetry?["SystemLoad"] as? NSNumber).map { $0.doubleValue / 1000 } : nil,
+            batteryPower: hasFreshPower ? Self.batteryPower(voltage: registry?["Voltage"], amperage: registry?["Amperage"]) : nil)
+    }
+
+    /// The battery's gauge reports power once a minute (`UpdateTime`, seconds since 1970), so after
+    /// a plug-in or unplug it still shows the old state and then a partial minute. Power is shown
+    /// again from the first report a full minute after the change.
+    static func isPowerFresh(updated: Int?, sourceChange: Date) -> Bool {
+        guard let updated else { return true }
+        return Date(timeIntervalSince1970: TimeInterval(updated)) >= sourceChange.addingTimeInterval(60)
     }
 
     /// Millivolts × milliamps; the battery reports a negative current while it discharges.

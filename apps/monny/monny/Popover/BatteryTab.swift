@@ -44,13 +44,11 @@ struct BatteryHero: View {
                 if let battery {
                     HStack(spacing: 6) {
                         Image(systemName: battery.state == .onBattery ? "battery.75percent" : "bolt.fill")
-                        if battery.state != .onBattery, let watts = battery.adapterWatts {
-                            Text("Power Adapter · \(watts) W")
-                        } else { Text(battery.state == .onBattery ? "On battery" : "On adapter") }
+                        source(battery)
                     }
                     .font(Theme.label).foregroundStyle(Theme.textSecondary).lineLimit(1)
                     Spacer(minLength: 0)
-                    Chip(title: battery.state == .charging ? "Charging" : battery.state == .onBattery ? "On battery" : "Not charging",
+                    Chip(title: battery.state == .charging ? "Charging" : battery.state == .onBattery ? "Discharging" : "Not charging",
                          symbol: battery.state == .charging ? "bolt.fill" : battery.state == .onBattery ? nil : "pause.fill",
                          kind: battery.state == .onBattery ? .neutral : .success)
                 } else { Text("Collecting data…").font(Theme.label).foregroundStyle(Theme.textSecondary) }
@@ -67,10 +65,24 @@ struct BatteryHero: View {
         .card()
     }
 
+    /// Sketch `02`/`05`: the adapter's rating, or the time left on battery. Sketch's “On battery ·”
+    /// prefix is left out: the icon and the Discharging chip say it, and it does not fit in Russian.
+    private func source(_ battery: BatteryReading) -> Text {
+        switch battery.state {
+        case .onBattery:
+            battery.timeToEmpty.map { Text("\($0.estimateText) left") } ?? Text("On battery")
+        case .charging, .onAdapter:
+            battery.adapterWatts.map { Text("Power Adapter · \($0) W") } ?? Text("On adapter")
+        }
+    }
+
+    /// On battery the Mac's draw replaces the cycle count, as in Sketch `05`.
     private var facts: Text {
+        let onBattery = battery?.state == .onBattery
         let values: [Text] = [
+            onBattery ? battery?.systemLoad.map { Text("Draw \($0.wattsText)") } : nil,
             health.map { Text("Health \($0.maximumCapacity.percentText)") },
-            battery?.cycleCount.map { Text("\($0) cycles") },
+            onBattery ? nil : battery?.cycleCount.map { Text("\($0) cycles") },
             temperature.map { Text($0.temperatureText(temperatureUnit)) }
         ].compactMap { $0 }
         return values.enumerated().reduce(Text("")) { result, item in

@@ -13,7 +13,7 @@ Updated **2026-10-21**. Current work: [APP-007](tasks/APP-007-native-simplificat
 - Six-language String Catalog: EN/RU/DE/FR/ES/zh-Hans. Retired helper text removed; retained copy reviewed and terminology corrected. Light/Dark/localized renders are temporary local evidence.
 - Distribution remains signed DMG outside the App Store; existing Apple Development signer, Hardened Runtime, App Sandbox off for system monitoring. Signed does not mean notarized. Website work remains deferred.
 
-**Candidate:** `apps/monny/build/release/Monny-1.0-35.dmg` with `appcast.xml` (signed Apple Development, not notarized): 037d588 (grouped processes, keyboard, lower dashboard cost) plus native onboarding, menu bar readings, keyboard-only focus rings, the busy app alert, Sparkle and the power draw card, uncommitted; 39 tests/9 suites pass.
+**Candidate:** `apps/monny/build/release/Monny-1.0-36.dmg` with `appcast.xml` (signed Apple Development, not notarized): 1e56b15 (onboarding, menu bar readings, focus rings, busy app alert, Sparkle, power draw; build 35) plus the uncommitted on-battery power follow-up; 40 tests/9 suites pass.
 
 ## Work and open checks
 
@@ -28,7 +28,7 @@ Updated **2026-10-21**. Current work: [APP-007](tasks/APP-007-native-simplificat
 | [APP-010](tasks/APP-010-menu-bar-readings.md) | awaiting_verification | User checks readings in a dark menu bar, popover position and badge with readings on. |
 | [APP-011](tasks/APP-011-busy-app-alert.md) | awaiting_verification | User sees the banner for a busy app and checks the copy. |
 | [APP-012](tasks/APP-012-sparkle-updates.md) | awaiting_verification | End-to-end update between two published releases; off-device copy of the update key. |
-| [APP-013](tasks/APP-013-power-draw.md) | awaiting_verification | Compare on-battery values with the adapter unplugged. |
+| [APP-013](tasks/APP-013-power-draw.md) | awaiting_verification | On-battery values match the battery's output; user checks build 36 popover and card on battery. |
 | [DES-002](tasks/DES-002-native-onboarding-next-features.md) | done | All designed features are implemented; Settings › About update switch still undrawn. |
 | [REL-001](tasks/REL-001-signing-workflow.md) | awaiting_verification | Clean second-Mac signing/install, signing backup restore/off-device copy. |
 

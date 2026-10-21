@@ -23,7 +23,7 @@ actor ReadingSource {
     private var network = NetworkReader()
     private var processes = ProcessReader()
     private var memory = MemoryReader()
-    private let power = PowerReader()
+    private var power = PowerReader()
     private let sensors = SensorReader()
     private let signposter = OSSignposter(subsystem: "blinks44.monny", category: "Sampler")
 

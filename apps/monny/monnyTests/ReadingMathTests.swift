@@ -58,4 +58,13 @@ struct ReadingMathTests {
         #expect(PowerReader.batteryPower(voltage: 12_000, amperage: -1_500) == -18)
         #expect(PowerReader.batteryPower(voltage: nil, amperage: 100) == nil)
     }
+
+    @Test func powerWaitsForAFullGaugeMinuteAfterUnplugging() {
+        // Measured on the M1 Max: unplugged at :17, reports at :26 (partial) and a minute later.
+        let unplugged = Date(timeIntervalSince1970: 1_000_017)
+        #expect(!PowerReader.isPowerFresh(updated: 1_000_026, sourceChange: unplugged))
+        #expect(PowerReader.isPowerFresh(updated: 1_000_086, sourceChange: unplugged))
+        #expect(PowerReader.isPowerFresh(updated: 1_000_026, sourceChange: .distantPast))
+        #expect(PowerReader.isPowerFresh(updated: nil, sourceChange: unplugged))
+    }
 }

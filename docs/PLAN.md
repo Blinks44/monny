@@ -32,7 +32,7 @@ Other comparison ideas (GPU load, battery health trend, widgets) are not planned
 
 ## Release gates
 
-- [ ] Every current SPEC requirement implemented or explicitly limited (next-feature items 3, 5, 6 open; onboarding (build 30, [APP-009](tasks/APP-009-native-onboarding.md)) and menu bar readings (build 31, [APP-010](tasks/APP-010-menu-bar-readings.md)) await user checks).
+- [ ] Every current SPEC requirement implemented or explicitly limited. All pre-release features are implemented (builds 29–36); user checks remain for onboarding ([APP-009](tasks/APP-009-native-onboarding.md)), the busy app banner ([APP-011](tasks/APP-011-busy-app-alert.md)) and power on battery ([APP-013](tasks/APP-013-power-draw.md)); Sparkle's first end-to-end update needs two published releases ([APP-012](tasks/APP-012-sparkle-updates.md)).
 - [x] Direct native setting verified: user changed the limit in build 27 and saw it in System Settings (2026-10-21).
 - [x] Reading comparisons accepted by the user (2026-10-21, informal check).
 - [ ] Idle cost measured with popover, dashboard and background. Background 0.0 % and dashboard 2.9 % on build 29 ([verification](verification/idle-cost.md)); popover open.

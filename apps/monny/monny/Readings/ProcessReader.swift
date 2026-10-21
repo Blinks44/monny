@@ -71,7 +71,7 @@ nonisolated struct ProcessReader {
         let now = ContinuousClock.now
         let elapsed = lastTime.map { now - $0 }
         lastTime = now
-        let seconds = elapsed.map { Double($0.components.seconds) + Double($0.components.attoseconds) / 1e18 } ?? 0
+        let seconds = elapsed.map { $0 / .seconds(1) } ?? 0
 
         var current: [pid_t: (cpu: UInt64, energy: UInt64, read: UInt64, written: UInt64)] = [:]
         var currentOwners: [pid_t: AppOwner?] = [:]

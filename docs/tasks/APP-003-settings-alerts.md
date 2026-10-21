@@ -1,7 +1,7 @@
 # APP-003: Working Settings, alerts and app language
 
-- Updated: 2026-10-18
-- Stage: awaiting_verification (user check: a real notification)
+- Updated: 2026-10-21
+- Stage: done
 - Owner: unassigned
 - Owned surfaces: `App/Alerts.swift`, `App/UpdateChecker.swift`, `App/Preferences.swift` (shortcut name, `AppLanguage`), `Dashboard/SettingsPage.swift`, `AppModel.start()`, `Sampler.onSample`, Settings frames in Monny.sketch (General section)
 - Requirements: SPEC §2 (badge, global shortcut), §7 (General, Menu bar, Notifications, About); phase 3
@@ -35,6 +35,10 @@ Monny.sketch, page `02 · Window`, Settings frames 08/12/13/14 Light/Dark: Gener
 - Agent check of the running Debug build on the M1 Max (macOS 27.0.1): Settings in Russian and English fit; Check for Updates showed up to date (API returned 404); switching the stored language showed the Restart row, Restart relaunched Monny (new process, history saved) in the chosen language. Popup menus cannot be opened in background control, so the picker itself was exercised by writing the same default. Language reset to System afterwards.
 - Not checked by the agent: delivered notifications (the hot state cannot be forced safely). The user reported that the global shortcut works.
 
+## User acceptance — 2026-10-21
+
+User, build 37 on the M1 Max (macOS 27.0.1): enabled notifications arrive.
+
 ## Next handoff
 
-User: turn on a notification and see it arrive. Engineering: SSD health research and idle cost ([CORE-003](CORE-003-history.md)), then phase 4 battery control.
+None.

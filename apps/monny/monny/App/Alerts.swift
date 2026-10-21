@@ -108,7 +108,7 @@ extension AlertMonitor.Alert {
     func body(unit: TemperatureUnit) -> String {
         switch self {
         case .chargeLimitReached(let limit):
-            String(localized: "Charge limit reached") + " · " + (Double(limit) / 100).percentText
+            String(localized: "Battery is at \((Double(limit) / 100).percentText). macOS has stopped charging.")
         case .hot(let celsius?):
             String(localized: "CPU is at \(celsius.temperatureText(unit)).")
         case .hot(nil):

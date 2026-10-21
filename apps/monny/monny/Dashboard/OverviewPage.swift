@@ -267,17 +267,7 @@ private struct SensorTile: View {
     }
 }
 
-/// The first-launch chart state (Sketch frame `09 · Window · Overview · First launch`).
-struct CollectingHistoryCard: View {
-    var body: some View {
-        CollectingHistoryContent()
-            .padding(Theme.space3XL)
-            .frame(maxWidth: .infinity)
-            .frame(height: 284)
-            .card()
-    }
-}
-
+/// The empty chart state (Sketch frame `09 · Window · Overview · First launch`).
 struct CollectingHistoryContent: View {
     var body: some View {
         VStack(spacing: 6) {

@@ -6,8 +6,7 @@ nonisolated struct RateCounter {
     mutating func rates(for values: [UInt64], at time: ContinuousClock.Instant = .now) -> [Double]? {
         defer { previous = (values, time) }
         guard let previous, previous.values.count == values.count else { return nil }
-        let seconds = Double((time - previous.time).components.seconds)
-            + Double((time - previous.time).components.attoseconds) / 1e18
+        let seconds = (time - previous.time) / .seconds(1)
         guard seconds > 0 else { return nil }
         var rates: [Double] = []
         for (old, new) in zip(previous.values, values) {

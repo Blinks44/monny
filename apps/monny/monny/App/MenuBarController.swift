@@ -135,6 +135,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
             statusItem.length = NSStatusItem.squareLength
             button.imagePosition = .imageOnly
             button.attributedTitle = NSAttributedString()
+            button.setAccessibilityValue(nil)
             return
         }
         let font = NSFont.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .regular)

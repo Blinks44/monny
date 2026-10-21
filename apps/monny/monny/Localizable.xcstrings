@@ -1562,37 +1562,37 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 Min. · 5 Min. %@"
+            "value" : "1 Min. · 5 Min.: %@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 min · 5 min %@"
+            "value" : "1 min · 5 min: %@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 min · 5 min %@"
+            "value" : "1 min · 5 min: %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 min · 5 min %@"
+            "value" : "1 min · 5 min : %@"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 мин · 5 мин %@"
+            "value" : "1 мин · 5 мин: %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 分钟 · 5 分钟 %@"
+            "value" : "1 分钟 · 5 分钟：%@"
           }
         }
       }
@@ -1946,7 +1946,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Все данные берутся с вашего Mac. Без аккаунта и аналитики."
+            "value" : "Данные считываются прямо с вашего Mac. Без аккаунта и аналитики."
           }
         },
         "zh-Hans" : {
@@ -2026,7 +2026,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Приложение"
+            "value" : "Приложения"
           }
         },
         "zh-Hans" : {
@@ -2197,6 +2197,46 @@
         }
       }
     },
+    "Battery is at %@. macOS has stopped charging." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery is at %@. macOS has stopped charging."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заряд %@. macOS остановила зарядку."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batterie bei %@. macOS hat das Laden gestoppt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batterie à %@. macOS a arrêté la charge."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batería al %@. macOS ha detenido la carga."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "电量已达 %@，macOS 已停止充电。"
+          }
+        }
+      }
+    },
     "Battery level" : {
       "localizations" : {
         "de" : {
@@ -2306,7 +2346,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Кристалл ЦП"
+            "value" : "Процессор"
           }
         },
         "zh-Hans" : {
@@ -2346,7 +2386,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Кристалл ЦП · пик %@"
+            "value" : "Процессор · пик %@"
           }
         },
         "zh-Hans" : {
@@ -2546,7 +2586,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Кэш файлов"
+            "value" : "Кэшированные файлы"
           }
         },
         "zh-Hans" : {
@@ -2626,53 +2666,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Меняйте в любой момент"
+            "value" : "Можно изменить в любой момент"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "随时可以更改"
-          }
-        }
-      }
-    },
-    "Charge" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Charge"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cargar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Charger"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Зарядка"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "充电"
           }
         }
       }
@@ -2797,6 +2797,46 @@
         }
       }
     },
+    "Charge limit isn’t available on this Mac." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charge limit isn’t available on this Mac."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лимит заряда недоступен на этом Mac."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Ladelimit ist auf diesem Mac nicht verfügbar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La limite de charge n’est pas disponible sur ce Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El límite de carga no está disponible en este Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 Mac 无法使用充电上限。"
+          }
+        }
+      }
+    },
     "Charge limit reached" : {
       "localizations" : {
         "de" : {
@@ -2913,46 +2953,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "充电上限需要配备电池的 Mac。监控功能照常可用。"
-          }
-        }
-      }
-    },
-    "Charge limits require macOS 26.4 or later and supported hardware." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Das Ladelimit erfordert macOS 26.4 oder neuer und einen unterstützten Mac."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Charge limits require macOS 26.4 or later and supported hardware."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El límite de carga requiere macOS 26.4 o posterior y un Mac compatible."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La limite de charge nécessite macOS 26.4 ou ultérieur et un Mac compatible."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Для лимита заряда нужны macOS 26.4 или новее и совместимый Mac."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "充电上限需要 macOS 26.4 或更新版本及受支持的 Mac。"
           }
         }
       }
@@ -3562,7 +3562,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ladelimit nicht bestätigt. Prüfe die Batterieeinstellungen."
+            "value" : "Das Ladelimit konnte nicht bestätigt werden. Prüfe die Batterieeinstellungen."
           }
         },
         "en" : {
@@ -3626,7 +3626,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Критическое"
+            "value" : "Критично"
           }
         },
         "zh-Hans" : {
@@ -3957,46 +3957,6 @@
         }
       }
     },
-    "Discharge" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entladen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Discharge"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Descargar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Décharger"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Разряд"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "放电"
-          }
-        }
-      }
-    },
     "Discharging" : {
       "localizations" : {
         "de" : {
@@ -4146,7 +4106,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Загрузка"
+            "value" : "Приём"
           }
         },
         "zh-Hans" : {
@@ -4426,7 +4386,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Повышенный"
+            "value" : "Выше нормы"
           }
         },
         "zh-Hans" : {
@@ -5082,37 +5042,37 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wie effizient macOS den verfügbaren Speicher verwaltet"
+            "value" : "Wie stark macOS Speicher freigeben muss"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "How efficiently macOS is managing available memory"
+            "value" : "How hard macOS works to free up memory"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eficiencia de macOS al gestionar la memoria disponible"
+            "value" : "Cuánto se esfuerza macOS por liberar memoria"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Efficacité de la gestion de la mémoire disponible par macOS"
+            "value" : "L’effort de macOS pour libérer de la mémoire"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Насколько эффективно macOS использует доступную память"
+            "value" : "Насколько активно macOS освобождает память"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "macOS 管理可用内存的效率"
+            "value" : "macOS 释放内存的吃力程度"
           }
         }
       }
@@ -6226,7 +6186,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monny находится в строке меню. Нажмите на его значок или %@ в любом месте."
+            "value" : "Monny работает в строке меню. Нажмите на его значок или сочетание %@ в любом приложении."
           }
         },
         "zh-Hans" : {
@@ -6266,7 +6226,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monny находится в строке меню. Нажмите на его значок, чтобы открыть."
+            "value" : "Monny работает в строке меню. Чтобы открыть его, нажмите на значок."
           }
         },
         "zh-Hans" : {
@@ -6306,7 +6266,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monny использует встроенный в macOS лимит заряда, ту же настройку, что и в настройках аккумулятора."
+            "value" : "Monny использует лимит заряда, встроенный в macOS. Это та же настройка, что в разделе «Аккумулятор»."
           }
         },
         "zh-Hans" : {
@@ -6746,7 +6706,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не Wi-Fi"
+            "value" : "Без Wi-Fi"
           }
         },
         "zh-Hans" : {
@@ -7146,7 +7106,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оптимизированная зарядка тоже может откладывать заряд. Monny не меняет эту настройку."
+            "value" : "«Оптимизированная зарядка» тоже может откладывать зарядку. Monny эту настройку не меняет."
           }
         },
         "zh-Hans" : {
@@ -7186,7 +7146,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Больше %@ ЦП последние 5 минут. Закройте его, если оно не нужно."
+            "value" : "Нагружает ЦП больше чем на %@ уже 5 минут. Закройте его, если оно не нужно."
           }
         },
         "zh-Hans" : {
@@ -7466,7 +7426,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мощность"
+            "value" : "Потребление"
           }
         },
         "zh-Hans" : {
@@ -7506,7 +7466,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Питание от сети · %lld Вт"
+            "value" : "Адаптер питания · %lld Вт"
           }
         },
         "zh-Hans" : {
@@ -7786,7 +7746,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Чт %@  ·  Зп %@"
+            "value" : "Чтение %1$@  ·  Запись %2$@"
           }
         },
         "zh-Hans" : {
@@ -7957,46 +7917,6 @@
         }
       }
     },
-    "Rest" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ruhephase"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rest"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reposo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Repos"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пауза"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "静置"
-          }
-        }
-      }
-    },
     "Restart" : {
       "localizations" : {
         "de" : {
@@ -8066,7 +7986,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Роутер"
+            "value" : "Маршрутизатор"
           }
         },
         "zh-Hans" : {
@@ -8266,7 +8186,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Следите за работой Mac и берегите аккумулятор, пока Mac подключён к сети."
+            "value" : "Следите за работой Mac и берегите аккумулятор, когда компьютер подолгу подключён к сети."
           }
         },
         "zh-Hans" : {
@@ -9026,7 +8946,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Останавливайте зарядку на 80–100 % встроенным в macOS лимитом заряда."
+            "value" : "Встроенный в macOS лимит останавливает зарядку на 80–100 %."
           }
         },
         "zh-Hans" : {
@@ -9066,7 +8986,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Зарядка останавливается на вашем лимите"
+            "value" : "Зарядка останавливается на выбранном уровне"
           }
         },
         "zh-Hans" : {
@@ -9586,7 +9506,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пропускная способность"
+            "value" : "Трафик"
           }
         },
         "zh-Hans" : {
@@ -10106,7 +10026,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Отдача"
+            "value" : "Передача"
           }
         },
         "zh-Hans" : {
@@ -10602,7 +10522,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reserviert"
+            "value" : "Fest zugeteilt"
           }
         },
         "en" : {
@@ -11718,6 +11638,47 @@
         }
       }
     },
+    "signal.fair" : {
+      "comment" : "Wi-Fi signal quality between Good and Weak.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fair"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Средний"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mittel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moyen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regular"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一般"
+          }
+        }
+      }
+    },
     "swap-ins %lld / min" : {
       "localizations" : {
         "de" : {
@@ -11795,46 +11756,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系统"
-          }
-        }
-      }
-    },
-    "to %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "bis %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "to %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "hasta %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "jusqu’à %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "до %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "至 %@"
           }
         }
       }

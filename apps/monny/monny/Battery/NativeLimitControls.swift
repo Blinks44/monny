@@ -13,7 +13,7 @@ struct NativeLimitControls: View {
         if ChargeLimit.isSupportedOS {
             controls
         } else {
-            Banner(kind: .info, symbol: "info.circle", title: "Charge limit requires macOS 26.4",
+            Banner(symbol: "info.circle", title: "Charge limit requires macOS 26.4",
                    message: "Update macOS to use this feature. Battery monitoring remains available.")
         }
     }
@@ -25,7 +25,7 @@ struct NativeLimitControls: View {
                 Text("Use charge limit").font(Theme.bodyEmphasized)
                 Spacer()
                 Toggle("Use charge limit", isOn: Binding(get: { controller.setting?.isEnabled ?? false }, set: { enabled in
-                    Task { await controller.set(limit: selectedLimit, enabled: enabled) }
+                    apply(limit: selectedLimit, enabled: enabled)
                 }))
                 .labelsHidden().toggleStyle(SwitchStyle())
             }
@@ -40,7 +40,7 @@ struct NativeLimitControls: View {
                 Text("Charge limit")
             } onEditingChanged: { editing in
                 guard !editing else { return }
-                Task { await controller.set(limit: selectedLimit, enabled: true) }
+                apply(limit: selectedLimit, enabled: true)
             }
             .labelsHidden().tint(Theme.metricBattery)
             .disabled(isDisabled)
@@ -58,13 +58,21 @@ struct NativeLimitControls: View {
                 Text("Couldn’t confirm the charge limit. Check Battery Settings.")
                     .font(Theme.footnote).foregroundStyle(Theme.statusDangerText).fixedSize(horizontal: false, vertical: true)
             } else if controller.hasRead, controller.setting == nil {
-                Text("Charge limits require macOS 26.4 or later and supported hardware.")
+                Text("Charge limit isn’t available on this Mac.")
                     .font(Theme.footnote).foregroundStyle(Theme.textSecondary).fixedSize(horizontal: false, vertical: true)
             }
         }
         .foregroundStyle(Theme.textPrimary)
         .onAppear(perform: sync)
         .onChange(of: controller.setting) { sync() }
+    }
+
+    /// Syncs afterwards: a failed change can leave the setting as it was, which `onChange` misses.
+    private func apply(limit: Int, enabled: Bool) {
+        Task {
+            await controller.set(limit: limit, enabled: enabled)
+            sync()
+        }
     }
 
     /// Follows the system value, including changes made in System Settings.

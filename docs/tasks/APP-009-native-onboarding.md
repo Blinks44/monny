@@ -1,7 +1,7 @@
 # APP-009: Native onboarding
 
 - Updated: 2026-10-21
-- Stage: awaiting_verification
+- Stage: done
 - Owner: unassigned (released 2026-10-21)
 - Owned surfaces: `App/Onboarding.swift`, onboarding scene and launch policy in `monnyApp.swift`, onboarding strings in `Localizable.xcstrings`
 - Requirements: [SPEC](../SPEC.md#6-onboarding) §6; [PLAN](../PLAN.md) phase 4 onboarding gate
@@ -28,6 +28,10 @@ On first launch Monny opens a 600 × 540 window with Welcome, Charge limit and R
 - The updates switch drives Sparkle's own preference since build 34 ([APP-012](APP-012-sparkle-updates.md)).
 - Not tested on a Mac without a battery or on macOS below 26.4 (two-step flow).
 
+## User acceptance — 2026-10-21
+
+User, build 37: onboarding walkthrough and its copy accepted.
+
 ## Next handoff
 
-Engineering: none; waits for the user walkthrough.
+None.

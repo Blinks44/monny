@@ -44,9 +44,9 @@ private struct SpacedLabelStyle: LabelStyle {
     }
 }
 
-/// Small status capsule (`Chip/Success`, `Warning`, `Danger`, `Info`, `Neutral`, `Memory`).
+/// Small status capsule (`Chip/Success`, `Warning`, `Danger`, `Neutral`, `Memory`).
 struct Chip: View {
-    enum Kind { case success, warning, danger, info, neutral, memory }
+    enum Kind { case success, warning, danger, neutral, memory }
 
     let title: Text
     var symbol: String?
@@ -68,7 +68,6 @@ struct Chip: View {
         case .success: (Theme.statusSuccessText, Theme.statusSuccessBg)
         case .warning: (Theme.statusWarningText, Theme.statusWarningBg)
         case .danger: (Theme.statusDangerText, Theme.statusDangerBg)
-        case .info: (Theme.accentBrand, Theme.statusInfoBg)
         case .neutral: (Theme.textSecondary, Theme.fillTrack)
         case .memory: (Theme.metricMemory, Theme.metricMemory.opacity(0.14))
         }
@@ -87,30 +86,11 @@ struct Chip: View {
     }
 }
 
-/// Tinted banner with an icon tile, a title and one line of explanation (`Banner/*`).
+/// Tinted information banner with an icon tile, a title and one line of explanation (`Banner/Info`).
 struct Banner: View {
-    enum Kind { case warning, danger, info }
-
-    let kind: Kind
     let symbol: String
     let title: LocalizedStringKey
     let message: LocalizedStringKey
-
-    private var tint: Color {
-        switch kind {
-        case .warning: Theme.metricHeat
-        case .danger: Theme.statusDanger
-        case .info: Theme.accentBrand
-        }
-    }
-
-    private var fill: Color {
-        switch kind {
-        case .warning: Theme.statusWarningBg
-        case .danger: Theme.statusDangerBg
-        case .info: Theme.statusInfoBg
-        }
-    }
 
     var body: some View {
         HStack(spacing: 10) {
@@ -118,7 +98,7 @@ struct Banner: View {
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.white)
                 .frame(width: 32, height: 32)
-                .background(tint.gradient, in: .rect(cornerRadius: 9, style: .continuous))
+                .background(Theme.accentBrand.gradient, in: .rect(cornerRadius: 9, style: .continuous))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(Theme.bodyEmphasized).foregroundStyle(Theme.textPrimary)
@@ -127,9 +107,9 @@ struct Banner: View {
             Spacer(minLength: 0)
         }
         .padding(12)
-        .background(fill, in: .rect(cornerRadius: Theme.radiusTile, style: .continuous))
+        .background(Theme.statusInfoBg, in: .rect(cornerRadius: Theme.radiusTile, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: Theme.radiusTile, style: .continuous).strokeBorder(tint.opacity(0.25))
+            RoundedRectangle(cornerRadius: Theme.radiusTile, style: .continuous).strokeBorder(Theme.accentBrand.opacity(0.25))
         }
         .accessibilityElement(children: .combine)
     }
@@ -215,18 +195,16 @@ struct UnavailableValue: View {
 
 // MARK: - Buttons
 
-/// Accent capsule for the one primary action (`Button/Primary`, `Button/Large Primary` with `.large`).
+/// Accent capsule for the one primary action (`Button/Primary`).
 struct PrimaryButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.controlSize) private var controlSize
 
     func makeBody(configuration: Configuration) -> some View {
-        let isLarge = controlSize == .large
         configuration.label
-            .font(isLarge ? Theme.headline : Theme.bodyEmphasized)
+            .font(Theme.bodyEmphasized)
             .foregroundStyle(Theme.textOnAccent)
-            .padding(.horizontal, isLarge ? 20 : 14)
-            .frame(height: isLarge ? 40 : 32)
+            .padding(.horizontal, 14)
+            .frame(height: 32)
             .background(Theme.accentBrand.gradient, in: .capsule)
             .opacity(isEnabled ? (configuration.isPressed ? 0.85 : 1) : 0.4)
             .contentShape(.capsule)
@@ -250,18 +228,17 @@ struct SecondaryButtonStyle: ButtonStyle {
     }
 }
 
-/// Soft accent capsule (`Button/Tinted`) and soft red capsule (`Button/Destructive`).
+/// Soft accent capsule (`Button/Tinted`).
 struct TintedButtonStyle: ButtonStyle {
-    var isDestructive = false
     @Environment(\.isEnabled) private var isEnabled
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(Theme.bodyEmphasized)
-            .foregroundStyle(isDestructive ? Theme.statusDangerText : Theme.accentBrand)
+            .foregroundStyle(Theme.accentBrand)
             .padding(.horizontal, 14)
             .frame(height: 32)
-            .background(isDestructive ? Theme.statusDangerBg : Theme.statusInfoBg, in: .capsule)
+            .background(Theme.statusInfoBg, in: .capsule)
             .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.45)
             .contentShape(.capsule)
     }

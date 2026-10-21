@@ -63,7 +63,8 @@ struct SignalQuality {
     let rssi: Int
 
     var text: Text {
-        if rssi >= -55 { Text("Excellent") } else if rssi >= -67 { Text("Good") } else if rssi >= -75 { Text("Fair") } else { Text("Weak") }
+        // "signal.fair": the thermal state's "Fair" is a different word in other languages.
+        if rssi >= -55 { Text("Excellent") } else if rssi >= -67 { Text("Good") } else if rssi >= -75 { Text("signal.fair") } else { Text("Weak") }
     }
 
     var color: Color {

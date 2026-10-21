@@ -32,10 +32,10 @@ Other comparison ideas (GPU load, battery health trend, widgets) are not planned
 
 ## Release gates
 
-- [ ] Every current SPEC requirement implemented or explicitly limited. All pre-release features are implemented (builds 29–36); user checks remain for onboarding ([APP-009](tasks/APP-009-native-onboarding.md)), the busy app banner ([APP-011](tasks/APP-011-busy-app-alert.md)) and power on battery ([APP-013](tasks/APP-013-power-draw.md)); Sparkle's first end-to-end update needs two published releases ([APP-012](tasks/APP-012-sparkle-updates.md)).
+- [x] Every current SPEC requirement implemented or explicitly limited. Pre-release features accepted by the user on build 37 (2026-10-21); Sparkle's first end-to-end update needs two published releases ([APP-012](tasks/APP-012-sparkle-updates.md)), so it is checked after 1.0.
 - [x] Direct native setting verified: user changed the limit in build 27 and saw it in System Settings (2026-10-21).
 - [x] Reading comparisons accepted by the user (2026-10-21, informal check).
-- [ ] Idle cost measured with popover, dashboard and background. Background 0.0 % and dashboard 2.9 % on build 29 ([verification](verification/idle-cost.md)); popover open.
-- [ ] Keyboard (arrow-key stops implemented in build 29, user check open), VoiceOver, Increase Contrast, Reduce Motion. Six languages reviewed by the user (2026-10-21).
+- [x] Idle cost measured: background 0.0 %, dashboard 2.9 % (build 29), popover about 2 % (build 37, user) ([verification](verification/idle-cost.md)).
+- [x] Keyboard, VoiceOver, Increase Contrast, Reduce Motion (user, build 37) and six languages (user, 2026-10-21).
 - [x] Works on macOS 26 (user report 2026-10-21; minor version not recorded) and macOS 27.0.1.
 - [ ] Clean-Mac DMG installation. Distribution route chosen: Apple Development signature without notarization until a Developer ID exists; first launch per [README](../README.md#install).

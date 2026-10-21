@@ -1,7 +1,7 @@
 # APP-011: Sustained app load notification
 
 - Updated: 2026-10-21
-- Stage: awaiting_verification
+- Stage: done
 - Owner: unassigned (released 2026-10-21)
 - Owned surfaces: busy app rule in `App/Alerts.swift`, background process gate in `Readings/Sampler.swift`, Notifications row in `Dashboard/SettingsPage.swift`
 - Requirements: [SPEC](../SPEC.md#7-settings) §7 Notifications; [PLAN](../PLAN.md#next-features) item 3; copy from Sketch `05 · System · Menu bar & notifications` and `17 · Window · Settings · Native`
@@ -24,6 +24,10 @@ Thresholds chosen by the agent under the user's go-ahead (2026-10-21), as propos
 - User: the banner actually appears (delivery was not observed by the agent; part of the notification delivery release gate) and the copy reads well in other languages.
 - On a developer Mac the alert can fire for long builds; that is expected and why it is off by default.
 
+## User acceptance — 2026-10-21
+
+User, build 37: the busy app banner arrives and its copy is accepted.
+
 ## Next handoff
 
-Engineering: current power draw on the Battery page ([PLAN](../PLAN.md#next-features) item 5).
+None.

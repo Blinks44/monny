@@ -13,22 +13,16 @@ Updated **2026-10-21**. Current work: [APP-007](tasks/APP-007-native-simplificat
 - Six-language String Catalog: EN/RU/DE/FR/ES/zh-Hans. Retired helper text removed; retained copy reviewed and terminology corrected. Light/Dark/localized renders are temporary local evidence.
 - Distribution remains signed DMG outside the App Store; existing Apple Development signer, Hardened Runtime, App Sandbox off for system monitoring. Signed does not mean notarized. Website work remains deferred.
 
-**Candidate:** `apps/monny/build/release/Monny-1.0-36.dmg` with `appcast.xml` (signed Apple Development, not notarized): 1e56b15 (onboarding, menu bar readings, focus rings, busy app alert, Sparkle, power draw; build 35) plus the uncommitted on-battery power follow-up; 40 tests/9 suites pass.
+**Candidate:** `apps/monny/build/release/Monny-1.0-37.dmg` with `appcast.xml` (signed Apple Development, not notarized): main 7fe24b0 plus the uncommitted pre-release review (bug fixes, dead code, copy); 41 tests/9 suites pass.
 
 ## Work and open checks
 
 | Task | Stage | Next step |
 | --- | --- | --- |
-| [APP-007](tasks/APP-007-native-simplification-design-parity.md) | awaiting_verification | Installed build 27 accepted by the user, including a limit change seen in System Settings. Remaining: release gates below. |
+| [APP-007](tasks/APP-007-native-simplification-design-parity.md) | awaiting_verification | Pre-release review in build 37, accepted by the user with its copy. Open: charge limit on macOS 26.4–26.x. |
 | [CORE-002](tasks/CORE-002-temperatures-fans.md) | awaiting_verification | Compare temperature/fan readings with a reference on real hardware. |
 | [CORE-003](tasks/CORE-003-history.md) | awaiting_verification | User rechecks chart/hover behavior with accumulated history. |
-| [APP-003](tasks/APP-003-settings-alerts.md) | awaiting_verification | Actual notification delivery and settings acceptance. |
-| [APP-008](tasks/APP-008-grouped-processes-keyboard-idle-cost.md) | awaiting_verification | User checks that rings appear only after keyboard use (build 32) and Tab order with Keyboard navigation on; popover cost still unmeasured. |
-| [APP-009](tasks/APP-009-native-onboarding.md) | awaiting_verification | User confirms the build 31 window layout fix; other languages' wrapping. |
-| [APP-010](tasks/APP-010-menu-bar-readings.md) | awaiting_verification | User checks readings in a dark menu bar, popover position and badge with readings on. |
-| [APP-011](tasks/APP-011-busy-app-alert.md) | awaiting_verification | User sees the banner for a busy app and checks the copy. |
 | [APP-012](tasks/APP-012-sparkle-updates.md) | awaiting_verification | End-to-end update between two published releases; off-device copy of the update key. |
-| [APP-013](tasks/APP-013-power-draw.md) | awaiting_verification | On-battery values match the battery's output; user checks build 36 popover and card on battery. |
 | [DES-002](tasks/DES-002-native-onboarding-next-features.md) | done | All designed features are implemented; Settings › About update switch still undrawn. |
 | [REL-001](tasks/REL-001-signing-workflow.md) | awaiting_verification | Clean second-Mac signing/install, signing backup restore/off-device copy. |
 
@@ -36,6 +30,6 @@ Helper/Discharge task and verification records (BAT-*, APP-005/006) live on expe
 
 ## Remaining release gates
 
-User-accepted on 2026-10-21: installed build 27, charge-limit change visible in System Settings, macOS 26, six languages, reading comparisons. Open: onboarding user walkthrough (SPEC §6), VoiceOver/contrast/motion and the keyboard check, popover idle cost, real notification delivery, clean-Mac installation. Notarization waits for a paid Developer ID. [PLAN](PLAN.md) owns release sequencing; [SPEC](SPEC.md) owns behavior.
+User-accepted on 2026-10-21: installed build 27, charge-limit change visible in System Settings, macOS 26, six languages, reading comparisons; on build 37 the copy, onboarding, menu bar readings, busy app banner, power on battery, keyboard/VoiceOver/contrast/motion, popover cost (about 2 %) and real notification delivery ([APP-003](tasks/APP-003-settings-alerts.md), [APP-008](tasks/APP-008-grouped-processes-keyboard-idle-cost.md)–[APP-013](tasks/APP-013-power-draw.md)). Open: clean-Mac installation and signing/update key backups ([REL-001](tasks/REL-001-signing-workflow.md)), the first end-to-end Sparkle update ([APP-012](tasks/APP-012-sparkle-updates.md)). Notarization waits for a paid Developer ID. [PLAN](PLAN.md) owns release sequencing; [SPEC](SPEC.md) owns behavior.
 
 Before release (user decision 2026-10-21): native onboarding (build 30), processes grouped by app (build 29), optional menu bar readings (build 31), sustained app load alert (build 33), Sparkle updates (build 34) and current power draw (build 35), all designed in [DES-002](tasks/DES-002-native-onboarding-next-features.md). Discharge research follows the release ([PLAN](PLAN.md#next-features)).

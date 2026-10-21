@@ -54,3 +54,7 @@ Open: popover cost (it needs a click; UI automation was unavailable).
 - Revision: as build 31 plus APP-011; Debug build; same Mac and OS; no window or popover open; “An app keeps the Mac busy” on; menu bar readings off.
 - Method: agent-observed `top -l 30 -s 10 -stats cpu`. Total CPU on this Mac stayed above one core, so processes were read on every 10 s background pass.
 - Result: 0.2–0.5 % (0.0–0.2 % with the alert off).
+
+## 2026-10-21, build 37: popover
+
+- User-reported on the M1 Max, macOS 27.0.1, signed Release build 37: about 2 % CPU with the popover open.

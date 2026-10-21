@@ -1,7 +1,7 @@
 # APP-013: Current power draw on the Battery page
 
 - Updated: 2026-10-21
-- Stage: awaiting_verification
+- Stage: done
 - Owner: unassigned (released 2026-10-21)
 - Owned surfaces: `BatteryReading.systemLoad`/`batteryPower` in `Readings/PowerReader.swift`, Power card in `Dashboard/BatteryPage.swift`, System load row in `Dashboard/OverviewPage.swift`, `KPICard.footnote`
 - Requirements: [PLAN](../PLAN.md#next-features) item 5; Sketch `18 · Battery · Power card` (page `02 · Window`)
@@ -27,6 +27,10 @@ Copy differs from Sketch: the “Mac uses ·” prefix was dropped, “About …
 - Charging with a battery below the limit: “+N W to battery”.
 - At the minimum window width the Russian “+32 Вт в аккумулятор” is a few points too wide and truncates.
 
+## User acceptance — 2026-10-21
+
+User, build 37: popover and Battery card on battery accepted.
+
 ## Next handoff
 
-Release gates in [PLAN](../PLAN.md#release-gates).
+None.

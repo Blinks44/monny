@@ -376,7 +376,9 @@ private struct ThermalStrip: View {
 struct ThermalStateText: View {
     let state: ProcessInfo.ThermalState
 
-    var body: some View {
+    var body: some View { Self.text(for: state) }
+
+    static func text(for state: ProcessInfo.ThermalState) -> Text {
         switch state {
         case .fair: Text("Fair")
         case .serious: Text("Serious")

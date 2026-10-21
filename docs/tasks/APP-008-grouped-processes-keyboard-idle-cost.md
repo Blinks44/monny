@@ -1,7 +1,7 @@
 # APP-008: Processes grouped by app, keyboard navigation and idle cost
 
 - Updated: 2026-10-21
-- Stage: awaiting_verification
+- Stage: done
 - Owner: unassigned (released 2026-10-21)
 - Owned surfaces: `Readings/ProcessReader.swift`, `Popover/ProcessesTab.swift`, `Readings/History.swift`, `Dashboard/Sidebar.swift`, `DesignSystem/Components.swift` (SegmentedControl), `Popover/PopoverView.swift`, `Dashboard/CPUHistoryCard.swift`
 - Requirements: [SPEC](../SPEC.md) §3 Processes, §8 keyboard navigation and idle cost; [PLAN](../PLAN.md#next-features) item 1 and release gates
@@ -24,9 +24,13 @@
 ## Open checks / dependency
 
 - User: build 32 shows rings only after keyboard use in the popover and dashboard; focus rings look right (tabs, chips, time range, selected sidebar row outline) in Light and Dark; with Keyboard navigation on, Tab reaches header buttons, Overview cards, Settings controls and footer links in a sensible order.
-- Popover cost not measured: opening it needs a click, and UI automation was unavailable. Run `top` with the popover open for a minute.
-- VoiceOver, Increase Contrast and Reduce Motion remain open release gates.
+- Popover cost: about 2 % with the popover open (user, build 37, [verification](../verification/idle-cost.md)).
+- VoiceOver, Increase Contrast and Reduce Motion accepted by the user on build 37.
+
+## User acceptance — 2026-10-21
+
+User, build 37: focus rings appear only with the keyboard; keyboard navigation, VoiceOver, Increase Contrast and Reduce Motion pass; open popover costs about 2 % CPU.
 
 ## Next handoff
 
-Engineering: next PLAN items are native onboarding, then menu bar readings and the sustained app load notification (builds on grouping).
+None.

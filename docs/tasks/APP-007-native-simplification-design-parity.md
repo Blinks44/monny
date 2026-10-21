@@ -34,10 +34,19 @@ Checks: `dev.sh test` passes, 33 tests in 8 suites (new: reply validation, no re
 
 Sketch MCP note: the server can run while its tools are missing from an agent session (they load at session start). It still answers plain HTTP JSON-RPC at the address shown by `claude mcp list`.
 
+## Pre-release review — 2026-10-21
+
+Reviewed all app code (about 7,200 lines) and the six-language String Catalog on main 7fe24b0.
+
+- Bugs fixed: `NativeLimitControls` re-syncs after every change, so a failed change no longer leaves the slider on an unconfirmed target when the setting did not change; an unavailable limit on macOS 26.4+ says "Charge limit isn’t available on this Mac" instead of "requires macOS 26.4"; the status item clears its accessibility value when readings are turned off; the charge-limit notification body states the level instead of repeating the title; Wi-Fi signal "Fair" has its own key (`signal.fair`), because the thermal state's "Fair" is a different word in other languages; the memory pressure subtitle no longer says "how efficiently macOS manages memory" (the opposite meaning) in any language.
+- Simplified: removed unused `CollectingHistoryCard`, the unused Banner warning/danger kinds, Chip info kind, large primary button and destructive tinted button; one `ThermalStateText.text(for:)`; `Duration / .seconds(1)` instead of manual component math; four stale strings.
+- Copy: Russian strings rewritten where they read as literal translations (download/upload, throughput, router, cached files, onboarding, busy-app body, thermal "Fair"/"Critical"), German "Wired" and the confirmation error; load average detail reads "1 min · 5 min: …".
+- Checks: `dev.sh test` 41 tests in 9 suites pass (new: charge-limit notification body); no compiler warnings in app sources; every catalog key has all six languages. `release.sh`: `Monny-1.0-37.dmg`, SHA-256 `440566f3771683a7c9b86750e9053b3c266478c3e2b31c8d362d013019cba652`; app/DMG signatures and hdiutil verify pass. Not checked: rendered wrapping of the changed strings in all languages.
+
 ## User acceptance — 2026-10-21
 
 User installed build 27: the app works, and changing the limit in Monny changes it in System Settings › Battery. Scope: user's MacBook (M1 Max, macOS 27.0.1).
 
 ## Next
 
-Charge-limit change from the installed app is accepted. Open: macOS 26.4 execution, VoiceOver/keyboard pass, real notification delivery.
+Charge-limit change from the installed app is accepted. Build 37 with its copy, accessibility and notifications accepted by the user (2026-10-21). Open: charge limit on macOS 26.4–26.x.

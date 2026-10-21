@@ -1,7 +1,7 @@
 # APP-010: Readings in the menu bar
 
 - Updated: 2026-10-21
-- Stage: awaiting_verification
+- Stage: done
 - Owner: unassigned (released 2026-10-21)
 - Owned surfaces: `App/MenuBarController.swift` (readings, badge anchor), `Readings/Sampler.swift` (`updatesMenuBar`), Settings › Menu bar row, `PreferenceKey.menuBar*`, `shortTemperatureText`
 - Requirements: [SPEC](../SPEC.md#2-menu-bar-presence) §2, §7 Menu bar; [PLAN](../PLAN.md#next-features) item 2
@@ -24,6 +24,10 @@ While any reading is on, the shared sampler keeps the user's refresh rate in the
 - User: dark menu bar and wallpaper tinting, popover position under the wider item, the attention badge position with readings on, German/French Settings row width, crowded menu bar behavior.
 - The 1.6 % background cost is acceptable for now but unprofiled; profile the pass if it matters for the release gate.
 
+## User acceptance — 2026-10-21
+
+User, build 37: readings in the menu bar, popover position and badge accepted.
+
 ## Next handoff
 
-Engineering: sustained app load notification (PLAN item 3).
+None.

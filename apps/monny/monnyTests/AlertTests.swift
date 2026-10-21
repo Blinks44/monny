@@ -85,4 +85,11 @@ struct AlertTests {
         #expect(monitor.update(with: snapshot(pressure: .normal)).isEmpty)
         #expect(monitor.update(with: snapshot(pressure: .critical)) == [.memoryPressure])
     }
+
+    @Test @MainActor func chargeLimitBodyAddsTheLevelInsteadOfRepeatingTheTitle() {
+        let alert = AlertMonitor.Alert.chargeLimitReached(80)
+        let body = alert.body(unit: .celsius)
+        #expect(body.contains(0.8.percentText))
+        #expect(!body.contains(alert.title))
+    }
 }

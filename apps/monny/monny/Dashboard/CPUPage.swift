@@ -132,14 +132,3 @@ private struct CPUDetailsCard: View {
         }
     }
 }
-
-extension ThermalStateText {
-    static func text(for state: ProcessInfo.ThermalState) -> Text {
-        switch state {
-        case .fair: Text("Fair")
-        case .serious: Text("Serious")
-        case .critical: Text("Critical")
-        default: Text("Nominal")
-        }
-    }
-}

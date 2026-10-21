@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		B2000000000000000000000E /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = B2000000000000000000000D /* KeyboardShortcuts */; };
-		C30000000000000000000001 /* MonnyBatteryHelper in Embed Helper */ = {isa = PBXBuildFile; fileRef = C30000000000000000000002 /* MonnyBatteryHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		C30000000000000000000003 /* HelperResources/blinks44.monny.battery-helper.plist in Embed LaunchDaemon */ = {isa = PBXBuildFile; fileRef = C30000000000000000000004 /* HelperResources/blinks44.monny.battery-helper.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -20,41 +18,14 @@
 			remoteGlobalIDString = 757258C83083E9E600FAC82A;
 			remoteInfo = monny;
 		};
-		C30000000000000000000005 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 757258C13083E9E600FAC82A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C30000000000000000000006;
-			remoteInfo = MonnyBatteryHelper;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		C3000000000000000000000C /* Embed Helper */ = {
-			isa = PBXCopyFilesBuildPhase;
-			dstPath = Contents/Library/HelperTools;
-			dstSubfolder = Wrapper;
-			files = (
-				C30000000000000000000001 /* MonnyBatteryHelper in Embed Helper */,
-			);
-			name = "Embed Helper";
-		};
-		C3000000000000000000000D /* Embed LaunchDaemon */ = {
-			isa = PBXCopyFilesBuildPhase;
-			dstPath = Contents/Library/LaunchDaemons;
-			dstSubfolder = Wrapper;
-			files = (
-				C30000000000000000000003 /* HelperResources/blinks44.monny.battery-helper.plist in Embed LaunchDaemon */,
-			);
-			name = "Embed LaunchDaemon";
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		757258C93083E9E600FAC82A /* Monny.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Monny.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B20000000000000000000002 /* monnyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = monnyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C30000000000000000000002 /* MonnyBatteryHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MonnyBatteryHelper; sourceTree = BUILT_PRODUCTS_DIR; };
-		C30000000000000000000004 /* HelperResources/blinks44.monny.battery-helper.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HelperResources/blinks44.monny.battery-helper.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -66,16 +37,6 @@
 		B20000000000000000000003 /* monnyTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = monnyTests;
-			sourceTree = "<group>";
-		};
-		C30000000000000000000007 /* BatteryHelper */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BatteryHelper;
-			sourceTree = "<group>";
-		};
-		C30000000000000000000008 /* BatteryHelperShared */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BatteryHelperShared;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -92,20 +53,12 @@
 			files = (
 			);
 		};
-		C30000000000000000000009 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			files = (
-			);
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		757258C03083E9E600FAC82A = {
 			isa = PBXGroup;
 			children = (
-				C30000000000000000000007 /* BatteryHelper */,
-				C30000000000000000000008 /* BatteryHelperShared */,
-				C30000000000000000000004 /* HelperResources/blinks44.monny.battery-helper.plist */,
 				757258CB3083E9E600FAC82A /* monny */,
 				B20000000000000000000003 /* monnyTests */,
 				757258CA3083E9E600FAC82A /* Products */,
@@ -115,7 +68,6 @@
 		757258CA3083E9E600FAC82A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C30000000000000000000002 /* MonnyBatteryHelper */,
 				757258C93083E9E600FAC82A /* Monny.app */,
 				B20000000000000000000002 /* monnyTests.xctest */,
 			);
@@ -132,17 +84,13 @@
 				757258C53083E9E600FAC82A /* Sources */,
 				757258C63083E9E600FAC82A /* Frameworks */,
 				757258C73083E9E600FAC82A /* Resources */,
-				C3000000000000000000000C /* Embed Helper */,
-				C3000000000000000000000D /* Embed LaunchDaemon */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				C3000000000000000000000E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				757258CB3083E9E600FAC82A /* monny */,
-				C30000000000000000000008 /* BatteryHelperShared */,
 			);
 			name = monny;
 			packageProductDependencies = (
@@ -172,24 +120,6 @@
 			productName = monnyTests;
 			productReference = B20000000000000000000002 /* monnyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		C30000000000000000000006 /* MonnyBatteryHelper */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C3000000000000000000000A /* Build configuration list for PBXNativeTarget "MonnyBatteryHelper" */;
-			buildPhases = (
-				C3000000000000000000000B /* Sources */,
-				C30000000000000000000009 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			fileSystemSynchronizedGroups = (
-				C30000000000000000000007 /* BatteryHelper */,
-				C30000000000000000000008 /* BatteryHelperShared */,
-			);
-			name = MonnyBatteryHelper;
-			productName = MonnyBatteryHelper;
-			productReference = C30000000000000000000002 /* MonnyBatteryHelper */;
-			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -232,7 +162,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C30000000000000000000006 /* MonnyBatteryHelper */,
 				757258C83083E9E600FAC82A /* monny */,
 				B20000000000000000000005 /* monnyTests */,
 			);
@@ -263,11 +192,6 @@
 			files = (
 			);
 		};
-		C3000000000000000000000B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			files = (
-			);
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -275,11 +199,6 @@
 			isa = PBXTargetDependency;
 			target = 757258C83083E9E600FAC82A /* monny */;
 			targetProxy = B20000000000000000000001 /* PBXContainerItemProxy */;
-		};
-		C3000000000000000000000E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C30000000000000000000006 /* MonnyBatteryHelper */;
-			targetProxy = C30000000000000000000005 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -413,7 +332,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 25;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -449,7 +368,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 25;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -519,52 +438,6 @@
 			};
 			name = Release;
 		};
-		C3000000000000000000000F /* Debug configuration for PBXNativeTarget "MonnyBatteryHelper" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
-				CODE_SIGN_STYLE = Automatic;
-				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
-				CURRENT_PROJECT_VERSION = 23;
-				ENABLE_APP_SANDBOX = NO;
-				ENABLE_HARDENED_RUNTIME = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "blinks44.monny.battery-helper";
-				PRODUCT_NAME = MonnyBatteryHelper;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) MONNY_BATTERY_HELPER";
-				SKIP_INSTALL = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
-				SWIFT_OBJC_BRIDGING_HEADER = "BatteryHelper/MonnyBatteryHelper-Bridging-Header.h";
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 6.0;
-			};
-			name = Debug;
-		};
-		C30000000000000000000010 /* Release configuration for PBXNativeTarget "MonnyBatteryHelper" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
-				CODE_SIGN_STYLE = Automatic;
-				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
-				CURRENT_PROJECT_VERSION = 23;
-				ENABLE_APP_SANDBOX = NO;
-				ENABLE_HARDENED_RUNTIME = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "blinks44.monny.battery-helper";
-				PRODUCT_NAME = MonnyBatteryHelper;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) MONNY_BATTERY_HELPER";
-				SKIP_INSTALL = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
-				SWIFT_OBJC_BRIDGING_HEADER = "BatteryHelper/MonnyBatteryHelper-Bridging-Header.h";
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 6.0;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -589,14 +462,6 @@
 			buildConfigurations = (
 				B2000000000000000000000A /* Debug configuration for PBXNativeTarget "monnyTests" */,
 				B2000000000000000000000B /* Release configuration for PBXNativeTarget "monnyTests" */,
-			);
-			defaultConfigurationName = Release;
-		};
-		C3000000000000000000000A /* Build configuration list for PBXNativeTarget "MonnyBatteryHelper" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C3000000000000000000000F /* Debug configuration for PBXNativeTarget "MonnyBatteryHelper" */,
-				C30000000000000000000010 /* Release configuration for PBXNativeTarget "MonnyBatteryHelper" */,
 			);
 			defaultConfigurationName = Release;
 		};

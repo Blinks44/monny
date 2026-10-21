@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Manual setup guidance, not a claim that Monny can read or change macOS charging settings.
+/// Explains the native persistent setting and independent macOS optimization.
 struct MacOSChargingGuidance: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.spaceXL) {
@@ -10,7 +10,7 @@ struct MacOSChargingGuidance: View {
                 .accessibilityAddTraits(.isHeader)
             Text("Monny uses the macOS charge limit. You do not need to turn it off in System Settings first.")
             Text("Optimized Battery Charging can also delay charging. Monny does not change that setting.")
-            Text("The previous macOS settings are restored when control stops.")
+            Text("macOS manages charging. The limit stays set when Monny quits.")
                 .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
             Link("Open Battery Settings…", destination: Self.settingsURL)
                 .buttonStyle(SecondaryButtonStyle())

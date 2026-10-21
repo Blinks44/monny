@@ -8,9 +8,7 @@ struct monnyApp: App {
 
     var body: some Scene {
         Window("Monny", id: DashboardWindow.id) {
-            if !MonnyAppDelegate.isDiagnosticMode {
-                DashboardView(model: delegate.model)
-            }
+            DashboardView(model: delegate.model)
         }
         .windowToolbarStyle(.unified(showsTitle: false))
         .defaultSize(width: 1040, height: 700)
@@ -31,63 +29,12 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
     /// Opens the dashboard scene; set by the first SwiftUI view that has `openWindow`.
     fileprivate static var openWindow: (() -> Void)?
 
-    static var isDiagnosticMode: Bool {
-        AdapterRemovalVerificationCommand.isRequested || AdapterPowerDiagnosticCommand.isRequested || BatteryDiagnosticCommand.isRequested
-            || AdapterVerificationCommand.isRequested || AdapterBytePulseCommand.isRequested || AdapterByteObservationCommand.isRequested || AdapterRestartVerificationCommand.isRequested || AdapterSleepVerificationCommand.isRequested
-            || NativeLimitVerificationCommand.isRequested
-    }
-
     private static var runningTests: Bool {
         ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         guard !Self.runningTests else { return }
-        if AdapterRemovalVerificationCommand.isRequested {
-            NSApp.setActivationPolicy(.prohibited)
-            Task { exit(await AdapterRemovalVerificationCommand.run()) }
-            return
-        }
-        if AdapterSleepVerificationCommand.isRequested {
-            NSApp.setActivationPolicy(.prohibited)
-            Task { exit(await AdapterSleepVerificationCommand.run()) }
-            return
-        }
-        if AdapterRestartVerificationCommand.isRequested {
-            NSApp.setActivationPolicy(.prohibited)
-            Task { exit(await AdapterRestartVerificationCommand.run()) }
-            return
-        }
-        if AdapterByteObservationCommand.isRequested {
-            NSApp.setActivationPolicy(.prohibited)
-            Task { exit(await AdapterByteObservationCommand.run()) }
-            return
-        }
-        if AdapterBytePulseCommand.isRequested {
-            NSApp.setActivationPolicy(.prohibited)
-            Task { exit(await AdapterBytePulseCommand.run()) }
-            return
-        }
-        if AdapterVerificationCommand.isRequested {
-            NSApp.setActivationPolicy(.prohibited)
-            Task { exit(await AdapterVerificationCommand.run()) }
-            return
-        }
-        if AdapterPowerDiagnosticCommand.isRequested {
-            NSApp.setActivationPolicy(.prohibited)
-            Task { exit(await AdapterPowerDiagnosticCommand.run()) }
-            return
-        }
-        if NativeLimitVerificationCommand.isRequested {
-            NSApp.setActivationPolicy(.prohibited)
-            Task { exit(await NativeLimitVerificationCommand.run()) }
-            return
-        }
-        if BatteryDiagnosticCommand.isRequested {
-            NSApp.setActivationPolicy(.prohibited)
-            Task { exit(await BatteryDiagnosticCommand.run()) }
-            return
-        }
         // No Dock icon until a window opens (proposal for SPEC §9, matching Rebind).
         NSApp.setActivationPolicy(.accessory)
         let menuBar = MenuBarController(model: model)
@@ -110,39 +57,26 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
                                                          name: NSWorkspace.didWakeNotification, object: nil)
     }
 
-    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        guard !Self.runningTests, !Self.isDiagnosticMode else { return .terminateNow }
-        guard model.batteryHelper.nativeLimit != nil || model.batteryHelper.nativeBusy else { return .terminateNow }
-        Task {
-            // A pending user action completes before the bounded owner connection closes.
-            while model.batteryHelper.nativeBusy { try? await Task.sleep(for: .milliseconds(50)) }
-            await model.batteryHelper.stopNativeLimit()
-            sender.reply(toApplicationShouldTerminate: true)
-        }
-        return .terminateLater
-    }
-
     func applicationWillTerminate(_ notification: Notification) {
-        guard !Self.runningTests, !Self.isDiagnosticMode else { return }
+        guard !Self.runningTests else { return }
         model.sampler.history.save(synchronously: true)
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 
     func applicationDidBecomeActive(_ notification: Notification) {
-        guard !Self.runningTests, !Self.isDiagnosticMode, SystemInfo.hasBattery else { return }
-        Task { await model.batteryHelper.refresh() }
+        guard !Self.runningTests, SystemInfo.hasBattery else { return }
+        Task { await model.chargeLimit.refresh() }
     }
 
     @objc private func systemDidWake() {
-        guard !Self.runningTests, !Self.isDiagnosticMode, SystemInfo.hasBattery else { return }
-        Task { await model.batteryHelper.refresh() }
+        guard !Self.runningTests, SystemInfo.hasBattery else { return }
+        Task { await model.chargeLimit.refresh() }
     }
 
     /// Opening Monny again from Finder or Spotlight while it runs shows the dashboard.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
-        guard !Self.isDiagnosticMode else { return false }
-        openDashboard(nil)
+                openDashboard(nil)
         return false
     }
 

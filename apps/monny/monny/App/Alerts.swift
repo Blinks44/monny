@@ -9,6 +9,7 @@ nonisolated struct AlertMonitor {
         /// CPU temperature in °C when the SMC reports it.
         case hot(cpuCelsius: Double?)
         case lowBattery(level: Double, timeToEmpty: Duration?)
+        case chargeLimitReached(Int)
         case memoryPressure
     }
 
@@ -19,9 +20,10 @@ nonisolated struct AlertMonitor {
     private var isHot = false
     private var isLow = false
     private var isPressured = false
+    private var reachedLimit: Int?
 
     /// Returns the alerts that started with this snapshot, whatever the user's notification choices.
-    mutating func update(with snapshot: Snapshot) -> [Alert] {
+    mutating func update(with snapshot: Snapshot, chargeLimit: Int? = nil) -> [Alert] {
         var alerts: [Alert] = []
 
         // macOS's own thermal state, as the CPU chip: Serious and Critical are "hot".
@@ -33,6 +35,14 @@ nonisolated struct AlertMonitor {
             let low = battery.state == .onBattery && battery.level < Self.lowBatteryLevel
             if low, !isLow { alerts.append(.lowBattery(level: battery.level, timeToEmpty: battery.timeToEmpty)) }
             isLow = low
+        }
+
+        if let chargeLimit, let battery = snapshot.battery,
+           battery.state == .onAdapter, battery.level >= Double(chargeLimit) / 100 {
+            if reachedLimit != chargeLimit { alerts.append(.chargeLimitReached(chargeLimit)) }
+            reachedLimit = chargeLimit
+        } else if chargeLimit == nil || snapshot.battery != nil {
+            reachedLimit = nil
         }
 
         // Re-arms only at Normal: pressure often moves between Warning and Critical.
@@ -50,6 +60,7 @@ extension AlertMonitor.Alert {
     /// The Settings toggle that allows this notification.
     var preferenceKey: String {
         switch self {
+        case .chargeLimitReached: PreferenceKey.notifyChargeLimit
         case .hot: PreferenceKey.notifyHot
         case .lowBattery: PreferenceKey.notifyLowBattery
         case .memoryPressure: PreferenceKey.notifyMemoryPressure
@@ -58,6 +69,7 @@ extension AlertMonitor.Alert {
 
     var title: String {
         switch self {
+        case .chargeLimitReached: String(localized: "Charge limit reached")
         case .hot: String(localized: "Mac is running hot")
         case .lowBattery: String(localized: "Battery below 20%")
         case .memoryPressure: String(localized: "Memory pressure is high")
@@ -66,6 +78,8 @@ extension AlertMonitor.Alert {
 
     func body(unit: TemperatureUnit) -> String {
         switch self {
+        case .chargeLimitReached(let limit):
+            String(localized: "Charge limit reached") + " · " + (Double(limit) / 100).percentText
         case .hot(let celsius?):
             String(localized: "CPU is at \(celsius.temperatureText(unit)).")
         case .hot(nil):
@@ -118,7 +132,7 @@ private extension AlertMonitor.Alert {
     /// Matches the `@AppStorage` defaults in Settings.
     var isOnByDefault: Bool {
         switch self {
-        case .hot: true
+        case .hot, .chargeLimitReached: true
         case .lowBattery, .memoryPressure: false
         }
     }

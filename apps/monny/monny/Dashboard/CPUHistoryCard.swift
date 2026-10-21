@@ -34,7 +34,8 @@ struct CPUHistoryCard: View {
     }
 
     private var header: some View {
-        CardHeader("CPU load & temperature", subtitle: summary) {
+        VStack(alignment: .leading, spacing: 6) {
+            CardHeader("CPU load & temperature", subtitle: summary)
             HStack(spacing: Theme.spaceL) {
                 ChartLegend(title: "Performance", color: Theme.metricCPU)
                 ChartLegend(title: "Efficiency", color: Theme.metricCPUEfficiency)

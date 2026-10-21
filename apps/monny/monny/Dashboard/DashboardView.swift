@@ -16,7 +16,7 @@ struct DashboardView: View {
                 }
                 .scrollBounceBehavior(.basedOnSize)
             }
-            .padding(.horizontal, Theme.space3XL)
+            .padding(.horizontal, Theme.spaceXL)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
         .frame(minWidth: 900, minHeight: 620)
@@ -46,9 +46,9 @@ struct DashboardView: View {
         case .memory: MemoryPage(sampler: model.sampler)
         case .disk: DiskPage(sampler: model.sampler)
         case .network: NetworkPage(sampler: model.sampler)
-        case .battery: BatteryPage(sampler: model.sampler, helper: model.batteryHelper)
+        case .battery: BatteryPage(sampler: model.sampler, controller: model.chargeLimit)
         case .sensors: SensorsPage(sampler: model.sampler)
-        case .settings: SettingsPage(helper: model.batteryHelper)
+        case .settings: SettingsPage(controller: model.chargeLimit)
         }
     }
 
@@ -81,7 +81,7 @@ private struct PageHeader: View {
             }
             IconButton(symbol: "arrow.down.right.and.arrow.up.left", label: "Show in the menu bar", action: collapse)
         }
-        .padding(.top, 44)
+        .padding(.top, 20)
         .padding(.bottom, Theme.spaceL)
     }
 

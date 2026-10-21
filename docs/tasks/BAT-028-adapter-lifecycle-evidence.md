@@ -1,5 +1,6 @@
 # BAT-028: Observable sleep/wake and removal recovery
 
+> Historical battery/helper record. The full build-23 implementation is preserved on `experiments/discharge` at abe3a80. Current native-only main scope is [APP-007](APP-007-native-simplification-design-parity.md); dated evidence below remains valid only for its stated artifact.
 - Updated: 2026-10-20
 - Stage: done (build-20 idle OS sleep/wake callback delivery accepted)
 - Owner: app engineering; software ownership released for user verification

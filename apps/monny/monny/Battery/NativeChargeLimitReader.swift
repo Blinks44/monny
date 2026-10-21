@@ -1,6 +1,6 @@
 import Foundation
 
-/// Explicit helper diagnostic only. The private synchronous getters never run on the main actor.
+/// Native setting query. The private synchronous getters never run on the main actor.
 nonisolated enum NativeChargeLimitReader {
     @concurrent static func read() async -> NativeChargeLimit {
         decode(MonnyReadNativeChargeLimit())

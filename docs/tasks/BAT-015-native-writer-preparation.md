@@ -1,5 +1,6 @@
 # BAT-015: Guarded native writer and fixed recovery storage preparation
 
+> Historical battery/helper record. The full build-23 implementation is preserved on `experiments/discharge` at abe3a80. Current native-only main scope is [APP-007](APP-007-native-simplification-design-parity.md); dated evidence below remains valid only for its stated artifact.
 - Updated: 2026-10-20
 - Stage: done
 - Owner: unassigned; bounded preparation/checks complete

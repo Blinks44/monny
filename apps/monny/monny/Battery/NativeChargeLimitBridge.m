@@ -95,7 +95,7 @@ MonnyNativeLimitSnapshot MonnyReadNativeChargeLimit(void) {
     }
 }
 
-// This helper is also exercised with fake clients by the isolated native fixture.
+// One synchronous write with fresh validation; the store verifies actual read-back.
 static MonnyNativeLimitStatus writeNativeClient(id<MonnyNativeLimitSetters> client, BOOL changingLimit,
                                                uint8_t limit, BOOL enabled) {
     if (!client || !settersMatch(object_getClass(client))) return MonnyNativeLimitInterfaceUnavailable;

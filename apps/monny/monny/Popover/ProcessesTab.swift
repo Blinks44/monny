@@ -29,7 +29,7 @@ struct ProcessesTab: View {
             let top = rows.first.map(value(of:)) ?? 0
             VStack(spacing: 0) {
                 if rows.isEmpty {
-                    Text("No readings yet")
+                    Text("Collecting data…")
                         .font(Theme.body)
                         .foregroundStyle(Theme.textTertiary)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)

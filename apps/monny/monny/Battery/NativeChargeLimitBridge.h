@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-// Isolated runtime bridge. Mutation entry points remain disconnected from the production helper.
+// Isolated native runtime bridge; called off the main actor by the setting controller.
 typedef NS_ENUM(uint8_t, MonnyNativeLimitStatus) {
     MonnyNativeLimitAvailable,
     MonnyNativeLimitFrameworkUnavailable,
@@ -22,6 +22,6 @@ typedef struct {
 
 MonnyNativeLimitSnapshot MonnyReadNativeChargeLimit(void);
 
-// Call only through a journal-backed transaction on the helper executor, never from UI/diagnostics.
+// Serialized by NativeChargeLimitStore; no privileged process or SMC writer.
 MonnyNativeLimitStatus MonnySetNativeChargeLimit(uint8_t limit);
 MonnyNativeLimitStatus MonnySetNativeChargeLimitEnabled(BOOL enabled);

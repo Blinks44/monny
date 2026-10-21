@@ -49,7 +49,7 @@ nonisolated enum SMCKeyInspection: Codable, Sendable, Equatable {
 }
 
 /// Sensor/diagnostic connection to `AppleSMC`, opened without privilege escalation.
-/// The helper target alone compiles a fixed CHIE setter; app builds remain read-only.
+/// Monitoring is read-only.
 /// Access varies by key/firmware; the undocumented call layout is described in research.
 nonisolated final class SMCConnection {
     private let connection: io_connect_t
@@ -72,7 +72,7 @@ nonisolated final class SMCConnection {
         return value
     }
 
-    /// Read-only metadata/value inspection, also used to validate the helper-only setter.
+    /// Read-only metadata/value inspection.
     func inspect(_ key: String) -> SMCKeyInspection {
         guard key.utf8.count == 4, key.utf8.allSatisfy({ (32...126).contains($0) }) else {
             return .unavailable(.invalidKey)
@@ -96,21 +96,6 @@ nonisolated final class SMCConnection {
         }
     }
 
-    #if MONNY_BATTERY_HELPER
-    /// Only a checkpointed helper transaction may call this fixed operation.
-    /// Reopen/reinspect before each attempt; never infer permission from cached metadata.
-    func setAdapterIsolated(_ isolated: Bool) throws {
-        infoCache.removeValue(forKey: Self.fourCC("CHIE"))
-        guard let byte = try AdapterIsolationCommand.byte(isolated: isolated, inspection: inspect("CHIE")) else { return }
-        var input = KeyData()
-        input.key = Self.fourCC("CHIE")
-        input.keyInfo.dataSize = 1
-        input.command = 6 // Reviewed SMC write-byte command; no arbitrary key/value API.
-        withUnsafeMutableBytes(of: &input.bytes) { $0[0] = byte }
-        _ = try call(input)
-        // A return code is not read-back or physical evidence; the transaction must check both.
-    }
-    #endif
 
     private func keyInfo(_ code: UInt32) throws(SMCReadFailure) -> KeyInfo {
         if let cached = infoCache[code] { return cached }

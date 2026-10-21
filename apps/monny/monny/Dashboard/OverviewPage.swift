@@ -283,6 +283,7 @@ struct CollectingHistoryContent: View {
                 .accessibilityHidden(true)
             Text("Collecting history").font(Theme.headline).foregroundStyle(Theme.textPrimary)
             Text("Charts fill in while Monny runs. The 24 h and 7 d ranges are kept across restarts.")
+                .frame(maxWidth: 320)
                 .font(Theme.footnote)
                 .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)

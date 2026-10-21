@@ -17,7 +17,6 @@ OUTPUT = APP_ROOT / "build" / "release"
 KEYCHAIN = os.environ.get("MONNY_SIGN_KEYCHAIN")
 # Pin the existing shared development certificate; never silently change signer.
 IDENTITY = os.environ.get("MONNY_SIGN_IDENTITY", "69D383553450694A1E9D78650B3FC6E69446BD4F")
-HELPER_ID = "blinks44.monny.battery-helper"
 
 
 def run(*args, quiet=False):
@@ -76,13 +75,17 @@ def main():
     sign = ["codesign", "--force", "--options", "runtime", "--timestamp=none", "--sign", fingerprint]
     if KEYCHAIN:
         sign.extend(["--keychain", KEYCHAIN])
-    # Current release contains one helper and no dynamic packages. Fail rather than silently
+    # Current release contains the app and no nested executables or dynamic packages. Fail rather than silently
     # introducing library-validation exceptions if that bundle contract changes.
     if list(destination.rglob("*.dylib")) or list(destination.rglob("*.framework")):
         raise RuntimeError("Review nested dynamic code signing before packaging this bundle")
+    for name in ["HelperTools", "LaunchDaemons"]:
+        directory = destination / "Contents/Library" / name
+        if directory.exists():
+            if any(directory.iterdir()):
+                raise RuntimeError("Native-only package must not contain a charging helper")
+            directory.rmdir()  # Xcode can leave empty directories after removing an embed phase.
     normalize_bundle_permissions(destination)
-    helper = destination / "Contents/Library/HelperTools/MonnyBatteryHelper"
-    run(*sign, "--identifier", HELPER_ID, helper, quiet=True)
     run(*sign, destination, quiet=True)
     for path in [destination, *destination.rglob("*")]:
         if path.is_symlink():
@@ -91,7 +94,6 @@ def main():
         if not mode & 0o004 or (path.is_dir() and not mode & 0o001):
             raise RuntimeError("Packaged app must be readable by system services and other users")
     run("codesign", "--verify", "--strict", "--deep", destination, quiet=True)
-    run(APP_ROOT / "scripts" / "verify-helper-signing.sh", destination, KEYCHAIN or "", fingerprint)
     import plistlib
     info = plistlib.loads((destination / "Contents/Info.plist").read_bytes())
     version = str(info["CFBundleShortVersionString"])

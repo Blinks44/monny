@@ -3,7 +3,7 @@ import SwiftUI
 /// Sketch's Battery window, using the shared sampler and bounded native limit controls.
 struct BatteryPage: View {
     let sampler: Sampler
-    let helper: BatteryHelper
+    let controller: ChargeLimitController
     @AppStorage(PreferenceKey.historyRange) private var range = HistoryRange.hour
     @AppStorage(PreferenceKey.defaultChargeLimit) private var limit = 80
     @AppStorage(PreferenceKey.sailingRange) private var sailingRange = 5
@@ -16,10 +16,6 @@ struct BatteryPage: View {
     var body: some View {
         let tier = sampler.history.tier(range)
         VStack(spacing: Theme.spaceL) {
-            VStack(alignment: .leading, spacing: Theme.spaceM) {
-                BatteryHelperBanner(helper: helper)
-                BatteryHelperActions(helper: helper)
-            }
             HStack(spacing: Theme.spaceL) {
                 KPICard(title: "Level", symbol: "battery.100percent", color: Theme.metricBattery,
                         value: battery?.level.percentText, detail: powerSource,
@@ -42,7 +38,7 @@ struct BatteryPage: View {
             }
             batteryDetails
         }
-        .task { await helper.refresh() }
+        .task { await controller.refresh() }
     }
 
     private var capacity: Text? {
@@ -93,7 +89,7 @@ struct BatteryPage: View {
                 .accessibilityLabel(Text("macOS charging settings"))
                 .popover(isPresented: $showsChargingGuidance) { MacOSChargingGuidance() }
             }
-            NativeLimitControls(helper: helper)
+            NativeLimitControls(controller: controller)
             Divider()
             unavailableToggle("Sailing mode", detail: Text("Drift to \(Double(max(50, limit - sailingRange)) / 100, format: .percent) before topping up"))
             unavailableToggle("Heat protection", detail: Text("Pause charging above \(Double(heatThreshold).temperatureText(temperatureUnit))"))
@@ -140,6 +136,7 @@ struct BatteryPage: View {
         Button("Start Calibration") { }
             .buttonStyle(PrimaryButtonStyle())
             .disabled(true)
+            .help(Text("Not available in this version."))
             .fixedSize()
     }
 
@@ -194,6 +191,7 @@ struct BatteryPage: View {
             Spacer(minLength: 0)
             Toggle(title, isOn: .constant(false))
                 .labelsHidden().toggleStyle(SwitchStyle()).disabled(true)
+                .help(Text("Not available in this version."))
                 .accessibilityHint(detail ?? Text("Battery control is off"))
         }
     }

@@ -1,5 +1,6 @@
 # BAT-029: Active adapter sleep recovery
 
+> Historical battery/helper record. The full build-23 implementation is preserved on `experiments/discharge` at abe3a80. Current native-only main scope is [APP-007](APP-007-native-simplification-design-parity.md); dated evidence below remains valid only for its stated artifact.
 - Updated: 2026-10-21
 - Stage: done (one authorized installed build-22 active sleep/wake report and independent endpoints pass)
 - Owner: app engineering; bounded acceptance recorded, ownership released

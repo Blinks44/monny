@@ -8,7 +8,7 @@ final class AppModel {
     /// Set when heat or a danger state needs the user; drives the menu bar badge.
     var needsAttention = false
     let sampler = Sampler()
-    let batteryHelper = BatteryHelper()
+    let chargeLimit = ChargeLimitController()
     @ObservationIgnored private var alerts = AlertMonitor()
     @ObservationIgnored private lazy var notifier = Notifier()
 
@@ -21,11 +21,11 @@ final class AppModel {
     func start() {
         sampler.onSample = { [weak self] snapshot in self?.handle(snapshot) }
         sampler.start()
-        if SystemInfo.hasBattery { Task { await batteryHelper.refresh() } }
+        if SystemInfo.hasBattery { Task { await chargeLimit.refresh() } }
     }
 
     private func handle(_ snapshot: Snapshot) {
-        notifier.post(alerts.update(with: snapshot))
+        notifier.post(alerts.update(with: snapshot, chargeLimit: chargeLimit.snapshot.flatMap { $0.enabled ? $0.configuredLimit : nil }))
         if needsAttention != alerts.needsAttention { needsAttention = alerts.needsAttention }
     }
 }

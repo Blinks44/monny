@@ -9,9 +9,9 @@
   Free, open source, native on macOS 26+.
 </p>
 
-A native macOS menu bar utility for resource monitoring and battery charge control. A click on the menu bar icon shows CPU, memory, disk, network, cores and battery at a glance; a dashboard window adds history charts, top processes and temperature sensors. Optional battery controls are in development: charge limits, holding the charge on the adapter and discharging while plugged in.
+A native macOS menu bar utility for resource monitoring and battery charge control. A click on the menu bar icon shows CPU, memory, disk, network, cores and battery at a glance; a dashboard window adds history charts, top processes and temperature sensors. Battery controls use the built-in macOS charge limit where available; macOS manages charging.
 
-**Status:** early development. Monitoring, history, dashboard pages and Settings are implemented. Battery control has a tested policy and a bundled helper with an explicit manual setting-verification command; normal charging controls remain disabled. Current helper installation and hardware restoration still need verification. See the [current state](docs/STATE.md) and [roadmap](docs/PLAN.md).
+**Status:** early development. Monitoring, history, dashboard pages and Settings are implemented. The native-only charge-limit setting and design/copy cleanup are under review. Discharge experiments are preserved separately on `experiments/discharge`. See the [current state](docs/STATE.md) and [roadmap](docs/PLAN.md).
 
 ## Repository layout
 
@@ -26,15 +26,15 @@ A native macOS menu bar utility for resource monitoring and battery charge contr
 
 - **Menu bar popover** with Overview, Battery and Processes tabs, refreshed every few seconds, and a global shortcut (⌥⌘M by default).
 - **Dashboard window** with Overview, CPU, Memory, Disk, Network, Battery and Sensors pages and 1 minute to 7 day history.
-- **Battery control** through an optional privileged helper: charge limit, hold on adapter, discharge while plugged in, sailing range, heat protection, full charge before trips and guided calibration.
-- **Notifications** for a reached charge limit, a hot Mac, finished calibration, low battery and high memory pressure.
+- **Native battery charge limit** from 80–100% on supported macOS 26.4+ systems, without a privileged helper. Discharge, calibration and advanced charging automation are deferred.
+- **Notifications** for a measured charge limit, a hot Mac, low battery and high memory pressure; calibration remains deferred.
 - English, Russian, German, French, Spanish and Simplified Chinese.
 
 Readings never leave the Mac: no account, analytics or telemetry. The [specification](docs/SPEC.md) lists the full scope and acceptance.
 
 ## Requirements
 
-- A Mac with **Apple silicon** running macOS **26 or later**. Intel Macs are not supported. Battery control needs a Mac with a battery and the Monny helper.
+- A Mac with **Apple silicon** running macOS **26 or later**. Intel Macs are not supported. Charge limits need a Mac with a battery, macOS 26.4+ and a compatible native runtime.
 - Full Xcode with a **Swift 6.2+ compiler** and a **macOS 26+ SDK** to build from source.
 
 ## Build and run

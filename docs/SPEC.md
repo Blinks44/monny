@@ -1,6 +1,6 @@
 # Monny: product specification
 
-**Status:** initial specification, derived on 2026-10-17 from the saved Monny.sketch screens and the user's setup decisions. Implementation and hardware support must be independently verified; a requirement here does not mean it exists.
+**Status:** specification derived from saved Monny.sketch; native-only scope revised by user instruction on 2026-10-21. Implementation and hardware support must be independently verified; a requirement here does not mean it exists.
 **Platform:** macOS 26+ on Apple silicon only (Intel Macs are out of scope, user decision 2026-10-18), native SwiftUI/AppKit, distributed outside the Mac App Store.
 **Companion files:** [AGENTS](../AGENTS.md), [STATE](STATE.md), [WORKFLOW](WORKFLOW.md), [PLAN](PLAN.md), [DESIGN](DESIGN.md). Visual states, layout and exact copy live in Sketch; this file owns behavior and acceptance.
 
@@ -12,7 +12,7 @@ A calm, native menu bar utility that answers “what is my Mac doing?” in one 
 
 ### Non-goals
 
-Not a process killer, system cleaner, fan controller, network firewall, cloud dashboard or analytics collector. No account, no remote access, no tuning of system settings beyond charging through the helper.
+Not a process killer, system cleaner, fan controller, network firewall, cloud dashboard or analytics collector. No account, no remote access, no tuning of system settings beyond the native macOS charge-limit preference.
 
 ### Capability labels
 
@@ -21,7 +21,7 @@ Each metric, sensor and battery mode is reported with one label: `not implemente
 ## 2. Menu bar presence
 
 - A template status item (Sketch: `05 · System · Menu bar & notifications`). States: idle, popover open, needs attention (a 7 pt badge for heat or danger; can be turned off in Settings).
-- Left click opens the popover; there is no hover mode (user decision 2026-10-18). Right click opens a menu: Open Dashboard (⌥⌘M), Settings…, Pause Battery Control, Charge to 100% Now, Start Calibration…, About Monny, Quit Monny. Battery items are disabled without the helper and hidden on a Mac without a battery.
+- Left click opens the popover; there is no hover mode (user decision 2026-10-18). Right click opens a menu: Open Dashboard (⌥⌘M), Settings…, Turn Off Charge Limit, Set Limit to 100%, About Monny, Quit Monny. Current battery actions disable the system limit or set it to 100%; disable them when native support is unavailable and hide them without a battery. Calibration remains deferred.
 - A global shortcut (default ⌥⌘M, changeable) opens the dashboard.
 - No Dock icon, except while the dashboard window is open (user decision 2026-10-18).
 
@@ -32,7 +32,7 @@ Header: app icon, Monny, Mac model · chip · uptime; buttons to open the dashbo
 **Overview:** CPU load with P/E split and CPU temperature chip (warns when hot), memory used with pressure chip, disk free space and read/write rates, network down/up rates with a short sparkline, per-core load bars grouped by Performance/Efficiency, and a battery card with level, current mode and a charge-limit toggle. Footer: Open Dashboard, shortcut, refresh interval.
 **Thermal alert state:** when the Mac is hot, the CPU card and battery card show it (for example “Charging paused · too hot” when heat protection acts).
 
-**Battery:** state line (adapter wattage and time to limit, or on battery with time remaining), large level gauge with limit marker, health · cycles · temperature, mode buttons Charge (up to limit) / Discharge (while plugged), charge-limit slider 80–100 %, Sailing mode and Heat protection toggles, Calibrate…. States: charging, holding, on battery (modes disabled, “Connect power to switch modes”), helper required (banner, read-only controls, Install Battery Helper… with “macOS asks for administrator approval. Only controls charging.”), no battery (the tab stays and shows the same empty state as the dashboard Battery page).
+**Battery:** measured adapter/source state, large level gauge with system limit marker, health · cycles · temperature, supported native charge-limit slider and enable switch, system charging guidance. Missing readings stay unavailable/loading. No helper banner/install flow on main. Discharge and advanced automation in the unchanged Sketch frames remain deferred; current main omits mode tiles and may show disabled future controls only with availability guidance. A no-battery Mac keeps the same empty state as the dashboard Battery page. Do not invent a time-to-limit from a time-to-full estimate.
 
 On a Mac without a battery the Overview battery strip shows the thermal state and fan speed instead.
 
@@ -44,41 +44,36 @@ Sidebar: Overview, CPU, Memory, Disk, Network, Battery, Sensors; Settings at the
 
 - **Overview:** summary cards with sparklines (CPU, Memory, Temperature, Battery), CPU load & temperature chart with hover tooltip naming the top process, 24 h battery level chart with limit line, battery facts (health, cycles, capacity, system load), top processes, sensor tiles and fan speed.
 - **CPU, Memory, Disk, Network:** the detailed history and breakdowns drawn in the corresponding Sketch frames.
-- **Battery:** level, health, cycles and power cards; charging mode segmented control, charge limit, sailing mode and heat protection; calibration card with its four steps; Full charge before trips (day selection and time; charges to 100 % before then, then returns to the limit).
+- **Battery:** level, health, cycles and power cards, history and native charge-limit controls. Existing future sailing/heat/calibration/trip cards stay visibly disabled until implemented; they do not imply a working schedule or controller. No Charge/Discharge selector on main.
 - **Battery without a battery:** the range control and cards are replaced by one empty state (“This Mac has no battery”) with Open Sensors.
 - **Sensors:** CPU die, GPU, SSD and battery cards with peaks, temperature chart, thermal state (Nominal/Fair/Serious/Critical), fan speed, and tiles for each available sensor. Missing sensors are omitted or marked unavailable, never invented; a Mac without a fan says so.
 
-Before history exists (first launch), current values show immediately and charts show a “Collecting history” state instead of empty or zero lines.
+Before history exists, current values show immediately and charts/process lists explain “Collecting data…” instead of suggesting permanent emptiness or showing invented zero lines.
 
 History must survive the window closing and an app restart for the 24 h and 7 d ranges. Storage mechanism is an open engineering decision (research).
 
 ## 5. Battery control
 
-Requires a Mac with a battery and the installed helper. All modes are explicit user choices; defaults come from Settings.
+Main implements the **native macOS charge-limit preference only**, without a privileged helper. Requires an internal battery, macOS 26.4+ and a compatible native runtime. On macOS below 26.4, replace the charge-limit controls with an informational message explaining the minimum version and that battery monitoring still works. The runtime returns supported targets (currently 80/85/90/95/100). Only explicit user actions set the target/enable state; startup, activation and wake read back settings without replaying a target.
 
-The Battery Charging card explains the active backend. For native macOS limits, do not ask users to disable the system Charge Limit or set it to 100% first: Monny changes that same setting through the helper. Optimized Battery Charging can independently delay charging; Monny neither changes it nor claims to detect its state. Include a Battery Settings link. Any future independent SMC backend needs its own coexistence verification before recommending system-setting changes.
+Monny changes the same system preference shown in Battery Settings. macOS owns charging enforcement and the preference persists after app quit, crash, sleep and restart. No restoration-on-quit, privileged helper, XPC, SMC writer, isolation or recurring policy is required on main. On failure, re-read state and report that the setting could not be confirmed. Unsupported/unknown readings disable mutation; no root/entitlement/preferences-file workaround. The private runtime interface is not a public API guarantee and must fail unavailable when signatures change.
 
-The initial native implementation exposes only the helper-advertised supported values (currently 80/85/90/95/100), with a separate explicit control switch. A saved target never enables control on launch. Ordinary sleep/wake preserves an already active native session; it does not create or replay one. Capture the original enabled/limit pair before changing it, restore it when control stops, and preserve an externally changed setting rather than overwriting it. One authenticated connection owns the session; a fixed 30-second lease renewed every 10 seconds bounds lost-client control. Expiry revokes the owner token permanently; a queued renewal cannot resume control without a new explicit user session. Disconnect, awake lease expiry, shutdown and removal request restoration; normal app quit awaits the restore reply. For the native system-limit backend, sleep retains the selected setting, original-setting journal and authenticated owner. Suspend its lease watchdog during sleep; after wake, read back the existing setting and grant the same live owner a fresh 30-second window. Do not reapply a target or overwrite external changes. Lost ownership, invalid readings or changed settings must stop control and follow recovery rules. Direct hardware inhibition modes still restore before sleep. Journal recovery runs before serving requests after helper restart. A stalled synchronous system API has no hard restoration deadline. Physical enforcement and lifecycle acceptance on the final installed helper remain required. This native scope does not provide Discharge, sailing, heat protection, trips or calibration; those controls remain unavailable.
+Enable only when necessary, before setting the target (enable can reset it); require actual enabled/target read-back. Optimized Battery Charging may independently delay charging and is not changed. The system may charge within a few percentage points of the target and occasionally reach 100% for estimation. Do not claim exact thresholds, immediate forced discharge on lowering a target or a fabricated time-to-limit. Provide a Battery Settings link and explain that the setting persists.
 
-- **Charge limit** 80–100 %: stop charging at the limit and run on the adapter. Expose only supported values (currently 80/85/90/95/100); targets below 80% are out of product scope (user decision 2026-10-20).
-- **Sailing range:** after reaching the limit, let the level drift down by the range (for example to 75 %) before topping up.
-- **Discharge:** run from the battery while plugged in, down to the limit, then retain that limit.
-- **Holding at the limit** is an automatic state of charge control, not a separately selectable mode. No action to freeze charging at the current arbitrary level is required (user decision 2026-10-20).
-- **Heat protection:** pause charging above a battery temperature (default 35 °C) and resume when it cools.
-- **Charge to 100 % now** and **Full charge before trips** (scheduled) temporarily override the limit, then return to it.
-- **Calibration:** charge to 100 %, rest 1 hour, discharge to 15 %, recharge to the limit; shows progress, can be hidden or stopped, continues if the window closes, and notifies when finished.
-- **Fail-safe:** pausing battery control, quitting, uninstalling the helper, a crash or an unknown hardware state returns charging to macOS. Behavior across sleep and restart must be defined in the helper task and verified on hardware.
+Discharge, sailing, manual heat protection, calibration and trip automation are deferred to **experiments/discharge**, preserved at abe3a80. Existing Sketch future-mode frames remain unchanged; unsupported controls may remain visibly disabled with an availability explanation, never imply implemented automation. Main shows the supported native control and monitoring faithfully. Full physical Discharge verification remains unverified.
+
+Users of historical helper builds remove that helper through the old app before replacement. The new app never silently installs/uninstalls a daemon or deletes old recovery storage.
 
 ## 6. Onboarding
 
-Three steps (Sketch page `03`): Welcome (menu bar stats, charge limit, works offline), Battery helper (why, administrator approval that can ask again in System Settings, only touches charging, how to remove; can be skipped), Ready (where Monny lives, ⌥⌘M, Launch at login recommended so the limit always applies). Macs without a battery skip the helper step: two steps, with Sensors and history instead of Charge limit on Welcome.
+Use existing Welcome and Ready source frames (Sketch page `03`) for the native-only scope; no helper step or administrator approval. Explain menu bar monitoring, offline behavior, supported native system limit and the global shortcut. Launch at login is a monitoring convenience, not required for macOS to enforce a persistent limit. Macs without a battery omit charging references. Onboarding implementation remains a separate release gate; no Sketch edits are authorized in this slice.
 
 ## 7. Settings
 
 - **General:** Launch at login, refresh rate, temperature unit, appearance, language (System or one of the six; applies after Monny restarts, with a Restart button; user request 2026-10-18).
 - **Menu bar:** global shortcut, show alert badge.
-- **Battery:** default charge limit, sailing range, heat protection threshold, helper status with version and Uninstall Helper…. Uninstalling asks for confirmation first and returns charging to macOS. Any helper capable of changing settings, including explicit manual verification, requires a restoration/non-controlling acknowledgement before unregistering; transport failure, malformed or incompatible replies never bypass it. If installation fails or is not approved, a banner explains it, with Open System Settings… (Login Items & Extensions) and Try Again. For an approved item with a transport failure, explicit Try Again may attempt one SMAppService registration before checking authenticated status again; it never automatically unregisters or overrides denied consent.
-- **Notifications:** charge limit reached, Mac is running hot, calibration finished, battery below 20 %, memory pressure is high (each toggle). Each fires once when its condition starts and again only after it has cleared.
+- **Battery:** the same supported native limit/enable setting as the Battery page; no helper status, installation or removal. Advanced automation preferences are deferred.
+- **Notifications:** charge limit reached, Mac is running hot, calibration finished, battery below 20 %, memory pressure is high (each toggle). Heat, low-battery, memory-pressure and measured charge-limit attainment notifications work; calibration notification remains visibly unavailable. Each implemented alert fires once per episode.
 - **About:** version and build, Check for Updates (compares with the latest GitHub release), privacy note (no analytics; network only for updates). Results: up to date; a newer version (Download… opens the GitHub release page in the browser; Monny does not install updates itself); check failed (Try Again).
 
 ## 8. Cross-cutting requirements

@@ -1,5 +1,6 @@
 # BAT-008: Helper recovery and popover setup regressions
 
+> Historical battery/helper record. The full build-23 implementation is preserved on `experiments/discharge` at abe3a80. Current native-only main scope is [APP-007](APP-007-native-simplification-design-parity.md); dated evidence below remains valid only for its stated artifact.
 - Updated: 2026-10-19
 - Stage: awaiting_verification
 - Owner: unassigned; code/design checks complete

@@ -18,7 +18,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         panel = MenuBarPanel(rootView: PopoverView(model: model))
         super.init()
         panel.keepsPopoverOpen = { [weak model] in
-            model?.batteryHelper.isBusy == true || model?.batteryHelper.isPresentingRemovalConfirmation == true
+            model?.chargeLimit.isBusy == true
         }
         panel.onClose = { [weak self] in self?.popoverDidClose() }
         menu.autoenablesItems = false
@@ -48,7 +48,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         model.sampler.setVisible(.popover, true)
         panel.show(below: button)
         // A nonactivating panel does not reliably trigger applicationDidBecomeActive.
-        if SystemInfo.hasBattery { Task { await model.batteryHelper.refresh() } }
+        if SystemInfo.hasBattery { Task { await model.chargeLimit.refresh() } }
     }
 
     func closePopover() { panel.close() }
@@ -117,11 +117,11 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         menu.addItem(settings)
 
         if SystemInfo.hasBattery {
-            // Battery commands need the helper, which arrives with battery control (PLAN phase 4).
             menu.addItem(.separator())
-            menu.addItem(item(String(localized: "Pause Battery Control"), nil, enabled: false))
-            menu.addItem(item(String(localized: "Charge to 100% Now"), nil, enabled: false))
-            menu.addItem(item(String(localized: "Start Calibration…"), nil, enabled: false))
+            menu.addItem(item(String(localized: "Turn Off Charge Limit"), #selector(disableLimit),
+                              enabled: model.chargeLimit.snapshot?.enabled == true && !model.chargeLimit.isBusy))
+            menu.addItem(item(String(localized: "Set Limit to 100%"), #selector(fullLimit),
+                              enabled: model.chargeLimit.snapshot != nil && !model.chargeLimit.isBusy))
         }
 
         menu.addItem(.separator())
@@ -144,6 +144,14 @@ final class MenuBarController: NSObject, NSMenuDelegate {
 
     @objc private func openDashboard() { model.openDashboard(nil) }
     @objc private func openSettings() { model.openDashboard(.settings) }
+
+    @objc private func disableLimit() {
+        guard let snapshot = model.chargeLimit.snapshot else { return }
+        Task { await model.chargeLimit.set(limit: snapshot.configuredLimit, enabled: false) }
+    }
+    @objc private func fullLimit() {
+        Task { await model.chargeLimit.set(limit: 100, enabled: true) }
+    }
 
     @objc private func showAbout() {
         NSApp.activate()

@@ -1,5 +1,7 @@
 # Battery control: first implementation decision
 
+> Current main (2026-10-21): direct ordinary-user native limit, no helper/SMC writes. Historical helper/Discharge implementation and all tests are preserved on experiments/discharge at abe3a80. See [APP-007](../tasks/APP-007-native-simplification-design-parity.md).
+
 Reviewed 2026-10-19 for [BAT-001](../tasks/BAT-001-battery-foundations.md). This is source research and a software policy decision, not proof that charging can be controlled on the development Mac.
 
 Current below-80%, Hold and Discharge decision: [SMC capability research](smc-charge-control.md) (2026-10-20). Historical implementation sections below retain their dated scope; current native product sessions are owned by [BAT-018](../tasks/BAT-018-native-limit-interface.md).

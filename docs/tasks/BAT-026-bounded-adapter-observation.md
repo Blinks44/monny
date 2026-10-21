@@ -1,5 +1,6 @@
 # BAT-026: Bounded adapter-source observation
 
+> Historical battery/helper record. The full build-23 implementation is preserved on `experiments/discharge` at abe3a80. Current native-only main scope is [APP-007](APP-007-native-simplification-design-parity.md); dated evidence below remains valid only for its stated artifact.
 - Updated: 2026-10-20
 - Stage: awaiting_verification (build-18 bounded source/settling acceptance passes; adapter lifecycle open)
 - Owner: app engineering; software ready for user verification

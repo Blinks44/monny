@@ -1,6 +1,6 @@
 # Monny: design direction and live source index
 
-Updated 2026-10-20. [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
+Updated 2026-10-21. [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
 
 ## Direction
 
@@ -33,6 +33,10 @@ Helper connection recovery card/action references were saved and reviewed live o
 Saved Monny.sketch now removes separate Hold from all 17 old mode references, including hidden no-battery source groups and Foundations. Charge and Discharge use two positions; holding at the chosen limit remains a status. All 13 reusable limit cards use 80/85/90/95/100 with matching knob/fill positions, and all six window/calibration control cards start at 80%. Native-limit standalone references are aligned too. Real battery readings/history axes and calibration discharge targets remain independent of the selectable charge limit.
 
 Reviewed live component screenshots and complete Light/Dark Battery frames; restored selected Charge icon typography and dark subtitle contrast using existing source layers/color variables. Sketch saved separately from Git; no screenshots exported into the repository. [BAT-020](tasks/BAT-020-remove-manual-hold.md) owns the decision/checks.
+
+## Current implementation reconciliation — 2026-10-21
+
+[APP-007](tasks/APP-007-native-simplification-design-parity.md) inspects the live source read-only and implements the native-only scope requested by the user. The Sketch document itself is not edited. Battery hero, 72-point gauge, 32-point white value, independent target marker, 12-point footer and 16-point app title follow the popover reference. Window content begins at x=248 with a 776-point content column in a 1040-point window; toolbar starts at y=20. Native control uses the supported five values plus an explicit enable switch; helper-specific guidance is superseded by persistent system-preference copy. Future Discharge/sailing/heat/calibration/trip designs stay unchanged and deferred. All six translations and Light/Dark app renders are reviewed separately; local render evidence is not committed.
 
 ## Readiness
 

@@ -43,14 +43,17 @@ nonisolated struct ProcessReader {
             // rusage times are Mach absolute time units, not nanoseconds, on Apple silicon.
             let cpu = (info.ri_user_time + info.ri_system_time) * UInt64(timebase.numer) / UInt64(timebase.denom)
             current[pid] = (cpu, info.ri_energy_nj, info.ri_diskio_bytesread, info.ri_diskio_byteswritten)
-            guard seconds > 0, let old = previous[pid] else { continue }
-            let cpuShare = Double(cpu &- old.cpu) / 1e9 / seconds
-            let power = Double(info.ri_energy_nj &- old.energy) / 1e9 / seconds
+            guard seconds > 0, let old = previous[pid],
+                  cpu >= old.cpu, info.ri_energy_nj >= old.energy,
+                  info.ri_diskio_bytesread >= old.read, info.ri_diskio_byteswritten >= old.written else { continue }
+            // A recycled PID/reset counter establishes a new baseline rather than a huge wrapped rate.
+            let cpuShare = Double(cpu - old.cpu) / 1e9 / seconds
+            let power = Double(info.ri_energy_nj - old.energy) / 1e9 / seconds
             usages.append(ProcessUsage(id: pid, name: Self.name(of: pid), cpu: max(cpuShare, 0),
                                        memory: Int64(clamping: info.ri_phys_footprint), power: max(power, 0),
                                        threads: Self.threadCount(of: pid),
-                                       diskRead: Double(info.ri_diskio_bytesread &- old.read) / seconds,
-                                       diskWrite: Double(info.ri_diskio_byteswritten &- old.written) / seconds))
+                                       diskRead: Double(info.ri_diskio_bytesread - old.read) / seconds,
+                                       diskWrite: Double(info.ri_diskio_byteswritten - old.written) / seconds))
         }
         previous = current
         return usages

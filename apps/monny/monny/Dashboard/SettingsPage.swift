@@ -3,14 +3,11 @@ import SwiftUI
 
 /// Settings in the dashboard (Sketch `08 · Window · Settings`, `12 · Errors`, `13 · Update available`).
 struct SettingsPage: View {
-    let helper: BatteryHelper
+    let controller: ChargeLimitController
     @AppStorage(PreferenceKey.refreshInterval) private var refreshInterval = 2
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
     @AppStorage(PreferenceKey.appearance) private var appearance = AppearancePreference.system
     @AppStorage(PreferenceKey.showsAlertBadge) private var showsAlertBadge = true
-    @AppStorage(PreferenceKey.defaultChargeLimit) private var chargeLimit = 80
-    @AppStorage(PreferenceKey.sailingRange) private var sailingRange = 5
-    @AppStorage(PreferenceKey.heatProtectionThreshold) private var heatThreshold = 35
     @AppStorage(PreferenceKey.notifyChargeLimit) private var notifyChargeLimit = true
     @AppStorage(PreferenceKey.notifyHot) private var notifyHot = true
     @AppStorage(PreferenceKey.notifyCalibration) private var notifyCalibration = true
@@ -28,16 +25,14 @@ struct SettingsPage: View {
                 menuBar
                 about
             }
+            .frame(minWidth: 0, maxWidth: .infinity)
             VStack(spacing: 28) {
                 if SystemInfo.hasBattery { battery }
                 notifications
             }
+            .frame(minWidth: 0, maxWidth: .infinity)
         }
-        .onAppear {
-            // Older builds allowed preferences below the supported product range.
-            if !(80...100).contains(chargeLimit) { chargeLimit = 80 }
-        }
-        .task { if SystemInfo.hasBattery { await helper.refresh() } }
+        .task { if SystemInfo.hasBattery { await controller.refresh() } }
     }
 
     private var general: some View {
@@ -129,27 +124,8 @@ struct SettingsPage: View {
     }
 
     private var battery: some View {
-        VStack(alignment: .leading, spacing: Theme.spaceM) {
-            SettingsSection("Battery") {
-                SettingsRow("Default charge limit") {
-                    PopupPicker(title: "Default charge limit", selection: $chargeLimit,
-                                options: stride(from: 80, through: 100, by: 5).map { ($0, Self.percentText($0)) })
-                }
-                SettingsRow("Sailing range") {
-                    PopupPicker(title: "Sailing range", selection: $sailingRange,
-                                options: [0, 3, 5, 10].map { ($0, Self.percentText($0)) })
-                }
-                SettingsRow("Heat protection above") {
-                    PopupPicker(title: "Heat protection above", selection: $heatThreshold, options: [30, 35, 40, 45].map { celsius in
-                        (celsius, Text(Double(celsius).temperatureText(temperatureUnit)))
-                    })
-                }
-                SettingsRow("Battery helper", subtitle: helper.statusSubtitle, isLast: true) {
-                    Chip(title: helper.statusTitle, kind: helper.state == .failed ? .danger : .neutral)
-                }
-            }
-            BatteryHelperBanner(helper: helper)
-            BatteryHelperActions(helper: helper)
+        SettingsSection("Battery") {
+            NativeLimitControls(controller: controller).padding(.vertical, 12)
         }
     }
 
@@ -161,7 +137,7 @@ struct SettingsPage: View {
         SettingsSection("Notifications") {
             CheckboxRow("Charge limit reached", isOn: $notifyChargeLimit)
             CheckboxRow("Mac is running hot", isOn: $notifyHot)
-            CheckboxRow("Calibration finished", isOn: $notifyCalibration)
+            CheckboxRow("Calibration finished", isOn: $notifyCalibration).disabled(true)
             CheckboxRow("Battery below 20%", isOn: $notifyLowBattery)
             CheckboxRow("Memory pressure is high", isOn: $notifyMemoryPressure, isLast: true)
         }

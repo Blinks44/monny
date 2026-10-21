@@ -20,7 +20,7 @@ struct PopoverView: View {
                 case .overview: OverviewTab(snapshot: model.sampler.snapshot, history: model.sampler.history)
                 case .battery: BatteryTab(battery: model.sampler.snapshot?.battery, health: model.sampler.batteryHealth,
                                            temperature: model.sampler.snapshot?.sensors?.battery,
-                                          helper: model.batteryHelper,
+                                          controller: model.chargeLimit,
                                           openSensors: { model.openDashboard(.sensors) })
                 case .processes: ProcessesTab(sampler: model.sampler)
                 }
@@ -41,7 +41,7 @@ struct PopoverView: View {
                 .frame(width: 34, height: 34)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 1) {
-                Text(verbatim: "Monny").font(Theme.headline.weight(.bold)).foregroundStyle(Theme.textPrimary)
+                Text(verbatim: "Monny").font(Theme.metricS).foregroundStyle(Theme.textPrimary)
                 TimelineView(.periodic(from: .now, by: 60)) { _ in
                     Text("\(SystemInfo.shortChipName) · up \(SystemInfo.uptimeText(ProcessInfo.processInfo.systemUptime))")
                         .font(Theme.footnote)
@@ -65,7 +65,7 @@ struct PopoverView: View {
                 Button("Open Dashboard") { model.openDashboard(nil) }
                     .buttonStyle(PlainLinkButtonStyle())
                 if let shortcut = KeyboardShortcuts.Name.openDashboard.shortcut?.description {
-                    Text(verbatim: shortcut).font(Theme.footnote).foregroundStyle(Theme.textTertiary)
+                    Text(verbatim: shortcut).font(.system(size: 12)).foregroundStyle(Theme.textTertiary)
                         .accessibilityLabel(Text("Shortcut \(shortcut)"))
                 }
                 Spacer(minLength: 0)

@@ -116,7 +116,7 @@ struct ProcessListCard: View {
             }
             .padding(.bottom, 10)
             if rows.isEmpty {
-                Text("No readings yet").font(Theme.body).foregroundStyle(Theme.textTertiary)
+                Text("Collecting data…").font(Theme.body).foregroundStyle(Theme.textTertiary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ForEach(rows) { ProcessListRow(row: $0, color: color) }

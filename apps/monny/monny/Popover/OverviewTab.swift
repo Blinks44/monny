@@ -248,7 +248,7 @@ private struct CoresCard: View {
     }
 }
 
-/// Battery level and state; the charge-limit switch arrives with the helper (PLAN phase 4).
+/// Battery level and measured source state.
 private struct BatteryStrip: View {
     let battery: BatteryReading?
 

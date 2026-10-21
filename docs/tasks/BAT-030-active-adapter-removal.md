@@ -1,5 +1,6 @@
 # BAT-030: Active adapter removal recovery
 
+> Historical battery/helper record. The full build-23 implementation is preserved on `experiments/discharge` at abe3a80. Current native-only main scope is [APP-007](APP-007-native-simplification-design-parity.md); dated evidence below remains valid only for its stated artifact.
 - Updated: 2026-10-21
 - Stage: done (one authorized installed build-23 active removal and post-removal checks pass)
 - Owner: app engineering; bounded acceptance recorded, ownership released

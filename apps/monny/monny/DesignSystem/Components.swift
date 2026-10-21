@@ -273,7 +273,7 @@ struct PlainLinkButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(Theme.bodyEmphasized)
+            .font(.system(size: 12, weight: .medium))
             .foregroundStyle(Theme.accentBrand)
             .opacity(isEnabled ? (configuration.isPressed ? 0.6 : 1) : 0.45)
             .contentShape(.rect)

@@ -15,9 +15,9 @@ Use **release.sh** for installed copies. It builds Release, copies the app into 
 Open `apps/monny/monny.xcodeproj` → target **monny** → General → Identity:
 
 - **Version** (`MARKETING_VERSION`): currently `1.0`; change for a user-visible release.
-- **Build** (`CURRENT_PROJECT_VERSION`): currently `23`; increment for every candidate, including the same marketing version.
+- **Build** (`CURRENT_PROJECT_VERSION`): currently `25`; increment for every candidate, including the same marketing version.
 
-Keep Debug/Release values consistent. The script reads Info.plist and automatically names `apps/monny/build/release/Monny-1.0-23.dmg`. It never increments versions or publishes. Keep the helper target build consistent with the app; helper protocol/version is a separate compatibility contract.
+Keep Debug/Release values consistent. The script reads Info.plist and automatically names `apps/monny/build/release/Monny-1.0-25.dmg`. It never increments versions or publishes. Main bundles no helper.
 
 ## Signing key
 
@@ -41,10 +41,6 @@ After reinstalling macOS, install Xcode/create-dmg, restore the repositories, im
 
 The temporary `build/apple-development/` output is retired; build 9 and future packages use `build/release/` by default. The build-8 comparison's historical hash and successful local connection are retained in [BAT-017](tasks/BAT-017-helper-launch-recovery.md).
 
-For updates from the currently installed Apple Development build, keep the same signer, quit Monny and replace the app from its DMG in Applications. Open the installed app and check Connected; install/approve only if needed. Never delete a functioning helper or change signer as routine release steps. A potentially writing helper requires authenticated restoration acknowledgement before removal. Status/diagnostics do not change charging; `--verify-native-limit` needs separate explicit authorization.
+For updates from historical helper builds, remove the helper through the old app first; the new native-only app has no helper migration/unregister code. Then quit and replace Monny with the same signer. Build 23 removal is already accepted on the development setup. No BTM reset, signing replacement or journal deletion is a routine installation step.
 
-Earlier signer changes left stale system launch constraints locally. An explicitly approved broad BTM reset plus restart recovered build 8; **resetbtm is not part of release or installation** and affects other apps. Repeated updates/restarts and another-Mac acceptance remain open. Public bundle directories/executables are 0755 and data 0644; native helper security fixtures remain mandatory in release.sh.
-
-## Advanced use
-
-`MONNY_SIGN_IDENTITY` selects an exact certificate name/fingerprint; `MONNY_SIGN_KEYCHAIN` selects an existing unlocked keychain. Normal releases need neither. There is only one package directory, `build/release/`; no separate signer-specific output/configuration or cross-repository script dependency. Keep the same intended identity in both repositories when deliberately updating their pinned fingerprint.
+Public bundle directories/executables are 0755 and data 0644. Release checks app/DMG strict signatures, Hardened Runtime, version and image integrity. Helper security fixtures are preserved only on experiments/discharge and are not part of the native-only package. Clean-Mac and notarization gates remain open.

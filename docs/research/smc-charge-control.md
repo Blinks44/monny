@@ -141,3 +141,8 @@ BAT-030 reuses the fixed checkpoint preparation and existing restoration acknowl
 ## Bounded active removal accepted — 2026-10-21
 
 The single authorized installed build-23 trial exits 0: active restoration acknowledgement and matching native settings precede unregister, direct unprivileged CHIE=0 and adapter source follow it. Independent launchd/process lookups show absence without XPC or registration. Native preservation is measured before removal only. Helper stays unregistered; no reinstall or further experiment is authorized. This accepts the observed removal path, not client-exit, sustained physical behavior or broader platforms ([BAT-030](../tasks/BAT-030-active-adapter-removal.md#authorized-installed-build-23-removal-accepted--2026-10-21)).
+
+
+## Main implementation simplified — 2026-10-21
+
+All helper/Discharge code and verification tools are preserved on experiments/discharge at abe3a80. Main now has no SMC setter or privileged helper. Ordinary-user runtime-checked PowerUI getters and distinct target setter/read-back succeeded locally; a final restore verified the original pair. Reasserting enable resets the target on the observed runtime, so direct control enables only when needed before setting the target. No adapter isolation was performed. The persistent system-preference contract supersedes old temporary native ownership: macOS enforces the chosen target after quit. macOS 26.4 execution and private API compatibility remain open ([APP-007](../tasks/APP-007-native-simplification-design-parity.md)).

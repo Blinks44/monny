@@ -1,6 +1,6 @@
 # Monny: current state
 
-Updated **2026-10-21**. Current work: [APP-007](tasks/APP-007-native-simplification-design-parity.md) production review on main. Main is a native monitor with the macOS 26.4+ system charge limit; no helper, XPC, SMC writes or Discharge. The helper/Discharge experiment is preserved on **experiments/discharge** at abe3a80.
+Updated **2026-10-22**. Current work: [APP-007](tasks/APP-007-native-simplification-design-parity.md) production review on main. Main is a native monitor with the macOS 26.4+ system charge limit; no helper, XPC, SMC writes or Discharge. The helper/Discharge experiment is preserved on **experiments/discharge** at abe3a80.
 
 ## Product and implementation
 
@@ -13,7 +13,7 @@ Updated **2026-10-21**. Current work: [APP-007](tasks/APP-007-native-simplificat
 - Six-language String Catalog: EN/RU/DE/FR/ES/zh-Hans. Retired helper text removed; retained copy reviewed and terminology corrected. Light/Dark/localized renders are temporary local evidence.
 - Distribution remains signed DMG outside the App Store; existing Apple Development signer, Hardened Runtime, App Sandbox off for system monitoring. Signed does not mean notarized. Website work remains deferred.
 
-**Candidate:** `apps/monny/build/release/Monny-1.0-37.dmg` with `appcast.xml` (signed Apple Development, not notarized): main 7fe24b0 plus the uncommitted pre-release review (bug fixes, dead code, copy); 41 tests/9 suites pass.
+**Candidate:** `apps/monny/build/release/Monny-1.0-42.dmg` with `appcast.xml` (signed Apple Development, not notarized): main 0636518 plus the uncommitted charge limit slider / Optimized Battery Charging change, checked on this Mac ([APP-014](tasks/APP-014-limit-slider-optimized-charging.md)), and pressed controls no longer fade (build 41, [DESIGN](DESIGN.md#rules-that-apply-to-every-screen)), Settings menu bar readings stacked vertically with About in the right column (build 42, [DES-002](tasks/DES-002-native-onboarding-next-features.md)); 44 tests/9 suites pass.
 
 ## Work and open checks
 
@@ -23,7 +23,8 @@ Updated **2026-10-21**. Current work: [APP-007](tasks/APP-007-native-simplificat
 | [CORE-002](tasks/CORE-002-temperatures-fans.md) | awaiting_verification | Compare temperature/fan readings with a reference on real hardware. |
 | [CORE-003](tasks/CORE-003-history.md) | awaiting_verification | User rechecks chart/hover behavior with accumulated history. |
 | [APP-012](tasks/APP-012-sparkle-updates.md) | awaiting_verification | End-to-end update between two published releases; off-device copy of the update key. |
-| [DES-002](tasks/DES-002-native-onboarding-next-features.md) | done | All designed features are implemented; Settings › About update switch still undrawn. |
+| [DES-002](tasks/DES-002-native-onboarding-next-features.md) | awaiting_verification | Revised Settings layout (stacked menu bar readings, About in the right column) implemented in build 42. User checks Settings in German/French. |
+| [DES-003](tasks/DES-003-ai-usage-limits.md) | in_design | Exploration of Claude Code/Codex/Cursor limits (quota left, opt-in via Settings/onboarding): popover, states, window, Settings and onboarding frames in Light/Dark. User reviews; data sources researched separately. Not in SPEC. |
 | [REL-001](tasks/REL-001-signing-workflow.md) | awaiting_verification | Clean second-Mac signing/install, signing backup restore/off-device copy. |
 
 Helper/Discharge task and verification records (BAT-*, APP-005/006) live on experiments/discharge only.

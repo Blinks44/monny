@@ -186,8 +186,6 @@ final class MenuBarController: NSObject, NSMenuDelegate {
             menu.addItem(.separator())
             menu.addItem(item(String(localized: "Turn Off Charge Limit"), #selector(disableLimit),
                               enabled: setting?.isEnabled == true))
-            menu.addItem(item(String(localized: "Set Limit to 100%"), #selector(fullLimit),
-                              enabled: setting.map { $0.available.contains(100) && !($0.isEnabled && $0.limit == 100) } ?? false))
         }
 
         menu.addItem(.separator())
@@ -212,11 +210,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
     @objc private func openSettings() { model.openDashboard(.settings) }
 
     @objc private func disableLimit() {
-        guard let setting = model.chargeLimit.setting else { return }
-        Task { await model.chargeLimit.set(limit: setting.limit, enabled: false) }
-    }
-    @objc private func fullLimit() {
-        Task { await model.chargeLimit.set(limit: 100, enabled: true) }
+        Task { await model.chargeLimit.set(target: ChargeLimit.noLimit) }
     }
 
     @objc private func showAbout() {

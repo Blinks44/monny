@@ -164,7 +164,7 @@ struct OnboardingView: View {
                 .keyboardShortcut(.cancelAction)
             Button("Use 80% Limit") {
                 Task {
-                    await model.chargeLimit.set(limit: 80, enabled: true)
+                    await model.chargeLimit.set(target: 80)
                     if !model.chargeLimit.failed { advance() }
                 }
             }

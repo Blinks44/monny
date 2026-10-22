@@ -133,7 +133,7 @@ struct IconButton: View {
                 .controlElevation()
                 .contentShape(.circle)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(StaticButtonStyle())
         .help(Text(label))
         .accessibilityLabel(Text(label))
         .onHover { isHovered = $0 }
@@ -195,6 +195,8 @@ struct UnavailableValue: View {
 
 // MARK: - Buttons
 
+// Pressed buttons darken like native push buttons instead of fading.
+
 /// Accent capsule for the one primary action (`Button/Primary`).
 struct PrimaryButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
@@ -206,7 +208,8 @@ struct PrimaryButtonStyle: ButtonStyle {
             .padding(.horizontal, 14)
             .frame(height: 32)
             .background(Theme.accentBrand.gradient, in: .capsule)
-            .opacity(isEnabled ? (configuration.isPressed ? 0.85 : 1) : 0.4)
+            .overlay { Capsule().fill(configuration.isPressed ? Theme.statePressed : .clear) }
+            .opacity(isEnabled ? 1 : 0.4)
             .contentShape(.capsule)
     }
 }
@@ -222,8 +225,9 @@ struct SecondaryButtonStyle: ButtonStyle {
             .padding(.horizontal, 14)
             .frame(height: 32)
             .background(Theme.surfaceControl, in: .capsule)
+            .overlay { Capsule().fill(configuration.isPressed ? Theme.statePressed : .clear) }
             .controlElevation()
-            .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.45)
+            .opacity(isEnabled ? 1 : 0.45)
             .contentShape(.capsule)
     }
 }
@@ -239,7 +243,8 @@ struct TintedButtonStyle: ButtonStyle {
             .padding(.horizontal, 14)
             .frame(height: 32)
             .background(Theme.statusInfoBg, in: .capsule)
-            .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.45)
+            .overlay { Capsule().fill(configuration.isPressed ? Theme.statePressed : .clear) }
+            .opacity(isEnabled ? 1 : 0.45)
             .contentShape(.capsule)
     }
 }
@@ -252,9 +257,15 @@ struct PlainLinkButtonStyle: ButtonStyle {
         configuration.label
             .font(.system(size: 12, weight: .medium))
             .foregroundStyle(Theme.accentBrand)
-            .opacity(isEnabled ? (configuration.isPressed ? 0.6 : 1) : 0.45)
+            .opacity(isEnabled ? 1 : 0.45)
             .contentShape(.rect)
     }
+}
+
+/// A button that keeps its label as drawn while pressed, unlike `.plain`, which dims it. Native
+/// switches, segments, links and clickable cards on macOS do not fade when clicked.
+struct StaticButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View { configuration.label }
 }
 
 // MARK: - Selection controls
@@ -281,7 +292,7 @@ struct SwitchStyle: ToggleStyle {
                 .opacity(isEnabled ? 1 : 0.45)
                 .contentShape(.capsule)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(StaticButtonStyle())
         .accessibilityRepresentation { Toggle(isOn: configuration.$isOn) { configuration.label } }
     }
 
@@ -322,7 +333,7 @@ struct CheckboxStyle: ToggleStyle {
             .opacity(isEnabled ? 1 : 0.45)
             .contentShape(.rect)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(StaticButtonStyle())
         .accessibilityRepresentation { Toggle(isOn: configuration.$isOn) { configuration.label } }
     }
 }
@@ -378,7 +389,8 @@ private struct PopupButtonStyle: ButtonStyle {
                 .shadow(color: .black.opacity(0.12), radius: 1, y: 1)
         }
         .overlay { shape.strokeBorder(Theme.controlRaisedStroke, lineWidth: 1) }
-        .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.45)
+        .overlay { shape.fill(configuration.isPressed ? Theme.statePressed : .clear) }
+        .opacity(isEnabled ? 1 : 0.45)
         .contentShape(shape)
     }
 }
@@ -443,7 +455,7 @@ struct SegmentedControl<Value: Hashable>: View {
                 .background { pill(isSelected) }
                 .contentShape(.capsule)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(StaticButtonStyle())
         // The control is the keyboard stop, not each segment.
         .focusable(false)
     }

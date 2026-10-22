@@ -52,7 +52,7 @@ private extension View {
     /// Makes the whole card a button without changing how it looks.
     func opens(_ page: DashboardPage, with open: @escaping (DashboardPage) -> Void) -> some View {
         Button { open(page) } label: { self }
-            .buttonStyle(.plain)
+            .buttonStyle(StaticButtonStyle())
             .contentShape(.focusEffect, .rect(cornerRadius: Theme.radiusCard, style: .continuous))
     }
 }

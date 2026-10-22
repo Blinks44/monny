@@ -1,7 +1,7 @@
 # DES-002: Native onboarding and next-feature screens
 
 - Updated: 2026-10-21
-- Stage: done (design saved; all its features implemented through build 35; Settings › About update switch still undrawn)
+- Stage: awaiting_verification (Settings frame `17` revision of 2026-10-22 implemented in build 42; long-language check open)
 - Owner: unassigned (design pass released 2026-10-21)
 - Owned surfaces: Monny.sketch pages `01 · Popover`, `02 · Window`, `03 · Flows & System` (frames listed below)
 - Requirements: [SPEC](../SPEC.md) §2, §3, §4, §6, §7; [PLAN](../PLAN.md#next-features) items 1–3 and 5, onboarding release gate
@@ -32,9 +32,9 @@ Design only. Each new or changed frame was checked by MCP screenshot in Light an
 
 - Sustained-load alert implemented with 80 % of one core for 5 minutes ([APP-011](APP-011-busy-app-alert.md)).
 - Power card implemented with shorter copy (no “Mac uses ·”, fits the minimum window width); on-battery values are compared against the battery's own output ([APP-013](APP-013-power-draw.md)).
-- Settings › About in frame `17` still lacks the “Check for updates automatically” row; build 34 adds it as an ordinary switch row with the onboarding copy. The old custom “update available” Settings state is replaced by Sparkle's standard window.
+- 2026-10-22: frame `17` (Light/Dark) revised. “Show in menu bar” checkboxes are stacked vertically instead of one row, because the three labels overflowed and wrapped in some languages; the Menu bar card is taller and About moved under Notifications in the right column. About now shows the “Check for updates automatically” row (as build 34 already does). Implemented in build 42 (`SettingsPage.swift`: the readings are a vertical stack, About sits under Notifications); 44 tests pass, `release.sh` produced `Monny-1.0-42.dmg`. Not yet viewed in German/French in the running app. The old custom “update available” Settings state is replaced by Sparkle's standard window.
 - The menu bar label width in German/French and the readings layout on a crowded menu bar are checked in the app.
 
 ## Next handoff
 
-Engineering: onboarding is implemented ([APP-009](APP-009-native-onboarding.md)); implement the remaining PLAN next-feature items using the frames above. Read them live through Sketch MCP.
+User: open Settings in build 42 in German and French and confirm the menu bar readings and About fit without wrapping.

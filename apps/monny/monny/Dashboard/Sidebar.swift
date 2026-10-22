@@ -84,7 +84,7 @@ private struct SidebarButton: View {
             }
             .contentShape(.rect)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(StaticButtonStyle())
         .focusable(false)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .onHover { isHovered = $0 }

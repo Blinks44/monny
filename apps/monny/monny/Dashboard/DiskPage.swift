@@ -74,7 +74,7 @@ private struct VolumesCard: View {
                         Button { NSWorkspace.shared.activateFileViewerSelecting([volume.url]) } label: {
                             VolumeRow(volume: volume)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(StaticButtonStyle())
                     }
                 }
             }

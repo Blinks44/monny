@@ -1,13 +1,16 @@
 import SwiftUI
 
-/// The system charge-limit preference, shared by the popover, Battery page and Settings.
+/// The system charge limit and Optimized Battery Charging, shared by the popover, Battery page and Settings.
 struct NativeLimitControls: View {
     let controller: ChargeLimitController
     @State private var selection = 0.0
+    /// The switch position chosen while macOS applies it, so the switch moves at once.
+    @State private var optimizedChoice: Bool?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var limits: [Int] { controller.setting?.available ?? [80, 85, 90, 95, 100] }
     private var selectedLimit: Int { limits[min(max(Int(selection.rounded()), 0), limits.count - 1)] }
-    private var isDisabled: Bool { controller.setting == nil || controller.isBusy }
+    private var isDisabled: Bool { controller.setting == nil }
 
     var body: some View {
         if ChargeLimit.isSupportedOS {
@@ -20,31 +23,23 @@ struct NativeLimitControls: View {
 
     private var controls: some View {
         VStack(alignment: .leading, spacing: 10) {
-            // As in Sketch `16 · Battery · Native limit control`: the switch first, then the target.
-            HStack {
-                Text("Use charge limit").font(Theme.bodyEmphasized)
-                Spacer()
-                Toggle("Use charge limit", isOn: Binding(get: { controller.setting?.isEnabled ?? false }, set: { enabled in
-                    apply(limit: selectedLimit, enabled: enabled)
-                }))
-                .labelsHidden().toggleStyle(SwitchStyle())
-            }
-            .disabled(isDisabled)
+            // As in Sketch `16 · Battery · Native limit control`: the target first, 100% means no limit.
             HStack {
                 Text("Charge limit").font(Theme.body)
                 Spacer()
-                Text((Double(selectedLimit) / 100).percentText)
-                    .font(Theme.metricS).foregroundStyle(Theme.statusSuccessText)
+                valueText.font(Theme.metricS).foregroundStyle(Theme.statusSuccessText)
             }
             Slider(value: $selection, in: 0...Double(max(1, limits.count - 1)), step: 1) {
                 Text("Charge limit")
             } onEditingChanged: { editing in
                 guard !editing else { return }
-                apply(limit: selectedLimit, enabled: true)
+                apply { await controller.set(target: selectedLimit) }
             }
             .labelsHidden().tint(Theme.metricBattery)
             .disabled(isDisabled)
-            .accessibilityValue(Text((Double(selectedLimit) / 100).percentText))
+            // Busy blocks input without the dimmed disabled look, which would flash on every change.
+            .allowsHitTesting(!controller.isBusy)
+            .accessibilityValue(valueText)
             HStack {
                 ForEach(Array(limits.enumerated()), id: \.element) { index, limit in
                     if index > 0 { Spacer(minLength: 0) }
@@ -54,8 +49,21 @@ struct NativeLimitControls: View {
             }
             .font(Theme.caption)
             .accessibilityHidden(true)
+            if let isOptimized = controller.setting?.isOptimized {
+                HStack {
+                    Text("Optimized Battery Charging").font(Theme.body)
+                    Spacer()
+                    Toggle("Optimized Battery Charging", isOn: Binding(get: { optimizedChoice ?? isOptimized }, set: { isOn in
+                        optimizedChoice = isOn
+                        apply { await controller.setOptimized(isOn) }
+                    }))
+                    .labelsHidden().toggleStyle(SwitchStyle())
+                }
+                .padding(.top, 4)
+                .allowsHitTesting(!controller.isBusy)
+            }
             if controller.failed {
-                Text("Couldn’t confirm the charge limit. Check Battery Settings.")
+                Text("Couldn’t confirm the setting. Check Battery Settings.")
                     .font(Theme.footnote).foregroundStyle(Theme.statusDangerText).fixedSize(horizontal: false, vertical: true)
             } else if controller.hasRead, controller.setting == nil {
                 Text("Charge limit isn’t available on this Mac.")
@@ -67,16 +75,22 @@ struct NativeLimitControls: View {
         .onChange(of: controller.setting) { sync() }
     }
 
+    private var valueText: Text {
+        selectedLimit == ChargeLimit.noLimit ? Text("No limit") : Text((Double(selectedLimit) / 100).percentText)
+    }
+
     /// Syncs afterwards: a failed change can leave the setting as it was, which `onChange` misses.
-    private func apply(limit: Int, enabled: Bool) {
+    private func apply(_ change: @escaping () async -> Void) {
         Task {
-            await controller.set(limit: limit, enabled: enabled)
+            await change()
             sync()
+            // Shows the confirmed value; moves the switch back if macOS kept the old one.
+            withAnimation(reduceMotion ? nil : .snappy(duration: 0.2)) { optimizedChoice = nil }
         }
     }
 
     /// Follows the system value, including changes made in System Settings.
     private func sync() {
-        selection = Double(limits.firstIndex(of: controller.setting?.limit ?? 80) ?? 0)
+        selection = Double(limits.firstIndex(of: controller.setting?.target ?? 80) ?? 0)
     }
 }

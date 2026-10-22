@@ -25,12 +25,12 @@ struct SettingsPage: View {
             VStack(spacing: 28) {
                 general
                 menuBar
-                about
             }
             .frame(minWidth: 0, maxWidth: .infinity)
             VStack(spacing: 28) {
                 if SystemInfo.hasBattery { battery }
                 notifications
+                about
             }
             .frame(minWidth: 0, maxWidth: .infinity)
         }
@@ -84,7 +84,8 @@ struct SettingsPage: View {
             }
             VStack(alignment: .leading, spacing: Theme.spaceM) {
                 Text("Show in menu bar").font(Theme.body).foregroundStyle(Theme.textPrimary)
-                HStack(spacing: Theme.spaceXL) {
+                // One reading per line: three labels in a row overflow in longer languages.
+                VStack(alignment: .leading, spacing: Theme.spaceM) {
                     Toggle("CPU load", isOn: $menuBarCPU)
                     Toggle("Temperature", isOn: $menuBarTemperature)
                     if SystemInfo.hasBattery { Toggle("Battery level", isOn: $menuBarBattery) }

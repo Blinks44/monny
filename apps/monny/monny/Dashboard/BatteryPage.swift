@@ -99,7 +99,7 @@ struct BatteryPage: View {
                 Button { showsChargingGuidance = true } label: {
                     Image(systemName: "info.circle").foregroundStyle(Theme.textSecondary)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(StaticButtonStyle())
                 .accessibilityLabel(Text("macOS charging settings"))
                 .popover(isPresented: $showsChargingGuidance) { MacOSChargingGuidance() }
             }

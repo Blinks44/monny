@@ -12,6 +12,9 @@
 - (BOOL)setMCLLimit:(unsigned char)limit error:(NSError **)error;
 - (BOOL)enableMCL:(NSError **)error;
 - (BOOL)disableMCL:(NSError **)error;
+- (unsigned long long)isSmartChargingCurrentlyEnabled:(NSError **)error;
+- (BOOL)enableSmartCharging:(NSError **)error;
+- (BOOL)disableSmartCharging:(NSError **)error;
 @end
 
 static BOOL methodMatches(Class type, SEL selector, const char *result, NSArray<NSString *> *arguments) {
@@ -50,6 +53,13 @@ static Class clientClass(void) {
     return type;
 }
 
+/// Optimized Battery Charging is optional: the charge limit keeps working without it.
+static BOOL hasOptimizedCharging(Class type) {
+    return methodMatches(type, @selector(isSmartChargingCurrentlyEnabled:), "Q", @[@"^@"]) &&
+        methodMatches(type, @selector(enableSmartCharging:), "B", @[@"^@"]) &&
+        methodMatches(type, @selector(disableSmartCharging:), "B", @[@"^@"]);
+}
+
 static id<MonnyChargeLimitClient> makeClient(void) {
     Class type = clientClass();
     if (!type) return nil;
@@ -78,6 +88,12 @@ MonnyChargeLimitState MonnyReadChargeLimit(void) {
             if (error || enabled > 1) return state;
             state.enabled = enabled == 1;
             state.available = true;
+            if (hasOptimizedCharging(clientClass())) {
+                NSError *optimizedError = nil;
+                unsigned long long optimized = [client isSmartChargingCurrentlyEnabled:&optimizedError];
+                state.optimizedKnown = !optimizedError && optimized <= 1;
+                state.optimized = optimized == 1;
+            }
         } @catch (NSException *exception) {
             state.available = false;
         }
@@ -104,6 +120,20 @@ bool MonnySetChargeLimitEnabled(bool enabled) {
             id<MonnyChargeLimitClient> client = makeClient();
             if (!client) return false;
             BOOL done = enabled ? [client enableMCL:&error] : [client disableMCL:&error];
+            return done && !error;
+        } @catch (NSException *exception) {
+            return false;
+        }
+    }
+}
+
+bool MonnySetOptimizedCharging(bool enabled) {
+    @autoreleasepool {
+        @try {
+            NSError *error = nil;
+            id<MonnyChargeLimitClient> client = makeClient();
+            if (!client || !hasOptimizedCharging(clientClass())) return false;
+            BOOL done = enabled ? [client enableSmartCharging:&error] : [client disableSmartCharging:&error];
             return done && !error;
         } @catch (NSException *exception) {
             return false;

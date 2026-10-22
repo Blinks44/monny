@@ -1,0 +1,97 @@
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  list-style: none;
+}
+
+/* The step number on a graphite tile, like the app icon. */
+.number {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  font: 700 22px/1 var(--monny-font-rounded);
+  color: #fff;
+  background: linear-gradient(#4e5058, #1c1d21);
+  box-shadow: 0 8px 18px rgb(0 0 0 / 0.18);
+}
+
+.steps li:nth-child(1) .number {
+  color: #b9a8ff;
+}
+
+.steps li:nth-child(2) .number {
+  color: #5eead4;
+}
+
+.steps li:nth-child(3) .number {
+  color: #6ee79a;
+}
+
+.title {
+  margin: 18px 0 6px;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.text {
+  font-size: 15px;
+  color: var(--monny-text-secondary);
+}
+
+/* The first-launch note: the app's blue info banner, with the Terminal command to copy. */
+.callout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 16px;
+  margin-top: 40px;
+  padding: 22px 24px;
+  border: 1px solid color-mix(in srgb, var(--monny-accent) 18%, transparent);
+  border-radius: 22px;
+  background: var(--monny-info-bg);
+}
+
+.callout > svg {
+  grid-row: span 3;
+  margin-top: 2px;
+  color: var(--monny-accent);
+}
+
+.calloutTitle {
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.calloutText {
+  font-size: 15px;
+  color: var(--monny-text-secondary);
+  text-wrap: pretty;
+}
+
+.command {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.command small {
+  font-size: 13px;
+  color: var(--monny-text-secondary);
+}
+
+@media (max-width: 860px) {
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  .callout {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .callout > svg {
+    grid-row: auto;
+  }
+}

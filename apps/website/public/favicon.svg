@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4E5058"/>
+      <stop offset="1" stop-color="#1C1D21"/>
+    </linearGradient>
+    <linearGradient id="cpu" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A897FF"/>
+      <stop offset="1" stop-color="#7C5CFF"/>
+    </linearGradient>
+    <linearGradient id="memory" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5EEAD4"/>
+      <stop offset="1" stop-color="#14B8A6"/>
+    </linearGradient>
+    <linearGradient id="battery" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6EE79A"/>
+      <stop offset="1" stop-color="#22C55E"/>
+    </linearGradient>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#tile)"/>
+  <rect x="261.12" y="439.84" width="122.88" height="307.2" rx="61.44" fill="url(#cpu)"/>
+  <rect x="450.56" y="276" width="122.88" height="471.04" rx="61.44" fill="url(#memory)"/>
+  <rect x="640" y="521.76" width="122.88" height="225.28" rx="61.44" fill="url(#battery)"/>
+</svg>

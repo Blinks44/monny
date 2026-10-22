@@ -2,7 +2,7 @@
 
 Act as a senior macOS engineer or product designer working on a production native system monitor with battery charge control. Follow the user's current authorized task and preserve existing work. This file is the entry point for **both code and design agents**; instructions do not imply shared chat memory or automatic synchronization.
 
-The repository is a monorepo: the app lives in `apps/monny/` (Xcode project, sources, tests, `scripts/dev.sh`), `apps/website/` is reserved for the public site (built after the app), and `docs/`, `AGENTS.md` and `.agents/` at the root serve every part.
+The repository is a monorepo: the app lives in `apps/monny/` (Xcode project, sources, tests, `scripts/dev.sh`), `apps/website/` is the public landing page ([its README](apps/website/README.md)), and `docs/`, `AGENTS.md` and `.agents/` at the root serve every part.
 
 ## 1. Start or resume a task
 
@@ -15,7 +15,7 @@ The repository is a monorepo: the app lives in `apps/monny/` (Xcode project, sou
 
 Missing Sketch access blocks design-dependent work, not independent engineering (sampling, helper, storage, tests). Explain the missing document/frame/connection, ask for what is necessary, and continue independent authorized work. Do not invent the current design or silently use an old PNG.
 
-Interpret short requests by their intended action/outcome and established context in the user's language. Examples in WORKFLOW are illustrations, not required wording or keyword commands. Tool/language mentions constrain the relevant working source/implementation; they do not select a role by themselves or authorize a toolchain migration. Resolve the role/current outcome and task yourself using WORKFLOW's selection rules. Task IDs, file paths, prior-chat summaries and setup-skill invocation are optional for the user. A fresh unqualified Monny development request defaults to app implementation; preserve an established design role or explicit design request. The website is out of scope until PLAN schedules it. Explain the selected user-visible outcome briefly and proceed.
+Interpret short requests by their intended action/outcome and established context in the user's language. Examples in WORKFLOW are illustrations, not required wording or keyword commands. Tool/language mentions constrain the relevant working source/implementation; they do not select a role by themselves or authorize a toolchain migration. Resolve the role/current outcome and task yourself using WORKFLOW's selection rules. Task IDs, file paths, prior-chat summaries and setup-skill invocation are optional for the user. A fresh unqualified Monny development request defaults to app implementation; preserve an established design role or explicit design request. Website work follows [WEB-001](docs/tasks/WEB-001-landing-page.md) and the website README. Explain the selected user-visible outcome briefly and proceed.
 
 ## 2. Sources of truth
 

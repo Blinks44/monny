@@ -1,0 +1,19 @@
+/* A rounded tile in the metric's color with a white symbol, like the dashboard sidebar. */
+.icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  color: #fff;
+  background: linear-gradient(color-mix(in srgb, var(--tint) 72%, #fff), var(--tint));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+}
+
+.large {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--tint) 30%, transparent);
+}

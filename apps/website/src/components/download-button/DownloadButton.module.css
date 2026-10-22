@@ -1,0 +1,44 @@
+.button {
+  padding-inline: 26px;
+  font-size: 16px;
+  background-image: var(--monny-button-gloss);
+  border-color: rgb(255 255 255 / 0.3);
+  box-shadow: 0 8px 20px var(--monny-accent-glow);
+}
+
+.button:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.soon {
+  margin-left: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  background: rgb(255 255 255 / 0.22);
+}
+
+/* On the graphite call-to-action panel the button turns white. */
+.inverted {
+  color: #1c1d21;
+  background: #fff;
+  border-color: #fff;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.35);
+}
+
+.inverted .soon {
+  background: rgb(28 29 33 / 0.08);
+}
+
+.note {
+  font-size: 13px;
+  color: var(--monny-text-secondary);
+}
+
+.invertedNote {
+  color: rgb(255 255 255 / 0.8);
+}

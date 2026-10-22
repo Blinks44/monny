@@ -1,0 +1,92 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  min-height: calc(100vh - 64px - 104px);
+  padding-block: clamp(56px, 10vw, 112px);
+  text-align: center;
+}
+
+/* "404" on the app icon's three bars: violet, teal and green, each rising from the baseline. */
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(14px, 3vw, 26px);
+  height: clamp(180px, 30vw, 260px);
+  margin-bottom: clamp(16px, 3vw, 28px);
+}
+
+.bar {
+  display: flex;
+  justify-content: center;
+  width: clamp(76px, 14vw, 116px);
+  padding-top: clamp(14px, 2.4vw, 22px);
+  border-radius: 999px;
+  font: 700 clamp(44px, 8vw, 68px)/1 var(--monny-font-rounded);
+  color: #fff;
+  background: linear-gradient(var(--top), var(--bottom));
+  box-shadow: 0 24px 40px -12px color-mix(in srgb, var(--bottom) 55%, transparent);
+  transform-origin: bottom;
+  transition: translate 0.2s ease-out;
+  animation: rise 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+}
+
+.bar:hover {
+  translate: 0 -6px;
+}
+
+.bar:nth-child(1) {
+  --top: #a897ff;
+  --bottom: #7c5cff;
+  height: 66%;
+}
+
+.bar:nth-child(2) {
+  --top: #5eead4;
+  --bottom: #14b8a6;
+  height: 100%;
+  animation-delay: 0.1s;
+}
+
+.bar:nth-child(3) {
+  --top: #6ee79a;
+  --bottom: #22c55e;
+  height: 48%;
+  animation-delay: 0.2s;
+}
+
+@keyframes rise {
+  from {
+    scale: 1 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    animation: none;
+  }
+}
+
+.title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 650;
+  line-height: 1.12;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+.text {
+  max-width: 32em;
+  font-size: clamp(17px, 1.8vw, 20px);
+  line-height: 1.5;
+  color: var(--monny-text-secondary);
+  text-wrap: pretty;
+}
+
+.home {
+  margin-top: 8px;
+  background-image: var(--monny-button-gloss);
+  border-color: rgb(255 255 255 / 0.3);
+  box-shadow: 0 8px 20px var(--monny-accent-glow);
+}

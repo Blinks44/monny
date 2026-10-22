@@ -1,0 +1,27 @@
+.heading {
+  display: grid;
+  justify-items: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 860px;
+  margin-inline: auto;
+}
+
+.note {
+  max-width: 40em;
+  margin: 28px auto 0;
+  font-size: 14px;
+  text-align: center;
+  color: var(--monny-text-secondary);
+  text-wrap: pretty;
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

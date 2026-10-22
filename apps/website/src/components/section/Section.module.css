@@ -1,0 +1,3 @@
+.section {
+  padding-top: clamp(88px, 12vw, 144px);
+}

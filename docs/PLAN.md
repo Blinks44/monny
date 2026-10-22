@@ -12,7 +12,7 @@ Updated 2026-10-21. [STATE](STATE.md) indexes current evidence; [SPEC](SPEC.md) 
 2. Reconcile all implemented popover/dashboard/settings surfaces with Sketch; finish feasible interactions, natural copy and loading/unavailable states.
 3. Native-only battery limit: supported 80–100% system setting, ordinary-user read/write/read-back, explicit user gestures, no recurring control loop or setter at startup/wake. macOS owns enforcement and persistence. Validate macOS 26.4+ and private-runtime limitations.
 4. Onboarding, accessibility/localization and performance/release review. Existing login item remains; the manual update check moves to Sparkle (next feature 6).
-5. Signed release preparation, then website in apps/website.
+5. Signed release preparation and the landing page in apps/website (built 2026-10-22, [WEB-001](tasks/WEB-001-landing-page.md); not published).
 
 Sailing, manual heat-driven charge control, forced Discharge, calibration and trip automation remain deferred. The app does not show them; their Sketch frames remain for later.
 

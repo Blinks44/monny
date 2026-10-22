@@ -1,0 +1,59 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--monny-canvas-top) 72%, transparent);
+  backdrop-filter: saturate(1.6) blur(18px);
+  border-bottom: 1px solid var(--monny-separator);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 64px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.nav {
+  display: flex;
+  gap: 24px;
+  margin-right: 8px;
+}
+
+.nav a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--monny-text-secondary);
+  transition: color 0.15s;
+}
+
+.nav a:hover {
+  color: var(--monny-text-primary);
+}
+
+.download {
+  background-image: var(--monny-button-gloss);
+  box-shadow: 0 6px 16px var(--monny-accent-glow);
+}
+
+@media (max-width: 860px) {
+  .nav {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .download {
+    display: none;
+  }
+}

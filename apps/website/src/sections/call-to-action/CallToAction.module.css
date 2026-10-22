@@ -1,0 +1,39 @@
+/* The app icon's graphite, with its three bar colors glowing behind the heading. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: clamp(48px, 8vw, 88px) 24px;
+  border-radius: 32px;
+  text-align: center;
+  color: #fff;
+  background:
+    radial-gradient(360px circle at 22% 0, rgb(124 92 255 / 0.45), transparent),
+    radial-gradient(360px circle at 50% -10%, rgb(20 184 166 / 0.35), transparent),
+    radial-gradient(360px circle at 80% 0, rgb(34 197 94 / 0.35), transparent),
+    linear-gradient(#3a3b42, #1c1d21);
+  box-shadow: 0 40px 80px -30px rgb(0 0 0 / 0.45);
+}
+
+.panel img {
+  filter: drop-shadow(0 12px 24px rgb(0 0 0 / 0.4));
+}
+
+.title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 650;
+  line-height: 1.12;
+  letter-spacing: -0.022em;
+  color: inherit;
+  text-wrap: balance;
+}
+
+.lead {
+  font-size: clamp(17px, 1.8vw, 20px);
+  color: rgb(255 255 255 / 0.75);
+}
+
+.button {
+  margin-top: 8px;
+}

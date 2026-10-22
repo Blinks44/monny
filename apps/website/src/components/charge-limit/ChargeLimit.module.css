@@ -1,0 +1,137 @@
+.root {
+  display: grid;
+  gap: 14px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--monny-text-secondary);
+}
+
+.head span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* The battery: a capsule with a green fill, a cap and the dotted limit marker. */
+.battery {
+  position: relative;
+  display: flex;
+  height: 72px;
+  margin-right: 10px;
+  padding: 5px;
+  border: 2px solid light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.14));
+  border-radius: 22px;
+  background: light-dark(rgb(0 0 0 / 0.03), rgb(255 255 255 / 0.04));
+}
+
+.battery::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -11px;
+  width: 6px;
+  height: 22px;
+  translate: 0 -50%;
+  border-radius: 0 4px 4px 0;
+  background: light-dark(rgb(0 0 0 / 0.12), rgb(255 255 255 / 0.18));
+}
+
+.fill {
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+  border-radius: 16px;
+  font: 700 30px/1 var(--monny-font-rounded);
+  letter-spacing: -0.01em;
+  color: #fff;
+  background:
+    linear-gradient(rgb(255 255 255 / 0.28), transparent 50%),
+    linear-gradient(90deg, #22c55e, #4ade80);
+  box-shadow: 0 6px 16px rgb(34 197 94 / 0.3);
+}
+
+.marker {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 0;
+  border-left: 2px dotted var(--monny-text-secondary);
+  transition: left 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.marker span {
+  position: absolute;
+  bottom: -26px;
+  left: 0;
+  translate: -50% 0;
+  padding: 3px 7px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+  color: var(--monny-tooltip-text);
+  background: var(--monny-tooltip);
+}
+
+.facts {
+  margin-top: 36px;
+  font-size: 12px;
+  color: var(--monny-text-secondary);
+}
+
+.limit {
+  --moduix-slider-width: 100%;
+  display: grid;
+  gap: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--monny-separator);
+}
+
+.limitHead {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.limitHead strong {
+  font-size: 16px;
+  color: var(--monny-success-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.slider {
+  --moduix-slider-marker-dot-size: 0px;
+}
+
+.switchRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--monny-separator);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.switchRow small {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--monny-text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marker {
+    transition: none;
+  }
+}

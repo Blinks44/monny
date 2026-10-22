@@ -1,0 +1,58 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: clamp(32px, 6vw, 80px);
+}
+
+.points {
+  display: grid;
+  gap: 18px;
+  list-style: none;
+}
+
+.points li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+}
+
+.points strong {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.points p {
+  grid-column: 2;
+  font-size: 15px;
+  color: var(--monny-text-secondary);
+}
+
+.points svg {
+  grid-row: span 2;
+  margin-top: 3px;
+  color: var(--monny-battery);
+}
+
+.note {
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--monny-text-secondary);
+}
+
+/* The control on a raised card with a soft green glow behind it. */
+.card {
+  padding: 22px 22px 18px;
+  border: 1px solid var(--monny-card-stroke);
+  border-radius: 26px;
+  background: var(--monny-card-solid);
+  box-shadow:
+    0 30px 60px -20px var(--monny-shadow-panel),
+    0 0 100px -20px light-dark(rgb(34 197 94 / 0.35), rgb(34 197 94 / 0.25));
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

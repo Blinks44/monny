@@ -1,0 +1,9 @@
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding-block: 40px;
+  font-size: 13px;
+  color: var(--monny-text-secondary);
+}

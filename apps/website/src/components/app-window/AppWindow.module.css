@@ -1,0 +1,155 @@
+/* The dashboard window: a sidebar of metric pages and a content column of cards. */
+.window {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--monny-panel-stroke);
+  border-radius: 28px;
+  text-align: start;
+  font-size: 13px;
+  line-height: 1.35;
+  background: linear-gradient(var(--monny-window-top), var(--monny-window-bottom));
+  box-shadow:
+    0 50px 100px -30px var(--monny-shadow-panel),
+    0 0 120px -30px light-dark(rgb(124 92 255 / 0.25), rgb(124 92 255 / 0.2));
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  gap: 2px;
+  width: 196px;
+  padding: 16px 8px 8px;
+  border: 1px solid var(--monny-panel-stroke);
+  border-radius: 20px;
+  background: var(--monny-sidebar);
+  box-shadow: 0 6px 14px var(--monny-shadow-card);
+}
+
+.trafficLights {
+  display: flex;
+  gap: 8px;
+  padding: 0 8px 22px;
+}
+
+.trafficLights i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+
+.trafficLights i:nth-child(2) {
+  background: #febc2e;
+}
+
+.trafficLights i:nth-child(3) {
+  background: #28c840;
+}
+
+.overline {
+  padding: 0 12px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--monny-text-tertiary);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.selected {
+  background: var(--monny-sidebar-selection);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
+}
+
+.main {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  padding: 18px 12px 12px 16px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--monny-text-secondary);
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.card {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--monny-card-stroke);
+  border-radius: 18px;
+  background: var(--monny-card);
+  box-shadow: 0 3px 10px var(--monny-shadow-card);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tint);
+}
+
+.value {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  font-size: 11px;
+  color: var(--monny-text-secondary);
+}
+
+.chart {
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.chartTitle {
+  font-size: 14px;
+}
+
+@media (max-width: 860px) {
+  .sidebar {
+    display: none;
+  }
+
+  .summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .main {
+    padding: 12px 6px 6px;
+  }
+}

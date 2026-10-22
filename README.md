@@ -18,7 +18,7 @@ A native macOS menu bar utility for resource monitoring and battery charge contr
 | Path | Contents |
 | --- | --- |
 | `apps/monny/` | The macOS app: Xcode project, sources, tests and the `scripts/dev.sh` build script |
-| `apps/website/` | Reserved for the public landing page, built after the app |
+| `apps/website/` | The public landing page: TanStack Start on Rsbuild with moduix, six languages, Cloudflare Worker ([README](apps/website/README.md)) |
 | `docs/` | Specification, design notes, roadmap, current state and verification records |
 | `AGENTS.md`, `CLAUDE.md`, `.agents/` | Instructions and skills for coding and design agents |
 

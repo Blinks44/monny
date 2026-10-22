@@ -1,0 +1,130 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  padding-top: clamp(48px, 8vw, 96px);
+  text-align: center;
+}
+
+/* The badge wraps on phones instead of running off the screen. */
+.badge {
+  height: auto;
+  min-height: 30px;
+  padding-block: 5px;
+  white-space: normal;
+}
+
+.title {
+  max-width: 13em;
+  font-size: clamp(40px, 6.4vw, 72px);
+  font-weight: 700;
+  line-height: 1.03;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+/* The three icon colors run through the key words. */
+.title em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--monny-cpu), var(--monny-memory) 55%, var(--monny-battery));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lead {
+  max-width: 36em;
+  font-size: clamp(17px, 1.8vw, 20px);
+  line-height: 1.5;
+  color: var(--monny-text-secondary);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/*
+ * A slice of the desktop. The menu bar shares the desktop's grid columns (subgrid), so Monny's item
+ * and its popover sit in the same middle column and the popover always hangs right under the icon.
+ */
+.desktop {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 372px) minmax(140px, 0.45fr);
+  row-gap: 10px;
+  width: 100%;
+  max-width: 980px;
+  margin-top: 34px;
+  padding-bottom: 56px;
+  border: 1px solid var(--monny-panel-stroke);
+  border-radius: 32px;
+  overflow: hidden;
+  background:
+    radial-gradient(420px circle at 75% 30%, light-dark(rgb(255 255 255 / 0.5), rgb(124 92 255 / 0.14)), transparent),
+    linear-gradient(light-dark(#b8c8de, #1b2233), light-dark(#e6dfd3, #2a2420));
+  box-shadow: 0 40px 90px -40px var(--monny-shadow-panel);
+}
+
+.menuBar {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  height: 34px;
+  padding: 0 18px;
+  font-size: 13px;
+  color: light-dark(#1d1d1f, #f5f5f7);
+  background: light-dark(rgb(255 255 255 / 0.4), rgb(0 0 0 / 0.3));
+  backdrop-filter: blur(20px);
+}
+
+.apps {
+  grid-column: 1;
+  justify-self: start;
+  font-weight: 700;
+}
+
+/* Monny's menu bar item, highlighted while its popover is open. */
+.item {
+  display: grid;
+  grid-column: 2;
+  place-items: center;
+  justify-self: center;
+  width: 34px;
+  height: 24px;
+  border-radius: 7px;
+  background: light-dark(rgb(0 0 0 / 0.12), rgb(255 255 255 / 0.2));
+}
+
+.status {
+  grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.popover {
+  display: flex;
+  justify-content: center;
+  grid-column: 2;
+}
+
+/* On phones the popover takes the width; only Monny's item stays in the menu bar. */
+@media (max-width: 720px) {
+  .desktop {
+    grid-template-columns: 10px 1fr 10px;
+    padding-bottom: 24px;
+    border-radius: 24px;
+  }
+
+  .apps,
+  .status {
+    display: none;
+  }
+}

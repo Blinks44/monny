@@ -1,0 +1,326 @@
+/* The menu bar popover: a translucent panel with white cards, 26 pt corners and two soft shadows. */
+.panel {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 372px;
+  padding: 14px 14px 10px;
+  border: 1px solid var(--monny-panel-stroke);
+  border-radius: 26px;
+  text-align: start;
+  font-size: 13px;
+  line-height: 1.35;
+  background: linear-gradient(var(--monny-panel-top), var(--monny-panel-bottom));
+  backdrop-filter: blur(30px) saturate(1.6);
+  box-shadow:
+    0 30px 70px -10px var(--monny-shadow-panel),
+    0 6px 16px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.header small {
+  font-size: 11px;
+  color: var(--monny-text-secondary);
+}
+
+.headerButtons {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.headerButtons span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: var(--monny-text-secondary);
+  background: var(--monny-card-solid);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+}
+
+.list {
+  width: 100%;
+}
+
+/* Tabs size to their titles plus an equal share of the free width, like the app's segmented control. */
+.tab {
+  flex: 1 1 auto;
+  font-weight: 600;
+}
+
+.tab[data-selected] {
+  color: var(--monny-text-primary);
+}
+
+.content {
+  min-height: 488px;
+  padding-top: 12px;
+}
+
+/* The AI tab lists every tool and scrolls, as the app's popover does. */
+.scroll {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  max-height: 488px;
+  overflow-y: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--monny-card-stroke);
+  border-radius: 18px;
+  background: var(--monny-card);
+  box-shadow: 0 3px 10px var(--monny-shadow-card);
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-height: 22px;
+  font-weight: 600;
+  color: var(--monny-text-secondary);
+}
+
+.cardHead > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.center {
+  justify-items: center;
+}
+
+.caption {
+  font-size: 11px;
+  color: var(--monny-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.big {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.disk {
+  --moduix-progress-linear-range-bg: var(--monny-disk);
+}
+
+.rate {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.upload {
+  font-size: 12px;
+  color: var(--monny-upload);
+}
+
+.legend {
+  display: flex;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.legend i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: var(--monny-cpu);
+}
+
+.legend span:last-child i {
+  background: var(--monny-cpu-efficiency);
+}
+
+.cores {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 6px;
+  height: 40px;
+}
+
+/* Vertical bars without a label, so the track takes the whole row. */
+.core {
+  --moduix-progress-linear-vertical-width: 100%;
+  --moduix-progress-linear-height: 100%;
+  --moduix-progress-linear-track-width: 100%;
+  --moduix-progress-linear-track-radius: 5px;
+  --moduix-progress-linear-range-radius: 5px;
+  --moduix-progress-linear-range-bg: var(--monny-cpu);
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.efficiency {
+  --moduix-progress-linear-range-bg: var(--monny-cpu-efficiency);
+}
+
+/* The green battery strip at the bottom of Overview. */
+.batteryStrip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(90deg, var(--monny-success-bg), transparent), var(--monny-card);
+}
+
+.miniBattery {
+  position: relative;
+  flex: none;
+  width: 38px;
+  height: 20px;
+  padding: 2px;
+  border: 1.5px solid light-dark(rgb(0 0 0 / 0.18), rgb(255 255 255 / 0.25));
+  border-radius: 6px;
+}
+
+.miniBattery span {
+  display: block;
+  width: 80%;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--monny-battery);
+}
+
+.batteryText {
+  flex: 1;
+  min-width: 0;
+}
+
+.batteryText strong {
+  font-size: 18px;
+}
+
+.batteryText small {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--monny-success-text);
+}
+
+.limitToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--monny-text-secondary);
+}
+
+.process {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+}
+
+.process + .process {
+  border-top: 1px solid var(--monny-separator);
+}
+
+.appIcon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(color-mix(in srgb, var(--tint) 70%, #fff), var(--tint));
+}
+
+.processName {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.processName small {
+  display: block;
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--monny-text-secondary);
+}
+
+.processValue {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.sort {
+  display: flex;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.sort span {
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: var(--monny-text-secondary);
+}
+
+.sort span:first-child {
+  color: light-dark(#fff, #1d1d1f);
+  background: var(--monny-text-primary);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 4px 0;
+  border-top: 1px solid var(--monny-separator);
+  font-size: 12px;
+  color: var(--monny-text-secondary);
+}
+
+.footer span:first-child {
+  font-weight: 500;
+  color: var(--monny-accent);
+}
+
+.footer kbd {
+  margin-left: 6px;
+  font-family: inherit;
+  color: var(--monny-text-secondary);
+}

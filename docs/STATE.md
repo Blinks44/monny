@@ -40,3 +40,5 @@ User-accepted on 2026-10-21: installed build 27, charge-limit change visible in 
 Before release (user decision 2026-10-21): native onboarding (build 30), processes grouped by app (build 29), optional menu bar readings (build 31), sustained app load alert (build 33), Sparkle updates (build 34) and current power draw (build 35), all designed in [DES-002](tasks/DES-002-native-onboarding-next-features.md). Discharge research follows the release ([PLAN](PLAN.md#next-features)).
 
 Repository maintenance (2026-10-22): Claude co-author trailers removed from history; future commit attribution disabled in `.claude/settings.json`. See [history](history/2026-10.md#2026-10-22-remove-claude-commit-co-authorship). Historical commit IDs predate this rewrite. GitHub Contributors cache refresh remains external.
+
+Claude Code integration: native `AGENTS.md` loading (2.1.277+), no root `CLAUDE.md` adapter; shared skills via `.claude/skills`. See [verification](history/2026-10.md#2026-10-22-use-agentsmd-directly-in-claude-code).

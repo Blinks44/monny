@@ -1,0 +1,27 @@
+@import '@moduix/react/reset.css';
+@import '@moduix/react/style.css';
+@import './styles/tokens.css';
+
+html {
+  background: var(--moduix-background);
+  color: var(--moduix-foreground);
+  font-family: var(--moduix-font-sans);
+}
+body {
+  margin: 0;
+  min-width: 20rem;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--monny-metric-network);
+  outline-offset: 4px;
+}
+::selection {
+  background: var(--monny-metric-cpu);
+  color: var(--moduix-background);
+}

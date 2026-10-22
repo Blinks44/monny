@@ -1,0 +1,9 @@
+{
+  "$schema": "https://inlang.com/schema/project-settings",
+  "baseLocale": "en",
+  "locales": ["en", "ru", "de", "fr", "es", "zh-Hans"],
+  "modules": ["https://cdn.jsdelivr.net/npm/@inlang/plugin-message-format@4/dist/index.js"],
+  "plugin.inlang.messageFormat": {
+    "pathPattern": "./src/integrations/i18n/messages/{locale}.json"
+  }
+}

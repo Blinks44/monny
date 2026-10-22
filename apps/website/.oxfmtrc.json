@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "ignorePatterns": [
+    "src/routeTree.gen.ts",
+    "src/integrations/i18n/paraglide/**",
+    "dist/**",
+    ".wrangler/**",
+    ".tanstack/**",
+    "pnpm-lock.yaml"
+  ]
+}

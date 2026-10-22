@@ -1,0 +1,18 @@
+/* Iteration-one shell. Final sections and responsive composition come from Sketch. */
+.content {
+  max-width: 42rem;
+  text-align: center;
+}
+.content h1 {
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  line-height: 1.1;
+  font-weight: 600;
+  text-wrap: balance;
+}
+.content p {
+  margin-block: 1.5rem 2rem;
+  color: var(--monny-text-secondary);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}

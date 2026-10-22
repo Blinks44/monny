@@ -50,6 +50,10 @@ All listed frames are saved, including the two-mode and 80–100% charging updat
 
 The app icon (page `03`, frame `06 · Brand · App icon`) is a graphite tile with three rounded bars, violet, teal and green (CPU, memory, battery), and no baseline. The menu bar uses a monochrome template of the bars (16×14 pt) with an optional 7 pt alert dot. [AppIcon.icon](../apps/monny/monny/AppIcon.icon/) is the only app-icon input: a graphite linear-gradient fill plus one SVG layer per bar, composed by Icon Composer. To revise it, change the geometry in Sketch, update the SVG layers (1024 canvas = 2× the 512 frame), rebuild and inspect `Monny.app/Contents/Resources/AppIcon.icns`. Do not bake a corner mask, shadow or background into the layers. `docs/images/app-icon.png` is the README preview exported from a build.
 
+## Website
+
+Reviewed read-only 2026-10-22: **Monny.sketch → 05 · Website** owns the second-version landing and 404 in desktop/mobile sizes, the mobile menu, install-notice state and `Website · Implementation notes`. Follow those notes for moduix Calm/CSS Modules, dark-only semantic tokens, system typography, app-image exports and the first-launch notice. This website direction is separate from the native app's Light/Dark contract. The initialization is ready; full layout transfer is iteration two ([WEB-001](tasks/WEB-001-landing-page.md)). Sketch was not edited in the initialization turn.
+
 ## Updating this design contract
 
 Save and review changes in Sketch; keep states, copy and annotations there. Update only this short locator/readiness index and a concise task note. Record changed behavioral requirements in SPEC and native results in verification.

@@ -1,0 +1,13 @@
+{
+  "metaTitle": "Monny | Mac 系统监控工具",
+  "metaDescription": "查看 Mac 的 CPU、内存、磁盘、网络和电池状态。管理 macOS 原生充电上限，并按需查看 AI 使用额度。",
+  "heading": "Mac 状态，一目了然。",
+  "description": "在一款原生 Mac 应用中查看 CPU、内存、电池和 AI 使用额度。",
+  "github": "在 GitHub 上查看",
+  "language": "语言",
+  "skip": "跳转到内容",
+  "notFoundHeading": "这里没有可监测的内容",
+  "notFoundDescription": "你要查找的页面不存在或已移动。",
+  "home": "返回首页",
+  "notFoundTitle": "找不到页面 | Monny"
+}

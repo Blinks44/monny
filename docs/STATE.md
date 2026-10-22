@@ -12,7 +12,7 @@ Updated **2026-10-22**. Current work: AI limits ([APP-015](tasks/APP-015-ai-usag
 - Popover Battery now follows the live Sketch hero/gauge/target geometry. Footer/header typography, window content insets and toolbar spacing are reconciled with Sketch. Loading says “Collecting data…”; unavailable readings remain unavailable.
 - Six-language String Catalog: EN/RU/DE/FR/ES/zh-Hans. Retired helper text removed; retained copy reviewed and terminology corrected. Light/Dark/localized renders are temporary local evidence.
 - Distribution remains signed DMG outside the App Store; existing Apple Development signer, Hardened Runtime, App Sandbox off for system monitoring. Signed does not mean notarized.
-- Landing page in `apps/website/` (2026-10-22, [WEB-001](tasks/WEB-001-landing-page.md)): one page like Rebind's, six languages, 404, first-launch `xattr` note; built and checked locally, not published.
+- Website rebuild in `apps/website/` (2026-10-22, [WEB-001](tasks/WEB-001-landing-page.md)): iteration-one foundation reviewed and ready (TanStack Start/React 19, Vite, moduix, Paraglide, six-language SSR/SEO, HTTP 404, Oxlint/Oxfmt, local Cloudflare runtime, seven HTTP smoke tests and rebuilding dry-run). Next: transfer the new `Monny.sketch → 05 · Website` design. Minimal shells remain `noindex`; not published.
 
 Optional AI limits ([APP-015](tasks/APP-015-ai-usage-limits.md)): Claude Code and Codex (build 44, accepted), Cursor and Grok (build 45, unverified on real accounts) in a popover tab, an AI usage page and a running-low notification, off by default, with a checkbox per tool. On, Monny calls the services' usage endpoints with the tools' own sign-in on this Mac ([research](research/ai-usage-limits.md)); this is the one network exception besides Sparkle. Gemini is not possible without cookies.
 
@@ -28,7 +28,7 @@ Optional AI limits ([APP-015](tasks/APP-015-ai-usage-limits.md)): Claude Code an
 | [APP-012](tasks/APP-012-sparkle-updates.md) | awaiting_verification | End-to-end update between two published releases; off-device copy of the update key. |
 | [DES-002](tasks/DES-002-native-onboarding-next-features.md) | awaiting_verification | Revised Settings layout (stacked menu bar readings, About in the right column) implemented in build 42. User checks Settings in German/French. |
 | [APP-015](tasks/APP-015-ai-usage-limits.md) | awaiting_verification | Claude/Codex accepted in build 44. Build 47 reviewed and committed. Open, waiting for accounts: Cursor, Grok, model limits and credits on real accounts; chart, forecast, stale reading and notification after a few days of real history; HTTP 429 over long sessions. Design source: [DES-003](tasks/DES-003-ai-usage-limits.md); Cursor not implemented. |
-| [WEB-001](tasks/WEB-001-landing-page.md) | awaiting_verification | User reviews look and copy; then `pnpm preview` and publishing on request. |
+| [WEB-001](tasks/WEB-001-landing-page.md) | ready_for_implementation | Iteration one complete. Next: transfer the live website design into the initialized app; production domain and publishing remain unchecked. |
 | [REL-001](tasks/REL-001-signing-workflow.md) | awaiting_verification | Clean second-Mac signing/install, signing backup restore/off-device copy. |
 
 Helper/Discharge task and verification records (BAT-*, APP-005/006) live on experiments/discharge only.

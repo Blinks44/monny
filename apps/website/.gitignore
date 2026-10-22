@@ -1,0 +1,13 @@
+# Dependencies and reproducible build output; keep the lockfile.
+node_modules/
+dist/
+.tanstack/
+.wrangler/
+# Local environment values and credentials.
+.env*
+!.env.example
+.dev.vars*
+
+# Paraglide compiler output and downloaded inlang plugin cache.
+src/integrations/i18n/paraglide/
+project.inlang/.cache/

@@ -1,0 +1,4 @@
+# Build scripts required by the bundler and Cloudflare's local Workers runtime.
+allowBuilds:
+  esbuild: true
+  workerd: true

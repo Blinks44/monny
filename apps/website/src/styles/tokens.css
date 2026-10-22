@@ -1,0 +1,31 @@
+/* Monny.sketch > 05 · Website > Implementation notes, reviewed 2026-10-22.
+   Calm owns control geometry. Override semantic tokens, not component internals. */
+:root,
+[data-moduix-color-scheme='dark'] {
+  color-scheme: dark;
+  --moduix-font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --moduix-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --moduix-background: #0b0b0d;
+  --moduix-foreground: #f5f5f7;
+  --moduix-primary: #f5f5f7;
+  --moduix-primary-foreground: #0b0b0d;
+  --moduix-card: #ffffff0d;
+  --moduix-card-foreground: #f5f5f7;
+  --moduix-border: #ffffff14;
+  --moduix-muted-foreground: #a1a1a6;
+  --monny-text-secondary: #a1a1a6;
+  --monny-text-tertiary: #8e8e93;
+  --monny-control: #ffffff24;
+  --monny-track: #ffffff14;
+  --monny-separator: #ffffff12;
+  --monny-metric-cpu: #9b82ff;
+  --monny-metric-memory: #2dd4bf;
+  --monny-metric-disk: #fbbf24;
+  --monny-metric-network: #60a5fa;
+  --monny-metric-upload: #e08af0;
+  --monny-metric-battery: #34d374;
+  --monny-metric-heat: #fda05a;
+  --monny-metric-heat-hot: #fb6f86;
+  --monny-content-width: 75rem;
+  --monny-page-gutter: clamp(1.25rem, 4vw, 3rem);
+}

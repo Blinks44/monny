@@ -1,0 +1,13 @@
+{
+  "metaTitle": "Monny | System monitor for Mac",
+  "metaDescription": "Monitor CPU, memory, disk, network and battery on your Mac. Manage the native macOS charge limit and check optional AI usage limits.",
+  "heading": "Your Mac, at a glance.",
+  "description": "CPU, memory, battery and AI usage limits in one native Mac app.",
+  "github": "View on GitHub",
+  "language": "Language",
+  "skip": "Skip to content",
+  "notFoundHeading": "Nothing to measure here",
+  "notFoundDescription": "The page you’re looking for doesn’t exist or has moved.",
+  "home": "Back to home",
+  "notFoundTitle": "Page not found | Monny"
+}

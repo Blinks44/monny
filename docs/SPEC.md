@@ -93,3 +93,9 @@ Three steps from Sketch page `03`: Welcome, Charge limit and Ready; no helper st
 ## 9. Open product decisions
 
 - Time estimates (“about 1 h 05 min left”, “80% in 25 min”): proposal is to show macOS's own estimate and hide it while macOS is still calculating, instead of computing our own.
+
+## 10. Public website
+
+User decisions 2026-10-22: a landing page and a real HTTP 404 at **monny.moduix.dev**, hosted on Cloudflare Workers in the existing moduix.dev zone. TanStack Start with React 19, moduix CSS Modules components wherever suitable, Lucide icons, Paraglide localization for EN/RU/DE/FR/ES/zh-Hans, Oxlint/Oxfmt, and the requested feature-based `src` structure. Product components use a folder with `Component.tsx`, `Component.module.css` and `index.ts`. Prefer direct library use and simple code over custom primitives or generators.
+
+Implement in two iterations: (1) application, dependencies, tokens, localization, SEO and deployment configuration; (2) full transfer of `Monny.sketch → 05 · Website`. The website is dark only per that source. Content must describe current app behavior and limitations, with no fabricated readings, performance figures, ratings, release downloads or deferred charging features. Preserve the first-launch notice until notarization. All language versions must have server-rendered copy and metadata, canonical/hreflang, share metadata, suitable structured data, sitemap and robots. Missing pages must remain 404/noindex and must not canonicalize to the home page. Keep the unfinished shell noindex until the final landing is ready. Production publishing requires a separate request. [WEB-001](tasks/WEB-001-landing-page.md) owns implementation evidence and open checks.

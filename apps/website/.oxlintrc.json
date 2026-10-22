@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "jsx-a11y", "vitest"],
+  "categories": { "correctness": "error" },
+  "ignorePatterns": [
+    "src/routeTree.gen.ts",
+    "src/integrations/i18n/paraglide/**",
+    "dist/**",
+    ".wrangler/**",
+    ".tanstack/**"
+  ]
+}

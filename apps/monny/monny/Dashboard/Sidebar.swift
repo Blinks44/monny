@@ -5,6 +5,7 @@ import SwiftUI
 /// The focus outline appears only once the keyboard is used.
 struct Sidebar: View {
     @Binding var selection: DashboardPage
+    @AppStorage(PreferenceKey.showsAILimits) private var showsAILimits = false
     @FocusState private var isFocused: Bool
     private var showsFocus: Bool { isFocused && FocusVisibility.shared.isVisible }
 
@@ -17,7 +18,7 @@ struct Sidebar: View {
                 .padding(.leading, 12)
                 .padding(.bottom, 4)
                 .accessibilityAddTraits(.isHeader)
-            ForEach(DashboardPage.allCases.filter { $0 != .settings }, id: \.self) { page in
+            ForEach(DashboardPage.visible(showsAILimits: showsAILimits).filter { $0 != .settings }, id: \.self) { page in
                 SidebarButton(page: page, isSelected: selection == page, isFocused: showsFocus) { selection = page }
             }
             Spacer(minLength: Theme.spaceXL)
@@ -40,8 +41,11 @@ struct Sidebar: View {
         .focusEffectDisabled()
         .focused($isFocused)
         .defaultFocus($isFocused, true)
+        .onChange(of: showsAILimits) { _, shows in
+            if !shows, selection == .aiUsage { selection = .overview }
+        }
         .onKeyPress(keys: [.upArrow, .downArrow]) { press in
-            let pages = DashboardPage.allCases
+            let pages = DashboardPage.visible(showsAILimits: showsAILimits)
             guard let index = pages.firstIndex(of: selection) else { return .ignored }
             selection = pages[min(max(index + (press.key == .upArrow ? -1 : 1), 0), pages.count - 1)]
             return .handled
@@ -118,6 +122,7 @@ extension DashboardPage {
         case .network: "network"
         case .battery: "battery.100percent"
         case .sensors: "thermometer.medium"
+        case .aiUsage: "asterisk"
         case .settings: "gearshape"
         }
     }
@@ -132,6 +137,7 @@ extension DashboardPage {
         case .network: Theme.metricNetwork
         case .battery: Theme.metricBattery
         case .sensors: Theme.metricHeatHot
+        case .aiUsage: Theme.accentIconGraphite
         case .settings: nil
         }
     }

@@ -17,6 +17,12 @@ enum PreferenceKey {
     static let menuBarCPU = "menuBarCPU"
     static let menuBarTemperature = "menuBarTemperature"
     static let menuBarBattery = "menuBarBattery"
+    /// Settings › AI limits: plan limits of Claude Code, Codex, Cursor and Grok, off by default.
+    static let showsAILimits = "showsAILimits"
+    static let notifyAILimit = "notifyAILimit"
+    static let aiHistoryRange = "aiHistoryRange"
+    /// Tools found on this Mac but unchecked in Settings › AI limits (raw `AITool` values).
+    static let aiHiddenTools = "aiHiddenTools"
 }
 
 enum TemperatureUnit: String, CaseIterable {

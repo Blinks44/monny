@@ -44,23 +44,26 @@ private struct SpacedLabelStyle: LabelStyle {
     }
 }
 
-/// Small status capsule (`Chip/Success`, `Warning`, `Danger`, `Neutral`, `Memory`).
+/// Small status capsule (`Chip/Success`, `Warning`, `Danger`, `Neutral`, `Memory`). The small
+/// size (18 pt, 10 pt text) sits inside a line of text, as on the AI limit rows.
 struct Chip: View {
     enum Kind { case success, warning, danger, neutral, memory }
 
     let title: Text
     var symbol: String?
     var kind: Kind = .neutral
+    var isSmall = false
 
-    init(title: LocalizedStringKey, symbol: String? = nil, kind: Kind = .neutral) {
-        self.init(title: Text(title), symbol: symbol, kind: kind)
+    init(title: LocalizedStringKey, symbol: String? = nil, kind: Kind = .neutral, isSmall: Bool = false) {
+        self.init(title: Text(title), symbol: symbol, kind: kind, isSmall: isSmall)
     }
 
     /// For a formatted value such as a temperature.
-    init(title: Text, symbol: String? = nil, kind: Kind = .neutral) {
+    init(title: Text, symbol: String? = nil, kind: Kind = .neutral, isSmall: Bool = false) {
         self.title = title
         self.symbol = symbol
         self.kind = kind
+        self.isSmall = isSmall
     }
 
     private var colors: (text: Color, fill: Color) {
@@ -78,10 +81,10 @@ struct Chip: View {
             if let symbol { Image(systemName: symbol).accessibilityHidden(true) }
             title
         }
-        .font(Theme.footnote.weight(.semibold))
+        .font(isSmall ? Theme.caption.weight(.semibold) : Theme.footnote.weight(.semibold))
         .foregroundStyle(colors.text)
-        .padding(.horizontal, 8)
-        .frame(height: 22)
+        .padding(.horizontal, isSmall ? 6 : 8)
+        .frame(height: isSmall ? 18 : 22)
         .background(colors.fill, in: .capsule)
     }
 }
@@ -414,7 +417,10 @@ struct SegmentedControl<Value: Hashable>: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        HStack(spacing: style == .tabs ? 0 : 6) {
+        // Tabs size to their titles, as a native segmented control does, so a long title such as
+        // the Russian “Аккумулятор” keeps its room; chips share the width equally.
+        let layout = style == .tabs ? AnyLayout(FittedSegmentsLayout()) : AnyLayout(HStackLayout(spacing: 6))
+        layout {
             ForEach(options, id: \.value) { option in
                 segment(option.value, label: option.label)
             }
@@ -450,6 +456,7 @@ struct SegmentedControl<Value: Hashable>: View {
                 .foregroundStyle(foreground(isSelected))
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
+                .padding(.horizontal, style == .tabs ? 8 : 0)
                 .frame(maxWidth: .infinity)
                 .frame(height: style == .tabs ? height - 6 : 24)
                 .background { pill(isSelected) }
@@ -486,6 +493,29 @@ struct SegmentedControl<Value: Hashable>: View {
             }
         case .chips:
             Capsule().fill(isSelected ? Theme.textPrimary : Theme.fillTrack)
+        }
+    }
+}
+
+/// Segments side by side at their ideal widths plus an equal share of the space left; when the
+/// titles do not fit, every segment shrinks in proportion and its text scales down.
+struct FittedSegmentsLayout: Layout {
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let ideals = subviews.map { $0.sizeThatFits(.unspecified) }
+        let width = proposal.width ?? ideals.reduce(0) { $0 + $1.width }
+        return CGSize(width: width, height: ideals.map(\.height).max() ?? 0)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let ideals = subviews.map { $0.sizeThatFits(.unspecified).width }
+        let total = ideals.reduce(0, +)
+        guard !subviews.isEmpty, total > 0 else { return }
+        let extra = bounds.width - total
+        var x = bounds.minX
+        for (subview, ideal) in zip(subviews, ideals) {
+            let width = extra >= 0 ? ideal + extra / CGFloat(subviews.count) : ideal * bounds.width / total
+            subview.place(at: CGPoint(x: x, y: bounds.midY), anchor: .leading, proposal: ProposedViewSize(width: width, height: bounds.height))
+            x += width
         }
     }
 }

@@ -13,6 +13,8 @@ nonisolated struct AlertMonitor {
         case memoryPressure
         /// One app, helpers included, above `busyAppCPU` for `busyAppDuration`; `pid` is the app's.
         case busyApp(pid: pid_t, name: String)
+        /// An AI plan window is running low or used up (`AILowWindows` decides).
+        case aiLimitLow(AITool, AIQuotaWindow)
     }
 
     /// The level below which "Battery below 20%" fires.
@@ -87,12 +89,17 @@ extension AlertMonitor.Alert {
         case .lowBattery: PreferenceKey.notifyLowBattery
         case .memoryPressure: PreferenceKey.notifyMemoryPressure
         case .busyApp: PreferenceKey.notifyBusyApp
+        case .aiLimitLow: PreferenceKey.notifyAILimit
         }
     }
 
     /// Two apps can be busy at once, so each gets its own notification.
     var identifier: String {
-        if case .busyApp(let pid, _) = self { "\(preferenceKey).\(pid)" } else { preferenceKey }
+        switch self {
+        case .busyApp(let pid, _): "\(preferenceKey).\(pid)"
+        case .aiLimitLow(let tool, let window): "\(preferenceKey).\(tool.rawValue).\(window.id)"
+        default: preferenceKey
+        }
     }
 
     var title: String {
@@ -102,6 +109,8 @@ extension AlertMonitor.Alert {
         case .lowBattery: String(localized: "Battery below 20%")
         case .memoryPressure: String(localized: "Memory pressure is high")
         case .busyApp(_, let name): String(localized: "\(name) is keeping your Mac busy")
+        case .aiLimitLow(let tool, let window) where window.isExhausted: String(localized: "\(window.serviceName(tool)) limit reached")
+        case .aiLimitLow(let tool, let window): String(localized: "\(window.serviceName(tool)) limit is running low")
         }
     }
 
@@ -121,6 +130,27 @@ extension AlertMonitor.Alert {
             String(localized: "Quit apps you don’t need to free up memory.")
         case .busyApp:
             String(localized: "Over \(AlertMonitor.busyAppCPU.percentText) CPU for the last 5 minutes. Quit it if you don’t need it.")
+        case .aiLimitLow(_, let window) where window.isExhausted:
+            switch (window.kind, window.resetsAt) {
+            case (.session, let date?): String(localized: "The 5-hour limit is used up. It resets \(date.resetText).")
+            case (.weekly, let date?): String(localized: "The weekly limit is used up. It resets \(date.resetText).")
+            case (.session, nil): String(localized: "The 5-hour limit is used up.")
+            case (.weekly, nil): String(localized: "The weekly limit is used up.")
+            case (.monthly, let date?): String(localized: "The monthly limit is used up. It resets \(date.resetText).")
+            case (.monthly, nil): String(localized: "The monthly limit is used up.")
+            }
+        case .aiLimitLow(_, let window):
+            switch (window.kind, window.resetsAt) {
+            case (.session, let date?):
+                String(localized: "\(window.left.percentText) of the 5-hour limit left, and it resets \(date.resetText).")
+            case (.weekly, let date?):
+                String(localized: "\(window.left.percentText) of the weekly limit left, and it resets \(date.resetText).")
+            case (.session, nil): String(localized: "\(window.left.percentText) of the 5-hour limit left.")
+            case (.weekly, nil): String(localized: "\(window.left.percentText) of the weekly limit left.")
+            case (.monthly, let date?):
+                String(localized: "\(window.left.percentText) of the monthly limit left, and it resets \(date.resetText).")
+            case (.monthly, nil): String(localized: "\(window.left.percentText) of the monthly limit left.")
+            }
         }
     }
 }
@@ -164,7 +194,7 @@ private extension AlertMonitor.Alert {
     var isOnByDefault: Bool {
         switch self {
         case .hot, .chargeLimitReached: true
-        case .lowBattery, .memoryPressure, .busyApp: false
+        case .lowBattery, .memoryPressure, .busyApp, .aiLimitLow: false
         }
     }
 }

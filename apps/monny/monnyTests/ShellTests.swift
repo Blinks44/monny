@@ -6,7 +6,7 @@ import Testing
 struct ShellTests {
     /// The sidebar follows the Sketch order, with Settings last.
     @Test func dashboardPageOrder() {
-        #expect(DashboardPage.allCases == [.overview, .cpu, .memory, .disk, .network, .battery, .sensors, .settings])
+        #expect(DashboardPage.allCases == [.overview, .cpu, .memory, .disk, .network, .battery, .sensors, .aiUsage, .settings])
         #expect(!DashboardPage.settings.showsTimeRange)
     }
 

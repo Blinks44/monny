@@ -19,6 +19,7 @@ struct OnboardingView: View {
     @State private var step = Step.welcome
     @State private var launchAtLogin = true
     @AppStorage(OnboardingWindow.completedKey) private var completed = false
+    @AppStorage(PreferenceKey.showsAILimits) private var showsAILimits = false
     @Environment(\.dismissWindow) private var dismissWindow
 
     private var offersChargeLimit: Bool { model.chargeLimit.setting != nil }
@@ -44,7 +45,8 @@ struct OnboardingView: View {
         // 52 pt from the window top and 540 pt in all, as drawn.
         .padding(.top, 20)
         .padding([.horizontal, .bottom], 40)
-        .frame(width: 600, height: 508)
+        // Ready has a third setting row and is 24 pt taller, as drawn.
+        .frame(width: 600, height: step == .ready ? 532 : 508)
         .background { WindowBackground() }
         .onDisappear { completed = true }
     }
@@ -119,6 +121,8 @@ struct OnboardingView: View {
                 SettingRow(title: "Check for updates automatically",
                            detail: "Monny asks before installing a new version", isOn: Binding(get: { model.updater.automaticallyChecksForUpdates },
                                          set: { model.updater.automaticallyChecksForUpdates = $0 }))
+                Divider().overlay(Theme.fillSeparator)
+                SettingRow(title: "Show AI limits", detail: "Claude Code, Codex, Cursor and Grok usage in Monny", isOn: $showsAILimits)
             }
             .padding(.horizontal, 16)
             .frame(width: 380)

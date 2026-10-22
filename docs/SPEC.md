@@ -28,12 +28,14 @@ Each metric, sensor and battery mode is reported with one label: `not implemente
 
 ## 3. Popover
 
-Header: app icon, Monny, Mac model · chip · uptime; buttons to open the dashboard and Settings. Three tabs.
+Header: app icon, Monny, Mac model · chip · uptime; buttons to open the dashboard and Settings. Three tabs, plus AI when AI limits are on.
 
 **Overview:** CPU load with P/E split and CPU temperature chip (warns when hot), memory used with pressure chip, disk free space and read/write rates, network down/up rates with a short sparkline, per-core load bars grouped by Performance/Efficiency, and a battery card with level, current mode and a charge-limit toggle. Footer: Open Dashboard, shortcut, refresh interval.
 **Thermal alert state:** when the Mac is hot, the CPU card and battery card show it (for example “Charging paused · too hot” when heat protection acts).
 
 **Battery:** measured adapter/source state, large level gauge with system limit marker, health · cycles · temperature, supported native charge-limit slider and enable switch, system charging guidance. Missing readings stay unavailable/loading. Discharge and advanced automation in the Sketch frames are deferred and not shown (production review 2026-10-21). A no-battery Mac keeps the same empty state as the dashboard Battery page. Do not invent a time-to-limit from a time-to-full estimate.
+
+**AI** (only with Settings › Show AI limits on; user decision 2026-10-22): one card per supported tool set up on this Mac (Claude Code, Codex, Cursor, Grok CLI) with its plan, last reading and its limits (5-hour and weekly; Cursor's monthly included usage with dollars; Grok's weekly or monthly credits) as bars of quota **left** with a pace mark, then model-specific limits (Claude “Opus only · weekly”, Codex “Spark only · 5 hours”) and Codex credits when the account has them, at the share of time left. A window with less than 10 % left is Running low, whatever the pace (user decision 2026-10-22); the mark alone shows the pace; an empty one shows Limit reached and when it is available again. A reading older than 15 minutes is stale: its age turns orange, bars turn gray and a window that has reset since shows “—”. Signed out explains how to sign in; an API key login says it has no plan limits; no supported tool shows No AI tools found with Hide AI Limits. Footer: Checked every 2 minutes (Anthropic rate-limits faster checks; after HTTP 429 Monny waits 5 minutes). Sources and limits: [research](research/ai-usage-limits.md).
 
 On a Mac without a battery the Overview battery strip shows the thermal state and fan speed instead.
 
@@ -43,13 +45,14 @@ Each Overview card opens its dashboard page: CPU and cores → CPU, memory → M
 
 ## 4. Dashboard window
 
-Sidebar: Overview, CPU, Memory, Disk, Network, Battery, Sensors; Settings at the bottom. Header: page title and machine summary, time range 1m / 1h / 24h / 7d, and a button that collapses back to the popover.
+Sidebar: Overview, CPU, Memory, Disk, Network, Battery, Sensors, AI usage (only with AI limits on); Settings at the bottom. Header: page title and machine summary, time range 1m / 1h / 24h / 7d, and a button that collapses back to the popover.
 
 - **Overview:** summary cards with sparklines (CPU, Memory, Temperature, Battery), CPU load & temperature chart with hover tooltip naming the top process, 24 h battery level chart with limit line, battery facts (health, cycles, capacity, system load), top processes, sensor tiles and fan speed.
 - **CPU, Memory, Disk, Network:** the detailed history and breakdowns drawn in the corresponding Sketch frames.
 - **Battery:** level, health, cycles and power cards (Power shows what the Mac uses now on adapter and on battery, plus watts going into the battery while charging; on-battery values are verified against a reference before they are shown), history and native charge-limit controls. Sailing, heat protection, calibration and trip cards from Sketch are not shown until implemented (production review 2026-10-21: no disabled placeholders in the release).
 - **Battery without a battery:** the range control and cards are replaced by one empty state (“This Mac has no battery”) with Open Sensors.
 - **Sensors:** CPU die, GPU, SSD and battery cards with peaks, temperature chart, thermal state (Nominal/Fair/Serious/Critical), fan speed, and tiles for each available sensor. Missing sensors are omitted or marked unavailable, never invented; a Mac without a fan says so.
+- **AI usage:** a tile per tool with its windows, quota left of the weekly windows of each tool's longest window over 24 h or 7 d (range control 24h / 7d; four tools tile in two rows), the next four resets in local time with an estimated run-out time when a window would run out before its reset, and the sources with their connection state.
 
 Before history exists, current values show immediately and charts/process lists explain “Collecting data…” instead of suggesting permanent emptiness or showing invented zero lines.
 
@@ -69,21 +72,22 @@ Users of historical helper builds remove that helper through the old app before 
 
 ## 6. Onboarding
 
-Three steps from Sketch page `03`: Welcome, Charge limit and Ready; no helper step or administrator approval. Charge limit explains the native limit and offers Not Now or Use 80% Limit (an explicit gesture that enables it); it is skipped on a Mac without a battery or where the native limit is unavailable. Explain menu bar monitoring, offline behavior, supported native system limit and the global shortcut. Launch at login is a monitoring convenience, not required for macOS to enforce a persistent limit. Ready also offers Check for updates automatically (on by default, user decision 2026-10-21); it is the same setting as in Settings › About and replaces Sparkle's own permission prompt. Macs without a battery omit charging references. Onboarding implementation remains a separate release gate; no Sketch edits are authorized in this slice.
+Three steps from Sketch page `03`: Welcome, Charge limit and Ready; no helper step or administrator approval. Charge limit explains the native limit and offers Not Now or Use 80% Limit (an explicit gesture that enables it); it is skipped on a Mac without a battery or where the native limit is unavailable. Explain menu bar monitoring, offline behavior, supported native system limit and the global shortcut. Launch at login is a monitoring convenience, not required for macOS to enforce a persistent limit. Ready also offers Check for updates automatically (on by default, user decision 2026-10-21); it is the same setting as in Settings › About and replaces Sparkle's own permission prompt. A third row, Show AI limits, is off by default and is the Settings switch. Macs without a battery omit charging references. Onboarding implementation remains a separate release gate; no Sketch edits are authorized in this slice.
 
 ## 7. Settings
 
 - **General:** Launch at login, refresh rate, temperature unit, appearance, language (System or one of the six; applies after Monny restarts, with a Restart button; user request 2026-10-18).
 - **Menu bar:** global shortcut, show alert badge, show in menu bar (CPU load, Temperature, Battery level; all off by default).
+- **AI limits:** Show AI limits (off by default), with the tools found on this Mac in its subtitle; with two or more found, a checkbox per tool (unchecked tools are not read).
 - **Battery:** the same supported native limit/enable setting as the Battery page. Advanced automation preferences are deferred.
-- **Notifications:** charge limit reached, Mac is running hot, an app keeps the Mac busy (one app, helpers included, above 80 % of one core for 5 minutes; off by default), battery below 20 %, memory pressure is high (each toggle; battery ones only on a Mac with a battery). Each alert fires once per episode; charge limit reached fires once per plug-in, because macOS lets the level drift slightly below the limit. Calibration finished comes with calibration.
-- **About:** version and build, Check for Updates, Check for updates automatically (toggle), privacy note (no analytics; network only for updates). Updates use Sparkle (user decision 2026-10-21): Sparkle's standard window shows release notes and Install Update / Skip This Version / Remind Me Later; Monny installs and relaunches only after the user confirms. Automatic checks run in the background (daily) only while the toggle is on; no silent installs and no system profile is sent. Updates are verified with an EdDSA signature. Up to date and check failed use Sparkle's standard alerts.
+- **Notifications:** charge limit reached, Mac is running hot, an app keeps the Mac busy (one app, helpers included, above 80 % of one core for 5 minutes; off by default), battery below 20 %, memory pressure is high, AI limit is running low (off by default, only while AI limits are on; once per window episode, also when a window is used up) (each toggle; battery ones only on a Mac with a battery). Each alert fires once per episode; charge limit reached fires once per plug-in, because macOS lets the level drift slightly below the limit. Calibration finished comes with calibration.
+- **About:** version and build, Check for Updates, Check for updates automatically (toggle), privacy note (no analytics; network only for updates, and for AI limits when they are on). Updates use Sparkle (user decision 2026-10-21): Sparkle's standard window shows release notes and Install Update / Skip This Version / Remind Me Later; Monny installs and relaunches only after the user confirms. Automatic checks run in the background (daily) only while the toggle is on; no silent installs and no system profile is sent. Updates are verified with an EdDSA signature. Up to date and check failed use Sparkle's standard alerts.
 
 ## 8. Cross-cutting requirements
 
 - Light and Dark appearance; Increase Contrast, Reduce Motion, VoiceOver and full keyboard navigation in popover and window.
 - Localized in English, Russian, German, French, Spanish and Simplified Chinese; numbers, units, temperatures and dates use the user's locale and chosen temperature unit.
-- Readings never leave the Mac. Update checks (manual, or automatic when enabled) and update downloads are the only network requests.
+- Readings never leave the Mac. Update checks (manual, or automatic when enabled) and update downloads are the only network requests, except AI limits: when the user turns them on, Monny asks Anthropic, OpenAI, Cursor and xAI for the plan limits with the sign-in the tools keep on this Mac. Gemini is not supported ([research](research/ai-usage-limits.md#gemini-not-implemented)). Monny never stores, renews or sends those tokens elsewhere.
 - Idle cost: the popover and dashboard must not keep the CPU busy; target and measurement method are defined in the sampling task.
 
 ## 9. Open product decisions

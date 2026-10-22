@@ -28,6 +28,8 @@ Chosen by the user on 2026-10-21 after a comparison with Vitals-style monitors. 
 
 6. **Automatic updates with Sparkle.** Implemented in build 34 ([APP-012](tasks/APP-012-sparkle-updates.md)); the first end-to-end update needs two published releases. Replace the GitHub Releases check with [Sparkle 2](https://sparkle-project.org) (user decision 2026-10-21) before the first public release, so 1.0 users can update in place. Check automatically at launch and periodically when enabled; use Sparkle's standard window for release notes, download, user-confirmed installation and relaunch. Settings › About keeps Check for Updates and adds the automatic-check toggle; the toggle is drawn in onboarding Ready ([DES-002](tasks/DES-002-native-onboarding-next-features.md)), but Settings › About still needs design. Release flow gains an EdDSA key (private key outside the repository), an appcast published with GitHub releases and update-archive signing in `release.sh`. First verify same-signer updates with the current Apple Development signature without notarization. [SPEC §7](SPEC.md#7-settings) and [AGENTS](../AGENTS.md#3-non-negotiable-boundaries) already reflect this decision; integration research remains open in [research](research/README.md#other-dependencies).
 
+7. **AI usage limits (opt-in).** Claude Code and Codex 5-hour and weekly limits in a popover tab, a window page and a running-low notification (user decision 2026-10-22). Implemented in builds 43–45 ([APP-015](tasks/APP-015-ai-usage-limits.md)) with Cursor and Grok; Gemini is not possible without browser cookies.
+
 Other comparison ideas (GPU load, battery health trend, widgets) are not planned for now.
 
 ## Release gates

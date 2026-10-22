@@ -55,6 +55,8 @@ final class Sampler {
     let history = History()
     /// Called on the main actor after every pass, for alerts.
     @ObservationIgnored var onSample: ((Snapshot) -> Void)?
+    /// Values from outside the readers to record with each pass, such as AI quota.
+    @ObservationIgnored var extraHistoryValues: () -> [HistoryMetric: Double] = { [:] }
 
     @ObservationIgnored private let source = ReadingSource()
     @ObservationIgnored private var task: Task<Void, Never>?
@@ -103,7 +105,7 @@ final class Sampler {
                                                    watchesBusyApps: UserDefaults.standard.bool(forKey: PreferenceKey.notifyBusyApp))
                 guard let self, !Task.isCancelled else { return }
                 self.snapshot = snapshot
-                history.record(snapshot)
+                history.record(snapshot, adding: extraHistoryValues())
                 onSample?(snapshot)
                 // Settings shows 2 s until the user picks a rate; `integer(forKey:)` would read 0 then.
                 let refresh = max(UserDefaults.standard.object(forKey: PreferenceKey.refreshInterval) as? Int ?? 2, 1)

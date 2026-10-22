@@ -32,7 +32,7 @@ The app implements the native charge limit only ([APP-007](tasks/APP-007-native-
 
 The onboarding Ready step gained the automatic updates toggle on 2026-10-21 (Sparkle). Native onboarding, grouped processes, menu bar readings, the sustained-load notification, native Settings and the Power card were drawn on 2026-10-21 ([DES-002](tasks/DES-002-native-onboarding-next-features.md)). Frames `08 · Settings` and `06 · Battery` keep the helper-era layout for later work; implement Settings from frame `17` (revised 2026-10-22: stacked menu bar checkboxes, About in the right column with the automatic updates row).
 
-Exploration, not in SPEC: `01 · Popover` frames `11`–`13 · Popover · AI limits` and `02 · Window` frames `19 · Window · AI limits` and `20 · Window · Settings · AI limits`, `03 · Flows & System` frame `13 · Onboarding · Ready · AI limits`, Light/Dark ([DES-003](tasks/DES-003-ai-usage-limits.md), 2026-10-22).
+AI limits: `01 · Popover` frames `11`–`13 · Popover · AI limits` and `02 · Window` frames `19 · Window · AI limits` and `20 · Window · Settings · AI limits`, `03 · Flows & System` frame `13 · Onboarding · Ready · AI limits`, Light/Dark ([DES-003](tasks/DES-003-ai-usage-limits.md), 2026-10-22). Implemented for Claude Code, Codex, Cursor and Grok ([APP-015](tasks/APP-015-ai-usage-limits.md)); Grok (slate, “G”) and four tiles in two rows have no frame yet. Model limits and Codex credits: frame `14 · Popover · AI limits · Model limits` (Light/Dark, 2026-10-22).
 
 All listed frames are saved, including the two-mode and 80–100% charging updates above. Every state in SPEC has a frame, including empty, unavailable, no-battery, error, update and confirmation states ([DES-001](tasks/DES-001-missing-states.md)). Accessibility and the other five languages are checked in the app.
 
@@ -41,6 +41,7 @@ All listed frames are saved, including the two-mode and 80–100% charging updat
 - Use the shared symbols and color variables; no raw hex on screens.
 - A metric keeps its color everywhere (card icon, chart, bar, chip).
 - Values that cannot be read show as unavailable, never as zero.
+- Tabs of a segmented control size to their titles plus an equal share of the free width, like a native segmented control, so long translations fit (user report 2026-10-22: Russian “Аккумулятор” overflowed four equal tabs). Frames keep the English equal-width drawing.
 - Clicks never fade a control: switches, segments, links, sidebar items and clickable cards keep their look; push and popup buttons darken with `State/Pressed`, like native push buttons (user decision 2026-10-22).
 - Increase Contrast strengthens text and edges; Reduce Motion removes chart and gauge animation. Keyboard focus, VoiceOver and localized expansion are accepted in the app, not in Sketch.
 - Sketch is saved separately from Git. If it is unavailable, ask for the document and continue independent engineering; do not substitute an old PNG. Verification screenshots stay local under [WORKFLOW](WORKFLOW.md#repository-content-and-language).

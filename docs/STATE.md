@@ -1,6 +1,6 @@
 # Monny: current state
 
-Updated **2026-10-22**. Current work: [APP-007](tasks/APP-007-native-simplification-design-parity.md) production review on main. Main is a native monitor with the macOS 26.4+ system charge limit; no helper, XPC, SMC writes or Discharge. The helper/Discharge experiment is preserved on **experiments/discharge** at abe3a80.
+Updated **2026-10-22**. Current work: AI limits ([APP-015](tasks/APP-015-ai-usage-limits.md)) and the [APP-007](tasks/APP-007-native-simplification-design-parity.md) production review on main. Main is a native monitor with the macOS 26.4+ system charge limit; no helper, XPC, SMC writes or Discharge. The helper/Discharge experiment is preserved on **experiments/discharge** at abe3a80.
 
 ## Product and implementation
 
@@ -13,7 +13,9 @@ Updated **2026-10-22**. Current work: [APP-007](tasks/APP-007-native-simplificat
 - Six-language String Catalog: EN/RU/DE/FR/ES/zh-Hans. Retired helper text removed; retained copy reviewed and terminology corrected. Light/Dark/localized renders are temporary local evidence.
 - Distribution remains signed DMG outside the App Store; existing Apple Development signer, Hardened Runtime, App Sandbox off for system monitoring. Signed does not mean notarized. Website work remains deferred.
 
-**Candidate:** `apps/monny/build/release/Monny-1.0-42.dmg` with `appcast.xml` (signed Apple Development, not notarized): main 0636518 plus the uncommitted charge limit slider / Optimized Battery Charging change, checked on this Mac ([APP-014](tasks/APP-014-limit-slider-optimized-charging.md)), and pressed controls no longer fade (build 41, [DESIGN](DESIGN.md#rules-that-apply-to-every-screen)), Settings menu bar readings stacked vertically with About in the right column (build 42, [DES-002](tasks/DES-002-native-onboarding-next-features.md)); 44 tests/9 suites pass.
+Optional AI limits ([APP-015](tasks/APP-015-ai-usage-limits.md)): Claude Code and Codex (build 44, accepted), Cursor and Grok (build 45, unverified on real accounts) in a popover tab, an AI usage page and a running-low notification, off by default, with a checkbox per tool. On, Monny calls the services' usage endpoints with the tools' own sign-in on this Mac ([research](research/ai-usage-limits.md)); this is the one network exception besides Sparkle. Gemini is not possible without cookies.
+
+**Candidate:** `apps/monny/build/release/Monny-1.0-47.dmg` with `appcast.xml` (signed Apple Development, not notarized): main with the AI limits commit (tabs size to their titles); 61 tests/10 suites pass.
 
 ## Work and open checks
 
@@ -24,7 +26,7 @@ Updated **2026-10-22**. Current work: [APP-007](tasks/APP-007-native-simplificat
 | [CORE-003](tasks/CORE-003-history.md) | awaiting_verification | User rechecks chart/hover behavior with accumulated history. |
 | [APP-012](tasks/APP-012-sparkle-updates.md) | awaiting_verification | End-to-end update between two published releases; off-device copy of the update key. |
 | [DES-002](tasks/DES-002-native-onboarding-next-features.md) | awaiting_verification | Revised Settings layout (stacked menu bar readings, About in the right column) implemented in build 42. User checks Settings in German/French. |
-| [DES-003](tasks/DES-003-ai-usage-limits.md) | in_design | Exploration of Claude Code/Codex/Cursor limits (quota left, opt-in via Settings/onboarding): popover, states, window, Settings and onboarding frames in Light/Dark. User reviews; data sources researched separately. Not in SPEC. |
+| [APP-015](tasks/APP-015-ai-usage-limits.md) | awaiting_verification | Claude/Codex accepted in build 44. Build 47 reviewed and committed. Open, waiting for accounts: Cursor, Grok, model limits and credits on real accounts; chart, forecast, stale reading and notification after a few days of real history; HTTP 429 over long sessions. Design source: [DES-003](tasks/DES-003-ai-usage-limits.md); Cursor not implemented. |
 | [REL-001](tasks/REL-001-signing-workflow.md) | awaiting_verification | Clean second-Mac signing/install, signing backup restore/off-device copy. |
 
 Helper/Discharge task and verification records (BAT-*, APP-005/006) live on experiments/discharge only.

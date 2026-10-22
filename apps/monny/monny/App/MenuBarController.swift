@@ -47,6 +47,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         guard let button = statusItem.button, !panel.isShown else { return }
         button.highlight(true)
         model.sampler.setVisible(.popover, true)
+        model.isPopoverShown = true
         panel.show(below: button)
         // A nonactivating panel does not reliably trigger applicationDidBecomeActive.
         Task { await model.chargeLimit.refresh() }
@@ -167,6 +168,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
     private func popoverDidClose() {
         statusItem.button?.highlight(false)
         model.sampler.setVisible(.popover, false)
+        model.isPopoverShown = false
     }
 
     // MARK: NSMenuDelegate

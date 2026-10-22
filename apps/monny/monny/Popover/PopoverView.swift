@@ -5,15 +5,14 @@ import SwiftUI
 struct PopoverView: View {
     @Bindable var model: AppModel
     @AppStorage(PreferenceKey.refreshInterval) private var refreshInterval = 2
+    @AppStorage(PreferenceKey.showsAILimits) private var showsAILimits = false
     /// The tabs take focus when the popover opens, so the arrow keys switch them right away.
     @FocusState private var tabsFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
             header
-            SegmentedControl(title: "Section", selection: $model.popoverTab, options: [
-                (.overview, "Overview"), (.battery, "Battery"), (.processes, "Processes"),
-            ])
+            SegmentedControl(title: "Section", selection: $model.popoverTab, options: tabs)
             .focused($tabsFocused)
             .padding(.horizontal, Theme.spaceXL)
             .padding(.bottom, Theme.spaceL)
@@ -27,6 +26,7 @@ struct PopoverView: View {
                                           controller: model.chargeLimit,
                                           openSensors: { model.openDashboard(.sensors) })
                 case .processes: ProcessesTab(sampler: model.sampler)
+                case .ai: AILimitsTab(monitor: model.aiUsage)
                 }
             }
             .padding(.horizontal, Theme.spaceXL)
@@ -37,6 +37,18 @@ struct PopoverView: View {
         }
         .frame(width: 360)
         .defaultFocus($tabsFocused, true)
+        .onChange(of: showsAILimits, initial: true) { _, shows in
+            if !shows, model.popoverTab == .ai { model.popoverTab = .overview }
+        }
+        .onChange(of: model.isPopoverShown && model.popoverTab == .ai, initial: true) { _, isVisible in
+            model.aiUsage.setVisible(.popover, isVisible)
+        }
+    }
+
+    private var tabs: [(value: PopoverTab, label: LocalizedStringKey)] {
+        var tabs: [(value: PopoverTab, label: LocalizedStringKey)] = [(.overview, "Overview"), (.battery, "Battery"), (.processes, "Processes")]
+        if showsAILimits { tabs.append((.ai, "AI")) }
+        return tabs
     }
 
     private var header: some View {
@@ -77,6 +89,10 @@ struct PopoverView: View {
                 if model.popoverTab == .processes {
                     Button("Activity Monitor \(Image(systemName: "arrow.up.right"))", action: openActivityMonitor)
                         .buttonStyle(PlainLinkButtonStyle())
+                } else if model.popoverTab == .ai {
+                    Text("Checked every 2 minutes")
+                        .font(Theme.footnote)
+                        .foregroundStyle(Theme.textTertiary)
                 } else {
                     Text("Updated every \(Duration.seconds(refreshInterval).formatted(.units(width: .narrow)))")
                         .font(Theme.footnote)

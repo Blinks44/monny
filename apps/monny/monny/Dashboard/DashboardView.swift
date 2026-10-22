@@ -48,7 +48,8 @@ struct DashboardView: View {
         case .network: NetworkPage(sampler: model.sampler)
         case .battery: BatteryPage(sampler: model.sampler, controller: model.chargeLimit)
         case .sensors: SensorsPage(sampler: model.sampler)
-        case .settings: SettingsPage(controller: model.chargeLimit, updater: model.updater)
+        case .aiUsage: AIUsagePage(monitor: model.aiUsage, history: model.sampler.history)
+        case .settings: SettingsPage(controller: model.chargeLimit, updater: model.updater, aiUsage: model.aiUsage)
         }
     }
 
@@ -64,6 +65,7 @@ private struct PageHeader: View {
     let page: DashboardPage
     let collapse: () -> Void
     @AppStorage(PreferenceKey.historyRange) private var range = HistoryRange.hour
+    @AppStorage(PreferenceKey.aiHistoryRange) private var aiRange = HistoryRange.week
 
     var body: some View {
         HStack(alignment: .center, spacing: Theme.spaceL) {
@@ -73,7 +75,11 @@ private struct PageHeader: View {
                 subtitle.font(Theme.label.weight(.regular)).foregroundStyle(Theme.textSecondary)
             }
             Spacer(minLength: Theme.spaceXL)
-            if page.showsTimeRange {
+            if page == .aiUsage {
+                // Quota history is recorded every few minutes, so only the long ranges.
+                SegmentedControl(title: "Time range", selection: $aiRange, options: [(.day, "24h"), (.week, "7d")], height: 32)
+                    .frame(width: 100)
+            } else if page.showsTimeRange {
                 SegmentedControl(title: "Time range", selection: $range, options: [
                     (.minute, "1m"), (.hour, "1h"), (.day, "24h"), (.week, "7d"),
                 ], height: 32)
@@ -88,6 +94,9 @@ private struct PageHeader: View {
     private var subtitle: Text {
         if page == .settings {
             return Text("Version \(Bundle.main.shortVersion) (\(Bundle.main.buildNumber))")
+        }
+        if page == .aiUsage {
+            return Text("AI tool limits · checked with their sign-in on this Mac")
         }
         let memory = SystemInfo.physicalMemory.formatted(.byteCount(style: .memory))
         switch page {
@@ -111,6 +120,7 @@ extension DashboardPage {
         case .network: "Network"
         case .battery: "Battery"
         case .sensors: "Sensors"
+        case .aiUsage: "AI usage"
         case .settings: "Settings"
         }
     }

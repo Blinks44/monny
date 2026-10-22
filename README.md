@@ -28,9 +28,10 @@ A native macOS menu bar utility for resource monitoring and battery charge contr
 - **Dashboard window** with Overview, CPU, Memory, Disk, Network, Battery and Sensors pages and 1 minute to 7 day history.
 - **Native battery charge limit** from 80–100% on supported macOS 26.4+ systems, without a privileged helper. Discharge, calibration and advanced charging automation are deferred.
 - **Notifications** for a measured charge limit, a hot Mac, low battery and high memory pressure; calibration remains deferred.
+- **AI limits (optional, off by default):** Claude Code, Codex, Cursor and Grok plan limits, read with their own sign-in on this Mac.
 - English, Russian, German, French, Spanish and Simplified Chinese.
 
-Readings never leave the Mac: no account, analytics or telemetry. The [specification](docs/SPEC.md) lists the full scope and acceptance.
+Readings never leave the Mac: no account, analytics or telemetry. The only network requests are update checks and, when AI limits are turned on, the limit checks with Anthropic, OpenAI, Cursor and xAI. The [specification](docs/SPEC.md) lists the full scope and acceptance.
 
 ## Requirements
 
@@ -83,6 +84,12 @@ This is needed once per downloaded version. Updates keep the same signature, so 
 - [Specification](docs/SPEC.md) and [roadmap](docs/PLAN.md): product requirements and remaining work.
 - [Documentation index](docs/README.md): design, engineering conventions, verification and contributor/agent workflow.
 - [Contributing](CONTRIBUTING.md), [security policy](SECURITY.md), [code of conduct](CODE_OF_CONDUCT.md) and [changelog](CHANGELOG.md).
+
+## Acknowledgements
+
+- [CodexBar](https://github.com/steipete/CodexBar) by Peter Steinberger and its contributors (MIT): its documentation showed where Claude Code, Codex, Cursor and Grok keep their sign-in and which endpoints report their plan limits. Monny copies no code from it ([research](docs/research/ai-usage-limits.md)).
+- [Stats](https://github.com/exelban/stats) by Serhiy Mytrovtsiy (MIT): SMC key names for temperatures and fans ([research](docs/research/README.md#temperatures-and-fans-smc)).
+- [Sparkle](https://sparkle-project.org) (MIT) for updates and [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) by Sindre Sorhus (MIT) for the global shortcut; [create-dmg](https://github.com/create-dmg/create-dmg) (MIT) builds the installer.
 
 ## License
 

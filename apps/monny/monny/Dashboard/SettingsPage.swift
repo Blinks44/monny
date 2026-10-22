@@ -5,6 +5,7 @@ import SwiftUI
 struct SettingsPage: View {
     let controller: ChargeLimitController
     let updater: AppUpdater
+    let aiUsage: AIUsageMonitor
     @AppStorage(PreferenceKey.refreshInterval) private var refreshInterval = 2
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
     @AppStorage(PreferenceKey.appearance) private var appearance = AppearancePreference.system
@@ -17,6 +18,9 @@ struct SettingsPage: View {
     @AppStorage(PreferenceKey.notifyLowBattery) private var notifyLowBattery = false
     @AppStorage(PreferenceKey.notifyMemoryPressure) private var notifyMemoryPressure = false
     @AppStorage(PreferenceKey.notifyBusyApp) private var notifyBusyApp = false
+    @AppStorage(PreferenceKey.showsAILimits) private var showsAILimits = false
+    @AppStorage(PreferenceKey.notifyAILimit) private var notifyAILimit = false
+    @State private var hiddenAITools = UserDefaults.standard.stringArray(forKey: PreferenceKey.aiHiddenTools) ?? []
     @State private var loginItem = LoginItem()
     @State private var language = AppLanguage.current
 
@@ -25,6 +29,7 @@ struct SettingsPage: View {
             VStack(spacing: 28) {
                 general
                 menuBar
+                aiLimits
             }
             .frame(minWidth: 0, maxWidth: .infinity)
             VStack(spacing: 28) {
@@ -103,7 +108,8 @@ struct SettingsPage: View {
         SettingsSection("About") {
             updateRow
             automaticUpdatesRow
-            SettingsRow("Privacy", subtitle: "No analytics · network only for updates", isLast: true) {
+            SettingsRow("Privacy", subtitle: showsAILimits ? "No analytics · network only for updates and AI limits"
+                                                           : "No analytics · network only for updates", isLast: true) {
                 EmptyView()
             }
         }
@@ -137,8 +143,48 @@ struct SettingsPage: View {
             CheckboxRow("Mac is running hot", isOn: $notifyHot)
             CheckboxRow("An app keeps the Mac busy", isOn: $notifyBusyApp)
             if SystemInfo.hasBattery { CheckboxRow("Battery below 20%", isOn: $notifyLowBattery) }
-            CheckboxRow("Memory pressure is high", isOn: $notifyMemoryPressure, isLast: true)
+            CheckboxRow("Memory pressure is high", isOn: $notifyMemoryPressure, isLast: !showsAILimits)
+            if showsAILimits { CheckboxRow("AI limit is running low", isOn: $notifyAILimit, isLast: true) }
         }
+    }
+
+    private var aiLimits: some View {
+        SettingsSection("AI limits") {
+            SettingsRow("Show AI limits", subtitle: foundTools, isLast: !showsAILimits || aiUsage.detected.count < 2) {
+                Toggle("Show AI limits", isOn: $showsAILimits)
+            }
+            // With more than one tool, each can be left out; unchecked tools are not read at all.
+            if showsAILimits, aiUsage.detected.count > 1 {
+                VStack(alignment: .leading, spacing: Theme.spaceM) {
+                    ForEach(aiUsage.detected, id: \.self) { tool in
+                        Toggle(isOn: shows(tool)) { Text(verbatim: tool.appName) }
+                    }
+                }
+                .font(Theme.body)
+                .foregroundStyle(Theme.textPrimary)
+                .toggleStyle(CheckboxStyle())
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, Theme.spaceM)
+            }
+        }
+        .onAppear { aiUsage.refreshInstalled() }
+    }
+
+    /// "Found: Claude Code, Codex" from the tools' folders on this Mac.
+    private var foundTools: LocalizedStringKey {
+        let names = aiUsage.detected.map(\.appName)
+        return names.isEmpty ? "No supported AI tools are set up on this Mac"
+                             : "Found: \(names.formatted(.list(type: .and, width: .narrow)))"
+    }
+
+    private func shows(_ tool: AITool) -> Binding<Bool> {
+        Binding(get: { !hiddenAITools.contains(tool.rawValue) }, set: { shows in
+            var hidden = hiddenAITools
+            if shows { hidden.removeAll { $0 == tool.rawValue } } else if !hidden.contains(tool.rawValue) { hidden.append(tool.rawValue) }
+            UserDefaults.standard.set(hidden, forKey: PreferenceKey.aiHiddenTools)
+            hiddenAITools = hidden
+            aiUsage.refreshInstalled()
+        })
     }
 }
 

@@ -1,17 +1,17 @@
 # DES-003: AI usage limits (Claude Code, Codex, Cursor) exploration
 
 - Updated: 2026-10-22
-- Stage: in_design (Light and Dark frames and edge states saved; awaiting user review)
+- Stage: done for Claude Code and Codex (implemented in [APP-015](APP-015-ai-usage-limits.md), build 43); Cursor not implemented
 - Owner: unassigned (design pass released 2026-10-22)
 - Owned surfaces: Monny.sketch page `01 · Popover` frames `11`–`13`, page `02 · Window` frames `19`–`20`, page `03 · Flows & System` frame `13`
-- Requirements: none yet. Not in [SPEC](../SPEC.md) or [PLAN](../PLAN.md); user idea 2026-10-22 to explore the look before deciding on implementation.
+- Requirements: [SPEC](../SPEC.md) §3, §4, §6, §7 (adopted 2026-10-22 for Claude Code and Codex)
 - Code baseline: main at 0636518; no code changed by this task
 
 ## Outcome and scope
 
 Explore how Monny could show the usage limits of Claude Code and Codex (5-hour and weekly windows) and Cursor (monthly included usage) in the popover and the main window. Design first, mechanism later.
 
-Known data constraints (checked 2026-10-22): Codex writes `rate_limits` (primary 300-minute and secondary 10080-minute windows with `used_percent` and `resets_at`) into its local session logs, so it can be read offline but only refreshes when Codex is used. Claude Code keeps no local limit data; the known sources are an undocumented network endpoint (conflicts with SPEC §7 network policy) or a user-configured statusline script. Cursor has monthly included usage per billing cycle rather than rolling windows; its source is not researched yet. A SPEC/research decision is required before implementation.
+Data sources were decided on 2026-10-22 after reviewing CodexBar ([research](../research/ai-usage-limits.md)): both tools' usage endpoints with their own sign-in, opt-in only. Cursor (monthly included usage) is not researched or implemented.
 
 ## Sketch source
 
@@ -28,11 +28,10 @@ Service colors are raw values for the exploration (Claude coral, Codex graphite,
 
 ## Open checks / dependency
 
-- User review of the direction.
 - Decided 2026-10-22: the feature is opt-in (Settings switch, optional onboarding row, off by default); the AI tab and sidebar item appear only when it is on.
-- Open: the Settings privacy line (“network only for updates”) depends on the data-source decision; a window-level state frame.
-- Mechanism and privacy decision for each tool (especially Claude and Cursor) in research/SPEC before any implementation.
+- Implemented without a Sketch frame: the privacy line becomes “No analytics · network only for updates and AI limits” while the switch is on; window states reuse the popover messages and the No AI tools view.
+- Copy in the frames names Cursor; the app drops it. Sketch can be updated later.
 
 ## Next handoff
 
-Design: apply user feedback to the frames above. Engineering: nothing to implement until SPEC adopts the feature.
+Design: optionally remove Cursor from the frames or keep it for a later Cursor task. Engineering: none.

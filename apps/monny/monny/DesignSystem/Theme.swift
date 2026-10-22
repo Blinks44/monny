@@ -53,6 +53,17 @@ enum Theme {
     static let metricHeat = Color(light: 0xFB923C, dark: 0xFDA05A)
     static let metricHeatHot = Color(light: 0xF43F5E, dark: 0xFB6F86)
 
+    // AI services (DES-003 exploration colors, raw in Sketch until they become variables)
+    static let aiClaude = Color(light: 0xD97757, dark: 0xD97757)
+    static let aiCodex = Color(light: 0x2C2D32, dark: 0xD1D1D6)
+    static let aiCodexIcon = Color(light: 0x2C2D32, dark: 0x3A3B40)
+    static let aiCursor = Color(light: 0x5E5CE6, dark: 0x7D7AFF)
+    /// Grok's brand is black and white, which Codex already uses; slate keeps the two apart.
+    static let aiGrok = Color(light: 0x64748B, dark: 0x94A3B8)
+    /// The pace mark on a quota bar and its 1 pt outline.
+    static let aiPaceMark = Color(light: 0x1D1D1F, 0.65, dark: 0xFFFFFF, 0.7)
+    static let aiPaceMarkStroke = Color(light: 0xFFFFFF, dark: 0x1C1C1E)
+
     // Status
     static let statusSuccessText = Color(light: 0x16A34A, dark: 0x4ADE80)
     static let statusWarningText = Color(light: 0xE8590C, dark: 0xFDBA74)

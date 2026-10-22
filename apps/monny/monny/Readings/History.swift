@@ -5,12 +5,13 @@ nonisolated private let historyLogger = Logger(subsystem: "blinks44.monny", cate
 
 /// A metric kept in history. Values use the snapshot's units: fractions 0…1, bytes per second,
 /// °C and rpm. `charging` is 1 while charging and 0 otherwise, so a bucket's average is the
-/// share of it spent charging.
+/// share of it spent charging. The AI metrics are the quota left, from `AIUsageMonitor`.
 nonisolated enum HistoryMetric: String, CaseIterable, Codable, CodingKeyRepresentable, Sendable {
     case cpu, cpuPerformance, cpuEfficiency, loadAverage, gpu
     case memory, memoryPressure, swap, compressed
     case diskRead, diskWrite, download, upload, battery, charging
     case cpuTemperature, gpuTemperature, ssdTemperature, batteryTemperature, fan
+    case claudeSession, claudeWeekly, codexSession, codexWeekly, cursorMonthly, grokCredits
 
     /// The values of one snapshot; unavailable readings are left out, never stored as zero.
     static func values(of snapshot: Snapshot) -> [HistoryMetric: Double] {
@@ -134,8 +135,8 @@ final class History {
         }
     }
 
-    func record(_ snapshot: Snapshot, at date: Date = .now) {
-        let values = HistoryMetric.values(of: snapshot)
+    func record(_ snapshot: Snapshot, adding extra: [HistoryMetric: Double] = [:], at date: Date = .now) {
+        let values = HistoryMetric.values(of: snapshot).merging(extra) { $1 }
         let closed = working.indices.map { working[$0].add(values, at: date) }
         if closed[0] { minute = working[0] }
         if closed[1] { hour = working[1] }

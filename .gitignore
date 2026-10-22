@@ -1,5 +1,5 @@
 # Repository policy: keep source, manifests/lockfiles, shared configuration,
-# design inputs, docs/tasks/evidence, AGENTS.md, CLAUDE.md, .agents/skills and
+# design inputs, docs/tasks/evidence, AGENTS.md, .agents/skills and
 # the .claude/skills symlink versioned. Exclude only reproducible output and
 # workstation-local state.
 

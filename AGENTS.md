@@ -70,7 +70,7 @@ Maintain the affected documentation as part of ordinary completion: replace stal
 
 ## 5. Relevant skills
 
-Read only relevant `.agents/skills/<name>/SKILL.md` and its required references. Provenance, licenses and reviewed-but-skipped candidates: `.agents/skills/manifest.json`. Claude Code reaches the same folder through the `.claude/skills` symlink and loads this file through `CLAUDE.md`.
+Read only relevant `.agents/skills/<name>/SKILL.md` and its required references. Provenance, licenses and reviewed-but-skipped candidates: `.agents/skills/manifest.json`. Claude Code 2.1.277+ reads `AGENTS.md` directly when no project or ancestor `CLAUDE.md` / `CLAUDE.local.md` takes precedence. The `.claude/skills` symlink exposes the same skills to Claude Code.
 
 - Ordinary SwiftUI/UI work: `swiftui-pro` + `swiftui-design-principles`; component guidance from `swiftui-ui-patterns` selectively.
 - Sampling, helper XPC, shared state and Swift 6 diagnostics: `swift-concurrency-pro`; behavioral tests: `swift-testing-pro`.

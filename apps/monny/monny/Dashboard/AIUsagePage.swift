@@ -63,7 +63,7 @@ private struct AIToolTile: View {
                 Text(verbatim: tool.name)
             }
             .font(Theme.label)
-            .foregroundStyle(tool == .claude ? tool.color : Theme.textPrimary)
+            .foregroundStyle(tool == .claude || tool == .cursor ? tool.color : Theme.textPrimary)
             if let usage = state.usage, state.problem?.hidesReading != true {
                 // 12 pt between a bar and the next label, as drawn in `KPI · Claude`.
                 VStack(alignment: .leading, spacing: 12) {

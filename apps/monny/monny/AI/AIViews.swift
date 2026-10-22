@@ -114,7 +114,9 @@ extension AIUsage {
     /// "Pro plan" from the service's "pro"; plan names are not translated.
     var planText: Text? {
         guard let plan, !plan.isEmpty else { return nil }
-        let name = plan.split(separator: "_").map { $0.capitalized }.joined(separator: " ")
+        // "pro" → "Pro", "free_workspace" → "Free Workspace"; names already cased, such as
+        // "SuperGrok", stay as they are.
+        let name = plan.split(separator: "_").map { $0.contains(where: \.isUppercase) ? String($0) : $0.capitalized }.joined(separator: " ")
         return Text("\(name) plan")
     }
 
@@ -232,6 +234,10 @@ struct QuotaRow: View {
             }
             if !isCompact, let line = footer(hasReset: hasReset) {
                 line.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(1)
+            } else if isCompact, !hasReset, let dollars = dollarsText {
+                // Cursor's tile adds the amounts under its one bar (`KPI · Cursor`).
+                dollars.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(1)
+                    .padding(.top, 6)
             }
         }
         .accessibilityElement(children: .ignore)

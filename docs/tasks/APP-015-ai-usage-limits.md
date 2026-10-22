@@ -5,7 +5,7 @@
 - Owner: unassigned (released 2026-10-22)
 - Owned surfaces: `monny/AI/`, `Popover/AILimitsTab.swift`, `Dashboard/AIUsagePage.swift`; AI parts of Settings, Sidebar, PopoverView, DashboardView, Onboarding Ready, Alerts, History metrics and `Sampler.extraHistoryValues`
 - Requirements: [SPEC](../SPEC.md) §3, §4, §6, §7, §8 (AI limits, user decision 2026-10-22); design [DES-003](DES-003-ai-usage-limits.md)
-- Code baseline: main 19ef2ce; build 47, committed 2026-10-22
+- Code baseline: main 87845c4 plus build 48
 
 ## Outcome and scope
 
@@ -51,6 +51,10 @@ User request: add Cursor, Grok and Gemini where possible. Cursor (Cursor.app sig
 - VoiceOver hears “Running low” with the value.
 - User decision: what cannot be checked without accounts (Cursor, Grok, model limits, credits, API key login) stays open below. Monny-1.0-47.dmg built; 61 tests pass.
 
+## Sketch frames for Cursor, Grok and four tools — build 48, 2026-10-22
+
+Drawn and saved: popover `15 · Cursor & Grok`, window `21 · Four tools`, Settings `22 · AI tools`, Light/Dark (frame `14` covers model limits). Code aligned with them: Cursor's window tile shows “$x of $y left” under its bar, Cursor's tile title uses its color, and plan names already cased (“SuperGrok”) keep their casing.
+
 ## Open checks / dependency
 
 - Cursor and Grok against a real signed-in account (needs a Mac with them).
@@ -61,4 +65,4 @@ User request: add Cursor, Grok and Gemini where possible. Cursor (Cursor.app sig
 
 ## Next handoff
 
-Later, with suitable accounts: Cursor, Grok, model limits, credits, API key login. Wait for a few days of history, then check the chart, forecast, a stale reading and the notification. Design: a Grok card and the four-tile window layout are not drawn in Sketch.
+Later, with suitable accounts: Cursor, Grok, model limits, credits, API key login. Wait for a few days of history, then check the chart, forecast, a stale reading and the notification. Design: none open.

@@ -43,6 +43,19 @@ Added 2026-10-22 from CodexBar's [grok.md](https://github.com/steipete/CodexBar/
 
 Checked 2026-10-22. Google stopped Gemini CLI OAuth for individual, AI Pro and Ultra accounts on 2026-06-18; only Code Assist Standard/Enterprise accounts still have it, and its quota is per model (Pro/Flash), not 5-hour/weekly. Renewing its token needs the OAuth client secret scraped from the installed CLI. The consumer limits at gemini.google.com/usage are reachable only with browser cookies (a Keychain prompt per browser for Chrome's Safe Storage, Full Disk Access for Safari), and the Antigravity replacement needs a local `agy` server with CSRF and process cleanup. Each conflicts with Monny's no-hacks, no-cookies rule; revisit if Google publishes a usage API.
 
+## Service marks
+
+Added 2026-10-22 at the user's request. The SVGs come from [thesvg.org](https://thesvg.org/), a third-party collection the user chose, not from each company's brand page; the marks remain their owners' trademarks and identify the services only. Asset catalog `AIClaude`, `AICodex`, `AICursor`, `AIGrok` (vector, original rendering), mirrored by the Sketch symbols `Light/…` and `Dark/AI Logo/<tool>`.
+
+| Mark | Tile | Change from the source |
+| --- | --- | --- |
+| Claude | `#D97757` | Fill `#D97757` → white; `<title>` kept |
+| Codex (OpenAI) | white | Fill white → black |
+| Cursor | black | None (`#EDECEC`) |
+| Grok | white | Fills white → black |
+
+The tiles keep a 1 pt hairline (black 10 % / white 12 %) so white tiles stay visible on white cards. Before a public release, compare with each owner's brand guidelines (Anthropic, OpenAI, Cursor, xAI) and replace a mark if its owner restricts recoloring.
+
 ## Privacy and cost
 
 - Opt-in (Settings › AI limits, off by default; each found tool can be unchecked, and an unchecked tool is not read). Off, Monny reads no credentials and makes no requests. On, the only requests go to the services of the shown tools, with the user's own tokens, which never leave memory or go anywhere else. Only percentages, reset times, plan names and the reading time are stored (`aiUsage` in UserDefaults, quota history in the existing history file).

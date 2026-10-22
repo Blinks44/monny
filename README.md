@@ -88,6 +88,7 @@ This is needed once per downloaded version. Updates keep the same signature, so 
 ## Acknowledgements
 
 - [CodexBar](https://github.com/steipete/CodexBar) by Peter Steinberger and its contributors (MIT): its documentation showed where Claude Code, Codex, Cursor and Grok keep their sign-in and which endpoints report their plan limits. Monny copies no code from it ([research](docs/research/ai-usage-limits.md)).
+- Claude, OpenAI/Codex, Cursor and Grok marks are trademarks of their owners and only identify those services; SVGs from [thesvg.org](https://thesvg.org/) ([sources](docs/research/ai-usage-limits.md#service-marks)).
 - [Stats](https://github.com/exelban/stats) by Serhiy Mytrovtsiy (MIT): SMC key names for temperatures and fans ([research](docs/research/README.md#temperatures-and-fans-smc)).
 - [Sparkle](https://sparkle-project.org) (MIT) for updates and [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) by Sindre Sorhus (MIT) for the global shortcut; [create-dmg](https://github.com/create-dmg/create-dmg) (MIT) builds the installer.
 

@@ -15,7 +15,7 @@ Updated **2026-10-22**. Current work: AI limits ([APP-015](tasks/APP-015-ai-usag
 
 Optional AI limits ([APP-015](tasks/APP-015-ai-usage-limits.md)): Claude Code and Codex (build 44, accepted), Cursor and Grok (build 45, unverified on real accounts) in a popover tab, an AI usage page and a running-low notification, off by default, with a checkbox per tool. On, Monny calls the services' usage endpoints with the tools' own sign-in on this Mac ([research](research/ai-usage-limits.md)); this is the one network exception besides Sparkle. Gemini is not possible without cookies.
 
-**Candidate:** `apps/monny/build/release/Monny-1.0-48.dmg` with `appcast.xml` (signed Apple Development, not notarized): main with the AI limits commits (tabs size to their titles; Sketch frames for Cursor, Grok and four tools); 61 tests/10 suites pass.
+**Candidate:** `apps/monny/build/release/Monny-1.0-49.dmg` with `appcast.xml` (signed Apple Development, not notarized): main with the AI limits commits (tabs size to their titles; Sketch frames for Cursor, Grok and four tools) and service marks (build 49); 61 tests/10 suites pass.
 
 ## Work and open checks
 

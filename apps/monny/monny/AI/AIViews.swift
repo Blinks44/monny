@@ -32,21 +32,22 @@ extension AITool {
         }
     }
 
+    /// The tile behind the service's mark, in the brand's own colors (user choice 2026-10-22).
     var iconColor: Color {
         switch self {
         case .claude: Theme.aiClaude
-        case .codex: Theme.aiCodexIcon
-        case .cursor: Theme.aiCursor
-        case .grok: Theme.aiGrok
+        case .codex, .grok: Theme.aiIconWhite
+        case .cursor: Theme.aiIconBlack
         }
     }
 
-    var glyph: String {
+    /// The service's mark in the asset catalog (sources in research/ai-usage-limits.md).
+    var logo: ImageResource {
         switch self {
-        case .claude: "✻"
-        case .codex: ">_"
-        case .cursor: "▲"
-        case .grok: "G"
+        case .claude: .aiClaude
+        case .codex: .aiCodex
+        case .cursor: .aiCursor
+        case .grok: .aiGrok
         }
     }
 
@@ -156,17 +157,20 @@ extension AIQuotaWindow {
     }
 }
 
-/// The service's glyph on its color tile.
+/// The service's mark on its tile. A hairline keeps the white tiles apart from a white card.
 struct AIToolIcon: View {
     let tool: AITool
     var size: CGFloat = 30
 
     var body: some View {
-        Text(verbatim: tool.glyph)
-            .font(.system(size: size * (tool == .claude ? 0.55 : 0.42), weight: .bold, design: tool == .codex ? .monospaced : .default))
-            .foregroundStyle(.white)
+        let shape = RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
+        Image(tool.logo)
+            .resizable()
+            .scaledToFit()
+            .frame(width: size * 0.6, height: size * 0.6)
             .frame(width: size, height: size)
-            .background(tool.iconColor, in: .rect(cornerRadius: size * 0.27, style: .continuous))
+            .background(tool.iconColor, in: shape)
+            .overlay { shape.strokeBorder(Theme.aiIconStroke) }
             .accessibilityHidden(true)
     }
 }

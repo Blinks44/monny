@@ -5,7 +5,7 @@
 - Owner: unassigned (released 2026-10-22)
 - Owned surfaces: `monny/AI/`, `Popover/AILimitsTab.swift`, `Dashboard/AIUsagePage.swift`; AI parts of Settings, Sidebar, PopoverView, DashboardView, Onboarding Ready, Alerts, History metrics and `Sampler.extraHistoryValues`
 - Requirements: [SPEC](../SPEC.md) §3, §4, §6, §7, §8 (AI limits, user decision 2026-10-22); design [DES-003](DES-003-ai-usage-limits.md)
-- Code baseline: main 87845c4 plus build 48
+- Code baseline: main 0e805d3, build 49
 
 ## Outcome and scope
 
@@ -55,6 +55,10 @@ User request: add Cursor, Grok and Gemini where possible. Cursor (Cursor.app sig
 
 Drawn and saved: popover `15 · Cursor & Grok`, window `21 · Four tools`, Settings `22 · AI tools`, Light/Dark (frame `14` covers model limits). Code aligned with them: Cursor's window tile shows “$x of $y left” under its bar, Cursor's tile title uses its color, and plan names already cased (“SuperGrok”) keep their casing.
 
+## Service marks — build 49, 2026-10-22
+
+User-supplied SVGs replace the text glyphs ([sources](../research/ai-usage-limits.md#service-marks)): Claude white on coral, Codex and Grok black on white, Cursor light on black, with a hairline. The window tiles show the mark at 18 pt before the name. Sketch symbols `Light/…` and `Dark/AI Logo/<tool>` replace the glyphs in popover frames `11`–`15` and window frames `19` and `21`; saved. Offscreen renders in Light and Dark checked.
+
 ## Open checks / dependency
 
 - Cursor and Grok against a real signed-in account (needs a Mac with them).
@@ -65,4 +69,4 @@ Drawn and saved: popover `15 · Cursor & Grok`, window `21 · Four tools`, Setti
 
 ## Next handoff
 
-Later, with suitable accounts: Cursor, Grok, model limits, credits, API key login. Wait for a few days of history, then check the chart, forecast, a stale reading and the notification. Design: none open.
+Later, with suitable accounts: Cursor, Grok, model limits, credits, API key login. Wait for a few days of history, then check the chart, forecast, a stale reading and the notification. Design: none open. Before a public release, check the marks against each owner's brand guidelines.

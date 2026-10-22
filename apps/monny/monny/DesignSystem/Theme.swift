@@ -56,7 +56,10 @@ enum Theme {
     // AI services (DES-003 exploration colors, raw in Sketch until they become variables)
     static let aiClaude = Color(light: 0xD97757, dark: 0xD97757)
     static let aiCodex = Color(light: 0x2C2D32, dark: 0xD1D1D6)
-    static let aiCodexIcon = Color(light: 0x2C2D32, dark: 0x3A3B40)
+    /// Tiles behind the service marks: white for Codex and Grok, black for Cursor.
+    static let aiIconWhite = Color(light: 0xFFFFFF, dark: 0xFFFFFF)
+    static let aiIconBlack = Color(light: 0x000000, dark: 0x000000)
+    static let aiIconStroke = Color(light: 0x000000, 0.1, dark: 0xFFFFFF, 0.12)
     static let aiCursor = Color(light: 0x5E5CE6, dark: 0x7D7AFF)
     /// Grok's brand is black and white, which Codex already uses; slate keeps the two apart.
     static let aiGrok = Color(light: 0x64748B, dark: 0x94A3B8)

@@ -58,8 +58,7 @@ private struct AIToolTile: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 11) {
             HStack(spacing: 6) {
-                Text(verbatim: tool.glyph).font(.system(size: 12, weight: .bold, design: tool == .codex ? .monospaced : .default))
-                    .accessibilityHidden(true)
+                AIToolIcon(tool: tool, size: 18)
                 Text(verbatim: tool.name)
             }
             .font(Theme.label)

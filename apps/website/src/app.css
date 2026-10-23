@@ -11,13 +11,7 @@ body {
   margin: 0;
   min-width: 20rem;
 }
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-:focus-visible {
+a:focus-visible:not([data-scope]):not([data-slot]) {
   outline: 2px solid var(--monny-metric-network);
   outline-offset: 4px;
 }

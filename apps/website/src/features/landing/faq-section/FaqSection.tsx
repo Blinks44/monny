@@ -6,7 +6,7 @@ import {
   AccordionItemContent,
   AccordionItemBody,
 } from '@moduix/react/accordion'
-import { Plus } from 'lucide-react'
+import { Minus, Plus } from 'lucide-react'
 import { site } from '@/config/site'
 import { m } from '@/integrations/i18n/paraglide/messages'
 import styles from './FaqSection.module.css'
@@ -34,7 +34,8 @@ export function FaqSection() {
               <AccordionItemTrigger>
                 {question}
                 <AccordionItemIndicator>
-                  <Plus size={18} aria-hidden="true" />
+                  <Plus className={styles.plus} size={18} aria-hidden="true" />
+                  <Minus className={styles.minus} size={18} aria-hidden="true" />
                 </AccordionItemIndicator>
               </AccordionItemTrigger>
             </h3>

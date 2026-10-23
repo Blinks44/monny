@@ -59,7 +59,7 @@ export function SiteFooter() {
       </div>
       <div className={styles.bottom}>
         <small>{m.legal()}</small>
-        <LanguageSwitcher upward />
+        <LanguageSwitcher />
       </div>
     </footer>
   )

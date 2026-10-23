@@ -5,6 +5,8 @@
   margin-top: 48px;
 }
 .card {
+  --moduix-card-radius: 20px;
+  --moduix-progress-linear-width: 100%;
   padding: 24px;
   min-height: 260px;
   background: var(--moduix-card);
@@ -127,7 +129,7 @@
 }
 .processes > div {
   display: grid;
-  grid-template-columns: 70px 1fr 54px;
+  grid-template-columns: 70px minmax(0, 1fr) 54px;
   gap: 16px;
   align-items: center;
 }

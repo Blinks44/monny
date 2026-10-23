@@ -1,32 +1,31 @@
-import overviewWebp from '@/assets/product/overview.webp'
+import { Image } from '@moduix/react/image'
+import overviewSrcSet from '@/assets/product/overview.png?w=580;1160;2320&format=webp&quality=90&effort=6&as=srcset'
 import overviewPng from '@/assets/product/overview.png'
-import cpuWebp from '@/assets/product/cpu.webp'
+import cpuSrcSet from '@/assets/product/cpu.png?w=580;1160;2320&format=webp&quality=90&effort=6&as=srcset'
 import cpuPng from '@/assets/product/cpu.png'
-import memoryWebp from '@/assets/product/memory.webp'
+import memorySrcSet from '@/assets/product/memory.png?w=580;1160;2320&format=webp&quality=90&effort=6&as=srcset'
 import memoryPng from '@/assets/product/memory.png'
-import diskWebp from '@/assets/product/disk.webp'
+import diskSrcSet from '@/assets/product/disk.png?w=580;1160;2320&format=webp&quality=90&effort=6&as=srcset'
 import diskPng from '@/assets/product/disk.png'
-import networkWebp from '@/assets/product/network.webp'
+import networkSrcSet from '@/assets/product/network.png?w=580;1160;2320&format=webp&quality=90&effort=6&as=srcset'
 import networkPng from '@/assets/product/network.png'
-import sensorsWebp from '@/assets/product/sensors.webp'
+import sensorsSrcSet from '@/assets/product/sensors.png?w=580;1160;2320&format=webp&quality=90&effort=6&as=srcset'
 import sensorsPng from '@/assets/product/sensors.png'
-import aiWebp from '@/assets/product/ai-limits.webp'
+import aiSrcSet from '@/assets/product/ai-limits.png?w=580;1160;2320&format=webp&quality=90&effort=6&as=srcset'
 import aiPng from '@/assets/product/ai-limits.png'
-import popoverWebp from '@/assets/product/popover.webp'
+import popoverSrcSet from '@/assets/product/popover.png?w=480;960&format=webp&quality=90&effort=6&as=srcset'
 import popoverPng from '@/assets/product/popover.png'
-import popoverSmall from '@/assets/product/popover-small.webp'
-import cpuSmall from '@/assets/product/cpu-small.webp'
 import styles from './ProductImage.module.css'
 
 const images = {
-  overview: [overviewWebp, overviewPng, 1040, 662],
-  cpu: [cpuWebp, cpuPng, 1160, 800],
-  memory: [memoryWebp, memoryPng, 1160, 820],
-  disk: [diskWebp, diskPng, 1160, 820],
-  network: [networkWebp, networkPng, 1160, 820],
-  sensors: [sensorsWebp, sensorsPng, 1160, 820],
-  ai: [aiWebp, aiPng, 740, 510],
-  popover: [popoverWebp, popoverPng, 380, 640],
+  overview: [overviewPng, overviewSrcSet],
+  cpu: [cpuPng, cpuSrcSet],
+  memory: [memoryPng, memorySrcSet],
+  disk: [diskPng, diskSrcSet],
+  network: [networkPng, networkSrcSet],
+  sensors: [sensorsPng, sensorsSrcSet],
+  ai: [aiPng, aiSrcSet],
+  popover: [popoverPng, popoverSrcSet],
 } as const
 
 export function ProductImage({
@@ -34,34 +33,32 @@ export function ProductImage({
   alt,
   eager = false,
   className,
+  sizes,
 }: {
   view: keyof typeof images
   alt: string
   eager?: boolean
   className?: string
+  sizes?: string
 }) {
-  const [webp, png, width, height] = images[view]
+  const [png, srcSet] = images[view]
+  const isPopover = view === 'popover'
   return (
     <picture className={`${styles.picture} ${className ?? ''}`}>
       <source
-        srcSet={
-          view === 'popover'
-            ? `${popoverSmall} 380w, ${webp} 760w`
-            : view === 'cpu'
-              ? `${cpuSmall} 1160w, ${webp} 2320w`
-              : webp
-        }
+        srcSet={srcSet}
         sizes={
-          view === 'popover'
-            ? '(max-width: 700px) 350px, 380px'
-            : '(max-width: 700px) 100vw, 1160px'
+          sizes ??
+          (isPopover
+            ? '(max-width: 700px) 360px, (max-width: 1440px) 33.35vw, 480px'
+            : '(max-width: 700px) 100vw, (max-width: 1200px) calc(100vw - 40px), 1160px')
         }
         type="image/webp"
       />
-      <img
+      <Image
         src={png}
-        width={width}
-        height={height}
+        width={isPopover ? 480 : 1160}
+        height={isPopover ? 760 : 800}
         alt={alt}
         loading={eager ? 'eager' : 'lazy'}
         fetchPriority={eager ? 'high' : undefined}

@@ -94,6 +94,7 @@
   "installStep3": "Permite el primer inicio",
   "installDetail3": "Una vez por descarga, mira abajo",
   "noticeInline": "Aún sin notarizar: el primer inicio requiere un paso más.",
+  "drawerInstallLink": "Aún sin notarizar · Cómo abrir",
   "howToOpen": "Cómo abrir →",
   "noticeTitle": "Apple aún no ha notarizado Monny",
   "noticeDescription": "La notarización requiere un Apple Developer ID de pago que el proyecto aún no tiene. Monny está firmado y su código es abierto, pero macOS no puede verificarlo al iniciarlo por primera vez. Autorízalo una vez con cualquiera de estas opciones.",
@@ -149,5 +150,6 @@
   "emptyDescription": "No hay datos para esta dirección.",
   "terminal": "Terminal",
   "limitOff": "Límite desactivado",
-  "charging": "Cargando"
+  "charging": "Cargando",
+  "limitMarker": "Límite {value} %"
 }

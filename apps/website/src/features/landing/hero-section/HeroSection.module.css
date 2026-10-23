@@ -64,28 +64,34 @@
 .overview {
   position: absolute;
   left: 10.4%;
-  top: 50px;
+  top: 58px;
   width: 72.2%;
 }
 .popover {
   position: absolute;
-  top: 10px;
+  top: 0;
   right: 8.3%;
   width: 26.4%;
   height: 640px;
   overflow: hidden;
 }
 .popover > picture {
-  width: 100%;
+  /* The export includes shadow padding; preserve the window's position in Sketch. */
+  width: 126.3158%;
+  margin-left: -13.1579%;
 }
 .aiCard {
+  --moduix-card-radius: 16px;
+  --moduix-progress-linear-width: 100%;
+  --moduix-progress-linear-track-height: 6px;
+  --moduix-progress-linear-range-bg: var(--monny-metric-cpu);
   position: absolute;
   z-index: 1;
   left: 6.7%;
-  top: 370px;
+  top: 360px;
   width: 320px;
   padding: 20px;
-  background: #1c1c20;
+  background: #1c1c20f2;
   border: 1px solid var(--moduix-border);
   box-shadow: 0 16px 40px #0006;
 }
@@ -93,12 +99,15 @@
   display: flex;
   justify-content: space-between;
   font-size: 12px;
+  line-height: 14px;
   margin-bottom: 16px;
+  gap: 12px;
 }
 .aiHeader small,
 .aiRow small {
   color: var(--monny-text-tertiary);
   font-size: 11px;
+  line-height: 14px;
 }
 .aiHeader > span::before {
   content: '';
@@ -109,12 +118,18 @@
   border-radius: 50%;
   background: var(--monny-metric-cpu);
 }
+.aiHeader > span {
+  color: var(--monny-metric-cpu);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 .aiRow {
   display: grid;
-  grid-template-columns: 110px 1fr;
+  grid-template-columns: minmax(0, 110px) minmax(0, 160px);
   gap: 10px;
   margin-top: 16px;
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 18px;
 }
 .aiRow strong,
 .aiRow small {
@@ -129,14 +144,20 @@
   text-align: right;
   margin-bottom: 8px;
 }
-.aiRow [data-part='range'] {
-  background: var(--monny-metric-cpu);
+.aiRow > div {
+  min-width: 0;
+}
+.aiRow[data-tool='Claude Code'] {
+  --moduix-progress-linear-range-bg: #e8845f;
+}
+.aiRow[data-tool='Codex'] {
+  --moduix-progress-linear-range-bg: #e5e5ea;
 }
 .example {
   text-align: center;
   color: var(--monny-text-tertiary);
   font-size: 11px;
-  margin: -12px 20px 32px;
+  margin: 0 20px 32px;
 }
 @media (max-width: 700px) {
   .hero {
@@ -174,7 +195,8 @@
     height: 380px;
   }
   .popover > picture {
-    width: 100%;
+    width: 102.8571%;
+    margin-left: 0.5714%;
   }
   .aiCard {
     top: 290px;
@@ -183,11 +205,22 @@
     width: 318px;
     max-width: calc(100% - 60px);
     padding: 18px;
+    min-height: 200px;
   }
   .aiRow {
-    margin-top: 14px;
+    margin-top: 18px;
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .aiRow strong {
+    margin-bottom: 2px;
+  }
+  .aiRow small {
+    font-size: 10px;
+    line-height: 12px;
   }
   .aiHeader {
-    margin-bottom: 10px;
+    margin-bottom: 2px;
+    font-size: 11px;
   }
 }

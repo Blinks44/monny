@@ -33,7 +33,9 @@ export function LandingPage() {
         <section id="features" className={styles.section} aria-labelledby="features-title">
           <div className={styles.center}>
             <p className={styles.eyebrow}>{m.monitoring()}</p>
-            <h2 id="features-title">{m.featuresTitle()}</h2>
+            <h2 id="features-title" className={styles.heading}>
+              {m.featuresTitle()}
+            </h2>
             <p className={styles.lead}>{m.featuresLead()}</p>
           </div>
           <FeatureGrid />
@@ -41,7 +43,9 @@ export function LandingPage() {
         <section id="battery" className={styles.battery} aria-labelledby="battery-title">
           <div>
             <p className={`${styles.eyebrow} ${styles.green}`}>{m.battery()}</p>
-            <h2 id="battery-title">{m.batteryTitle()}</h2>
+            <h2 id="battery-title" className={`${styles.heading} ${styles.batteryHeading}`}>
+              {m.batteryTitle()}
+            </h2>
             <p className={styles.lead}>{m.batteryLead()}</p>
             <ul className={styles.checks}>
               {checks.map(([title, detail]) => (
@@ -62,10 +66,16 @@ export function LandingPage() {
           </div>
         </section>
         <section id="ai-limits" className={styles.ai} aria-labelledby="ai-title">
-          <ProductImage view="ai" alt={m.screenshotAlt({ view: m.aiLimits() })} />
+          <ProductImage
+            view="ai"
+            alt={m.screenshotAlt({ view: m.aiLimits() })}
+            sizes="(max-width: 700px) 100vw, (max-width: 1240px) 63vw, 764px"
+          />
           <div>
             <Badge variant="outline">{m.optional()}</Badge>
-            <h2 id="ai-title">{m.aiTitle()}</h2>
+            <h2 id="ai-title" className={`${styles.heading} ${styles.aiHeading}`}>
+              {m.aiTitle()}
+            </h2>
             <p className={styles.lead}>{m.aiLead()}</p>
             <div className={styles.tags}>
               {['Claude Code', 'Codex', 'Cursor', 'Grok'].map((tool) => (
@@ -80,14 +90,18 @@ export function LandingPage() {
         <section className={styles.section} aria-labelledby="dashboard-title">
           <div className={styles.center}>
             <p className={`${styles.eyebrow} ${styles.purple}`}>{m.dashboard()}</p>
-            <h2 id="dashboard-title">{m.dashboardTitle()}</h2>
+            <h2 id="dashboard-title" className={styles.heading}>
+              {m.dashboardTitle()}
+            </h2>
             <p className={styles.lead}>{m.dashboardLead()}</p>
           </div>
           <DashboardSection />
         </section>
         <section className={styles.section} aria-labelledby="privacy-title">
           <div className={styles.center}>
-            <h2 id="privacy-title">{m.privacyTitle()}</h2>
+            <h2 id="privacy-title" className={styles.heading}>
+              {m.privacyTitle()}
+            </h2>
             <p className={styles.lead}>{m.privacyLead()}</p>
           </div>
           <div className={styles.principles}>
@@ -105,7 +119,9 @@ export function LandingPage() {
         <section id="install" className={styles.section} aria-labelledby="install-title">
           <div className={styles.center}>
             <p className={`${styles.eyebrow} ${styles.blue}`}>{m.install()}</p>
-            <h2 id="install-title">{m.installTitle()}</h2>
+            <h2 id="install-title" className={styles.heading}>
+              {m.installTitle()}
+            </h2>
             <p className={styles.lead}>{m.installLead()}</p>
           </div>
           <ol className={styles.steps}>
@@ -127,7 +143,9 @@ export function LandingPage() {
         <section className={styles.cta} aria-labelledby="cta-title">
           <Card className={styles.ctaCard}>
             <img src="/app-icon.png" width="88" height="88" alt="" loading="lazy" />
-            <h2 id="cta-title">{m.ctaTitle()}</h2>
+            <h2 id="cta-title" className={`${styles.heading} ${styles.ctaHeading}`}>
+              {m.ctaTitle()}
+            </h2>
             <p>{m.ctaLead()}</p>
             <DownloadActions />
           </Card>

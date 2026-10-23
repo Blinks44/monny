@@ -8,9 +8,10 @@
   margin: 20px auto 0;
   padding: 12px 14px;
   font-size: 12px;
-  color: var(--monny-metric-heat);
-  border: 1px solid #fda05a30;
-  background: #fda05a12;
+  color: #fdba74;
+  border: 1px solid #fdba744d;
+  border-radius: 20px;
+  background: #fdba741f;
 }
 .inline > svg {
   flex: none;
@@ -19,25 +20,25 @@
   color: var(--monny-text-secondary);
 }
 .inline a {
-  color: var(--monny-metric-heat);
+  color: #fdba74;
   text-decoration: none;
 }
 .full {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 470px) minmax(0, 600px);
   align-items: start;
   gap: 50px;
   padding: 40px;
-  background: #fda05a0a;
-  border: 1px solid #fda05a26;
-  border-radius: 16px;
+  background: #fb923c0f;
+  border: 1px solid #fb923c33;
+  border-radius: 24px;
   margin-top: 48px;
 }
 .icon {
   display: inline-flex;
   padding: 12px;
   background: #fda05a1c;
-  color: var(--monny-metric-heat);
+  color: #fdba74;
   border-radius: 9px;
   margin-bottom: 20px;
 }
@@ -73,6 +74,14 @@
 }
 .tabs {
   min-width: 0;
+  --moduix-tabs-gap: 0px;
+  --moduix-tabs-list-gap: 30px;
+  --moduix-tabs-list-padding-y: 0px;
+  --moduix-tabs-tab-height: 44px;
+  --moduix-tabs-tab-padding-x: 0px;
+  --moduix-tabs-tab-font-size: 15px;
+  --moduix-tabs-line-indicator-bg: #fdba74;
+  --moduix-tabs-line-indicator-radius: 0px;
 }
 .tabs [role='tablist'] {
   overflow-x: auto;

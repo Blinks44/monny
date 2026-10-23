@@ -3,9 +3,8 @@
 }
 .top {
   display: grid;
-  grid-template-columns: 1.2fr 0.5fr 0.65fr 1.35fr;
-  gap: 64px;
-  padding-block: 48px 24px;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 0.9fr) minmax(0, 1.1fr) minmax(0, 2fr);
+  padding-block: 48px 20px;
 }
 .brand {
   display: inline-flex;
@@ -25,11 +24,12 @@
 }
 .top h2 {
   font-size: 12px;
+  line-height: 15px;
   text-transform: uppercase;
   color: var(--monny-text-tertiary);
   font-weight: 500;
   letter-spacing: 0.8px;
-  margin: 0 0 16px;
+  margin: 0 0 15px;
 }
 .top nav a {
   display: block;
@@ -37,15 +37,20 @@
   text-decoration: none;
   margin-bottom: 10px;
   font-size: 14px;
+  line-height: 18px;
+}
+.top nav a:last-child {
+  margin-bottom: 0;
 }
 .top nav a:hover {
   color: var(--moduix-foreground);
 }
 .rebind {
+  --moduix-card-radius: 16px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
+  gap: 18px;
+  padding: 17px;
   text-decoration: none;
   color: inherit;
   background: var(--moduix-card);
@@ -55,14 +60,16 @@
   flex: none;
 }
 .rebind strong {
+  display: block;
   font-size: 16px;
+  line-height: 20px;
   font-weight: 500;
 }
 .rebind p {
   color: var(--monny-text-secondary);
   font-size: 12px;
   line-height: 18px;
-  margin: 6px 0 0;
+  margin: 4px 0 0;
 }
 .bottom {
   display: flex;

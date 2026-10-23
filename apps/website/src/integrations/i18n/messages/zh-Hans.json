@@ -94,6 +94,7 @@
   "installStep3": "允许首次启动",
   "installDetail3": "每次下载后操作一次，见下方",
   "noticeInline": "尚未经 Apple 公证：首次启动需多一步操作。",
+  "drawerInstallLink": "尚未经 Apple 公证 · 如何打开",
   "howToOpen": "如何打开 →",
   "noticeTitle": "Monny 尚未经 Apple 公证",
   "noticeDescription": "公证需要付费的 Apple Developer ID，项目目前尚未具备。Monny 已签名且代码开源，但首次启动时 macOS 会提示无法验证。任选一种方式允许启动一次即可。",
@@ -149,5 +150,6 @@
   "emptyDescription": "此地址没有可用数据。",
   "terminal": "终端",
   "limitOff": "上限已关闭",
-  "charging": "正在充电"
+  "charging": "正在充电",
+  "limitMarker": "上限 {value}%"
 }

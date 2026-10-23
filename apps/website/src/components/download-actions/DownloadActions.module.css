@@ -1,4 +1,6 @@
 .actions {
+  --moduix-button-font-size-xl: 16px;
+  --moduix-button-font-weight: 500;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

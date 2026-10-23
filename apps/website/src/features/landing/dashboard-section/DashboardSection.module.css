@@ -1,10 +1,22 @@
 .tabs {
   margin-top: 32px;
+  --moduix-tabs-gap: 0px;
+  --moduix-tabs-radius: 999px;
+  --moduix-tabs-list-bg: #ffffff0d;
+  --moduix-tabs-list-gap: 0px;
+  --moduix-tabs-list-padding: 3px;
+  --moduix-tabs-tab-radius: 999px;
+  --moduix-tabs-tab-height: 32px;
+  --moduix-tabs-tab-padding-x: 16px;
+  --moduix-tabs-tab-font-size: 14px;
+  --moduix-tabs-indicator-radius: 999px;
+  --moduix-tabs-indicator-bg: #ffffff1f;
+  --moduix-tabs-indicator-shadow: none;
 }
 .scroll {
   display: flex;
   overflow-x: auto;
-  padding: 0 4px 8px;
+  padding: 0 4px;
 }
 .list {
   flex: none;
@@ -18,6 +30,7 @@
 }
 .panel > picture {
   margin-inline: auto;
+  margin-top: -14px;
   width: min(100%, 1160px);
 }
 .battery {
@@ -37,10 +50,15 @@
   .tabs {
     margin-inline: -20px;
     margin-top: 24px;
+    --moduix-tabs-gap: 12px;
   }
   .scroll {
     display: flex;
     padding-inline: 20px;
+    padding-bottom: 8px;
+  }
+  .panel > picture {
+    margin-top: 0;
   }
   .list {
     flex: none;

@@ -6,6 +6,7 @@
 }
 .intro h2 {
   font-size: 48px;
+  font-weight: 600;
   line-height: 1.2;
   letter-spacing: -1.5px;
   margin: 0 0 20px;
@@ -19,6 +20,16 @@
 .intro a {
   color: var(--monny-metric-network);
   text-decoration: none;
+}
+.accordion {
+  --moduix-accordion-trigger-bg: transparent;
+  --moduix-accordion-trigger-bg-hover: transparent;
+  --moduix-accordion-trigger-bg-active: transparent;
+  --moduix-accordion-trigger-padding-x: 0px;
+  --moduix-accordion-icon-size: 18px;
+  --moduix-accordion-icon-open-transform: none;
+  --moduix-accordion-item-body-padding: 0 80px 24px 0;
+  --moduix-accordion-item-border-color: var(--monny-separator);
 }
 .accordion h3 {
   margin: 0;
@@ -36,8 +47,12 @@
   line-height: 25px;
   padding-bottom: 24px;
 }
-.accordion [data-part='item-indicator'][data-state='open'] {
-  transform: rotate(45deg);
+.minus,
+.accordion [data-state='open'] > .plus {
+  display: none;
+}
+.accordion [data-state='open'] > .minus {
+  display: block;
 }
 @media (max-width: 900px) {
   .section {
@@ -51,5 +66,8 @@
   }
   .accordion button {
     font-size: 16px;
+  }
+  .accordion {
+    --moduix-accordion-item-body-padding: 0 24px 20px 0;
   }
 }

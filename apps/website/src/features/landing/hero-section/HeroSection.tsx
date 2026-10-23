@@ -35,6 +35,7 @@ export function HeroSection() {
           view="overview"
           alt={m.screenshotAlt({ view: m.overview() })}
           className={styles.overview}
+          sizes="(max-width: 700px) 0px, (max-width: 1440px) 72.2vw, 1040px"
         />
         <div className={styles.popover}>
           <ProductImage view="popover" alt={m.popoverAlt()} eager />
@@ -51,7 +52,7 @@ export function HeroSection() {
               ['Cursor', 62],
             ] as const
           ).map(([tool, value]) => (
-            <div className={styles.aiRow} key={tool}>
+            <div className={styles.aiRow} data-tool={tool} key={tool}>
               <div>
                 <strong>{tool}</strong>
                 <small>{tool === 'Cursor' ? m.monthlyLimit() : m.fiveHour()}</small>

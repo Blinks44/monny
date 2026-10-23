@@ -1,4 +1,5 @@
 .picture {
+  --moduix-image-radius: 0px;
   display: block;
   min-width: 0;
 }

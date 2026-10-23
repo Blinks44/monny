@@ -44,7 +44,7 @@ export function PageShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className={styles.controls}>
-            <LanguageSwitcher compact />
+            <LanguageSwitcher variant="header" />
             <Button asChild variant="ghost">
               <a href={site.repository}>GitHub</a>
             </Button>
@@ -53,7 +53,7 @@ export function PageShell({ children }: { children: ReactNode }) {
             </Button>
           </div>
           <div className={styles.mobileMenu}>
-            <Drawer open={open} onOpenChange={({ open }) => setOpen(open)}>
+            <Drawer swipeDirection="up" open={open} onOpenChange={({ open }) => setOpen(open)}>
               <DrawerTrigger asChild>
                 <Button variant="ghost" size="icon-md" aria-label={m.menu()}>
                   <Menu size={22} aria-hidden="true" />
@@ -82,12 +82,12 @@ export function PageShell({ children }: { children: ReactNode }) {
                     <a href={site.repository}>GitHub ↗</a>
                   </nav>
                   <div className={styles.drawerFooter}>
-                    <LanguageSwitcher upward />
+                    <LanguageSwitcher variant="drawer" />
                     <Button asChild size="xl">
                       <a href={site.downloadUrl ?? site.releases}>{m.download()}</a>
                     </Button>
                     <Link to="/" hash="install" onClick={() => setOpen(false)}>
-                      {m.howToOpen()}
+                      {m.drawerInstallLink()}
                     </Link>
                   </div>
                 </DrawerContent>

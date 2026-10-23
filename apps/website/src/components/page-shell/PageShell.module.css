@@ -70,6 +70,8 @@
   padding: 0;
 }
 .drawer {
+  padding: 0;
+  border: 0;
   width: 100%;
   max-width: none;
   height: 100dvh;
@@ -88,13 +90,20 @@
   padding: 0 20px;
   border-bottom: 1px solid var(--monny-separator);
 }
+.drawerHeader .brand {
+  gap: 8px;
+  font-size: 17px;
+  line-height: 20px;
+}
 .drawerLinks {
   display: flex;
   flex-direction: column;
   padding: 16px 20px;
 }
 .drawerLinks a {
-  padding: 16px 0;
+  padding: 14px 0 19px;
+  min-height: 60px;
+  line-height: 26px;
   border-bottom: 1px solid var(--moduix-border);
   color: inherit;
   font-size: 22px;
@@ -105,12 +114,13 @@
   flex-direction: column;
   gap: 16px;
   margin-top: auto;
-  padding: 24px 20px 44px;
+  padding: 24px 20px max(53px, env(safe-area-inset-bottom));
   text-align: center;
 }
 .drawerFooter > a:last-child {
-  color: var(--monny-text-secondary);
+  color: #fdba74;
   font-size: 13px;
+  line-height: 15px;
 }
 @media (max-width: 1280px) {
   .headerInner {
@@ -121,6 +131,15 @@
   }
 }
 @media (max-width: 1100px) {
+  .brand {
+    font-size: 17px;
+    line-height: 20px;
+    gap: 8px;
+  }
+  .brand img {
+    width: 28px;
+    height: 28px;
+  }
   .navigation,
   .controls {
     display: none;

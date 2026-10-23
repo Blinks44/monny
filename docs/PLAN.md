@@ -4,7 +4,7 @@ Updated 2026-10-23. [STATE](STATE.md) indexes implementation and open work; [SPE
 
 ## Current slice
 
-Complete the native monitor's remaining compatibility/release checks and AI-limit account/history verification. Website design transfer is implemented; final visual/device/translation and release acceptance continues independently. Select a bounded slice from STATE; do not reimplement accepted features.
+Complete the native monitor's remaining compatibility/release checks and AI-limit account/history verification. Website design transfer/style corrections and the reviewed Monny/Rebind Sketch export handoff are ready; final interaction/device/translation and release acceptance continues independently. Select a bounded slice from STATE; do not reimplement accepted features.
 
 ## App phases
 

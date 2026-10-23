@@ -8,7 +8,7 @@
 .center {
   text-align: center;
 }
-.container h2 {
+.heading {
   font-size: 48px;
   line-height: 1.15;
   letter-spacing: -1.6px;
@@ -48,7 +48,7 @@
   align-items: center;
   padding-block: 120px;
 }
-.battery h2 {
+.batteryHeading {
   font-size: 44px;
   line-height: 1.18;
 }
@@ -108,7 +108,7 @@
   margin-left: -36px;
   width: calc(100% + 36px);
 }
-.ai h2 {
+.aiHeading {
   font-size: 40px;
   margin-top: 24px;
 }
@@ -129,6 +129,7 @@
   margin-top: 48px;
 }
 .principle {
+  --moduix-card-radius: 20px;
   padding: 24px;
   border: 1px solid var(--moduix-border);
   background: var(--moduix-card);
@@ -219,7 +220,7 @@
   border: 1px solid var(--moduix-border);
   border-radius: 32px;
 }
-.ctaCard h2 {
+.ctaHeading {
   font-size: 40px;
   margin: 20px 0 12px;
 }
@@ -243,7 +244,7 @@
   .section {
     padding-block: 40px 48px;
   }
-  .container h2 {
+  .heading {
     font-size: 30px;
     line-height: 36px;
     letter-spacing: -0.7px;
@@ -287,7 +288,7 @@
     margin: 0 -18px;
     width: calc(100% + 36px);
   }
-  .ai h2 {
+  .aiHeading {
     margin-top: 16px;
   }
   .principles {
@@ -344,7 +345,7 @@
     padding: 32px 20px;
     border-radius: 20px;
   }
-  .ctaCard h2 {
+  .ctaHeading {
     margin-top: 24px;
   }
   .ctaCard > div {

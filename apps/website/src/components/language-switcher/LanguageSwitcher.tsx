@@ -1,6 +1,8 @@
 import {
   Menu,
   MenuContent,
+  MenuItemGroup,
+  MenuItemGroupLabel,
   MenuItemIndicator,
   MenuItemText,
   MenuPositioner,
@@ -8,47 +10,59 @@ import {
   MenuRadioItemGroup,
   MenuTrigger,
   MenuTriggerIcon,
+  MenuViewport,
 } from '@moduix/react/menu'
-import { languageNames, localePath, locales } from '@/config/locales'
+import { languageNames, localePath, type Locale } from '@/config/locales'
 import { m } from '@/integrations/i18n/paraglide/messages'
 import { getLocale } from '@/integrations/i18n/paraglide/runtime'
 import styles from './LanguageSwitcher.module.css'
 
+const languageOrder = ['en', 'de', 'es', 'fr', 'ru', 'zh-Hans'] satisfies Locale[]
+
 export function LanguageSwitcher({
-  compact = false,
-  upward = false,
+  variant = 'footer',
 }: {
-  compact?: boolean
-  upward?: boolean
+  variant?: 'header' | 'footer' | 'drawer'
 }) {
   const currentLocale = getLocale()
   return (
-    <Menu positioning={{ placement: upward ? 'top-end' : 'bottom-end' }}>
+    <Menu positioning={{ placement: variant === 'header' ? 'bottom-end' : 'top-end', gutter: 8 }}>
       <MenuTrigger
-        className={compact ? styles.compact : styles.trigger}
+        className={`${styles.trigger} ${styles[variant]}`}
         aria-label={`${m.language()}: ${languageNames[currentLocale]}`}
       >
         <span lang={currentLocale}>
-          {compact
-            ? ({ en: 'EN', ru: 'RU', de: 'DE', fr: 'FR', es: 'ES', 'zh-Hans': '中文' } as const)[
-                currentLocale
-              ]
+          {variant === 'header'
+            ? currentLocale.slice(0, 2).toUpperCase()
             : languageNames[currentLocale]}
         </span>
         <MenuTriggerIcon />
       </MenuTrigger>
       <MenuPositioner>
-        <MenuContent aria-label={m.language()}>
-          <MenuRadioItemGroup value={currentLocale} aria-label={m.language()}>
-            {locales.map((locale) => (
-              <MenuRadioItem key={locale} value={locale} asChild>
-                <a href={localePath(locale)} lang={locale} hrefLang={locale}>
-                  <MenuItemIndicator />
-                  <MenuItemText>{languageNames[locale]}</MenuItemText>
-                </a>
-              </MenuRadioItem>
-            ))}
-          </MenuRadioItemGroup>
+        <MenuContent
+          className={`${styles.content} ${variant === 'drawer' ? styles.drawerMenu : ''}`}
+          aria-label={m.language()}
+        >
+          <MenuViewport className={styles.viewport}>
+            <MenuItemGroup>
+              <MenuItemGroupLabel className={styles.label}>{m.language()}</MenuItemGroupLabel>
+              <MenuRadioItemGroup value={currentLocale} aria-label={m.language()}>
+                {languageOrder.map((locale) => (
+                  <MenuRadioItem key={locale} value={locale} indicator="end" asChild>
+                    <a href={localePath(locale)} lang={locale} hrefLang={locale}>
+                      <MenuItemText className={styles.itemText}>
+                        <span>{languageNames[locale]}</span>
+                        <span className={styles.code} aria-hidden="true">
+                          {locale.slice(0, 2).toUpperCase()}
+                        </span>
+                      </MenuItemText>
+                      <MenuItemIndicator />
+                    </a>
+                  </MenuRadioItem>
+                ))}
+              </MenuRadioItemGroup>
+            </MenuItemGroup>
+          </MenuViewport>
         </MenuContent>
       </MenuPositioner>
     </Menu>

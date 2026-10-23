@@ -6,6 +6,11 @@
   flex-direction: column;
 }
 .content {
+  --moduix-empty-bg: transparent;
+  --moduix-empty-border-width: 0px;
+  --moduix-empty-radius: 0px;
+  --moduix-empty-gap: 0px;
+  align-content: start;
   text-align: center;
   padding: 104px 0 80px;
   flex: 1;

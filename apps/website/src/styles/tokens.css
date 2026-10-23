@@ -1,5 +1,5 @@
-/* Monny.sketch > 05 · Website > Implementation notes, reviewed 2026-10-22.
-   Calm owns control geometry. Override semantic tokens, not component internals. */
+/* Monny.sketch > 05 · Website, reviewed 2026-10-23.
+   Semantic colors live here; section CSS uses moduix component tokens for design geometry. */
 :root,
 [data-moduix-color-scheme='dark'] {
   color-scheme: dark;

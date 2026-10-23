@@ -40,6 +40,12 @@ export function BatteryDemo() {
           <span>80%</span>
         </div>
         <div className={styles.marker} style={{ left: `${limit}%` }} />
+        <span
+          className={styles.limitTag}
+          style={{ left: `clamp(44px, ${limit}%, calc(100% - 44px))` }}
+        >
+          {limit === 100 ? m.limitOff() : m.limitMarker({ value: limit })}
+        </span>
       </div>
       <p className={styles.facts}>{m.batteryFacts()}</p>
       <Slider

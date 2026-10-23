@@ -15,9 +15,9 @@ Use **release.sh** for installed copies. It builds an arm64 Release, copies the 
 Open `apps/monny/monny.xcodeproj` → target **monny** → General → Identity:
 
 - **Version** (`MARKETING_VERSION`): currently `1.0`; change for a user-visible release.
-- **Build** (`CURRENT_PROJECT_VERSION`): currently `34`; agents increment it and run release.sh after every app change. Sparkle compares this number, so every published update needs a build larger than all earlier published ones.
+- **Build** (`CURRENT_PROJECT_VERSION`): read the current Debug/Release values in the project; agents increment it and run release.sh after every app change. Sparkle compares this number, so every published update needs a build larger than all earlier published ones.
 
-Keep Debug/Release values consistent. The script reads Info.plist and automatically names `apps/monny/build/release/Monny-1.0-34.dmg`. It never increments versions or publishes.
+Keep Debug/Release values consistent. The script reads Info.plist and automatically names `apps/monny/build/release/Monny-<Version>-<Build>.dmg`. It never increments versions or publishes.
 
 ## Signing key
 
@@ -31,9 +31,7 @@ Apple Development is the distribution route until there is a paid Developer ID: 
 
 ## Backup and macOS reinstall
 
-The old self-signed `Monny.p12` and `Rebind.p12` backups were removed from `~/Documents/DeveloperSigning/` on 2026-10-21 at the user's request; both apps use only the Apple Development identity.
-
-The current Apple Development identity has been exported through Keychain Access → My Certificates to encrypted `AppleDevelopment.p12` in that folder (2026-10-20), for both apps. The file is nonempty, rejects an empty-password MAC check and is owner-readable only. The user reported restore verification and an off-device copy on 2026-10-21 (recorded in Rebind's SIGNING). Store its export password in your password manager, separately from the file, and keep an off-device copy. A public .cer or app/DMG cannot recover the private key. No signing folders, keys or passwords belong in Git.
+Keep the current identity and its private key in an encrypted PKCS#12 backup outside the repository, with an off-device copy and its export password stored separately. A public certificate or signed app cannot recover the private key. Retired self-signed exports are not a backup of the current identity. Dated recovery evidence and its limits: [REL-001](tasks/REL-001-signing-workflow.md).
 
 After reinstalling macOS, install Xcode/create-dmg, restore the repositories, import `AppleDevelopment.p12` into the login keychain using its export password, check its fingerprint/expiry and run the same release.sh. The certificate must include its private key in My Certificates. If missing/expired, stop and plan the identity transition; generating a same-named replacement does not restore it.
 
@@ -41,10 +39,10 @@ After reinstalling macOS, install Xcode/create-dmg, restore the repositories, im
 
 Sparkle verifies every downloaded update with an **EdDSA (ed25519) key**, separate from the code-signing certificate. Monny's key was created once on 2026-10-21 with Sparkle's `generate_keys --account monny` and is stored in the login keychain under the account `monny` (Rebind's key uses the default account `ed25519`; the apps do not share it). The public key is `SUPublicEDKey` in `apps/monny/Info.plist`. `release.sh` signs through `generate_appcast --account monny`; macOS may ask once to allow keychain access.
 
-The private key is exported to `~/Documents/DeveloperSigning/monny_sparkle_ed25519.key` (owner-only); signing the build-34 DMG with that file verified against the keychain key. It is the plain private key: keep it only in that folder or an encrypted archive, never in Git, and keep an off-device copy. Losing it means installed copies can no longer accept updates and must be replaced by hand. Restore on a new Mac:
+The private key is exported to a private backup location outside the repository (owner-only); signing the build-34 DMG with that file verified against the keychain key. It is the plain private key: keep it in protected storage or an encrypted archive, never in Git, and keep an off-device copy. Losing it means installed copies can no longer accept updates and must be replaced by hand. Restore on a new Mac:
 
 ```sh
-apps/monny/build/DerivedData/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_keys --account monny -f ~/Documents/DeveloperSigning/monny_sparkle_ed25519.key
+apps/monny/build/DerivedData/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_keys --account monny -f /path/to/private-backup/monny_sparkle_ed25519.key
 ```
 
 Never generate a new key once updates have been published.

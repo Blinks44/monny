@@ -4,7 +4,7 @@
 - Stage: done
 - Owner: unassigned (released 2026-10-21)
 - Owned surfaces: `App/MenuBarController.swift` (readings, badge anchor), `Readings/Sampler.swift` (`updatesMenuBar`), Settings › Menu bar row, `PreferenceKey.menuBar*`, `shortTemperatureText`
-- Requirements: [SPEC](../SPEC.md#2-menu-bar-presence) §2, §7 Menu bar; [PLAN](../PLAN.md#next-features) item 2
+- Requirements: [SPEC](../SPEC.md#2-menu-bar-presence) §2, §7 Menu bar; [PLAN](../PLAN.md#next-features)
 - Code baseline: main at 037d588 plus uncommitted APP-009 and this task; build 31
 
 ## Outcome and scope
@@ -21,8 +21,7 @@ While any reading is on, the shared sampler keeps the user's refresh rate in the
 
 ## Open checks / dependency
 
-- User: dark menu bar and wallpaper tinting, popover position under the wider item, the attention badge position with readings on, German/French Settings row width, crowded menu bar behavior.
-- The 1.6 % background cost is acceptable for now but unprofiled; profile the pass if it matters for the release gate.
+Build-37 readings, popover position and badge were user-accepted below. German/French Settings width and crowded-menu-bar review remain with [DES-002](DES-002-native-onboarding-next-features.md). Wallpaper tint/dark-menu-bar appearance was not separately recorded. Background cost is measured (~1.6%) but not profiled; profile only for an observed issue.
 
 ## User acceptance — 2026-10-21
 

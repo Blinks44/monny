@@ -1,7 +1,7 @@
 # APP-001: App foundations (menu bar, popover and dashboard shell)
 
 - Updated: 2026-10-18
-- Stage: done (2026-10-18; keyboard and VoiceOver review moves to the PLAN accessibility gate)
+- Stage: done (shell accepted 2026-10-18; later build-37 keyboard/VoiceOver acceptance in STATE)
 - Owner: unassigned
 - Ownership checked: 2026-10-18; released after the shell pass
 - Owned surfaces: `apps/monny/monny/` app entry, scenes, design tokens, shared components, String Catalogs
@@ -14,7 +14,7 @@ Replace the Xcode template with the Monny shell: status item, popover with Overv
 
 ## Decisions
 
-- **`NSStatusItem` + `NSPopover`, not `MenuBarExtra`.** `MenuBarExtra` offers either a menu or a window, not both, and cannot draw the colored attention badge on a template icon. A left click toggles the popover; a right click or Control-click opens the menu (`NSMenu.popUp`). The badge is a 7 pt subview, so the icon stays a template image.
+- **Historical shell: `NSStatusItem` + `NSPopover`.** The popover was subsequently replaced with a borderless panel ([APP-002](APP-002-popover-design-parity.md)). `MenuBarExtra` offers either a menu or a window, not both, and cannot draw the colored attention badge on a template icon. A left click toggles the popover; a right click or Control-click opens the menu (`NSMenu.popUp`). The badge is a 7 pt subview, so the icon stays a template image.
 - **Dock icon only while the dashboard is open** (accessory app otherwise), as in Rebind. Confirmed by the user 2026-10-18 (SPEC §2).
 - **Tokens are a Swift type, not asset colors.** [Theme.swift](../../apps/monny/monny/DesignSystem/Theme.swift) is generated from all 88 Sketch Color Variables (44 Light/Dark pairs, same names in camelCase), plus the 12 text styles, spacing and radii. This matches Rebind and keeps one reviewable file.
 - **No invented values.** Until the sampler exists, every reading shows "—" (`UnavailableValue`) and the charts show the first-launch state. Real static facts are shown: chip, P/E core counts, memory size, macOS version, uptime, battery presence (IOKit power sources).
@@ -27,7 +27,7 @@ Replace the Xcode template with the Monny shell: status item, popover with Overv
 - [x] Dashboard window with sidebar, page header, time-range control and collapse button; Settings page sections present (offscreen render checked).
 - [x] Tokens for all Sketch color variables and text styles; shared card, chip, banner, icon button, ring, capsule bar and button styles.
 - [x] String Catalog entries for all 88 shell strings in six languages.
-- [ ] Keyboard focus and VoiceOver labels checked in the running app. Moved to the PLAN accessibility release gate; labels are set in code.
+- [x] Keyboard/VoiceOver release review subsequently user-accepted on build 37 (2026-10-21; see STATE).
 - [x] Runtime check (user-reported 2026-10-18, works): left/right click on the status item, popover highlight, Open Dashboard from the menu and the popover, collapse back to the popover, Dock icon appearing and leaving, appearance setting, Launch at login.
 - [x] Task, STATE and affected contracts updated.
 
@@ -41,15 +41,6 @@ Files: `apps/monny/monny/` `monnyApp.swift` (app, delegate, Dock policy, appeara
 
 2026-10-18, Xcode 27.1, macOS 27.0.1, Apple M1 Max: `scripts/dev.sh build` passed with no warnings. `scripts/dev.sh test` passed: 3 tests (bundle identity, sidebar order, uptime text). The popover tabs and the Overview/CPU/Settings pages were rendered offscreen in Light and Dark in a temporary test (deleted afterwards) under the Russian system locale; layout matches the Sketch structure. `scripts/dev.sh run` launches Monny as an accessory app. Screen control was declined, so the agent saw no clicks, menus or the Dock. The user then reported that the status item, popover, menu and dashboard work.
 
-## Open checks / dependency
+## Subsequent implementation and handoff
 
-- Global shortcut ⌥⌘M needs a library decision (for example KeyboardShortcuts) recorded in research.
-- The Release build should target arm64 only (Apple silicon only); this is a release-task change.
-
-## Review
-
-Self-review against the acceptance list above. Sketch details deferred to phase 3 because they need real data: sparklines, charts, core bars, mode tiles, charge slider and the process list.
-
-## Next handoff
-
-Engineering: CORE-001 reading sources and the sampler, then phase 3 screens on real readings.
+Global shortcut, arm64 release packaging, readings and real-data screens are implemented. This record retains shell decisions and dated initial checks, not a current implementation backlog. Current acceptance and next work: [STATE](../STATE.md).

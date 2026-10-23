@@ -47,3 +47,7 @@ xcuserdata/
 # Private signing identity exports are credentials, never repository source.
 *.p12
 *.pfx
+
+# Sparkle private-key export: protect this known credential name at any depth.
+# Public SUPublicEDKey and signed appcasts remain versioned inputs/output contracts.
+monny_sparkle_ed25519.key

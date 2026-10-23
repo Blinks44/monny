@@ -40,7 +40,7 @@ Do not add protocols, dependency-injection containers or view models where a pla
 
 ## Native charge-limit setting
 
-- Main has no charging helper, XPC, SMC setter, adapter isolation, restoration journal or lease. Complete old code/evidence is preserved on experiments/discharge at abe3a80.
+- Main has no charging helper, XPC, SMC setter, adapter isolation, restoration journal or lease. Complete old code/evidence is preserved on experiments/discharge at 09595b5.
 - Native preference support requires macOS 26.4+ and verified runtime signatures. The isolated Objective-C bridge loads only the system PowerUI framework, validates method/argument/return encodings, validates returned limits and fails unavailable on missing/changed interfaces. This is a private API, not a public Apple support guarantee.
 - One actor serializes calls off the main actor. UI refresh/launch/wake only read; no timer writes or automatic enable. Unknown snapshots/unsupported targets prevent mutations. After each user operation require actual enabled/target read-back and show failure plus the actual fresh state otherwise.
 - Enable only if needed, before setting the target: the locally observed enable call resets the target. Disabling does not require writing an irrelevant target. Do not conflate a setter acknowledgement with read-back.

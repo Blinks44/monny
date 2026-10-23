@@ -67,7 +67,7 @@ Check rendered behavior against the same source revision; perform hardware/charg
 
 Shared documentation, instructions, comments and skills use English; conversation follows the user's language. Preserve product translations and intentional Unicode fixtures.
 
-Keep stable contracts, current state/tasks, significant decisions and concise reproducible verification. Report date, known build/OS/Mac model/settings, observed result, evidence source and limits. Distinguish agent observation, tester report and injected tests. Unknown conditions remain unknown; a vague confirmation does not close broad acceptance.
+Keep stable contracts, current state/tasks, significant decisions and concise reproducible verification. Report date, known build/OS/Mac model/settings, observed result, evidence source and limits. For live account/device comparisons, retain agreement, tolerance and method rather than personal quota, storage, battery-health or process snapshots; keep exact values only when indispensable to a documented defect. Distinguish agent observation, tester report and injected tests. Unknown conditions remain unknown; a vague confirmation does not close broad acceptance.
 
 Keep transcripts, quoted replies, personal absolute paths, real machine data (process lists, serial numbers), migration backups and temporary logs out of commits. Use portable source names/access instructions. Screenshots/exports stay in temporary storage outside the repository by default; written results must remain useful without them. Version an image only for a documented deliverable, shipped asset, required visual-test baseline or defect evidence that text cannot preserve.
 
@@ -78,6 +78,8 @@ The commented `.gitignore` owns actual Xcode/SPM/editor/local-output exclusions.
 Ordinary completion includes maintaining the affected topic. Replace superseded requirements/current claims and completed next steps directly; do not append a chain of overrides. Keep task summaries focused on current scope, evidence links and open acceptance. History receives the short outcome/reason, not another session transcript.
 
 Remove completed tasks from STATE's active table. Retain records owning unique decisions/evidence or a useful handoff. Retire a redundant record only after durable facts and every open check have an identified owner; repair incoming links/anchors in the same change. Old evidence is not disposable merely because it is old or the build passes.
+
+Before a commit, review the full candidate diff and tracked/local-output inventory for credentials, account readings, private paths and accidental transcripts. Ignore rules protect untracked files only. Removing content from the checkout does not erase previous commits; report any history exposure separately, without rewriting history or deleting local artifacts as a routine cleanup.
 
 Keep STATE roughly 1–2 pages (preferably under 8 KiB), PLAN a short roadmap and startup free of mandatory archives. Broader moves/merges/deletions require a scoped cleanup task. Do not introduce a new archive hierarchy or bookkeeping framework without a concrete need.
 

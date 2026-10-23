@@ -1,7 +1,7 @@
 # DES-001: Missing design states
 
 - Updated: 2026-10-18
-- Stage: ready_for_implementation (design complete; only the app icon is wired in code)
+- Stage: done (saved design; current native implementation is in main)
 - Owner: unassigned (design pass released 2026-10-18)
 - Owned surfaces: Monny.sketch pages `01 · Popover`, `02 · Window`, `03 · Flows & System` (new frames, Settings rows, Welcome spacing, app icon), the `…/Banner/…` symbol sources; `apps/monny/monny/AppIcon.icon`, `docs/images/app-icon.png`, README
 - Requirements: [SPEC](../SPEC.md) §3, §4, §6, §7, §8 (unavailable values); phases 3–5 in [PLAN](../PLAN.md)
@@ -40,4 +40,4 @@ Sketch saved 2026-10-18. The app icon is wired as `AppIcon.icon` (the empty `App
 
 ## Next handoff
 
-Engineering: start APP-001. Implement these states with the matching screens (Overview/Sensors/Battery/Settings in phase 3, the helper error in phase 4). Read the frames live through Sketch MCP.
+App shell and native monitoring states are implemented; helper-era frames remain deferred with the experiment. No shell implementation request remains. Inspect Dock/Finder icon appearance on macOS 26 during the next platform review; the original record only verified exported/built icon artifacts.

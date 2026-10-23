@@ -50,7 +50,7 @@
       "revision": "05ba982bfeb0d77d3c97d4542b0ee15034d05f84",
       "upstream_commit_date": "2026-03-29T17:28:00+02:00",
       "license": "MIT",
-      "normalization": "Added upstream LICENSE; skill, references and agent metadata only."
+      "normalization": "Added upstream LICENSE; skill, references and agent metadata only. Replaced upstream workstation paths in scroll-reveal.md with repository-relative example locators (2026-10-23)."
     },
     {
       "name": "swiftui-performance-audit",
@@ -136,7 +136,7 @@
   ],
   "reviewed_not_installed": [
     { "name": "swift-security-expert", "repository": "https://github.com/ivan-magda/swift-security-skill", "revision": "bda2e0ccee6a64d45ec2b93790d0876c90e4eb89", "license": "MIT", "reason": "Keychain, CryptoKit and biometrics; Monny stores no secrets and the skill does not cover privileged-helper XPC client validation." },
-    { "name": "swiftdata-pro", "repository": "https://github.com/twostraws/SwiftData-Agent-Skill", "revision": "922d989473a9914210b41529a1ac5636aff4b8c1", "license": "MIT", "reason": "Metric-history storage (1h/24h/7d charts) is not chosen yet; revisit if SwiftData is selected." },
+    { "name": "swiftdata-pro", "repository": "https://github.com/twostraws/SwiftData-Agent-Skill", "revision": "922d989473a9914210b41529a1ac5636aff4b8c1", "license": "MIT", "reason": "History uses ring buffers and a binary plist; SwiftData adds no needed capability. Revisit only if the storage requirements change." },
     { "name": "background-execution", "repository": "https://github.com/n0an/Background-Execution-Agent-Skill", "revision": "a29ddf879308bc6cb0d5add020533701baa7fe67", "license": "MIT", "reason": "Mostly iOS BGTaskScheduler/push; the short macOS section (SMAppService, App Nap) is better served by Apple documentation linked from ENGINEERING." },
     { "name": "swift-architecture-skill", "repository": "https://github.com/efremidze/swift-architecture-skill", "revision": "60e177612f4ed9dc7799b3674830e594c76fa00c", "license": "MIT", "reason": "iOS architecture playbooks (TCA, VIPER, Clean); conflicts with the project's no-overengineering rule. ENGINEERING owns architecture." },
     { "name": "macos-menubar-tuist-app", "repository": "https://github.com/Dimillian/Skills", "revision": "05ba982bfeb0d77d3c97d4542b0ee15034d05f84", "license": "MIT", "reason": "Tuist-first workflow; Monny uses a plain Xcode project and dev.sh." },

@@ -4,7 +4,7 @@
 - Stage: awaiting_verification
 - Owner: unassigned (released 2026-10-21)
 - Owned surfaces: `App/AppUpdater.swift`, `apps/monny/Info.plist`, Sparkle package in the Xcode project, About rows in `Dashboard/SettingsPage.swift`, updates switch in `App/Onboarding.swift`, appcast and nested signing in `scripts/release.sh`
-- Requirements: [SPEC](../SPEC.md#7-settings) §7 About, §8 network; [PLAN](../PLAN.md#next-features) item 6; [SIGNING](../SIGNING.md#update-signing-key)
+- Requirements: [SPEC](../SPEC.md#7-settings) §7 About, §8 network; [PLAN](../PLAN.md#release-gates); [SIGNING](../SIGNING.md#update-signing-key)
 - Code baseline: main at 037d588 plus uncommitted APP-009 to APP-011; build 34
 
 ## Outcome and scope
@@ -23,8 +23,7 @@ Sparkle 2.10.0 replaces the GitHub Releases API check, set up as in Rebind (user
 - Nothing is published yet, so Check for Updates shows Sparkle's error alert until the first release carries `appcast.xml`.
 - End-to-end update: publish two builds, install the older and confirm Sparkle offers, verifies, installs and relaunches the newer with settings and history kept. Same-signer behavior without notarization is unverified.
 - User: keep an off-device copy of `monny_sparkle_ed25519.key`.
-- Settings › About switch row is not drawn in Sketch frame `17` yet ([DES-002](DES-002-native-onboarding-next-features.md)).
 
 ## Next handoff
 
-Engineering: current power draw on the Battery page ([PLAN](../PLAN.md#next-features) item 5). Release: publish the first GitHub release as in [SIGNING](../SIGNING.md#publishing-an-update).
+When publication is authorized, follow [SIGNING](../SIGNING.md#publishing-an-update), then verify an update between two published releases and confirm the separate update-key backup. Current power draw and Settings design are already implemented; no further feature implementation is pending in this task.

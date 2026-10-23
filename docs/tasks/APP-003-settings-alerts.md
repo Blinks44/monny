@@ -19,7 +19,7 @@ Settings controls that do not depend on the battery helper now work: notificatio
 - [x] Check for Updates queries the latest GitHub release on request only; states idle / checking / up to date / available (Download… opens the release page) / failed (offline variant), as in Sketch frames 08, 12, 13.
 - [x] Language: System or one of the six languages, stored as `AppleLanguages` in Monny's domain; a Restart row appears when the choice differs from the running language. Language row added to all eight Settings frames in Sketch.
 - [x] User: the global shortcut opens the dashboard from another app (user-reported, 2026-10-18).
-- [ ] User: a notification appears (for example with Battery below 20% on, or under heavy load).
+- [x] Notification delivery user-accepted on build 37, 2026-10-21 (below).
 
 ## Sketch source
 

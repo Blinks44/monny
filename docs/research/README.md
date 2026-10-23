@@ -2,7 +2,7 @@
 
 > Battery helper and Discharge task/verification records referenced here (BAT-*, APP-005/006, helper verification) were retired from main on 2026-10-21; they are preserved on the `experiments/discharge` branch.
 
-Updated 2026-10-21. Readings and history storage are decided ([CORE-001](../tasks/CORE-001-readings-research.md)); battery control on main uses the native macOS charge limit. Record dates, sources, revisions, licenses and what was actually tested.
+Updated 2026-10-23. Readings and history storage are decided ([CORE-001](../tasks/CORE-001-readings-research.md)); battery control on main uses the native macOS charge limit. Record dates, sources, revisions, licenses and what was actually tested.
 
 ## Readings
 
@@ -20,7 +20,7 @@ Researched 2026-10-18 on a MacBook Pro M1 Max (2 E + 8 P cores) running macOS 27
 | Network rates | `sysctl NET_RT_IFLIST2` with `if_msghdr2`/`if_data64` (public) | 64-bit byte counter deltas per second, physical interfaces only (no `lo`, tunnels, bridges) | `getifaddrs` exposes 32-bit counters that wrap at 4 GB, so it is not used | `netstat -ib` |
 | Battery level, charging, adapter | IOPowerSources (`IOPSCopyPowerSourcesInfo`, `IOPSCopyExternalPowerAdapterDetails`), change notification `IOPSNotificationCreateRunLoopSource` (public) | Percent, state, adapter watts, macOS time estimates (0/65535 = calculating or unknown) | — | |
 | Cycle count, capacities, voltage, amperage, system power in | `AppleSmartBattery` registry (public) | `CycleCount`, `BatteryData.DesignCapacity/NominalChargeCapacity` (mAh), `Voltage` (mV), `Amperage` (mA), `PowerTelemetryData.SystemPowerIn` (mW) | macOS 27 no longer exposes `Temperature` or `AppleRawMaxCapacity` here without privileges | `ioreg -rn AppleSmartBattery` |
-| Battery health ("Maximum Capacity", condition) | `system_profiler SPPowerDataType -json` (public tool), run off the main actor at launch and every few hours | Percent and condition exactly as System Information shows them | NominalCharge ÷ Design (94 %) does not match Apple's value (97 %), so it is not used | System Information |
+| Battery health ("Maximum Capacity", condition) | `system_profiler SPPowerDataType -json` (public tool), run off the main actor at launch and every few hours | Percent and condition exactly as System Information shows them | NominalCharge ÷ Design does not match Apple's reported value, so it is not used | System Information |
 | Thermal state | `ProcessInfo.thermalState` + `thermalStateDidChangeNotification` (public) | Nominal/Fair/Serious/Critical | — | |
 | Top processes | `proc_listallpids` + `proc_pid_rusage(RUSAGE_INFO_V6)` (public libproc) | CPU % = CPU-time delta ÷ wall time (100 % = one core, as in Activity Monitor); memory = `ri_phys_footprint` | Other users' processes are hidden for an unprivileged app, as in Activity Monitor without admin | |
 | Energy per process | `ri_energy_nj` delta from `rusage_info_v6` (public libproc) | Average watts over the interval; the kernel's estimate, not Activity Monitor's "Energy Impact" | Labelled as an estimate. `ri_billed_energy` gave implausible values (µW at a full core) | Rebind ≈ 3 W at 100 % of a core |

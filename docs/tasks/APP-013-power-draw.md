@@ -4,7 +4,7 @@
 - Stage: done
 - Owner: unassigned (released 2026-10-21)
 - Owned surfaces: `BatteryReading.systemLoad`/`batteryPower` in `Readings/PowerReader.swift`, Power card in `Dashboard/BatteryPage.swift`, System load row in `Dashboard/OverviewPage.swift`, `KPICard.footnote`
-- Requirements: [PLAN](../PLAN.md#next-features) item 5; Sketch `18 · Battery · Power card` (page `02 · Window`)
+- Requirements: [PLAN](../PLAN.md#next-features); Sketch `18 · Battery · Power card` (page `02 · Window`)
 - Code baseline: 1e56b15 (build 35) plus the on-battery follow-up; build 36
 
 ## Outcome and scope

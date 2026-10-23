@@ -1,6 +1,6 @@
 # AI usage limits: data sources
 
-Decided 2026-10-22 for [APP-015](../tasks/APP-015-ai-usage-limits.md). Checked on an M1 Max, macOS 27.0.1, with Claude Code 2 (Pro plan) and Codex (Plus plan) signed in.
+Decided 2026-10-22 for [APP-015](../tasks/APP-015-ai-usage-limits.md). Checked on an M1 Max, macOS 27.0.1, with Claude Code and Codex signed in (account values omitted).
 
 ## Reference: CodexBar
 
@@ -60,8 +60,8 @@ The tiles keep a 1 pt hairline (black 10 % / white 12 %) so white tiles stay vis
 
 - Opt-in (Settings › AI limits, off by default; each found tool can be unchecked, and an unchecked tool is not read). Off, Monny reads no credentials and makes no requests. On, the only requests go to the services of the shown tools, with the user's own tokens, which never leave memory or go anywhere else. Only percentages, reset times, plan names and the reading time are stored (`aiUsage` in UserDefaults, quota history in the existing history file).
 - Checks: every 2 minutes while the popover AI tab or the AI usage page is shown, every 5 minutes otherwise (for history and the running-low notification). HTTP 429 waits for `Retry-After`, at least 5 minutes.
-- Both endpoints are private and may change. Decoding ignores unknown fields; a failed decode shows Couldn’t check and keeps the last reading as stale.
+- The usage endpoints are undocumented and may change. Decoding ignores unknown fields; a failed decode shows Couldn’t check and keeps the last reading as stale.
 
 ## Pace math
 
-The pace mark sits at the share of the window's time left. A window is running low below 10 % left, whatever the pace (user decision 2026-10-22: a pace rule called 62 % left “running low” early in a window). The forecast divides the quota used by the elapsed time of the window and reports a run-out time only when it falls before the reset; it is labelled an estimate.
+The pace mark sits at the share of the window's time left. A window is running low below 10 % left, whatever the pace (user decision 2026-10-22: the previous pace rule flagged ample remaining quota early in a window). The forecast divides the quota used by the elapsed time of the window and reports a run-out time only when it falls before the reset; it is labelled an estimate.

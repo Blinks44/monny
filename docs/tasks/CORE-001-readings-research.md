@@ -30,9 +30,8 @@ Decisions while implementing: `ri_billed_energy` gave implausible values, so ene
 
 ## Open checks / dependency
 
-- Measured app CPU use with the popover open is not recorded; it belongs to the PLAN idle-cost gate.
-- Background cadence for history and charge control is not built yet (phase 3/4).
+Later implementation closed the initial missing-history/background-cadence work. Popover/dashboard cost is recorded in [idle-cost evidence](../verification/idle-cost.md). Remaining temperature/fan and history/load checks belong to CORE-002/003.
 
 ## Next handoff
 
-Engineering: CORE-002 temperatures and fans, then phase 3 history and charts.
+No reader-foundation implementation remains. Use [STATE](../STATE.md) for remaining sensor/history verification.

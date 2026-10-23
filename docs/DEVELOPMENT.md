@@ -42,7 +42,7 @@ Default developer builds are ad-hoc signed. Installed review candidates use the 
 
 `Battery/NativeChargeLimitBridge.m` calls the private `PowerUISmartChargeClient` (macOS 26.4+) as the ordinary user, after checking every method signature at runtime; a mismatch reads as unavailable. `ChargeLimitStore` makes the calls off the main actor one at a time and confirms each change by reading it back. Launch, wake and opening a view only read. macOS enforces the limit and keeps it after Monny quits. Verified on macOS 27.0.1 only.
 
-The helper/Discharge implementation and its tests are on **experiments/discharge** (abe3a80).
+The helper/Discharge implementation and its tests are on **experiments/discharge** (09595b5).
 
 ## Contribution checks
 

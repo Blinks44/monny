@@ -4,7 +4,7 @@
 - Stage: awaiting_verification (Settings frame `17` revision of 2026-10-22 implemented in build 42; long-language check open)
 - Owner: unassigned (design pass released 2026-10-21)
 - Owned surfaces: Monny.sketch pages `01 · Popover`, `02 · Window`, `03 · Flows & System` (frames listed below)
-- Requirements: [SPEC](../SPEC.md) §2, §3, §4, §6, §7; [PLAN](../PLAN.md#next-features) items 1–3 and 5, onboarding release gate
+- Requirements: [SPEC](../SPEC.md) §2, §3, §4, §6, §7; [PLAN](../PLAN.md#next-features), onboarding release gate
 - Code baseline: main at 28b5a04; no code changed by this task
 
 ## Outcome and scope

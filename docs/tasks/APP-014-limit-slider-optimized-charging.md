@@ -5,7 +5,7 @@
 - Owner: unassigned (released after build 39)
 - Owned surfaces: `Battery/ChargeLimitController.swift`, `Battery/NativeLimitControls.swift`, `Battery/NativeChargeLimitBridge.*`, right-click menu, Sketch frames `16 · Battery · Native limit control`, `17 · Window · Settings · Native`, `05 · System · Menu bar & notifications` (Light/Dark)
 - Requirements: SPEC §2 (right-click menu), §5; release candidate
-- Code baseline: main 0636518 plus uncommitted build 39 changes
+- Implementation: builds 38–41; present in cleanup baseline main `713defe`
 
 ## Outcome and scope
 
@@ -35,4 +35,4 @@ Build 41: the charge-limit controls no longer use `.disabled` while a write runs
 
 ## Next handoff
 
-Commit with the release candidate when the user asks.
+No commit handoff remains: the implementation is in main. Build-40 pressed appearance and build-41 optimistic-switch/settle behavior were not separately user-verified in this record; verify these interactions with the current candidate during the next installed review.

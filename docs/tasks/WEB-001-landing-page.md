@@ -3,16 +3,16 @@
 - Updated: 2026-10-22
 - Stage: ready_for_implementation (iteration one complete; iteration two is the next slice)
 - Owner: unassigned
-- Ownership checked: main at `39b3408`; final website review/task note owned by this implementation turn, released at handoff
+- Ownership: unassigned; foundation review complete
 - Owned surfaces: `apps/website/`, website sections in shared docs; Sketch inspected read-only
 - Requirements: [SPEC §10](../SPEC.md#10-public-website), user decisions 2026-10-22; PLAN phase 5
-- Code baseline: reviewed foundation committed at main `39b3408`; only the final task-record update remains uncommitted
+- Code baseline: reviewed foundation committed at main `39b3408`; present in cleanup baseline `713defe`
 
 ## Current outcome
 
 Rebuild the rejected MVP in two iterations. **Iteration one is the application foundation**, using TanStack Start/React 19, Vite, moduix CSS Modules/Calm, Lucide, Paraglide, Oxlint/Oxfmt, six-language SSR/SEO, real HTTP 404 and Cloudflare Workers configuration for the confirmed `monny.moduix.dev` domain. Source structure and component folders follow the user's requested contract; see the [website README](../../apps/website/README.md).
 
-**Iteration two is the full design transfer**, from the live `Monny.sketch → 05 · Website`, including responsive layouts, product screenshots, navigation, installation notice, FAQ and download. The current landing and 404 components are deliberately minimal shells. Neither the old MVP nor the Sketch sections are claimed implemented. The shell remains `noindex` until final content is ready. No deployment, DNS change or Sketch edit was performed in this turn. The foundation is now captured in `39b3408`; the agent did not create that commit.
+**Iteration two is the full design transfer**, from the live `Monny.sketch → 05 · Website`, including responsive layouts, product screenshots, navigation, installation notice, FAQ and download. The current landing and 404 components are deliberately minimal shells. Neither the old MVP nor the Sketch sections are claimed implemented. The shell remains `noindex` until final content is ready. No deployment, DNS change or Sketch edit was performed in this turn. Foundation revision: `39b3408`.
 
 ## Acceptance
 
@@ -45,11 +45,9 @@ Reviewed setup scripts, dependency boundaries, source/component layout, current 
 
 Final review checks: `pnpm check` (ten foundation tests), rebuilding `pnpm deploy:dry-run`, seven smoke tests against the new local Worker and Safari's Menu selection RU → DE. Production metadata, six localized 404 responses, sitemap/robots and immutable asset caching pass. No critical foundation finding remains. The next agent can start the design transfer using the handoff in the website README; final design/mobile/accessibility/translation acceptance and the real domain are still the next iteration's checks.
 
-## Superseded MVP evidence
+## Superseded implementation
 
-The prior MVP was committed at `2efcb5c` and removed at `8c4b4e6` before this task began. Its old results do not verify the new implementation. On 2026-10-22 it built with Rsbuild, rendered at 1440/1280/390 px in Light/Dark with Russian/Chinese, returned 404, copied the installation command, and passed local popover/tab/chart-tooltip checks. It used app frames because website frames did not yet exist; the revised website frames now supersede that direction.
-
-MVP-specific findings retained for future illustrations: `Intl` has no `watt` unit; an Ark slider hidden input belongs inside its thumb. Its hand-written ring/bars/sparkline and hover code were replaced by moduix controls/charts; no simulated reading drift or interactive dashboard-range placeholder remained. TanStack Charts 1.0.0 worked with moduix 3.0, while 1.1.0 made its tooltip transparent; that pin is historical evidence, not a current dependency requirement. The hero used a subgrid to align the status item/popover; AI sample values were shared across four service cards. User visual/localization acceptance, real-release download and production runtime were still open when that MVP was retired.
+The previous MVP was removed before the current foundation. Its layout, Rsbuild dependency choices, interactive illustrations and checks do not verify or constrain the new implementation; use the current website README and live Sketch notes.
 
 ## Next handoff
 

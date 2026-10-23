@@ -32,4 +32,4 @@ Read CPU, GPU, SSD and battery temperatures and fan speeds on Apple silicon behi
 
 ## Next handoff
 
-Engineering: phase 3 history storage and charts, then the Sensors page from Sketch.
+History, charts and the Sensors page are implemented. Next: compare readings with an independent reference and verify spinning-fan/fanless/later-chip behavior. Visual sensor/no-fan states still need their explicit review; fixture rendering alone is insufficient.

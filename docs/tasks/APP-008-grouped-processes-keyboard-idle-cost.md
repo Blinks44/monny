@@ -4,7 +4,7 @@
 - Stage: done
 - Owner: unassigned (released 2026-10-21)
 - Owned surfaces: `Readings/ProcessReader.swift`, `Popover/ProcessesTab.swift`, `Readings/History.swift`, `Dashboard/Sidebar.swift`, `DesignSystem/Components.swift` (SegmentedControl), `Popover/PopoverView.swift`, `Dashboard/CPUHistoryCard.swift`
-- Requirements: [SPEC](../SPEC.md) §3 Processes, §8 keyboard navigation and idle cost; [PLAN](../PLAN.md#next-features) item 1 and release gates
+- Requirements: [SPEC](../SPEC.md) §3 Processes, §8 keyboard navigation and idle cost; [PLAN](../PLAN.md#next-features) and release gates
 - Code baseline: main at fb2080e plus uncommitted changes; build 29
 
 ## Outcome and scope
@@ -23,9 +23,7 @@
 
 ## Open checks / dependency
 
-- User: build 32 shows rings only after keyboard use in the popover and dashboard; focus rings look right (tabs, chips, time range, selected sidebar row outline) in Light and Dark; with Keyboard navigation on, Tab reaches header buttons, Overview cards, Settings controls and footer links in a sensible order.
-- Popover cost: about 2 % with the popover open (user, build 37, [verification](../verification/idle-cost.md)).
-- VoiceOver, Increase Contrast and Reduce Motion accepted by the user on build 37.
+Build-37 keyboard focus/navigation, accessibility and popover-cost acceptance is recorded below. Earlier build-32 review requests are closed by that acceptance; no feature handoff remains.
 
 ## User acceptance — 2026-10-21
 

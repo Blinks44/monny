@@ -24,9 +24,7 @@ On first launch Monny opens a 600 × 540 window with Welcome, Charge limit and R
 
 ## Open checks / dependency
 
-- User: confirm the build 31 layout fix. Use 80% Limit, the login switch and Open Monny were reported working on build 30. Check the other five languages for wrapping.
-- The updates switch drives Sparkle's own preference since build 34 ([APP-012](APP-012-sparkle-updates.md)).
-- Not tested on a Mac without a battery or on macOS below 26.4 (two-step flow).
+Build-37 walkthrough/copy acceptance is recorded below; earlier layout review requests are closed. Sparkle owns the updates preference since build 34. Not tested on a Mac without a battery or macOS below 26.4 (two-step flow); retain those cases for platform review.
 
 ## User acceptance — 2026-10-21
 

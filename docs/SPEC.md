@@ -66,7 +66,7 @@ Monny changes the same system preference shown in Battery Settings. macOS owns c
 
 The control mirrors System Settings: one 80–100% slider, where 100% means no limit (Monny turns the native limit off) and a lower target turns it on. Monny never writes an enabled limit of 100%. Enable only when necessary, before setting the target (enable can reset it); require actual enabled/target read-back. A switch below the slider turns Optimized Battery Charging on or off through the same native runtime, with read-back; it is hidden when that setting cannot be read (user decision 2026-10-22). The system may charge within a few percentage points of the target and occasionally reach 100% for estimation. Do not claim exact thresholds, immediate forced discharge on lowering a target or a fabricated time-to-limit. Provide a Battery Settings link and explain that the setting persists.
 
-Discharge, sailing, manual heat protection, calibration and trip automation are deferred to **experiments/discharge**, preserved at abe3a80. Their Sketch frames remain for later work; the app does not show them.
+Discharge, sailing, manual heat protection, calibration and trip automation are deferred to **experiments/discharge**, preserved at 09595b5. Their Sketch frames remain for later work; the app does not show them.
 
 Users of historical helper builds remove that helper through the old app before replacement. The new app never silently installs/uninstalls a daemon or deletes old recovery storage.
 

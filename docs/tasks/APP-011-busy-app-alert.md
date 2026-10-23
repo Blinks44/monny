@@ -4,7 +4,7 @@
 - Stage: done
 - Owner: unassigned (released 2026-10-21)
 - Owned surfaces: busy app rule in `App/Alerts.swift`, background process gate in `Readings/Sampler.swift`, Notifications row in `Dashboard/SettingsPage.swift`
-- Requirements: [SPEC](../SPEC.md#7-settings) §7 Notifications; [PLAN](../PLAN.md#next-features) item 3; copy from Sketch `05 · System · Menu bar & notifications` and `17 · Window · Settings · Native`
+- Requirements: [SPEC](../SPEC.md#7-settings) §7 Notifications; [PLAN](../PLAN.md#next-features); copy from Sketch `05 · System · Menu bar & notifications` and `17 · Window · Settings · Native`
 - Code baseline: main at 037d588 plus uncommitted APP-009/APP-010 and focus changes; build 33
 
 ## Outcome and scope
@@ -21,8 +21,7 @@ Thresholds chosen by the agent under the user's go-ahead (2026-10-21), as propos
 
 ## Open checks / dependency
 
-- User: the banner actually appears (delivery was not observed by the agent; part of the notification delivery release gate) and the copy reads well in other languages.
-- On a developer Mac the alert can fire for long builds; that is expected and why it is off by default.
+Build-37 delivery/copy acceptance is recorded below; the earlier delivery request is closed. Long developer builds can trigger the alert as designed; it remains off by default.
 
 ## User acceptance — 2026-10-21
 

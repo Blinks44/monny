@@ -21,7 +21,7 @@ Each metric, sensor and battery mode is reported with one label: `not implemente
 ## 2. Menu bar presence
 
 - A template status item (Sketch: `05 · System · Menu bar & notifications`). States: idle, popover open, needs attention (a 7 pt badge for heat or danger; can be turned off in Settings).
-- Left click opens the popover; there is no hover mode (user decision 2026-10-18). Right click opens a menu: Open Dashboard (⌥⌘M), Settings…, Turn Off Charge Limit, About Monny, Quit Monny. Turn Off Charge Limit sets the system target to 100% (no limit); it is disabled when native support is unavailable or the limit is already off and hidden without a battery. Calibration remains deferred.
+- Left click opens the popover; there is no hover mode (user decision 2026-10-18). Right click opens a menu: Open Dashboard (⌥⌘M), Settings…, Turn Off Charge Limit, Check for Updates, Quit Monny. Check for Updates uses the existing Sparkle updater and is disabled while it cannot start another check (user decision 2026-10-23). Turn Off Charge Limit sets the system target to 100% (no limit); it is disabled when native support is unavailable or the limit is already off and hidden without a battery. Calibration remains deferred.
 - Optional readings next to the icon: CPU load, CPU temperature and battery level (battery only on a Mac with a battery). Each is off by default and turned on separately in Settings → Menu bar (user decision 2026-10-21). They use the shared sampler's values and refresh rate.
 - A global shortcut (default ⌥⌘M, changeable) opens the dashboard.
 - No Dock icon, except while the dashboard window is open (user decision 2026-10-18).

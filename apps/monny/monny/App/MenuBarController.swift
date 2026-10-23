@@ -191,7 +191,8 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         }
 
         menu.addItem(.separator())
-        menu.addItem(item(String(localized: "About Monny"), #selector(showAbout)))
+        menu.addItem(item(String(localized: "Check for Updates"), #selector(checkForUpdates),
+                          enabled: model.updater.canCheckForUpdates))
         let quit = NSMenuItem(title: String(localized: "Quit Monny"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         quit.target = NSApp
         menu.addItem(quit)
@@ -215,8 +216,5 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         Task { await model.chargeLimit.set(target: ChargeLimit.noLimit) }
     }
 
-    @objc private func showAbout() {
-        NSApp.activate()
-        NSApp.orderFrontStandardAboutPanel(nil)
-    }
+    @objc private func checkForUpdates() { model.updater.checkForUpdates() }
 }

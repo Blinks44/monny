@@ -1,6 +1,6 @@
 # Monny: current state
 
-Updated **2026-10-22**. Current work: AI limits ([APP-015](tasks/APP-015-ai-usage-limits.md)) and the [APP-007](tasks/APP-007-native-simplification-design-parity.md) production review on main. Main is a native monitor with the macOS 26.4+ system charge limit; no helper, XPC, SMC writes or Discharge. The helper/Discharge experiment is preserved on **experiments/discharge** at abe3a80.
+Updated **2026-10-23**. Current work: AI limits ([APP-015](tasks/APP-015-ai-usage-limits.md)) and the [APP-007](tasks/APP-007-native-simplification-design-parity.md) production review on main. Main is a native monitor with the macOS 26.4+ system charge limit; no helper, XPC, SMC writes or Discharge. The helper/Discharge experiment is preserved on **experiments/discharge** at abe3a80.
 
 ## Product and implementation
 
@@ -16,7 +16,7 @@ Updated **2026-10-22**. Current work: AI limits ([APP-015](tasks/APP-015-ai-usag
 
 Optional AI limits ([APP-015](tasks/APP-015-ai-usage-limits.md)): Claude Code and Codex (build 44, accepted), Cursor and Grok (build 45, unverified on real accounts) in a popover tab, an AI usage page and a running-low notification, off by default, with a checkbox per tool. On, Monny calls the services' usage endpoints with the tools' own sign-in on this Mac ([research](research/ai-usage-limits.md)); this is the one network exception besides Sparkle. Gemini is not possible without cookies.
 
-**Candidate:** `apps/monny/build/release/Monny-1.0-49.dmg` with `appcast.xml` (signed Apple Development, not notarized): main with the AI limits commits (tabs size to their titles; Sketch frames for Cursor, Grok and four tools) and service marks (build 49); 61 tests/10 suites pass.
+**Candidate:** `apps/monny/build/release/Monny-1.0-50.dmg` with `appcast.xml` (signed Apple Development, not notarized). Build 50 replaces About Monny in the status-item context menu with the existing six-language Sparkle Check for Updates command; 61 tests pass. [Verification and remaining visual check](history/2026-10.md#2026-10-23-align-menu-commands-with-rebind).
 
 ## Work and open checks
 

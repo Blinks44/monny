@@ -36,6 +36,8 @@ AI limits: `01 · Popover` frames `11`–`13 · Popover · AI limits` and `02 ·
 
 All listed frames are saved, including the two-mode and 80–100% charging updates above. Every state in SPEC has a frame, including empty, unavailable, no-battery, error, update and confirmation states ([DES-001](tasks/DES-001-missing-states.md)). Accessibility and the other five languages are checked in the app.
 
+Menu alignment requested 2026-10-23: the native status-item context menu replaces About Monny with Check for Updates, using Sparkle’s existing availability state and six-language Settings title. This supersedes that item in the saved right-click specimen; Sketch MCP was unavailable and no Sketch edit/save was made.
+
 ## Rules that apply to every screen
 
 - Use the shared symbols and color variables; no raw hex on screens.

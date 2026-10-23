@@ -1,0 +1,142 @@
+.card {
+  position: relative;
+  padding: 32px;
+  min-height: 520px;
+  border: 1px solid var(--moduix-border);
+  background: #19191d;
+  box-shadow: 0 0 120px #34d37408;
+}
+.source {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--monny-text-secondary);
+  font-size: 14px;
+}
+.holding {
+  color: var(--monny-metric-battery);
+  background: #34d37418;
+  gap: 6px;
+  padding: 7px 12px;
+}
+.battery {
+  position: relative;
+  height: 120px;
+  margin-top: 30px;
+  margin-right: 16px;
+  padding: 7px;
+  border: 2px solid var(--monny-control);
+  border-radius: 20px;
+}
+.battery::after {
+  content: '';
+  position: absolute;
+  left: calc(100% + 5px);
+  width: 10px;
+  height: 40px;
+  top: 38px;
+  border-radius: 3px;
+  background: var(--monny-control);
+}
+.level {
+  height: 100%;
+  max-width: 100%;
+  background: linear-gradient(110deg, #21c45c, #5cdb8b);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  padding-left: 32px;
+  color: white;
+}
+.level > span {
+  font-size: 52px;
+  font-weight: 650;
+}
+.marker {
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  width: 2px;
+  background: var(--monny-metric-battery);
+  opacity: 0.55;
+}
+.facts {
+  color: var(--monny-text-tertiary);
+  font-size: 12px;
+  margin: 32px 0 20px;
+}
+.slider {
+  padding-top: 24px;
+  border-top: 1px solid var(--moduix-border);
+  --moduix-primary: var(--monny-metric-battery);
+}
+.label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+.label > div {
+  color: var(--monny-metric-battery);
+  font-size: 20px;
+}
+.switch {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--moduix-border);
+  padding-top: 24px;
+  margin-top: 40px;
+  --moduix-primary: #0a84ff;
+}
+.switch small {
+  display: block;
+  margin-top: 6px;
+  color: var(--monny-text-tertiary);
+  font-size: 12px;
+  font-weight: 400;
+}
+@media (max-width: 700px) {
+  .card {
+    min-height: 380px;
+    padding: 20px;
+  }
+  .source {
+    font-size: 12px;
+  }
+  .holding {
+    padding: 5px 10px;
+  }
+  .battery {
+    height: 76px;
+    margin-top: 20px;
+    padding: 5px;
+    border-radius: 14px;
+  }
+  .battery::after {
+    top: 22px;
+    height: 28px;
+    width: 8px;
+  }
+  .level {
+    padding-left: 18px;
+    border-radius: 8px;
+  }
+  .level > span {
+    font-size: 34px;
+  }
+  .facts {
+    margin-top: 24px;
+    font-size: 11px;
+  }
+  .slider {
+    padding-top: 18px;
+  }
+  .switch {
+    margin-top: 32px;
+    padding-top: 18px;
+  }
+}

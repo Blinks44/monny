@@ -4,7 +4,7 @@ Updated 2026-10-23. [STATE](STATE.md) indexes implementation and open work; [SPE
 
 ## Current slice
 
-Complete the native monitor's remaining compatibility/release checks and AI-limit account/history verification. Website work continues independently with the saved design transfer. Select a bounded slice from STATE; do not reimplement accepted features.
+Complete the native monitor's remaining compatibility/release checks and AI-limit account/history verification. Website design transfer is implemented; final visual/device/translation and release acceptance continues independently. Select a bounded slice from STATE; do not reimplement accepted features.
 
 ## App phases
 
@@ -12,7 +12,7 @@ Complete the native monitor's remaining compatibility/release checks and AI-limi
 2. Native charging is implemented: 80–100% slider (100% disables the limit), independent Optimized Battery Charging switch, explicit writes with read-back, persistent macOS preference. Verify the private runtime on macOS 26.4–26.x ([APP-007](tasks/APP-007-native-simplification-design-parity.md), [APP-014](tasks/APP-014-limit-slider-optimized-charging.md)).
 3. Complete long-language Settings review and AI limits on the remaining accounts/history ([DES-002](tasks/DES-002-native-onboarding-next-features.md), [APP-015](tasks/APP-015-ai-usage-limits.md)).
 4. Finish clean-Mac installation and signing/update backup checks; publish only when requested. Sparkle's end-to-end update needs two published releases ([REL-001](tasks/REL-001-signing-workflow.md), [APP-012](tasks/APP-012-sparkle-updates.md)).
-5. Transfer `Monny.sketch → 05 · Website` into the verified foundation, review responsive behavior and six languages, then publish when requested ([WEB-001](tasks/WEB-001-landing-page.md)).
+5. Review the implemented `Monny.sketch → 05 · Website` transfer in an active browser at desktop/390 px, finish accessibility/translation acceptance, set a verified public DMG and indexing, then publish when requested ([WEB-001](tasks/WEB-001-landing-page.md)).
 
 ## Next features
 

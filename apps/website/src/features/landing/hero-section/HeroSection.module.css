@@ -1,0 +1,193 @@
+.hero {
+  padding-top: 80px;
+  overflow: clip;
+}
+.intro {
+  text-align: center;
+  max-width: 1200px;
+  padding-inline: 20px;
+  margin: auto;
+}
+.badge {
+  padding: 7px 14px;
+  font-size: 12px;
+  gap: 8px;
+}
+.badge > span {
+  background: var(--monny-metric-battery);
+}
+.intro h1 {
+  font-size: clamp(40px, 4.5vw, 64px);
+  line-height: 1.2;
+  letter-spacing: -2.4px;
+  font-weight: 650;
+  margin: 24px 0;
+}
+.intro h1 span {
+  display: block;
+  color: var(--monny-text-secondary);
+}
+.lead {
+  max-width: 680px;
+  margin: 0 auto 36px;
+  color: var(--monny-text-secondary);
+  font-size: 20px;
+  line-height: 1.5;
+}
+.meta {
+  margin: 16px 0;
+  color: var(--monny-text-tertiary);
+  font-size: 13px;
+}
+.release {
+  color: var(--monny-text-tertiary);
+  font-size: 12px;
+  margin: 12px 0;
+}
+.stage {
+  position: relative;
+  max-width: 1440px;
+  height: 740px;
+  margin: 44px auto 0;
+  background:
+    radial-gradient(ellipse at 32% 40%, #9b82ff12, transparent 40%),
+    radial-gradient(ellipse at 66% 35%, #2dd4bf14, transparent 45%);
+}
+.stage::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 200px;
+  background: linear-gradient(transparent, var(--moduix-background));
+  pointer-events: none;
+}
+.overview {
+  position: absolute;
+  left: 10.4%;
+  top: 50px;
+  width: 72.2%;
+}
+.popover {
+  position: absolute;
+  top: 10px;
+  right: 8.3%;
+  width: 26.4%;
+  height: 640px;
+  overflow: hidden;
+}
+.popover > picture {
+  width: 100%;
+}
+.aiCard {
+  position: absolute;
+  z-index: 1;
+  left: 6.7%;
+  top: 370px;
+  width: 320px;
+  padding: 20px;
+  background: #1c1c20;
+  border: 1px solid var(--moduix-border);
+  box-shadow: 0 16px 40px #0006;
+}
+.aiHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 16px;
+}
+.aiHeader small,
+.aiRow small {
+  color: var(--monny-text-tertiary);
+  font-size: 11px;
+}
+.aiHeader > span::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--monny-metric-cpu);
+}
+.aiRow {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 10px;
+  margin-top: 16px;
+  font-size: 12px;
+}
+.aiRow strong,
+.aiRow small {
+  display: block;
+}
+.aiRow strong {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.aiRow > div:last-child > span {
+  display: block;
+  text-align: right;
+  margin-bottom: 8px;
+}
+.aiRow [data-part='range'] {
+  background: var(--monny-metric-cpu);
+}
+.example {
+  text-align: center;
+  color: var(--monny-text-tertiary);
+  font-size: 11px;
+  margin: -12px 20px 32px;
+}
+@media (max-width: 700px) {
+  .hero {
+    padding-top: 40px;
+  }
+  .intro {
+    padding-inline: 20px;
+  }
+  .intro h1 {
+    font-size: 38px;
+    letter-spacing: -1.1px;
+    line-height: 1.16;
+    margin: 20px auto 16px;
+    max-width: 380px;
+  }
+  .lead {
+    font-size: 17px;
+    line-height: 25px;
+    margin-bottom: 24px;
+  }
+  .stage {
+    height: 540px;
+    margin-top: 40px;
+  }
+  .overview {
+    display: none;
+  }
+  .popover {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    top: 0;
+    width: 350px;
+    max-width: calc(100% - 40px);
+    height: 380px;
+  }
+  .popover > picture {
+    width: 100%;
+  }
+  .aiCard {
+    top: 290px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 318px;
+    max-width: calc(100% - 60px);
+    padding: 18px;
+  }
+  .aiRow {
+    margin-top: 14px;
+  }
+  .aiHeader {
+    margin-bottom: 10px;
+  }
+}

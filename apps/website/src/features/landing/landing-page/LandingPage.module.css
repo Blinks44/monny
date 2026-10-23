@@ -1,18 +1,353 @@
-/* Iteration-one shell. Final sections and responsive composition come from Sketch. */
-.content {
-  max-width: 42rem;
+.container {
+  width: min(1200px, calc(100% - 2 * var(--monny-page-gutter)));
+  margin-inline: auto;
+}
+.section {
+  padding-block: 96px 72px;
+}
+.center {
   text-align: center;
 }
-.content h1 {
-  font-size: clamp(2.5rem, 7vw, 4.5rem);
-  line-height: 1.1;
+.container h2 {
+  font-size: 48px;
+  line-height: 1.15;
+  letter-spacing: -1.6px;
   font-weight: 600;
-  text-wrap: balance;
+  margin: 12px 0 20px;
 }
-.content p {
-  margin-block: 1.5rem 2rem;
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  color: var(--monny-text-tertiary);
+  margin: 0 0 12px;
+}
+.green {
+  color: var(--monny-metric-battery);
+}
+.purple {
+  color: var(--monny-metric-cpu);
+}
+.blue {
+  color: var(--monny-metric-network);
+}
+.lead {
   color: var(--monny-text-secondary);
-  font-size: 1.125rem;
-  line-height: 1.65;
-  text-wrap: pretty;
+  font-size: 20px;
+  line-height: 28px;
+  margin: 0;
+}
+.center .lead {
+  max-width: 700px;
+  margin-inline: auto;
+}
+.battery {
+  display: grid;
+  grid-template-columns: minmax(0, 520px) minmax(0, 600px);
+  gap: 80px;
+  align-items: center;
+  padding-block: 120px;
+}
+.battery h2 {
+  font-size: 44px;
+  line-height: 1.18;
+}
+.battery .lead {
+  font-size: 18px;
+  line-height: 28px;
+}
+.checks {
+  list-style: none;
+  padding: 0;
+  margin: 36px 0 28px;
+  display: grid;
+  gap: 24px;
+}
+.checks li {
+  display: flex;
+  gap: 14px;
+}
+.checks svg {
+  color: var(--monny-metric-battery);
+  background: #34d37420;
+  padding: 4px;
+  border-radius: 50%;
+  flex: none;
+}
+.checks strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.checks span {
+  color: var(--monny-text-secondary);
+  font-size: 14px;
+  line-height: 22px;
+}
+.note {
+  color: var(--monny-text-tertiary);
+  font-size: 13px;
+  line-height: 21px;
+  margin: 20px 0 0;
+}
+.example {
+  font-size: 11px;
+  color: var(--monny-text-tertiary);
+  margin: 12px 0 0;
+  text-align: center;
+}
+.ai {
+  display: grid;
+  grid-template-columns: minmax(0, 740px) minmax(0, 440px);
+  gap: 40px;
+  align-items: center;
+  padding-block: 96px;
+}
+.ai > picture {
+  margin-left: -36px;
+  width: calc(100% + 36px);
+}
+.ai h2 {
+  font-size: 40px;
+  margin-top: 24px;
+}
+.ai .lead {
+  font-size: 18px;
+  line-height: 28px;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+.principles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+.principle {
+  padding: 24px;
+  border: 1px solid var(--moduix-border);
+  background: var(--moduix-card);
+}
+.tile {
+  display: inline-flex;
+  padding: 11px;
+  border-radius: 10px;
+  color: var(--metric);
+  background: color-mix(in srgb, var(--metric) 14%, transparent);
+  width: fit-content;
+}
+.tile[data-metric='memory'] {
+  --metric: var(--monny-metric-memory);
+}
+.tile[data-metric='battery'] {
+  --metric: var(--monny-metric-battery);
+}
+.tile[data-metric='cpu'] {
+  --metric: var(--monny-metric-cpu);
+}
+.tile[data-metric='network'] {
+  --metric: var(--monny-metric-network);
+}
+.principle h3 {
+  margin: 20px 0 8px;
+  font-size: 19px;
+  font-weight: 500;
+}
+.principle p {
+  color: var(--monny-text-secondary);
+  font-size: 15px;
+  line-height: 22px;
+  margin: 0;
+}
+.steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0;
+  margin: 48px 0 0;
+  gap: 32px;
+}
+.steps li {
+  position: relative;
+}
+.steps li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  height: 2px;
+  background: var(--monny-track);
+  top: 17px;
+  left: 52px;
+  right: -20px;
+}
+.steps li > span {
+  display: grid;
+  place-items: center;
+  background: #0a84ff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.steps li:last-child > span {
+  background: #fda05a24;
+  color: var(--monny-metric-heat);
+}
+.steps strong {
+  font-size: 17px;
+  font-weight: 500;
+}
+.steps p {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--monny-text-secondary);
+  margin: 8px 0 0;
+}
+.cta {
+  padding-block: 40px 60px;
+}
+.ctaCard {
+  padding: 40px 24px;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(110deg, #9b82ff29, #60a5fa10, #34d37426);
+  border: 1px solid var(--moduix-border);
+  border-radius: 32px;
+}
+.ctaCard h2 {
+  font-size: 40px;
+  margin: 20px 0 12px;
+}
+.ctaCard p {
+  color: var(--monny-text-secondary);
+  font-size: 17px;
+  margin: 0 0 28px;
+}
+@media (max-width: 1000px) {
+  .battery {
+    gap: 40px;
+  }
+  .principles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ai {
+    gap: 24px;
+  }
+}
+@media (max-width: 700px) {
+  .section {
+    padding-block: 40px 48px;
+  }
+  .container h2 {
+    font-size: 30px;
+    line-height: 36px;
+    letter-spacing: -0.7px;
+    margin: 10px 0 14px;
+  }
+  .lead {
+    font-size: 17px;
+    line-height: 24px;
+  }
+  .eyebrow {
+    font-size: 11px;
+  }
+  .battery,
+  .ai {
+    grid-template-columns: 1fr;
+    padding-block: 40px 48px;
+    gap: 24px;
+  }
+  .battery .lead,
+  .ai .lead {
+    font-size: 17px;
+    line-height: 24px;
+  }
+  .checks {
+    gap: 20px;
+    margin: 24px 0;
+  }
+  .checks strong {
+    margin-bottom: 6px;
+    font-size: 16px;
+  }
+  .checks span {
+    font-size: 13px;
+  }
+  .note {
+    font-size: 12px;
+    line-height: 19px;
+  }
+  .ai > picture {
+    grid-row: 2;
+    margin: 0 -18px;
+    width: calc(100% + 36px);
+  }
+  .ai h2 {
+    margin-top: 16px;
+  }
+  .principles {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 28px;
+  }
+  .principle {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    column-gap: 16px;
+  }
+  .tile {
+    grid-row: span 2;
+    align-self: start;
+    padding: 9px;
+  }
+  .principle h3 {
+    font-size: 17px;
+    margin: 0 0 6px;
+  }
+  .principle p {
+    font-size: 14px;
+    line-height: 21px;
+  }
+  .steps {
+    grid-template-columns: 1fr;
+    margin-top: 28px;
+    gap: 24px;
+  }
+  .steps li {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    column-gap: 14px;
+  }
+  .steps li > span {
+    grid-row: span 2;
+    margin: 0;
+  }
+  .steps li:not(:last-child)::after {
+    display: none;
+  }
+  .steps p {
+    margin-top: 6px;
+  }
+  .steps strong {
+    font-size: 16px;
+  }
+  .cta {
+    padding-block: 24px 40px;
+  }
+  .ctaCard {
+    padding: 32px 20px;
+    border-radius: 20px;
+  }
+  .ctaCard h2 {
+    margin-top: 24px;
+  }
+  .ctaCard > div {
+    width: 100%;
+  }
 }

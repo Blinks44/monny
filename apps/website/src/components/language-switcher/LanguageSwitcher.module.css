@@ -2,3 +2,7 @@
   min-width: 8rem;
   justify-content: space-between;
 }
+.compact {
+  min-width: 76px;
+  justify-content: space-between;
+}

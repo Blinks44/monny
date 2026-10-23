@@ -14,15 +14,27 @@ import { m } from '@/integrations/i18n/paraglide/messages'
 import { getLocale } from '@/integrations/i18n/paraglide/runtime'
 import styles from './LanguageSwitcher.module.css'
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({
+  compact = false,
+  upward = false,
+}: {
+  compact?: boolean
+  upward?: boolean
+}) {
   const currentLocale = getLocale()
   return (
-    <Menu positioning={{ placement: 'bottom-end' }}>
+    <Menu positioning={{ placement: upward ? 'top-end' : 'bottom-end' }}>
       <MenuTrigger
-        className={styles.trigger}
+        className={compact ? styles.compact : styles.trigger}
         aria-label={`${m.language()}: ${languageNames[currentLocale]}`}
       >
-        <span lang={currentLocale}>{languageNames[currentLocale]}</span>
+        <span lang={currentLocale}>
+          {compact
+            ? ({ en: 'EN', ru: 'RU', de: 'DE', fr: 'FR', es: 'ES', 'zh-Hans': '中文' } as const)[
+                currentLocale
+              ]
+            : languageNames[currentLocale]}
+        </span>
         <MenuTriggerIcon />
       </MenuTrigger>
       <MenuPositioner>

@@ -54,7 +54,7 @@ The app icon (page `03`, frame `06 · Brand · App icon`) is a graphite tile wit
 
 ## Website
 
-Reviewed read-only 2026-10-22: **Monny.sketch → 05 · Website** owns the second-version landing and 404 in desktop/mobile sizes, the mobile menu, install-notice state and `Website · Implementation notes`. Follow those notes for moduix Calm/CSS Modules, dark-only semantic tokens, system typography, app-image exports and the first-launch notice. This website direction is separate from the native app's Light/Dark contract. The initialization is ready; full layout transfer is iteration two ([WEB-001](tasks/WEB-001-landing-page.md)). Sketch was not edited in the initialization turn.
+Reviewed read-only 2026-10-22: **Monny.sketch → 05 · Website** owns the second-version landing and 404 in desktop/mobile sizes, the mobile menu, install-notice state and `Website · Implementation notes`. Follow those notes for moduix Calm/CSS Modules, dark-only semantic tokens, system typography, app-image exports and the first-launch notice. This website direction is separate from the native app's Light/Dark contract. The full website transfer is implemented and was reviewed against the live source on 2026-10-23; exact mobile/active-browser/accessibility and translation acceptance remain in [WEB-001](tasks/WEB-001-landing-page.md). Shipped app illustrations were exported; Sketch was not edited or saved. The website explains pending release availability and keeps the native-only battery scope.
 
 ## Updating this design contract
 

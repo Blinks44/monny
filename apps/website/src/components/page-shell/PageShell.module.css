@@ -4,34 +4,56 @@
   flex-direction: column;
 }
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  width: min(100%, var(--monny-content-width));
-  margin-inline: auto;
-  padding: 1.25rem var(--monny-page-gutter);
   border-bottom: 1px solid var(--monny-separator);
+}
+.headerInner {
+  max-width: 1200px;
+  min-height: 72px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
 }
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 10px;
   color: inherit;
   text-decoration: none;
+  font-size: 18px;
   font-weight: 600;
+  white-space: nowrap;
+}
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  margin-left: auto;
+}
+.navigation a {
+  color: var(--monny-text-secondary);
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.navigation a:hover {
+  color: var(--moduix-foreground);
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
 }
 .main {
   flex: 1;
-  display: grid;
-  place-content: center;
-  padding: 4rem var(--monny-page-gutter);
+  min-width: 0;
 }
 .skip {
   position: fixed;
   top: 1rem;
   left: 1rem;
-  z-index: 10;
+  z-index: 100;
   padding: 1rem;
   background: var(--moduix-background);
   color: inherit;
@@ -39,4 +61,75 @@
 }
 .skip:focus {
   transform: none;
+}
+.mobileMenu {
+  display: none;
+}
+.drawerPositioner {
+  inset: 0;
+  padding: 0;
+}
+.drawer {
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: 100dvh;
+  border-radius: 0;
+  background: var(--moduix-background);
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--monny-separator);
+}
+.drawerLinks {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+}
+.drawerLinks a {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--moduix-border);
+  color: inherit;
+  font-size: 22px;
+  text-decoration: none;
+}
+.drawerFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: auto;
+  padding: 24px 20px 44px;
+  text-align: center;
+}
+.drawerFooter > a:last-child {
+  color: var(--monny-text-secondary);
+  font-size: 13px;
+}
+@media (max-width: 1280px) {
+  .headerInner {
+    margin-inline: var(--monny-page-gutter);
+  }
+  .navigation {
+    gap: 22px;
+  }
+}
+@media (max-width: 1100px) {
+  .navigation,
+  .controls {
+    display: none;
+  }
+  .mobileMenu {
+    display: block;
+    margin-left: auto;
+  }
+  .headerInner {
+    min-height: 56px;
+  }
 }

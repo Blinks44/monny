@@ -25,3 +25,33 @@ textarea {
   background: var(--monny-metric-cpu);
   color: var(--moduix-background);
 }
+
+html {
+  scroll-behavior: smooth;
+}
+img {
+  max-width: 100%;
+}
+section[id] {
+  scroll-margin-top: 24px;
+}
+a {
+  text-underline-offset: 3px;
+}
+@media (max-width: 700px) {
+  :root {
+    --monny-page-gutter: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

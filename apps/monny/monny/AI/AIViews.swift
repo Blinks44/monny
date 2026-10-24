@@ -112,13 +112,13 @@ extension AIQuotaWindow {
 }
 
 extension AIUsage {
-    /// "Pro plan" from the service's "pro"; plan names are not translated.
+    /// "Pro" from the service's "pro"; plan names are not translated.
     var planText: Text? {
         guard let plan, !plan.isEmpty else { return nil }
         // "pro" → "Pro", "free_workspace" → "Free Workspace"; names already cased, such as
         // "SuperGrok", stay as they are.
         let name = plan.split(separator: "_").map { $0.contains(where: \.isUppercase) ? String($0) : $0.capitalized }.joined(separator: " ")
-        return Text("\(name) plan")
+        return Text(verbatim: name)
     }
 
     /// "1 min ago", or "Just now" within the first minute.

@@ -18,7 +18,7 @@ labels: bug
 - Monny version (Settings → About):
 - macOS version:
 - Mac model and chip (for example MacBook Pro 14", M3 Pro):
-- Battery helper installed (Settings → Battery):
+- For a battery problem, the charge limit shown in System Settings → Battery:
 
 **Readings**
 If a value looks wrong, say which one and what Activity Monitor or System Information shows instead.

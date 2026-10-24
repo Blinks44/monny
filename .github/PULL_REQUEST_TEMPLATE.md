@@ -6,4 +6,4 @@
 - [ ] Tried in the running app (say on which Mac model and macOS version)
 
 **Not tested**
-<!-- For example a Mac model or sensor you do not have, battery control without the helper, or languages you could not translate. -->
+<!-- For example a Mac model or sensor you do not have, a macOS version without the charge limit, or languages you could not translate. -->

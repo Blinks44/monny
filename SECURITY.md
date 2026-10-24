@@ -4,7 +4,7 @@ Monny reads system statistics and can change the macOS battery charge limit, the
 
 ## What Monny does and does not do
 
-- Readings come from your Mac and stay on it. There is no account, analytics or telemetry; the only network request is the update check.
+- Readings come from your Mac and stay on it. There is no account, analytics or telemetry. Network requests: the update check (GitHub), and, only if you turn on AI limits, the limit checks with Anthropic, OpenAI, Cursor and xAI using each tool's own sign-in. Monny never stores or sends those tokens anywhere else.
 - Monny shows process names and resource use but does not read file contents, keystrokes or network traffic.
 - The charge limit changes only when you change it. macOS enforces it; if the setting cannot be read, Monny does not write it.
 

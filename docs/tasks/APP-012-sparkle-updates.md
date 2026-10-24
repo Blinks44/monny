@@ -22,8 +22,8 @@ Sparkle 2.10.0 replaces the GitHub Releases API check, set up as in Rebind (user
 
 - Nothing is published yet, so Check for Updates shows Sparkle's error alert until the first release carries `appcast.xml`.
 - End-to-end update: publish two builds, install the older and confirm Sparkle offers, verifies, installs and relaunches the newer with settings and history kept. Same-signer behavior without notarization is unverified.
-- User: keep an off-device copy of `monny_sparkle_ed25519.key`.
+- User reported an off-device copy of `monny_sparkle_ed25519.key` on 2026-10-24.
 
 ## Next handoff
 
-When publication is authorized, follow [SIGNING](../SIGNING.md#publishing-an-update), then verify an update between two published releases and confirm the separate update-key backup. Current power draw and Settings design are already implemented; no further feature implementation is pending in this task.
+When publication is authorized, follow [SIGNING](../SIGNING.md#publishing-a-release), then verify an update between two published releases and confirm the separate update-key backup. Current power draw and Settings design are already implemented; no further feature implementation is pending in this task.

@@ -11,7 +11,7 @@
 
 A native macOS menu bar utility for resource monitoring and battery charge control. A click on the menu bar icon shows CPU, memory, disk, network, cores and battery at a glance; a dashboard window adds history charts, top processes and temperature sensors. Battery controls use the built-in macOS charge limit where available; macOS manages charging.
 
-**Status:** release candidate under review. Monitoring, history, dashboard pages, Settings and the native charge limit are implemented. Discharge experiments are kept separately on `experiments/discharge`. See the [current state](docs/STATE.md) and [roadmap](docs/PLAN.md).
+**Status:** version 1.0. Download it from [GitHub Releases](https://github.com/Blinks44/monny/releases/latest); what changed in each version is in the [changelog](CHANGELOG.md).
 
 ## Repository layout
 
@@ -22,13 +22,13 @@ A native macOS menu bar utility for resource monitoring and battery charge contr
 | `docs/` | Specification, design notes, roadmap, current state and verification records |
 | `AGENTS.md`, `.agents/`, `.claude/` | Instructions and skills for coding and design agents |
 
-## First-release scope
+## Features
 
 - **Menu bar popover** with Overview, Battery and Processes tabs, refreshed every few seconds, and a global shortcut (⌥⌘M by default).
 - **Dashboard window** with Overview, CPU, Memory, Disk, Network, Battery and Sensors pages and 1 minute to 7 day history.
-- **Native battery charge limit** from 80–100% on supported macOS 26.4+ systems, without a privileged helper. Discharge, calibration and advanced charging automation are deferred.
-- **Notifications** for a measured charge limit, a hot Mac, low battery and high memory pressure; calibration remains deferred.
-- **AI limits (optional, off by default):** Claude Code, Codex, Cursor and Grok plan limits, read with their own sign-in on this Mac.
+- **Battery charge limit** from 80 to 100% on macOS 26.4 and later. Monny changes the same setting as System Settings, so macOS keeps enforcing it after Monny quits. No privileged helper.
+- **Notifications** for a reached charge limit, a hot Mac, low battery, high memory pressure and an app that keeps the CPU busy.
+- **AI limits (optional, off by default):** how much of your Claude Code, Codex, Cursor and Grok subscription limits is left, read with each tool's own sign-in on this Mac.
 - English, Russian, German, French, Spanish and Simplified Chinese.
 
 Readings never leave the Mac: no account, analytics or telemetry. The only network requests are update checks and, when AI limits are turned on, the limit checks with Anthropic, OpenAI, Cursor and xAI. The [specification](docs/SPEC.md) lists the full scope and acceptance.
@@ -51,7 +51,7 @@ apps/monny/scripts/dev.sh run
 
 ## Install
 
-Monny is distributed as a DMG on [GitHub Releases](https://github.com/Blinks44/monny/releases), outside the Mac App Store: system monitoring needs App Sandbox off. There is no release yet.
+Monny is distributed as a DMG on [GitHub Releases](https://github.com/Blinks44/monny/releases), outside the Mac App Store: system monitoring needs App Sandbox off.
 
 1. Download `Monny-<version>.dmg`, open it and drag **Monny** to **Applications**.
 2. Open Monny from Applications.
@@ -65,7 +65,7 @@ Monny is signed, but not yet notarized by Apple: that needs a paid Apple Develop
   xattr -dr com.apple.quarantine /Applications/Monny.app
   ```
 
-This is needed once per downloaded version. Updates keep the same signature, so permissions such as notifications and launch at login stay granted.
+This is needed once per downloaded version. Updates keep the same signature, so permissions such as notifications and launch at login stay granted. After the first install Monny checks for updates itself (Sparkle); you can also use **Check for Updates** in the menu bar icon's right-click menu.
 
 ## Technology
 

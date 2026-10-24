@@ -12,7 +12,7 @@ Complete the native monitor's remaining compatibility/release checks and AI-limi
 2. Native charging is implemented: 80–100% slider (100% disables the limit), independent Optimized Battery Charging switch, explicit writes with read-back, persistent macOS preference. Verify the private runtime on macOS 26.4–26.x ([APP-007](tasks/APP-007-native-simplification-design-parity.md), [APP-014](tasks/APP-014-limit-slider-optimized-charging.md)).
 3. Complete long-language Settings review and AI limits on the remaining accounts/history ([DES-002](tasks/DES-002-native-onboarding-next-features.md), [APP-015](tasks/APP-015-ai-usage-limits.md)).
 4. Finish clean-Mac installation and signing/update backup checks; publish only when requested. Sparkle's end-to-end update needs two published releases ([REL-001](tasks/REL-001-signing-workflow.md), [APP-012](tasks/APP-012-sparkle-updates.md)).
-5. Review the implemented `Monny.sketch → 05 · Website` transfer in an active browser at desktop/390 px, finish accessibility/translation acceptance; the 1.0.0 DMG link and indexing are set, deployment is manual by the user ([WEB-001](tasks/WEB-001-landing-page.md)).
+5. Review the implemented `Monny.sketch → 05 · Website` transfer in an active browser at desktop/390 px, finish accessibility/translation acceptance; deployed 2026-10-24 with the 1.0.0 download and indexing ([WEB-001](tasks/WEB-001-landing-page.md)).
 
 ## Next features
 
@@ -26,4 +26,5 @@ After release, Discharge may be researched again. Helper/SMC-write work is prese
 
 - Accepted 2026-10-21: installed charge-limit change on M1 Max/macOS 27.0.1; informal reading comparisons; six languages; build-37 keyboard/VoiceOver/contrast/motion, notifications and pre-release additions. macOS 26 was reported working, minor version unknown; this does not close 26.4–26.x charging acceptance.
 - Measured: background 0.0%, dashboard 2.9% (build 29); popover about 2% (user, build 37). Conditions and limits: [idle cost](verification/idle-cost.md).
+- Published 2026-10-24: 1.0.0 (build 52) on GitHub Releases and the website.
 - Open: clean-Mac DMG installation, signing-identity recovery and off-device backup (update-key backup reported 2026-10-24); Sparkle update between two releases; later feature-specific checks indexed in STATE. Apple Development candidates are signed but not notarized. Developer ID/notarization is not implemented.

@@ -12,7 +12,7 @@
 
 Iteration two replaces the minimal shells with the saved website design: desktop/narrow landing and 404, shared navigation/mobile Drawer, monitoring cards, native battery demo, AI limits, dashboard gallery, privacy cards, installation tabs and copy feedback, FAQ, CTA and footer. Direct moduix components, CSS Modules, Lucide, the existing TanStack Start/React 19 Worker and Paraglide structure are preserved. All new text and accessible names are translated into EN/RU/DE/FR/ES/zh-Hans.
 
-2026-10-24: download actions link to the 1.0.0 DMG on GitHub Releases (`v1.0.0/Monny-1.0.0-52.dmg`) and indexing is enabled at the user's request; checks, 12 tests, build and seven smoke cases pass, with `index, follow` on pages and `noindex` on 404. The user deploys manually after publishing the release. No deployment, DNS change, app change, build-number increment or DMG build is part of this website-only task.
+2026-10-24: download actions link to the 1.0.0 DMG on GitHub Releases (`v1.0.0/Monny-1.0.0-52.dmg`) and indexing is enabled at the user's request; checks, 12 tests, build and seven smoke cases pass, with `index, follow` on pages and `noindex` on 404. The user deployed it on 2026-10-24; the live home and `/ru/` return 200 with `index, follow`, the 1.0.0 download link and the 2400×1260 `og-image.jpg`, and 404 keeps `noindex`. No deployment, DNS change, app change, build-number increment or DMG build is part of this website-only task.
 
 ## Acceptance
 
@@ -26,7 +26,7 @@ Iteration two replaces the minimal shells with the saved website design: desktop
 - [ ] Exact 390 px/physical-phone comparison and final active-window tab-indicator check (see review limits below).
 - [ ] Review final translations, keyboard/assistive technology and responsive behavior.
 - [ ] Real release download and first-launch installation flow (remove the notice when notarized).
-- [ ] First authorized production deployment; verify DNS, HTTPS, redirects and indexing on `monny.moduix.dev`.
+- [x] First production deployment (user, 2026-10-24); HTTPS, download link, indexing and 404 `noindex` verified on `monny.moduix.dev`.
 
 ## Design source
 
@@ -104,4 +104,4 @@ Browser evidence: desktop menus; Chrome 390×844 Monny Drawer/upward popup and k
 
 ## Next handoff
 
-Use the newly saved Sketch Implementation notes for exports and the current local Worker previews (Monny 4177, Rebind 4176) for acceptance. Finish physical-phone/all-section, keyboard/VoiceOver, runtime reduced-motion and fluent translation review. Public DMG link and indexing are set; after the user's manual deployment, verify DNS/TLS/redirects, the live download link and `index, follow`. Website-only work does not rebuild the native DMG.
+Use the newly saved Sketch Implementation notes for exports and the current local Worker previews (Monny 4177, Rebind 4176) for acceptance. Finish physical-phone/all-section, keyboard/VoiceOver, runtime reduced-motion and fluent translation review. The site is live with the 1.0.0 download and indexing. Website-only work does not rebuild the native DMG.

@@ -3,8 +3,9 @@ export const site = {
   origin: 'https://monny.moduix.dev',
   repository: 'https://github.com/blinks44/monny',
   releases: 'https://github.com/blinks44/monny/releases',
-  // Set to the verified public DMG URL when the first release is published.
-  downloadUrl: null as string | null,
-  // Enable after release availability and final production review.
-  indexingEnabled: false,
+  // A versioned DMG stays valid after later releases; Sparkle updates the installed app.
+  downloadUrl: 'https://github.com/blinks44/monny/releases/download/v1.0.0/Monny-1.0.0-52.dmg' as
+    | string
+    | null,
+  indexingEnabled: true,
 } as const

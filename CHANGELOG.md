@@ -2,7 +2,7 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
-## 1.0
+## 1.0.0: 2026-10-24
 
 First public release. Requires a Mac with Apple silicon and macOS 26 or later.
 

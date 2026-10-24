@@ -5,7 +5,8 @@ The [root README](../README.md) is the public project overview: what Monny does,
 | Document | Purpose |
 | --- | --- |
 | [DEVELOPMENT](DEVELOPMENT.md) | Build/test commands, toolchain and project settings |
-| [SIGNING](SIGNING.md) | Release packaging, publishing on GitHub, signing and update keys, backups |
+| [RELEASING](RELEASING.md) | Versions, release notes, GitHub release and website steps |
+| [SIGNING](SIGNING.md) | Release packaging, signing and update keys, backups |
 | [SPEC](SPEC.md) | Required product behavior and acceptance |
 | [PLAN](PLAN.md) | Roadmap and remaining phase gates |
 | [DESIGN](DESIGN.md) | Visual direction and current Sketch source/readiness |

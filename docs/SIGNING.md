@@ -1,4 +1,4 @@
-# Build, release and signing backup
+# Signing, update keys and backup
 
 Run from this repository's root with full Xcode, `create-dmg` (`brew install create-dmg`) and a logged-in GUI session:
 
@@ -8,16 +8,7 @@ apps/monny/scripts/dev.sh test    # tests
 apps/monny/scripts/release.sh     # signed DMG for installation/testing
 ```
 
-Use **release.sh** for installed copies. It builds an arm64 Release, copies the app into `apps/monny/build/release/`, signs Sparkle's nested code and the app under Hardened Runtime, creates the branded DMG, checks signatures/image integrity, prints SHA-256 and writes the signed Sparkle `appcast.xml` beside the DMG. It never installs, publishes or creates keys; a missing update signing key stops packaging. `MONNY_SIGN_IDENTITY` overrides the pinned certificate.
-
-## Release version and build
-
-Open `apps/monny/monny.xcodeproj` → target **monny** → General → Identity:
-
-- **Version** (`MARKETING_VERSION`): currently `1.0`; change for a user-visible release.
-- **Build** (`CURRENT_PROJECT_VERSION`): read the current Debug/Release values in the project; agents increment it and run release.sh after every app change. Sparkle compares this number, so every published update needs a build larger than all earlier published ones.
-
-Keep Debug/Release values consistent. The script reads Info.plist and automatically names `apps/monny/build/release/Monny-<Version>-<Build>.dmg`. It never increments versions or publishes.
+Use **release.sh** for installed copies. It builds an arm64 Release, copies the app into `apps/monny/build/release/`, signs Sparkle's nested code and the app under Hardened Runtime, creates the branded DMG, checks signatures/image integrity, prints SHA-256 and writes the signed Sparkle `appcast.xml` beside the DMG. It never installs, publishes or creates keys; a missing update signing key stops packaging. `MONNY_SIGN_IDENTITY` overrides the pinned certificate. Version numbers and publishing on GitHub: [RELEASING](RELEASING.md).
 
 ## Signing key
 
@@ -46,25 +37,6 @@ apps/monny/build/DerivedData/SourcePackages/artifacts/sparkle/Sparkle/bin/genera
 ```
 
 Never generate a new key once updates have been published.
-
-## Publishing a release
-
-The app reads `https://github.com/Blinks44/monny/releases/latest/download/appcast.xml`. For each stable release, tag `v<Version>` at the tested commit, create a GitHub release with that tag and attach the DMG and `appcast.xml` from `apps/monny/build/release/` unchanged (the appcast's download URL is `releases/download/v<Version>/<dmg>`). Drafts and pre-releases are not `latest`, so the app ignores them. Do not republish different bytes under the same version: raise the build and version. Builds before 34 have only the old manual check and must be replaced by hand once.
-
-With the [GitHub CLI](https://cli.github.com) (`brew install gh`, then `gh auth login`):
-
-```sh
-# 1. Set MARKETING_VERSION, raise CURRENT_PROJECT_VERSION, add the CHANGELOG entry, commit.
-apps/monny/scripts/dev.sh test
-apps/monny/scripts/release.sh
-# 2. Install the DMG yourself and check it, then tag the same commit and push.
-git tag v1.0 && git push origin main v1.0
-# 3. Publish as a draft, review it on GitHub, then publish it there (or with `gh release edit v1.0 --draft=false`).
-gh release create v1.0 --draft --title "Monny 1.0" --notes-file notes.md \
-    apps/monny/build/release/Monny-1.0-51.dmg apps/monny/build/release/appcast.xml
-```
-
-Check after publishing: `curl -sL https://github.com/Blinks44/monny/releases/latest/download/appcast.xml` returns the new appcast, and its `enclosure` URL downloads the DMG. A wrong file can be replaced with `gh release upload v1.0 <file> --clobber` only before anyone has updated; otherwise publish a new build.
 
 ## Updating from a helper build
 

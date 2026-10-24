@@ -52,7 +52,7 @@ English is `/`; the others are `/ru/`, `/de/`, `/fr/`, `/es/`, `/zh-Hans/`. Cano
 
 The document includes localized titles/descriptions, `lang`, canonical, six `hreflang` links plus `x-default`, Open Graph, Twitter summary and SoftwareApplication JSON-LD without invented price, ratings or release URL. `/robots.txt` and `/sitemap.xml` come from the same site/locale configuration. Unknown paths return HTTP 404 with localized copy and `noindex`, without home canonical/structured data.
 
-**Before release:** set `site.downloadUrl` to a verified public DMG and `site.indexingEnabled` to `true` after release/content acceptance. Until then, download actions lead to the real GitHub Releases page, the hero explains release availability, and HTML meta/response headers use `noindex, follow`. The current square social image/favicon is the shipped app icon; a dedicated share image can replace it before publication. Add the real release download only when a public DMG exists. Preserve the first-launch notice from Sketch until notarization.
+**Release download and indexing:** `site.downloadUrl` points to the published 1.0.0 DMG and `site.indexingEnabled` is `true` (2026-10-24). A versioned DMG link stays valid after later releases, because Sparkle updates the installed app; point it at a newer DMG when convenient. With `downloadUrl` set to `null`, download actions fall back to the GitHub Releases page and the hero shows the pending-release note; with indexing off, HTML meta/response headers use `noindex, follow`. The square social image/favicon is the shipped app icon. Preserve the first-launch notice from Sketch until notarization.
 
 ## Design transfer and review
 

@@ -58,7 +58,8 @@ codesign --force --timestamp=none --sign "$identity" "$dmg"
 codesign --verify --strict "$dmg"
 hdiutil verify -quiet "$dmg"
 
-shasum -a 256 "$dmg"
+# SHA256SUMS.txt is published with the DMG so downloads can be checked with shasum -c.
+(cd "$output" && shasum -a 256 "$(basename "$dmg")" | tee SHA256SUMS.txt)
 
 # Sparkle signs the finished DMG with Monny's EdDSA key from the login keychain (account
 # "monny", docs/SIGNING.md). Each release uploads its own appcast with only its DMG, and the app
@@ -73,4 +74,5 @@ rm -rf "$staging/Monny.app"
     --link "https://github.com/Blinks44/monny" -o "$appcast" "$staging" > "$output/appcast.log" 2>&1 \
     || { echo "Appcast failed (is the update signing key in the keychain?); see $output/appcast.log" >&2; exit 1; }
 echo "Package: $dmg (signed, not notarized)"
+echo "Checksums: $output/SHA256SUMS.txt"
 echo "Appcast: $appcast"

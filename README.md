@@ -11,7 +11,7 @@
 
 A native macOS menu bar utility for resource monitoring and battery charge control. A click on the menu bar icon shows CPU, memory, disk, network, cores and battery at a glance; a dashboard window adds history charts, top processes and temperature sensors. Battery controls use the built-in macOS charge limit where available; macOS manages charging.
 
-**Status:** version 1.0. Download it from [GitHub Releases](https://github.com/Blinks44/monny/releases/latest); what changed in each version is in the [changelog](CHANGELOG.md).
+**Status:** version 1.0.0. Download it from [GitHub Releases](https://github.com/Blinks44/monny/releases/latest); what changed in each version is in the [changelog](CHANGELOG.md).
 
 ## Repository layout
 
@@ -53,7 +53,7 @@ apps/monny/scripts/dev.sh run
 
 Monny is distributed as a DMG on [GitHub Releases](https://github.com/Blinks44/monny/releases), outside the Mac App Store: system monitoring needs App Sandbox off.
 
-1. Download `Monny-<version>.dmg`, open it and drag **Monny** to **Applications**.
+1. Download the latest `Monny-<version>-<build>.dmg`, open it and drag **Monny** to **Applications**.
 2. Open Monny from Applications.
 
 Monny is signed, but not yet notarized by Apple: that needs a paid Apple Developer ID, which the project does not have yet. So on first launch macOS says it cannot verify the app. Allow it once in either way:
@@ -80,7 +80,7 @@ This is needed once per downloaded version. Updates keep the same signature, so 
 
 ## Documentation
 
-- [Development guide](docs/DEVELOPMENT.md): build, tests and signing.
+- [Development guide](docs/DEVELOPMENT.md): build, tests and signing. [Releasing](docs/RELEASING.md): versions and publishing on GitHub.
 - [Specification](docs/SPEC.md) and [roadmap](docs/PLAN.md): product requirements and remaining work.
 - [Documentation index](docs/README.md): design, engineering conventions, verification and contributor/agent workflow.
 - [Contributing](CONTRIBUTING.md), [security policy](SECURITY.md), [code of conduct](CODE_OF_CONDUCT.md) and [changelog](CHANGELOG.md).

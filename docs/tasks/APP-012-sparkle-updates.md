@@ -26,4 +26,4 @@ Sparkle 2.10.0 replaces the GitHub Releases API check, set up as in Rebind (user
 
 ## Next handoff
 
-When publication is authorized, follow [SIGNING](../SIGNING.md#publishing-a-release), then verify an update between two published releases and confirm the separate update-key backup. Current power draw and Settings design are already implemented; no further feature implementation is pending in this task.
+When publication is authorized, follow [SIGNING](../RELEASING.md), then verify an update between two published releases and confirm the separate update-key backup. Current power draw and Settings design are already implemented; no further feature implementation is pending in this task.

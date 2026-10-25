@@ -2,6 +2,14 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.1.0: 2026-10-25
+
+- Processes: search by app or process name, and Quit or Force Quit an app or process from its context menu, with confirmation for Force Quit.
+- Battery: a power panel showing what the Mac uses, how much goes into charging and the adapter's rating, or the draw and time left on battery. Overview shows the Mac's power draw next to the battery level.
+- AI limits for JetBrains AI (monthly quota and top-up credits, read from local IDE files) and GitHub Copilot (premium requests, chat and completions, using the GitHub CLI sign-in).
+- A low AI limit no longer notifies again when the service adjusts its reset time.
+- Corrected and refined wording in all six languages.
+
 ## 1.0.0: 2026-10-24
 
 First public release. Requires a Mac with Apple silicon and macOS 26 or later.

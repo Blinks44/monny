@@ -1,6 +1,6 @@
 # Monny: design direction and live source index
 
-Updated 2026-10-21 (DES-002). [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
+Updated 2026-10-25 (DES-004). [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
 
 ## Direction
 
@@ -12,9 +12,9 @@ Open **Monny.sketch** through Sketch MCP (load `mcp`, then `use`; resolve the op
 
 | Page | Content |
 | --- | --- |
-| 01 · Popover | Overview, Battery, Processes; Battery charging / on battery / helper required; Overview thermal alert; Overview and Battery without a battery; Processes grouped by app. Light above, Dark below |
-| 02 · Window | Overview, CPU, Memory, Disk, Network, Battery, Sensors, Settings; Overview first launch, Sensors unavailable, Battery without a battery, Settings errors / update available / uninstall helper confirmation; Battery macOS charging guidance (info entry in the Charging card, standalone Light/Dark source frames); `17 · Settings · Native` (current Settings for main); `18 · Battery · Power card`; Light/Dark pairs |
-| 03 · Flows & System | Onboarding Welcome / Charge limit (`12`, native step for main) / Ready, the older Battery helper step, plus Welcome / Ready for a Mac without a battery, Calibration in progress, menu bar states, right-click menu and notifications, app icon; branded DMG window and standalone pending-helper-approval and connection-recovery Light/Dark references |
+| 01 · Popover | Overview, Battery, Battery on battery, Processes grouped by app, Overview and Battery without a battery, AI limits `11`–`15`; DES-004 proposals `16`–`23`. Light above, Dark below |
+| 02 · Window | Overview, CPU, Memory, Disk, Network, Battery (native limit), Sensors; Overview first launch, Sensors unavailable, Battery without a battery; `15` macOS charging guidance, `16` native limit control, `17 · Settings · Native`, `18 · Battery · Power card`, AI `19`–`22`; Light/Dark pairs |
+| 03 · Flows & System | Onboarding Welcome / Charge limit (`12`) / Ready (`13`, with AI limits), Welcome / Ready without a battery, menu bar states, right-click menu and notifications, app icon, branded DMG window |
 | 04 · Foundations | Colors, typography, spacing/radii/elevation, component overview |
 | Symbols | `Light/…` and `Dark/…` buttons, toggles, checkboxes, icon buttons, chips, popup button, banners |
 
@@ -26,17 +26,19 @@ The saved DMG frame/background was reviewed live on 2026-10-19 ([REL-002](tasks/
 
 ## Battery: what the app implements — 2026-10-21
 
-The app implements the native charge limit only ([APP-007](tasks/APP-007-native-simplification-design-parity.md)): the popover Battery hero (72 pt gauge, dotted limit marker), the standalone `16 · Battery · Native limit control` reference (80/85/90/95/100 slider where 100% means no limit, then an Optimized Battery Charging switch; 2026-10-22, [APP-014](tasks/APP-014-limit-slider-optimized-charging.md)) and the macOS charging guidance popover. Helper install/approval/recovery frames, Charge/Discharge mode tiles, sailing, heat protection, calibration and trips stay in Sketch for later work; the app does not show them, not even disabled (production review 2026-10-21). Window content begins at x=248 with a 776 pt column in a 1040 pt window; the toolbar starts at y=20.
+The app implements the native charge limit only ([APP-007](tasks/APP-007-native-simplification-design-parity.md)): the popover Battery hero (72 pt gauge, dotted limit marker), the standalone `16 · Battery · Native limit control` reference (80/85/90/95/100 slider where 100% means no limit, then an Optimized Battery Charging switch; 2026-10-22, [APP-014](tasks/APP-014-limit-slider-optimized-charging.md)) and the macOS charging guidance popover. Sketch shows the app as built (user decision 2026-10-24): helper, Charge/Discharge, sailing, heat protection, calibration and trip frames were removed on 2026-10-25 and are redrawn when that work is taken up ([DES-004](tasks/DES-004-power-search-quit-ai-tools.md)). Window content begins at x=248 with a 776 pt column in a 1040 pt window; the toolbar starts at y=20.
 
 ## Readiness
 
-The onboarding Ready step gained the automatic updates toggle on 2026-10-21 (Sparkle). Native onboarding, grouped processes, menu bar readings, the sustained-load notification, native Settings and the Power card were drawn on 2026-10-21 ([DES-002](tasks/DES-002-native-onboarding-next-features.md)). Frames `08 · Settings` and `06 · Battery` keep the helper-era layout for later work; implement Settings from frame `17` (revised 2026-10-22: stacked menu bar checkboxes, About in the right column with the automatic updates row).
+The onboarding Ready step gained the automatic updates toggle on 2026-10-21 (Sparkle). Native onboarding, grouped processes, menu bar readings, the sustained-load notification, native Settings and the Power card were drawn on 2026-10-21 ([DES-002](tasks/DES-002-native-onboarding-next-features.md)). Settings is frame `17` (revised 2026-10-22: stacked menu bar checkboxes, About in the right column with the automatic updates row).
 
 AI limits: `01 · Popover` frames `11`–`13 · Popover · AI limits` and `02 · Window` frames `19 · Window · AI limits` and `20 · Window · Settings · AI limits`, `03 · Flows & System` frame `13 · Onboarding · Ready · AI limits`, Light/Dark ([DES-003](tasks/DES-003-ai-usage-limits.md), 2026-10-22). Implemented for Claude Code, Codex, Cursor and Grok ([APP-015](tasks/APP-015-ai-usage-limits.md)). Added 2026-10-22: `14 · Popover · AI limits · Model limits`, `15 · Popover · AI limits · Cursor & Grok` (Grok slate with “G”), `02 · Window` › `21 · Window · AI limits · Four tools` (2×2 tiles, four reset rows) and `22 · Window · Settings · AI tools` (a checkbox per found tool); Light/Dark, saved. The taller frames put Dark at y 1100. Service marks are the `Light/…` and `Dark/AI Logo/<tool>` symbols (brand tiles: Claude coral, Codex and Grok white, Cursor black), used in all AI frames.
 
-All listed frames are saved, including the two-mode and 80–100% charging updates above. Every state in SPEC has a frame, including empty, unavailable, no-battery, error, update and confirmation states ([DES-001](tasks/DES-001-missing-states.md)). Accessibility and the other five languages are checked in the app.
+All listed frames are saved. Every current SPEC state has a frame, including empty, unavailable and no-battery states ([DES-001](tasks/DES-001-missing-states.md)); update checks use Sparkle's own windows. Accessibility and the other five languages are checked in the app.
 
-Menu alignment requested 2026-10-23: the native status-item context menu replaces About Monny with Check for Updates, using Sparkle’s existing availability state and six-language Settings title. This supersedes that item in the saved right-click specimen; Sketch MCP was unavailable and no Sketch edit/save was made.
+The right-click specimen shows Check for Updates instead of About Monny (requested 2026-10-23, drawn 2026-10-25).
+
+Next release design, accepted by the user 2026-10-25: popover `16`–`23` (power draw on Overview and Battery, process search, Quit/Force Quit menu and confirmation, more AI tools); see [DES-004](tasks/DES-004-power-search-quit-ai-tools.md).
 
 ## Rules that apply to every screen
 

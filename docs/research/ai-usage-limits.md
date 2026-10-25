@@ -39,6 +39,24 @@ Added 2026-10-22 from CodexBar's [grok.md](https://github.com/steipete/CodexBar/
 - **Source:** `GET https://cli-chat-proxy.grok.com/v1/billing?format=credits` with the bearer and `x-xai-token-auth: xai-grok-cli`. `config.creditUsagePercent` (or `onDemandUsed.val / onDemandCap.val`) and `config.currentPeriod.start/end` (else `billingPeriodStart/End`); periods over 8 days show as Monthly. A period without a percentage reads as Couldn’t check; CodexBar then tries grok.com's gRPC-web billing, which Monny skips.
 - **Not used:** `grok agent stdio` JSON-RPC (a child process per check), browser cookies, the xAI developer Management API (prepaid API credit, not plan limits).
 
+## Planned tools (candidates, not implemented)
+
+Screened 2026-10-24 against CodexBar's [providers.md](https://github.com/steipete/CodexBar/blob/main/docs/providers.md) at d34fbb4 (110 provider IDs). Rule (user decision 2026-10-24): Monny reuses the tool's own sign-in on this Mac; no browser cookies, pasted API keys, separate Monny login or Keychain prompt. Most CodexBar providers fail this rule. Nothing below is verified; each needs its file/command shape, fields and failure modes written here before code, and fixtures where no account is available.
+
+| Tool | Source in CodexBar | Open question |
+| --- | --- | --- |
+| JetBrains AI | Newest `<IDE>/options/AIAssistantQuotaManager2.xml` (HTML-encoded JSON), fresher values in `~/Library/Logs/<vendor>/<IDE>/idea.log`; no network | Whether the XML alone is fresh enough; log parsing is bounded (4 MiB tail) |
+| Windsurf | `~/Library/Application Support/Windsurf/User/globalStorage/state.vscdb` (SQLite cache) | Key names and how stale the cache gets; web session source not used |
+| Amp | `amp usage` CLI | Output format stability, run time; access token and cookie fallbacks not used |
+| Kiro | `kiro-cli chat --no-interactive "/usage"` | Up to 20 s per run and leftover empty session files; may be too costly |
+| Cline | `cline auth` session in `~/.cline/data/settings/providers.json` (`auth.accessToken`) | Usage endpoint and expiry handling (no token renewal by Monny) |
+| Codebuff | Credentials file from `codebuff login`; `POST /api/v1/usage`, `GET /api/user/subscription` | File path and weekly window fields |
+| Kilo | `~/.local/share/kilo/auth.json` (`kilo.access`), `app.kilo.ai/api/trpc` | tRPC request shape |
+| Augment | `auggie account status` CLI | Output format; cookie fallback not used |
+| GitHub Copilot | Own device-flow token → `copilot_internal` API | Only if the GitHub CLI's `gh auth token` reads it; otherwise excluded (would need a separate login) |
+
+Excluded: Zed and Muse Code (Keychain items of another app, prompt likely), Antigravity (local server probe), Gemini (below), and every cookie-, API-key- or WebView-based provider.
+
 ## Gemini (not implemented)
 
 Checked 2026-10-22. Google stopped Gemini CLI OAuth for individual, AI Pro and Ultra accounts on 2026-06-18; only Code Assist Standard/Enterprise accounts still have it, and its quota is per model (Pro/Flash), not 5-hour/weekly. Renewing its token needs the OAuth client secret scraped from the installed CLI. The consumer limits at gemini.google.com/usage are reachable only with browser cookies (a Keychain prompt per browser for Chrome's Safe Storage, Full Disk Access for Safari), and the Antigravity replacement needs a local `agy` server with CSRF and process cleanup. Each conflicts with Monny's no-hacks, no-cookies rule; revisit if Google publishes a usage API.

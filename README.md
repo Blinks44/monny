@@ -11,7 +11,7 @@
 
 A native macOS menu bar utility for resource monitoring and battery charge control. A click on the menu bar icon shows CPU, memory, disk, network, cores and battery at a glance; a dashboard window adds history charts, top processes and temperature sensors. Battery controls use the built-in macOS charge limit where available; macOS manages charging.
 
-**Status:** version 1.0.0. Download it from [GitHub Releases](https://github.com/Blinks44/monny/releases/latest); what changed in each version is in the [changelog](CHANGELOG.md).
+Download the latest version from [GitHub Releases](https://github.com/Blinks44/monny/releases/latest); what changed in each version is in the [changelog](CHANGELOG.md).
 
 ## Repository layout
 

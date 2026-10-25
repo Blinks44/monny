@@ -69,11 +69,11 @@
 }
 .popover {
   position: absolute;
+  /* Above the stage fade, so the whole window keeps its rounded corners. */
+  z-index: 1;
   top: 0;
   right: 8.3%;
   width: 26.4%;
-  height: 640px;
-  overflow: hidden;
 }
 .popover > picture {
   /* The export includes shadow padding; preserve the window's position in Sketch. */
@@ -192,7 +192,9 @@
     top: 0;
     width: 350px;
     max-width: calc(100% - 40px);
+    /* The AI card covers the lower part of the window here. */
     height: 380px;
+    overflow: hidden;
   }
   .popover > picture {
     width: 102.8571%;

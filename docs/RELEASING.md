@@ -9,7 +9,7 @@ In Xcode, open target **monny** → General → Identity, or edit `apps/monny/mo
 - **Version** (`MARKETING_VERSION`): semantic version `MAJOR.MINOR.PATCH`, for example `1.0.1` for fixes and `1.1.0` for new features. The tag is `v<Version>`.
 - **Build** (`CURRENT_PROJECT_VERSION`): raised for every app change. Sparkle compares this number, so each published release needs a build larger than all earlier ones.
 
-Never publish different bytes under a version that is already public: raise the build and the version instead. Builds before 34 only have the old manual update check and must be replaced by hand once.
+Never publish different bytes under a version that is already public: raise the build and the version instead. Set the version before packaging any build you install: an installed local package with the same build number as the release (even under an older version) makes Sparkle report it as up to date. Builds before 34 only have the old manual update check and must be replaced by hand once.
 
 ## 2. Write the notes and changelog
 

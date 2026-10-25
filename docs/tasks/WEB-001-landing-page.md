@@ -2,8 +2,7 @@
 
 - Updated: 2026-10-25
 - Stage: awaiting_verification (Sketch export handoff reviewed; website interaction/translation acceptance open)
-- Owner: Codex website implementation
-- Ownership: Codex owns the scoped website/Sketch parity review on baseline `513be0e`. Rebind’s existing website implementation on `e3540f3` is preserved. No native app or deployment changes. The earlier user server at port 3001 was no longer listening; review uses local Worker previews.
+- Owner: unassigned
 - Owned surfaces: `apps/website/`, website sections in shared docs; Monny/Rebind export containers, website screenshot sources and export annotations in Sketch
 - Requirements: [SPEC §10](../SPEC.md#10-public-website), user decisions 2026-10-22; PLAN phase 5
 - Code baseline: reviewed foundation committed at main `39b3408`; present in cleanup baseline `713defe`
@@ -12,7 +11,7 @@
 
 Iteration two replaces the minimal shells with the saved website design: desktop/narrow landing and 404, shared navigation/mobile Drawer, monitoring cards, native battery demo, AI limits, dashboard gallery, privacy cards, installation tabs and copy feedback, FAQ, CTA and footer. Direct moduix components, CSS Modules, Lucide, the existing TanStack Start/React 19 Worker and Paraglide structure are preserved. All new text and accessible names are translated into EN/RU/DE/FR/ES/zh-Hans.
 
-2026-10-24: download actions link to the 1.0.0 DMG on GitHub Releases (`v1.0.0/Monny-1.0.0-52.dmg`) and indexing is enabled at the user's request; checks, 12 tests, build and seven smoke cases pass, with `index, follow` on pages and `noindex` on 404. The user deployed it on 2026-10-24; the live home and `/ru/` return 200 with `index, follow`, the 1.0.0 download link and the 2400×1260 `og-image.jpg`, and 404 keeps `noindex`. No deployment, DNS change, app change, build-number increment or DMG build is part of this website-only task.
+Live at monny.moduix.dev since 2026-10-24 with indexing (`index, follow`; 404 keeps `noindex`) and the 2400×1260 link preview. Since 2026-10-25 (user deployment) downloads link to the 1.1.0 DMG and the hero shows the whole popover window. Website-only work does not rebuild the native DMG.
 
 ## Acceptance
 
@@ -104,7 +103,7 @@ Browser evidence: desktop menus; Chrome 390×844 Monny Drawer/upward popup and k
 
 ## Next handoff
 
-Use the newly saved Sketch Implementation notes for exports and the current local Worker previews (Monny 4177, Rebind 4176) for acceptance. Finish physical-phone/all-section, keyboard/VoiceOver, runtime reduced-motion and fluent translation review. The site is live with the 1.0.0 download and indexing. Website-only work does not rebuild the native DMG.
+Finish physical-phone/all-section, keyboard/VoiceOver, runtime reduced-motion and fluent translation review on the live site or a local preview. Point `site.downloadUrl` at each new release DMG.
 
 ## Companion website link — 2026-10-25
 
@@ -122,4 +121,4 @@ Revised all six message catalogs and refreshed the AI-limit design preview from 
 
 ## Hero popover crop and image sharpness — 2026-10-25
 
-At viewports from about 1440 px the hero popover container's fixed 640 px height cut off the window's footer and bottom corners. Desktop now shows the whole export, above the stage fade; the 390 px layout keeps its crop behind the AI card. A lossless WebP trial was reverted: the user still saw softness, so it doubled image weight without fixing the cause; WebP quality 90 stays. Headless Chrome at 1280/1600 px, 2x, confirmed the full rounded window. Monny.sketch `05 · Website` → `Section · Hero` had the same 640 px crop and an older popover bitmap without the footer: the `Screenshot · Menu bar popover` Frame is now 720 px high with the current `popover.png`; screenshot-reviewed and saved 2026-10-25. `site.downloadUrl` now points to the 1.1.0 DMG; README no longer carries a version status. `pnpm check` (format/lint/types, 12 tests) and `pnpm build` pass. Deployment is pending the user (agent deploy was not permitted).
+At viewports from about 1440 px the hero popover container's fixed 640 px height cut off the window's footer and bottom corners. Desktop now shows the whole export, above the stage fade; the 390 px layout keeps its crop behind the AI card. A lossless WebP trial was reverted: the user still saw softness, so it doubled image weight without fixing the cause; WebP quality 90 stays. Headless Chrome at 1280/1600 px, 2x, confirmed the full rounded window. Monny.sketch `05 · Website` → `Section · Hero` had the same 640 px crop and an older popover bitmap without the footer: the `Screenshot · Menu bar popover` Frame is now 720 px high with the current `popover.png`; screenshot-reviewed and saved 2026-10-25. `site.downloadUrl` now points to the 1.1.0 DMG; README no longer carries a version status. `pnpm check` (format/lint/types, 12 tests) and `pnpm build` pass. The user deployed it on 2026-10-25.

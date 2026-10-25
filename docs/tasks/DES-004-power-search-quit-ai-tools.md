@@ -95,10 +95,6 @@ Not drawn: Battery “on adapter, not charging” power row (implemented in buil
 
 ## Next handoff
 
-Verification: install build 61, compare Copilot with GitHub (APP-015) and JetBrains monthly quota/reset/top-ups with the IDE after using AI Assistant, then verify tool opt-out and accessibility. Preserve the earlier power/process acceptance gates above.
+Verification: in 1.1.0 (build 63), compare Copilot with GitHub (APP-015) and JetBrains monthly quota/reset/top-ups with the IDE after using AI Assistant, then verify tool opt-out and accessibility. Preserve the earlier power/process acceptance gates above.
 
 App, when requested: research Windsurf or the next eligible AI tool; do not claim the entire multi-tool item is complete.
-
-## Copy review handoff — 2026-10-25
-
-The user paused JetBrains implementation while the [app/site copy review](APP-016-copy-localization-review.md) finished. Its current uncommitted code/tests are preserved and included in the signed build-58 candidate; 101 tests pass, including the temporary JetBrains render review after its optional NSAppearance unwrap was fixed. This is compilation/software evidence, not JetBrains runtime acceptance. Catalog values and matching English Sketch copy are reviewed; shared catalog/build ownership is released. Resumed and completed as build 59 above, preserving the copy revisions; the temporary render file was removed after review.

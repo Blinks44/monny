@@ -53,7 +53,7 @@ apps/monny/scripts/dev.sh run
 
 Monny is distributed as a DMG on [GitHub Releases](https://github.com/Blinks44/monny/releases), outside the Mac App Store: system monitoring needs App Sandbox off.
 
-1. Download the latest `Monny-<version>-<build>.dmg`, open it and drag **Monny** to **Applications**.
+1. Download [Monny.dmg](https://github.com/Blinks44/monny/releases/latest/download/Monny.dmg) from the latest release, open it and drag **Monny** to **Applications**.
 2. Open Monny from Applications.
 
 Monny is signed, but not yet notarized by Apple: that needs a paid Apple Developer ID, which the project does not have yet. So on first launch macOS says it cannot verify the app. Allow it once in either way:

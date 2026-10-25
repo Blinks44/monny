@@ -11,7 +11,7 @@
 
 Iteration two replaces the minimal shells with the saved website design: desktop/narrow landing and 404, shared navigation/mobile Drawer, monitoring cards, native battery demo, AI limits, dashboard gallery, privacy cards, installation tabs and copy feedback, FAQ, CTA and footer. Direct moduix components, CSS Modules, Lucide, the existing TanStack Start/React 19 Worker and Paraglide structure are preserved. All new text and accessible names are translated into EN/RU/DE/FR/ES/zh-Hans.
 
-Live at monny.moduix.dev since 2026-10-24 with indexing (`index, follow`; 404 keeps `noindex`) and the 2400×1260 link preview. Since 2026-10-25 (user deployment) downloads link to the 1.1.0 DMG and the hero shows the whole popover window. Website-only work does not rebuild the native DMG.
+Live at monny.moduix.dev since 2026-10-24 with indexing (`index, follow`; 404 keeps `noindex`) and the 2400×1260 link preview. Since 2026-10-25 the hero shows the whole popover window. Downloads use the permanent `releases/latest/download/Monny.dmg` link ([history](../history/2026-10.md#2026-10-25-permanent-download-link)); that change awaits deployment. Website-only work does not rebuild the native DMG.
 
 ## Acceptance
 
@@ -103,7 +103,7 @@ Browser evidence: desktop menus; Chrome 390×844 Monny Drawer/upward popup and k
 
 ## Next handoff
 
-Finish physical-phone/all-section, keyboard/VoiceOver, runtime reduced-motion and fluent translation review on the live site or a local preview. Point `site.downloadUrl` at each new release DMG.
+Finish physical-phone/all-section, keyboard/VoiceOver, runtime reduced-motion and fluent translation review on the live site or a local preview. Releases need no download-link change.
 
 ## Companion website link — 2026-10-25
 

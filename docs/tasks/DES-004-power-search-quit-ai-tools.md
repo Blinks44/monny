@@ -91,10 +91,10 @@ Not drawn: Battery “on adapter, not charging” power row (implemented in buil
 - Overview: user reports the build-54 layout good (2026-10-25); named Mac/OS, source-transition freshness, Battery navigation, VoiceOver and Increase Contrast were not restated or separately accepted.
 - Battery panel: user reports build 55 looks good (2026-10-25), without named Mac/OS or specific charging states. Real charging below the limit, source transitions, expanded/error-state scrolling, VoiceOver and Increase Contrast remain open; fixture math/layout checks do not establish these.
 - Process search: user reports build 56 works on 2026-10-25; Mac/OS and individual interaction cases were not restated. VoiceOver/Increase Contrast remain open; the final strengthened search tests passed in build 57.
-- Quit/Force Quit: user reports build 57 works (2026-10-25); Mac/OS and individual scenarios were not restated. Detailed Cancel/Escape, error/panel lifetime, save-dialog/helper cleanup, keyboard/VoiceOver/Increase Contrast and six-language alert checks remain open. JetBrains AI needs real quota comparison and installed acceptance; the remaining AI candidates still need research, implementation and acceptance.
+- Quit/Force Quit: user reports build 57 works (2026-10-25); Mac/OS and individual scenarios were not restated. Detailed Cancel/Escape, error/panel lifetime, save-dialog/helper cleanup, keyboard/VoiceOver/Increase Contrast and six-language alert checks remain open. JetBrains AI matched the IDE in installed 1.1.0 (user report, 2026-10-25); opt-out and accessibility remain open. The remaining AI candidates still need research, implementation and acceptance.
 
 ## Next handoff
 
-Verification: in 1.1.0 (build 63), compare Copilot with GitHub (APP-015) and JetBrains monthly quota/reset/top-ups with the IDE after using AI Assistant, then verify tool opt-out and accessibility. Preserve the earlier power/process acceptance gates above.
+Verification: Copilot and JetBrains readings matched their sources in 1.1.0 (2026-10-25); verify tool opt-out and accessibility. Preserve the earlier power/process acceptance gates above.
 
 App, when requested: research Windsurf or the next eligible AI tool; do not claim the entire multi-tool item is complete.

@@ -42,7 +42,9 @@ codesign --verify --strict --deep "$app"
 info="$app/Contents/Info.plist"
 version="$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$info")"
 build="$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$info")"
-dmg="$output/Monny-$version-$build.dmg"
+# One fixed name, so releases/latest/download/Monny.dmg always serves the newest release;
+# the version and build are in the release tag and the appcast.
+dmg="$output/Monny.dmg"
 
 staging="$(mktemp -d)"
 trap 'rm -rf "$staging"' EXIT
@@ -73,6 +75,6 @@ rm -rf "$staging/Monny.app"
     --full-release-notes-url "https://github.com/Blinks44/monny/releases/tag/v$version" \
     --link "https://github.com/Blinks44/monny" -o "$appcast" "$staging" > "$output/appcast.log" 2>&1 \
     || { echo "Appcast failed (is the update signing key in the keychain?); see $output/appcast.log" >&2; exit 1; }
-echo "Package: $dmg (signed, not notarized)"
+echo "Package: $dmg (Monny $version, build $build; signed, not notarized)"
 echo "Checksums: $output/SHA256SUMS.txt"
 echo "Appcast: $appcast"

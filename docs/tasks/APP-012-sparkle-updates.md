@@ -21,7 +21,7 @@ Sparkle 2.10.0 replaces the GitHub Releases API check, set up as in Rebind (user
 ## Open checks / dependency
 
 - 1.0.0 (build 52) published 2026-10-24 with its appcast; the live appcast listed build 52. 1.1.0 (build 63) published 2026-10-25; the live latest appcast lists build 63 and the downloaded DMG matches its checksum.
-- End-to-end update accepted 2026-10-25: the user installed 1.0.0 (build 52) from its release, ran Check for Updates and Sparkle installed 1.1.0 (build 63), signed with the same Apple Development identity and not notarized. Settings and history live outside the bundle; their retention was not separately reported.
+- End-to-end update accepted 2026-10-25: the user installed 1.0.0 (build 52) from its release, ran Check for Updates and Sparkle installed 1.1.0 (build 63), signed with the same Apple Development identity and not notarized. The user confirmed settings and history were kept.
 - An earlier attempt reported "up to date" because the installed copy was a local build 63 packaged before the version change; [RELEASING](../RELEASING.md#1-set-the-version-and-build) now warns about it.
 - User reported an off-device copy of `monny_sparkle_ed25519.key` on 2026-10-24.
 

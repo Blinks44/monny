@@ -38,7 +38,7 @@ All listed frames are saved. Every current SPEC state has a frame, including emp
 
 The right-click specimen shows Check for Updates instead of About Monny (requested 2026-10-23, drawn 2026-10-25).
 
-Next release design, accepted by the user 2026-10-25: popover `16`–`23` (power draw on Overview and Battery, process search, Quit/Force Quit menu and confirmation, more AI tools); see [DES-004](tasks/DES-004-power-search-quit-ai-tools.md).
+Next release design, accepted by the user 2026-10-25: popover `16`–`23` (power draw on Overview and Battery, process search, Quit/Force Quit menu and confirmation, more AI tools). Overview watts are implemented in build 53 and reported working. Frame `16` Light/Dark now has a saved single-line source refinement: caption beside watts above, full-width source state below, with implementation notes. This accepted layout revision is implemented in build 54 with six-language Light/Dark fixture review; Overview layout is reported good. Battery power frames `17`/`18` are implemented in build 55, with localized adaptive time rows and scrolling for taller content; installed charging-flow/accessibility acceptance is open. Search/empty states `19`/`21` are implemented in build 56 with six-language Light/Dark fixture review and reported working by the user. Process actions `20`/`22` are implemented in build 57 using native menus/alerts and reported working by the user; detailed runtime/accessibility checks remain open. More AI tools `23` remain ready for implementation; see [DES-004](tasks/DES-004-power-search-quit-ai-tools.md).
 
 ## Rules that apply to every screen
 

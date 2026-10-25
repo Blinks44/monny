@@ -77,6 +77,12 @@ final class Sampler {
         processLists = max(processLists + (isVisible ? 1 : -1), 0)
     }
 
+    /// An explicit process action wakes the shared loop; it never starts a second sampler.
+    func refreshProcesses() {
+        guard task != nil, !visible.isEmpty, showsProcesses else { return }
+        restart(primed: true)
+    }
+
     /// Starts background sampling; called once at launch.
     func start() {
         guard task == nil else { return }

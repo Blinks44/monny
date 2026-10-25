@@ -16,13 +16,21 @@ nonisolated struct ProcessUsage: Sendable, Equatable, Identifiable {
     /// Bytes per second read from and written to storage over the interval.
     var diskRead: Double = 0
     var diskWrite: Double = 0
+    /// Kernel launch identity, retained so an explicit action can reject a recycled PID.
+    var startTime: UInt64? = nil
 
     /// One value per app, as Activity Monitor groups them: helpers, web content and tools an app
     /// launched are summed into it, with its PID as the id. System processes stay single rows.
-    static func groupedByApp(_ processes: [ProcessUsage]) -> [ProcessUsage] {
+    /// A search matches an app or any member's name while preserving the whole group's totals.
+    static func groupedByApp(_ processes: [ProcessUsage], matching query: String = "") -> [ProcessUsage] {
+        let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        var matches: Set<pid_t> = []
         var groups: [pid_t: ProcessUsage] = [:]
         var single: [ProcessUsage] = []
         for process in processes {
+            if !query.isEmpty, process.name.localizedStandardContains(query) || process.app?.name.localizedStandardContains(query) == true {
+                matches.insert(process.app?.pid ?? process.id)
+            }
             guard let app = process.app else {
                 single.append(process)
                 continue
@@ -39,10 +47,12 @@ nonisolated struct ProcessUsage: Sendable, Equatable, Identifiable {
                 var group = process
                 group.id = app.pid
                 group.name = app.name
+                group.startTime = app.startTime
                 groups[app.pid] = group
             }
         }
-        return single + groups.values
+        let rows = single + groups.values
+        return query.isEmpty ? rows : rows.filter { matches.contains($0.id) }
     }
 }
 
@@ -52,12 +62,13 @@ nonisolated struct AppOwner: Sendable, Equatable {
     var pid: pid_t
     /// The bundle's display name, for an app that `NSRunningApplication` does not list.
     var name: String
+    var startTime: UInt64? = nil
 }
 
 /// Per-process CPU time, memory footprint and energy (`ri_energy_nj`, nanojoules) from libproc. Processes of other
 /// users cannot be read by an unprivileged app and are skipped.
 nonisolated struct ProcessReader {
-    private var previous: [pid_t: (cpu: UInt64, energy: UInt64, read: UInt64, written: UInt64)] = [:]
+    private var previous: [pid_t: (cpu: UInt64, energy: UInt64, read: UInt64, written: UInt64, start: UInt64)] = [:]
     /// Owners never change during a process's life, so each is looked up once per PID.
     private var owners: [pid_t: AppOwner?] = [:]
     private var lastTime: ContinuousClock.Instant?
@@ -73,7 +84,7 @@ nonisolated struct ProcessReader {
         lastTime = now
         let seconds = elapsed.map { $0 / .seconds(1) } ?? 0
 
-        var current: [pid_t: (cpu: UInt64, energy: UInt64, read: UInt64, written: UInt64)] = [:]
+        var current: [pid_t: (cpu: UInt64, energy: UInt64, read: UInt64, written: UInt64, start: UInt64)] = [:]
         var currentOwners: [pid_t: AppOwner?] = [:]
         var usages: [ProcessUsage] = []
         for pid in Self.allPIDs() where pid > 0 {
@@ -84,11 +95,11 @@ nonisolated struct ProcessReader {
             guard result == 0 else { continue }
             // rusage times are Mach absolute time units, not nanoseconds, on Apple silicon.
             let cpu = (info.ri_user_time + info.ri_system_time) * UInt64(timebase.numer) / UInt64(timebase.denom)
-            current[pid] = (cpu, info.ri_energy_nj, info.ri_diskio_bytesread, info.ri_diskio_byteswritten)
-            // A PID seen in the previous pass is the same process, so its cached owner still holds.
-            let owner = previous[pid] != nil ? owners[pid] ?? nil : Self.owner(of: pid)
+            current[pid] = (cpu, info.ri_energy_nj, info.ri_diskio_bytesread, info.ri_diskio_byteswritten, info.ri_proc_start_abstime)
+            let isSameProcess = previous[pid]?.start == info.ri_proc_start_abstime
+            let owner = isSameProcess ? owners[pid] ?? nil : Self.owner(of: pid)
             currentOwners[pid] = owner
-            guard seconds > 0, let old = previous[pid],
+            guard seconds > 0, isSameProcess, let old = previous[pid],
                   cpu >= old.cpu, info.ri_energy_nj >= old.energy,
                   info.ri_diskio_bytesread >= old.read, info.ri_diskio_byteswritten >= old.written else { continue }
             // A recycled PID/reset counter establishes a new baseline rather than a huge wrapped rate.
@@ -97,7 +108,8 @@ nonisolated struct ProcessReader {
             usages.append(ProcessUsage(id: pid, name: Self.name(of: pid), app: owner, cpu: max(cpuShare, 0),
                                        memory: Int64(clamping: info.ri_phys_footprint), power: max(power, 0),
                                        diskRead: Double(info.ri_diskio_bytesread - old.read) / seconds,
-                                       diskWrite: Double(info.ri_diskio_byteswritten - old.written) / seconds))
+                                       diskWrite: Double(info.ri_diskio_byteswritten - old.written) / seconds,
+                                       startTime: info.ri_proc_start_abstime))
         }
         previous = current
         owners = currentOwners
@@ -124,7 +136,8 @@ nonisolated struct ProcessReader {
     private static func owner(of pid: pid_t) -> AppOwner? {
         let responsible = responsiblePID.map { $0(pid) }.flatMap { $0 > 0 ? $0 : nil } ?? pid
         guard let bundle = path(of: responsible).flatMap(appBundle(in:)) else { return nil }
-        return AppOwner(pid: responsible, name: FileManager.default.displayName(atPath: bundle))
+        return AppOwner(pid: responsible, name: FileManager.default.displayName(atPath: bundle),
+                        startTime: ProcessIdentity.readStartTime(of: responsible))
     }
 
     /// The outermost `.app` in an executable path: an app's helper apps live inside its bundle.

@@ -2,7 +2,7 @@
 
 > Battery helper and Discharge task/verification records referenced here (BAT-*, APP-005/006, helper verification) were retired from main on 2026-10-21; they are preserved on the `experiments/discharge` branch.
 
-Updated 2026-10-23. Readings and history storage are decided ([CORE-001](../tasks/CORE-001-readings-research.md)); battery control on main uses the native macOS charge limit. Record dates, sources, revisions, licenses and what was actually tested.
+Updated 2026-10-25. Readings and history storage are decided ([CORE-001](../tasks/CORE-001-readings-research.md)); battery control on main uses the native macOS charge limit. Record dates, sources, revisions, licenses and what was actually tested.
 
 ## Readings
 
@@ -61,6 +61,8 @@ In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 
 | Discharge, Hold, sailing, calibration | Need SMC/adapter control through a privileged helper; deferred | [smc-charge-control.md](smc-charge-control.md), [OpenDente/AlDente review](opendente-aldente-chie.md); implementation on `experiments/discharge` |
 
 ## Other dependencies
+
+Explicit process Quit/Force Quit uses native AppKit and Darwin APIs, with sampled launch identities and per-target validation: [process actions decision](process-actions.md) (2026-10-25).
 
 | Need | Candidates to evaluate | Decision |
 | --- | --- | --- |

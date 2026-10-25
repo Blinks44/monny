@@ -261,7 +261,7 @@ private struct CoresCard: View {
     }
 }
 
-/// Battery level and measured source state.
+/// Battery level, measured source state and the whole Mac's power draw.
 private struct BatteryStrip: View {
     let battery: BatteryReading?
 
@@ -269,16 +269,31 @@ private struct BatteryStrip: View {
         HStack(spacing: 14) {
             BatteryGlyph(level: battery?.level)
             VStack(alignment: .leading, spacing: 2) {
+                HStack(alignment: .firstTextBaseline, spacing: 0) {
+                    if let battery {
+                        Text(battery.level.percentText).font(Theme.metricM).foregroundStyle(Theme.textPrimary)
+                    } else {
+                        UnavailableValue(font: Theme.metricM)
+                    }
+                    Spacer(minLength: 8)
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        Text("Mac uses").font(Theme.footnote).foregroundStyle(Theme.textSecondary)
+                        if let watts = battery?.systemLoad {
+                            Text(watts.wattsText).font(Theme.metricM).foregroundStyle(Theme.textPrimary).monospacedDigit()
+                        } else {
+                            UnavailableValue(font: Theme.metricM)
+                        }
+                    }
+                    .fixedSize(horizontal: true, vertical: false)
+                }
                 if let battery {
-                    Text(battery.level.percentText).font(Theme.metricM).foregroundStyle(Theme.textPrimary)
                     BatteryStatusText(battery: battery).font(Theme.footnote.weight(.semibold))
                         .foregroundStyle(battery.state == .onBattery ? Theme.textSecondary : Theme.statusSuccessText)
                 } else {
-                    UnavailableValue(font: Theme.metricM)
                     Text("Battery").font(Theme.footnote).foregroundStyle(Theme.textSecondary)
                 }
             }
-            Spacer(minLength: 0)
+            .lineLimit(1)
         }
         .padding(.horizontal, Theme.spaceXL)
         .frame(height: 68)

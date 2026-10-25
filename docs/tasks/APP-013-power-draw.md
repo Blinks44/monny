@@ -1,6 +1,6 @@
 # APP-013: Current power draw on the Battery page
 
-- Updated: 2026-10-21
+- Updated: 2026-10-25
 - Stage: done
 - Owner: unassigned (released 2026-10-21)
 - Owned surfaces: `BatteryReading.systemLoad`/`batteryPower` in `Readings/PowerReader.swift`, Power card in `Dashboard/BatteryPage.swift`, System load row in `Dashboard/OverviewPage.swift`, `KPICard.footnote`
@@ -9,11 +9,11 @@
 
 ## Outcome and scope
 
-The Battery page Power card shows what the whole Mac consumes now, on adapter and on battery: `AppleSmartBattery` `PowerTelemetryData.SystemLoad` (mW). Below it: “From adapter”, “+N W to battery” while charging at 1 W or more (battery `Voltage` × `Amperage`), or “From battery”; then the adapter's rated watts or macOS's time-left estimate. The Overview System load row also reads `SystemLoad` and names the source. Popover Battery on battery (Sketch `05`, user request on build 35 because header and chip both said “On battery”): header shows the time left, the chip says Discharging and the facts line starts with “Draw N W” instead of the cycle count. On adapter the popover keeps the adapter's rated watts. Unavailable values show the usual dash.
+The Battery page Power card shows what the whole Mac consumes now, on adapter and on battery: `AppleSmartBattery` `PowerTelemetryData.SystemLoad` (mW). Below it: “From adapter”, “+N W to battery” while charging at 1 W or more (battery `Voltage` × `Amperage`), or “From battery”; then the adapter's rated watts or macOS's time-left estimate. The Overview System load row also reads `SystemLoad` and names the source. The original build-36 popover put time left in the header and replaced cycles with draw on battery; build 55 supersedes that layout with a dedicated power panel and source-only header ([DES-004](DES-004-power-search-quit-ai-tools.md#battery-power-panel-implementation--2026-10-25)). Unavailable values show the usual dash.
 
 The battery's gauge reports power once a minute (`UpdateTime`), on adapter and on battery. After a plug-in or unplug it first repeats the old state and then reports a partial minute (0.3 W measured right after unplugging), so power is hidden until the first report a full minute after the change (up to about two minutes).
 
-Copy differs from Sketch: the “Mac uses ·” prefix was dropped, “About … left” became “… left” and the popover header drops “On battery ·” (239 pt in Russian next to the chip, about 175 pt available), because at the 900 pt minimum window width a KPI card has about 113 pt for text and “Mac uses · from adapter” (130 pt in English, longer elsewhere) was truncated. The card title “Power” carries the meaning.
+Copy differs from Sketch: the “Mac uses ·” prefix was dropped, “About … left” became “… left” and the original build-36 popover header dropped “On battery ·” (239 pt in Russian next to the chip, about 175 pt available), because at the 900 pt minimum window width a KPI card has about 113 pt for text and “Mac uses · from adapter” (130 pt in English, longer elsewhere) was truncated. The card title “Power” carries the meaning.
 
 ## Implementation and verification
 

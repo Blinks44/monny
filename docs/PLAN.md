@@ -18,7 +18,7 @@ Complete the native monitor's remaining compatibility/release checks and AI-limi
 
 The pre-release additions are implemented: grouped processes ([APP-008](tasks/APP-008-grouped-processes-keyboard-idle-cost.md)), menu bar readings ([APP-010](tasks/APP-010-menu-bar-readings.md)), sustained-load alert ([APP-011](tasks/APP-011-busy-app-alert.md)), native onboarding ([APP-009](tasks/APP-009-native-onboarding.md)), power draw ([APP-013](tasks/APP-013-power-draw.md)) and Sparkle ([APP-012](tasks/APP-012-sparkle-updates.md)). Their build-37 user acceptance is dated evidence, not acceptance of later changes.
 
-Next release ([DES-004](tasks/DES-004-power-search-quit-ai-tools.md), design accepted 2026-10-25): power draw on the Overview strip and Battery tab, process search, Quit/Force Quit, and more AI tools that work from their own local sign-in.
+Next release ([DES-004](tasks/DES-004-power-search-quit-ai-tools.md), design accepted 2026-10-25): Overview/Battery UI reported good in builds 53–55; specific charging/accessibility checks remain open. Process search reported working in build 56; Quit/Force Quit implemented in build 57 with 82 passing tests and reported working by the user; detailed runtime/accessibility checks remain open. Next feature slice: researched AI tools that work from their own local sign-in.
 
 Opt-in AI limits are implemented for Claude Code, Codex, Cursor and Grok. Remaining real-account/history checks belong to [APP-015](tasks/APP-015-ai-usage-limits.md); Gemini is unsupported under the current credential/privacy contract.
 

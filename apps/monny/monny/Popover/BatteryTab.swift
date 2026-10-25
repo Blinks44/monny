@@ -10,27 +10,30 @@ struct BatteryTab: View {
 
     var body: some View {
         if SystemInfo.hasBattery {
-            VStack(spacing: 10) {
-                BatteryHero(battery: battery, health: health, temperature: temperature,
-                            limit: controller.activeLimit)
-                VStack(alignment: .leading, spacing: 12) {
-                    NativeLimitControls(controller: controller)
-                    Button("macOS charging settings") { showsGuidance = true }
-                        .buttonStyle(PlainLinkButtonStyle())
-                        .popover(isPresented: $showsGuidance) { MacOSChargingGuidance() }
+            ScrollView {
+                VStack(spacing: 10) {
+                    BatteryHero(battery: battery, health: health, temperature: temperature,
+                                limit: controller.activeLimit)
+                    VStack(alignment: .leading, spacing: 12) {
+                        NativeLimitControls(controller: controller)
+                        Button("macOS charging settings") { showsGuidance = true }
+                            .buttonStyle(PlainLinkButtonStyle())
+                            .popover(isPresented: $showsGuidance) { MacOSChargingGuidance() }
+                    }
+                    .padding(16).card()
+                    Text("macOS manages charging. The limit stays set when Monny quits.")
+                        .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
+                        .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 16)
                 }
-                .padding(16).card()
-                Text("macOS manages charging. The limit stays set when Monny quits.")
-                    .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
-                    .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 16)
             }
+            .scrollBounceBehavior(.basedOnSize)
         } else {
             NoBatteryView(openSensors: openSensors).frame(maxWidth: .infinity, maxHeight: .infinity).card()
         }
     }
 }
 
-/// Sketch Battery hero: 328 × 178, with a 72-point gauge and separate limit marker.
+/// Sketch Battery hero with a 72-point gauge, separate limit marker and measured power panel.
 struct BatteryHero: View {
     let battery: BatteryReading?
     let health: BatteryHealth?
@@ -56,33 +59,32 @@ struct BatteryHero: View {
             .frame(height: 22)
             BatteryLevelGauge(level: battery?.level, limit: limit)
                 .padding(.top, 12)
+            BatteryPowerPanel(battery: battery)
+                .padding(.top, 12)
             facts
                 .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
-                .padding(.top, 3)
+                .padding(.top, 8)
         }
         .padding(16)
         .frame(maxWidth: .infinity, minHeight: 178, alignment: .topLeading)
         .card()
     }
 
-    /// Sketch `02`/`05`: the adapter's rating, or the time left on battery. Sketch's “On battery ·”
-    /// prefix is left out: the icon and the Discharging chip say it, and it does not fit in Russian.
+    /// Power detail belongs to the panel; the header identifies only the current source.
     private func source(_ battery: BatteryReading) -> Text {
         switch battery.state {
         case .onBattery:
-            battery.timeToEmpty.map { Text("\($0.estimateText) left") } ?? Text("On battery")
+            Text("On battery")
         case .charging, .onAdapter:
-            battery.adapterWatts.map { Text("Power Adapter · \($0) W") } ?? Text("On adapter")
+            Text("Power adapter")
         }
     }
 
-    /// On battery the Mac's draw replaces the cycle count, as in Sketch `05`.
+    /// Health, cycles and temperature remain visible on either power source.
     private var facts: Text {
-        let onBattery = battery?.state == .onBattery
         let values: [Text] = [
-            onBattery ? battery?.systemLoad.map { Text("Draw \($0.wattsText)") } : nil,
             health.map { Text("Health \($0.maximumCapacity.percentText)") },
-            onBattery ? nil : battery?.cycleCount.map { Text("\($0) cycles") },
+            battery?.cycleCount.map { Text("\($0) cycles") },
             temperature.map { Text($0.temperatureText(temperatureUnit)) }
         ].compactMap { $0 }
         return values.enumerated().reduce(Text("")) { result, item in

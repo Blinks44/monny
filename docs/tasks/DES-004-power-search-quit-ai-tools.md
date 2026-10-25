@@ -15,7 +15,7 @@ Requested for the next release (user, 2026-10-24):
 2. Popover Battery gets a power panel below the gauge, so the header only says the source. On adapter: total in use (Mac + battery) with the adapter rating, a split bar of the adapter's watts (Mac amber like the window Power card, battery green, rest track) and a legend “Mac 17 W · Battery +12 W” (revised 2026-10-25 at the user's request for a more expressive row). On battery: “10 W from battery” and macOS's time left, no bar. Health, cycles and temperature stay in the facts line.
 3. Processes gets a search field above the sort chips. It filters all grouped rows the sampler already reads (app or process name); the list keeps the sort and the rows that fit. Processes of other users and root are not readable and therefore not searchable; the empty result says so.
 4. Right click on a process row: Quit and Force Quit…. Apps use `NSRunningApplication.terminate()` / `forceTerminate()`, processes without an app SIGTERM / SIGKILL. Only Force Quit asks for confirmation (user decision 2026-10-24). Monny itself and `loginwindow` must not be offered. This reverses the SPEC non-goal “not a process killer” by user decision.
-5. More AI tools, only those that work from the tool's own local sign-in without browser cookies, pasted keys or Keychain prompts (user decision 2026-10-24). Candidates from CodexBar (`steipete/CodexBar`, read at d34fbb4 on 2026-10-24): JetBrains AI (local quota XML/log, no network), Windsurf (local `state.vscdb`), Amp (`amp usage`), Kiro (`kiro-cli … /usage`), Cline (`~/.cline/data/settings/providers.json`), Codebuff (CLI credentials file), Kilo (`~/.local/share/kilo/auth.json`), Augment (`auggie account status`). GitHub Copilot only if the `gh` CLI token reads `copilot_internal`; otherwise it needs a device login and is out. Excluded: Zed and Muse (Keychain prompts), Gemini (unchanged), Antigravity, all cookie/API-key providers. Each source needs a research note in [ai-usage-limits](../research/ai-usage-limits.md) before code; real accounts are unavailable, so verification is fixture-based like Cursor/Grok.
+5. More AI tools, only those that work from the tool's own local sign-in without browser cookies, pasted keys or Keychain prompts (user decision 2026-10-24). Candidates from CodexBar (`steipete/CodexBar`, read at d34fbb4 on 2026-10-24): JetBrains AI (local quota XML/log, no network), Windsurf (local `state.vscdb`), Amp (`amp usage`), Kiro (`kiro-cli … /usage`), Cline (`~/.cline/data/settings/providers.json`), Codebuff (CLI credentials file), Kilo (`~/.local/share/kilo/auth.json`), Augment (`auggie account status`). GitHub Copilot is implemented in build 61 after the `gh` CLI token successfully read `copilot_internal`; [APP-015](APP-015-ai-usage-limits.md#copilot-implementation--2026-10-25) owns evidence and installed acceptance. Excluded: Zed and Muse (Keychain prompts), Gemini (unchanged), Antigravity, all cookie/API-key providers. Each source needs a research note in [ai-usage-limits](../research/ai-usage-limits.md) before code; real accounts are unavailable, so verification is fixture-based like Cursor/Grok.
 
 Also requested 2026-10-24: Sketch shows the actual app only; unimplemented ideas are removed and redrawn when they are taken up.
 
@@ -87,7 +87,7 @@ Not drawn: Battery “on adapter, not charging” power row (implemented in buil
 ## Open checks / dependency
 
 - Design and Sketch cleanup accepted by the user on 2026-10-25. SPEC §1/§3/§8 updated the same day.
-- Before each AI tool: complete its row in [research](../research/ai-usage-limits.md#planned-tools-candidates-not-implemented); Copilot only if `gh auth token` reads `copilot_internal`.
+- Before each AI tool: complete its row in [research](../research/ai-usage-limits.md#planned-tools-candidates-not-implemented); Copilot satisfied that source gate and is implemented in build 61 (APP-015).
 - Overview: user reports the build-54 layout good (2026-10-25); named Mac/OS, source-transition freshness, Battery navigation, VoiceOver and Increase Contrast were not restated or separately accepted.
 - Battery panel: user reports build 55 looks good (2026-10-25), without named Mac/OS or specific charging states. Real charging below the limit, source transitions, expanded/error-state scrolling, VoiceOver and Increase Contrast remain open; fixture math/layout checks do not establish these.
 - Process search: user reports build 56 works on 2026-10-25; Mac/OS and individual interaction cases were not restated. VoiceOver/Increase Contrast remain open; the final strengthened search tests passed in build 57.
@@ -95,7 +95,7 @@ Not drawn: Battery “on adapter, not charging” power row (implemented in buil
 
 ## Next handoff
 
-Verification: install build 59, compare JetBrains monthly quota/reset/top-ups with the IDE after using AI Assistant, then verify tool opt-out and accessibility. Preserve the earlier power/process acceptance gates above.
+Verification: install build 61, compare Copilot with GitHub (APP-015) and JetBrains monthly quota/reset/top-ups with the IDE after using AI Assistant, then verify tool opt-out and accessibility. Preserve the earlier power/process acceptance gates above.
 
 App, when requested: research Windsurf or the next eligible AI tool; do not claim the entire multi-tool item is complete.
 

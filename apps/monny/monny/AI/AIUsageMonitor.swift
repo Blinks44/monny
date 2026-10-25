@@ -89,7 +89,7 @@ final class AIUsageMonitor {
             guard isEnabled, state.problem?.hidesReading != true,
                   let usage = state.usage, !usage.isStale(at: now) else { continue }
             // Model limits stay out of history: the chart draws each tool's plan windows.
-            for window in usage.windows where window.model == nil && !window.hasReset(at: now) {
+            for window in usage.windows where window.isPlanLimit && !window.hasReset(at: now) {
                 values[HistoryMetric.aiQuota(tool, window.kind)] = window.left
             }
         }
@@ -206,6 +206,7 @@ extension HistoryMetric {
         case (.cursor, _): .cursorMonthly
         case (.grok, _): .grokCredits
         case (.jetBrains, _): .jetBrainsMonthly
+        case (.copilot, _): .copilotPremium
         }
     }
 }

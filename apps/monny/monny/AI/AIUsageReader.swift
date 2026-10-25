@@ -13,7 +13,8 @@ actor AIUsageReader {
         configuration.timeoutIntervalForRequest = 20
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         configuration.httpCookieStorage = nil
-        return URLSession(configuration: configuration)
+        configuration.urlCredentialStorage = nil
+        return URLSession(configuration: configuration, delegate: CopilotRedirectPolicy(), delegateQueue: nil)
     }()
 
     private static var home: URL { FileManager.default.homeDirectoryForCurrentUser }
@@ -27,13 +28,17 @@ actor AIUsageReader {
     func installedTools() -> [AITool] {
         let fileManager = FileManager.default
         return AITool.allCases.filter { tool in
+            if tool == .copilot {
+                return Self.githubCLI != nil
+                    && fileManager.fileExists(atPath: Self.home.appending(path: ".config/gh/hosts.yml").path)
+            }
             if tool == .jetBrains { return !JetBrainsUsageReader.sources().isEmpty }
             let url = switch tool {
             case .claude: Self.home.appending(path: ".claude")
             case .codex: Self.home.appending(path: ".codex")
             case .cursor: Self.cursorDatabase
             case .grok: Self.home.appending(path: ".grok")
-            case .jetBrains: Self.home
+            case .jetBrains, .copilot: Self.home
             }
             return fileManager.fileExists(atPath: url.path(percentEncoded: false))
         }
@@ -46,6 +51,7 @@ actor AIUsageReader {
         case .cursor: await readCursor(now: now)
         case .grok: await readGrok(now: now)
         case .jetBrains: JetBrainsUsageReader.read(now: now)
+        case .copilot: await readCopilot(now: now)
         }
     }
 
@@ -176,20 +182,59 @@ actor AIUsageReader {
         }
     }
 
+    // MARK: GitHub Copilot
+
+    /// Homebrew, the official installer, MacPorts and Nix (profile, nix-darwin, home-manager).
+    /// A login-shell PATH lookup is avoided: it would run the user's shell startup files.
+    static var githubCLI: String? {
+        let user = NSUserName()
+        return ["/opt/homebrew/bin/gh", "/usr/local/bin/gh", "/opt/local/bin/gh",
+                home.appending(path: ".nix-profile/bin/gh").path(percentEncoded: false),
+                "/run/current-system/sw/bin/gh", "/etc/profiles/per-user/\(user)/bin/gh"].first {
+            FileManager.default.isExecutableFile(atPath: $0)
+        }
+    }
+
+    private func readCopilot(now: Date) async -> Result<AIUsage, AIUsageProblem> {
+        guard let path = Self.githubCLI,
+              let data = await Self.run(path, ["auth", "token", "--hostname", "github.com", "--no-refresh"],
+                                        environment: Self.githubEnvironment),
+              let token = String(data: data, encoding: .utf8), !token.isEmpty,
+              !token.contains(where: { $0.isWhitespace || $0.isNewline }) else { return .failure(.signedOut) }
+        var request = URLRequest(url: URL(string: "https://api.github.com/copilot_internal/user")!)
+        request.setValue("token \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("vscode/1.96.2", forHTTPHeaderField: "Editor-Version")
+        request.setValue("copilot-chat/0.26.7", forHTTPHeaderField: "Editor-Plugin-Version")
+        request.setValue("GitHubCopilotChat/0.26.7", forHTTPHeaderField: "User-Agent")
+        request.setValue("2025-04-01", forHTTPHeaderField: "X-Github-Api-Version")
+        return await fetch(request, now: now, allowsUnmetered: true) { data in
+            try JSONDecoder().decode(CopilotUsageResponse.self, from: data).usage(now: now)
+        }
+    }
+
+    /// Ignore injected API keys and custom hosts/config; use only gh's ordinary saved account.
+    static var githubEnvironment: [String: String] {
+        var environment = ProcessInfo.processInfo.environment
+        for key in ["GH_TOKEN", "GITHUB_TOKEN", "GH_ENTERPRISE_TOKEN", "GITHUB_ENTERPRISE_TOKEN",
+                    "GH_HOST", "GH_CONFIG_DIR", "XDG_CONFIG_HOME"] { environment.removeValue(forKey: key) }
+        environment["GH_PROMPT_DISABLED"] = "1"
+        return environment
+    }
+
     // MARK: Shared
 
-    private func fetch(_ request: URLRequest, now: Date,
+    private func fetch(_ request: URLRequest, now: Date, allowsUnmetered: Bool = false,
                        decode: (Data) throws -> AIUsage) async -> Result<AIUsage, AIUsageProblem> {
         var request = request
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("Monny", forHTTPHeaderField: "User-Agent")
+        if request.value(forHTTPHeaderField: "User-Agent") == nil { request.setValue("Monny", forHTTPHeaderField: "User-Agent") }
         do {
             let (data, response) = try await session.data(for: request)
             let status = (response as? HTTPURLResponse)?.statusCode ?? 0
             switch status {
             case 200:
                 let usage = try decode(data)
-                return usage.windows.isEmpty ? .failure(.unavailable(retryAfter: nil)) : .success(usage)
+                return usage.windows.isEmpty && !allowsUnmetered ? .failure(.unavailable(retryAfter: nil)) : .success(usage)
             case 401, 403:
                 return .failure(.signedOut)
             case 429:
@@ -209,10 +254,12 @@ actor AIUsageReader {
 
     /// Runs a tool and returns its trimmed output, or `nil` on failure or after `timeout`, so a
     /// Keychain dialog that the item's access list did not expect cannot block refreshes.
-    private static func run(_ path: String, _ arguments: [String], timeout: Duration = .seconds(3)) async -> Data? {
+    private static func run(_ path: String, _ arguments: [String], timeout: Duration = .seconds(3),
+                            environment: [String: String]? = nil) async -> Data? {
         let process = Process()
         process.executableURL = URL(filePath: path)
         process.arguments = arguments
+        if let environment { process.environment = environment }
         let output = Pipe()
         process.standardOutput = output
         process.standardError = FileHandle.nullDevice

@@ -11,6 +11,7 @@ extension AITool {
         case .cursor: "Cursor"
         case .grok: "Grok"
         case .jetBrains: "JetBrains AI"
+        case .copilot: "Copilot"
         }
     }
 
@@ -22,6 +23,7 @@ extension AITool {
         case .cursor: "Cursor"
         case .grok: "Grok CLI"
         case .jetBrains: "JetBrains AI"
+        case .copilot: "GitHub Copilot"
         }
     }
 
@@ -32,6 +34,7 @@ extension AITool {
         case .cursor: Theme.aiCursor
         case .grok: Theme.aiGrok
         case .jetBrains: Theme.aiJetBrains
+        case .copilot: Theme.aiCodex
         }
     }
 
@@ -42,6 +45,7 @@ extension AITool {
         case .codex, .grok: Theme.aiIconWhite
         case .cursor: Theme.aiIconBlack
         case .jetBrains: Theme.aiJetBrains
+        case .copilot: Theme.aiCopilot
         }
     }
 
@@ -52,7 +56,7 @@ extension AITool {
         case .codex: .aiCodex
         case .cursor: .aiCursor
         case .grok: .aiGrok
-        case .jetBrains: nil
+        case .jetBrains, .copilot: nil
         }
     }
 
@@ -64,6 +68,7 @@ extension AITool {
         case .cursor: .cursorMonthly
         case .grok: .grokCredits
         case .jetBrains: .jetBrainsMonthly
+        case .copilot: .copilotPremium
         }
     }
 
@@ -75,6 +80,7 @@ extension AITool {
         case .cursor: "Sign in to Cursor to see its included usage here."
         case .grok: "Sign in to the Grok CLI with your SuperGrok account to see its limits here."
         case .jetBrains: "Open a JetBrains IDE and use AI Assistant to make its quota available here."
+        case .copilot: "Sign in to GitHub CLI with gh auth login to see Copilot limits here. Monny needs a CLI version that supports --no-refresh."
         }
     }
 }
@@ -101,13 +107,16 @@ extension AIQuotaWindow.Kind {
 
 extension AIQuotaWindow {
     /// "Claude", or "Claude Opus" for a model's own limit, in notification titles.
-    func serviceName(_ tool: AITool) -> String { model.map { "\(tool.name) \($0)" } ?? tool.name }
+    func serviceName(_ tool: AITool) -> String {
+        if let copilotQuota { return "\(tool.name) · \(copilotQuota.name)" }
+        return model.map { "\(tool.name) \($0)" } ?? tool.name
+    }
 
     /// "5-hour window", or "Opus only · weekly" for a model's own limit.
-    var title: Text { model.map { modelTitle($0) } ?? Text(kind.title) }
+    var title: Text { copilotQuota.map { Text("\(Text($0.label)) · monthly") } ?? model.map { modelTitle($0) } ?? Text(kind.title) }
 
     /// "5 hours" in the window's tiles and reset list.
-    var shortTitle: Text { model.map { modelTitle($0) } ?? Text(kind.shortTitle) }
+    var shortTitle: Text { copilotQuota.map { Text($0.label) } ?? model.map { modelTitle($0) } ?? Text(kind.shortTitle) }
 
     private func modelTitle(_ model: String) -> Text {
         switch kind {
@@ -175,7 +184,7 @@ struct AIToolIcon: View {
             if let logo = tool.logo {
                 Image(logo).resizable().scaledToFit()
             } else {
-                Text(verbatim: "J").font(.system(size: size * 0.43, weight: .semibold)).foregroundStyle(Theme.textOnAccent)
+                Text(verbatim: String(tool.name.prefix(1))).font(.system(size: size * 0.43, weight: .semibold)).foregroundStyle(Theme.textOnAccent)
             }
         }
             .frame(width: size * 0.6, height: size * 0.6)
@@ -229,13 +238,7 @@ struct QuotaRow: View {
             HStack(spacing: Theme.spaceM) {
                 label
                 // The window tiles show the state by the value's color alone, as drawn.
-                if !isStale, !isCompact, !hasReset {
-                    if window.isExhausted {
-                        Chip(title: "Limit reached", kind: .danger, isSmall: true).fixedSize()
-                    } else if window.isRunningLow {
-                        Chip(title: "Running low", kind: .warning, isSmall: true).fixedSize()
-                    }
-                }
+                if tool != .copilot, !isStale, !isCompact, !hasReset { stateChip }
                 Spacer(minLength: Theme.spaceM)
                 value(hasReset: hasReset)
             }
@@ -247,6 +250,8 @@ struct QuotaRow: View {
             } else {
                 QuotaBar(window: window, color: tool.color, isStale: isStale)
             }
+            // Copilot's longer labels leave no room for the chip beside them.
+            if tool == .copilot, !isStale, !isCompact, !hasReset { stateChip }
             if !isCompact, let line = footer(hasReset: hasReset) {
                 line.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(1)
             } else if isCompact, !hasReset, let dollars = dollarsText {
@@ -260,8 +265,22 @@ struct QuotaRow: View {
         .accessibilityValue(accessibilityValue(hasReset: hasReset))
     }
 
+    @ViewBuilder private var stateChip: some View {
+        if window.isExhausted {
+            Chip(title: "Limit reached", kind: .danger, isSmall: true).fixedSize()
+        } else if window.isRunningLow {
+            Chip(title: "Running low", kind: .warning, isSmall: true).fixedSize()
+        }
+    }
+
     @ViewBuilder private var label: some View {
-        if isCompact, let resetsAt = window.resetsAt, !window.hasReset() {
+        if tool == .copilot, !isCompact, let quota = window.copilotQuota {
+            ViewThatFits(in: .horizontal) {
+                window.title.fixedSize()
+                Text(quota.label).fixedSize()
+            }
+            .font(Theme.footnote.weight(.medium)).foregroundStyle(Theme.textPrimary)
+        } else if isCompact, let resetsAt = window.resetsAt, !window.hasReset() {
             Text("\(window.shortTitle) · resets \(resetsAt.resetClockText)")
                 .font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(1)
         } else if !isCompact, let dollars = dollarsText {
@@ -374,5 +393,50 @@ struct CreditsRow: View {
             .monospacedDigit()
         }
         .accessibilityElement(children: .combine)
+    }
+}
+
+extension CopilotQuota {
+    var label: LocalizedStringResource {
+        switch self {
+        case .premium: "Premium requests"
+        case .chat: "Chat"
+        case .completions: "Code completions"
+        }
+    }
+
+    var name: String { String(localized: label) }
+}
+
+/// Unmetered Copilot data never implies a remaining balance or a percentage ceiling.
+struct CopilotDetails: View {
+    let usage: AIUsage
+
+    var body: some View {
+        ForEach(usage.unlimitedCopilotQuotas ?? [], id: \.self) { quota in
+            HStack {
+                Text(quota.label)
+                Spacer(minLength: Theme.spaceM)
+                Text("Unlimited")
+            }
+            .font(Theme.footnote.weight(.medium))
+            .foregroundStyle(usage.isStale() ? Theme.textTertiary : Theme.textPrimary)
+            .accessibilityElement(children: .combine)
+        }
+        if let credits = usage.creditsUsed {
+            HStack {
+                Text("Credits used")
+                Spacer(minLength: Theme.spaceM)
+                Text(credits, format: .number.precision(.fractionLength(0...2))).monospacedDigit()
+            }
+            .font(Theme.footnote.weight(.medium))
+            .foregroundStyle(usage.isStale() ? Theme.textTertiary : Theme.textPrimary)
+            .accessibilityElement(children: .combine)
+        }
+        if usage.windows.isEmpty && usage.unlimitedCopilotQuotas?.isEmpty != false {
+            Text("GitHub does not report a quota limit for this plan.")
+                .font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 }

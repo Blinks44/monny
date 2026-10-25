@@ -20,7 +20,7 @@ The pre-release additions are implemented: grouped processes ([APP-008](tasks/AP
 
 Next release ([DES-004](tasks/DES-004-power-search-quit-ai-tools.md), design accepted 2026-10-25): Overview/Battery UI reported good in builds 53–55; specific charging/accessibility checks remain open. Process search reported working in build 56; Quit/Force Quit implemented in build 57 with 82 passing tests and reported working by the user; detailed runtime/accessibility checks remain open. JetBrains AI is implemented in build 59 from local IDE quota data, awaiting comparison with a real IDE quota. Next when requested: Windsurf or another researched AI candidate that works from its own local sign-in.
 
-Opt-in AI limits are implemented for Claude Code, Codex, Cursor, Grok and local-only JetBrains AI. Remaining real-account/history checks belong to [APP-015](tasks/APP-015-ai-usage-limits.md); Gemini is unsupported under the current credential/privacy contract.
+Opt-in AI limits are implemented for Claude Code, Codex, Cursor, Grok, local-only JetBrains AI and GitHub Copilot (build 61, existing GitHub CLI sign-in). Remaining real-account/history checks belong to [APP-015](tasks/APP-015-ai-usage-limits.md); Gemini is unsupported under the current credential/privacy contract.
 
 After release, Discharge may be researched again. Helper/SMC-write work is preserved on **experiments/discharge** at `09595b5`; main excludes it. A mechanism, safety and distribution decision is required before code on main. Sailing, heat-driven charging, calibration and trips are deferred; GPU load, battery health trends and widgets are not planned.
 

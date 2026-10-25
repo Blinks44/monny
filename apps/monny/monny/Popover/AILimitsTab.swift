@@ -89,6 +89,7 @@ private struct AIToolCard: View {
                 ForEach(usage.windows, id: \.id) { window in
                     QuotaRow(window: window, tool: tool, isStale: isStale)
                 }
+                if tool == .copilot { CopilotDetails(usage: usage) }
                 if let credits = usage.credits { CreditsRow(credits: credits, isStale: isStale) }
                 if let credits = usage.topUpCredits { CreditsRow(credits: credits, title: "Top-up credits", isStale: isStale) }
                 if isStale { staleNote(usage) }

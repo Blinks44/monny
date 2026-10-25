@@ -69,6 +69,7 @@ private struct AIToolTile: View {
                     ForEach(usage.windows, id: \.id) { window in
                         QuotaRow(window: window, tool: tool, isStale: usage.isStale(at: now), isCompact: true)
                     }
+                    if tool == .copilot { CopilotDetails(usage: usage) }
                     if let credits = usage.topUpCredits {
                         CreditsRow(credits: credits, title: "Top-up credits", isStale: usage.isStale(at: now))
                     }
@@ -174,7 +175,7 @@ private struct NextResetsCard: View {
     private var rows: [(tool: AITool, window: AIQuotaWindow)] {
         states.flatMap { tool, state -> [(tool: AITool, window: AIQuotaWindow)] in
             guard let usage = state.usage, !usage.isStale(at: now) else { return [] }
-            return usage.windows.filter { $0.model == nil && !$0.hasReset(at: now) && $0.resetsAt != nil }.map { (tool, $0) }
+            return usage.windows.filter { $0.isPlanLimit && !$0.hasReset(at: now) && $0.resetsAt != nil }.map { (tool, $0) }
         }
         .sorted { ($0.window.resetsAt ?? .distantFuture) < ($1.window.resetsAt ?? .distantFuture) }
         // The card has room for four rows next to the forecast.

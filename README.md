@@ -28,10 +28,10 @@ A native macOS menu bar utility for resource monitoring and battery charge contr
 - **Dashboard window** with Overview, CPU, Memory, Disk, Network, Battery and Sensors pages and 1 minute to 7 day history.
 - **Battery charge limit** from 80 to 100% on macOS 26.4 and later. Monny changes the same setting as System Settings, so macOS keeps enforcing it after Monny quits. No privileged helper.
 - **Notifications** for a reached charge limit, a hot Mac, low battery, high memory pressure and an app that keeps the CPU busy.
-- **AI limits (optional, off by default):** how much of your Claude Code, Codex, Cursor and Grok subscription limits is left, read with each tool's own sign-in on this Mac.
+- **AI limits (optional, off by default):** how much of your Claude Code, Codex, Cursor, Grok, JetBrains AI and GitHub Copilot subscription limits is left, read with each tool's own sign-in on this Mac.
 - English, Russian, German, French, Spanish and Simplified Chinese.
 
-Readings never leave the Mac: no account, analytics or telemetry. The only network requests are update checks and, when AI limits are turned on, the limit checks with Anthropic, OpenAI, Cursor and xAI. The [specification](docs/SPEC.md) lists the full scope and acceptance.
+Readings never leave the Mac: no account, analytics or telemetry. The only network requests are update checks and, when AI limits are turned on, the limit checks with Anthropic, OpenAI, Cursor, xAI and GitHub (JetBrains AI is read from local IDE files). The [specification](docs/SPEC.md) lists the full scope and acceptance.
 
 ## Requirements
 
@@ -87,7 +87,7 @@ This is needed once per downloaded version. Updates keep the same signature, so 
 
 ## Acknowledgements
 
-- [CodexBar](https://github.com/steipete/CodexBar) by Peter Steinberger and its contributors (MIT): its documentation showed where Claude Code, Codex, Cursor and Grok keep their sign-in and which endpoints report their plan limits. Monny copies no code from it ([research](docs/research/ai-usage-limits.md)).
+- [CodexBar](https://github.com/steipete/CodexBar) by Peter Steinberger and its contributors (MIT): its documentation showed where supported tools keep their sign-in or quota data and which endpoints report their plan limits, including Copilot through the existing GitHub CLI account. Monny copies no code from it ([research](docs/research/ai-usage-limits.md)).
 - Claude, OpenAI/Codex, Cursor and Grok marks are trademarks of their owners and only identify those services; SVGs from [thesvg.org](https://thesvg.org/) ([sources](docs/research/ai-usage-limits.md#service-marks)).
 - [Stats](https://github.com/exelban/stats) by Serhiy Mytrovtsiy (MIT): SMC key names for temperatures and fans ([research](docs/research/README.md#temperatures-and-fans-smc)).
 - [Sparkle](https://sparkle-project.org) (MIT) for updates and [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) by Sindre Sorhus (MIT) for the global shortcut; [create-dmg](https://github.com/create-dmg/create-dmg) (MIT) builds the installer.

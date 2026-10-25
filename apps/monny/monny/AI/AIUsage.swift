@@ -2,7 +2,7 @@ import Foundation
 
 /// A coding assistant whose plan limits Monny can show (Settings › AI limits).
 nonisolated enum AITool: String, CaseIterable, Codable, CodingKeyRepresentable, Sendable {
-    case claude, codex, cursor, grok, jetBrains
+    case claude, codex, cursor, grok, jetBrains, copilot
 }
 
 /// One rolling limit of a plan, as the service reports it.
@@ -13,15 +13,20 @@ nonisolated struct AIQuotaWindow: Codable, Equatable, Sendable {
     /// Share of the limit used, 0…1.
     var used: Double
     var resetsAt: Date?
-    /// The window's length: 5 hours, 7 days or a billing cycle.
+    /// The window's length: 5 hours, 7 days or a billing cycle; zero if unknown.
     var duration: TimeInterval
     /// Cursor's included usage in dollars, for "$12.40 of $20 left".
     var dollarsUsed: Double?
     var dollarsLimit: Double?
     /// The model or feature of a limit beside the plan's own, such as "Opus" or "Spark".
     var model: String?
+    var copilotQuota: CopilotQuota? = nil
 
-    var id: String { "\(kind.rawValue).\(model ?? "")" }
+    var id: String { "\(kind.rawValue).\(model ?? "")" + (copilotQuota.map { ".\($0.rawValue)" } ?? "") }
+
+    /// The plan's own limit, as history and Next resets draw it: not a model's limit or
+    /// Copilot's chat and completions allowances.
+    var isPlanLimit: Bool { model == nil && (copilotQuota ?? .premium) == .premium }
 
     /// "Running low" below this share of the quota left, whatever the pace (user decision 2026-10-22).
     static let lowThreshold = 0.1
@@ -63,6 +68,9 @@ nonisolated struct AIUsage: Codable, Equatable, Sendable {
     var topUpCredits: Double? = nil
     /// A local source's IDE name/version, without paths or account identifiers.
     var source: String? = nil
+    /// Absolute consumption, never a remaining balance or inferred percentage.
+    var creditsUsed: Double? = nil
+    var unlimitedCopilotQuotas: [CopilotQuota]? = nil
 
     /// Older readings are drawn as stale.
     static let freshness: TimeInterval = 15 * 60

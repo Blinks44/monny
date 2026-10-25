@@ -48,6 +48,24 @@ Added 2026-10-22 from CodexBar's [grok.md](https://github.com/steipete/CodexBar/
 - Select the newest XML by modification date and consider only that installation's log, which replaces it only with a strictly newer complete quota snapshot. If XML is absent, select the newest log by modification date; do not fall back to another IDE/account when it has no supported quota. XML mtime or log record time stays `AIUsage.date`, so repeated reads do not freshen old cache. Refills/top-ups stay with their selected snapshot; never borrow XML reset dates into logs. Unknown duration disables the pace/forecast, unknown reset omits it. Quota age/reset semantics feed the existing stale rendering/history; stale/reset cache cannot trigger a new low-limit alert.
 - Local inspection found an IDE log but no quota XML or recognized quota amounts in its bounded tail; only record presence/types were inspected and no account values retained. This establishes source availability limits, not a real plan reading. Fixture tests and localized renders will validate software behavior; real IDE quota/reset/top-up comparison remains an acceptance gate in [DES-004](../tasks/DES-004-power-search-quit-ai-tools.md).
 
+## GitHub Copilot — 2026-10-25
+
+Implementation decision: reuse the active github.com account from `gh auth token --hostname github.com --no-refresh`. [GitHub CLI documents this reader](https://cli.github.com/manual/gh_auth_token); the flag prevents automatic renewal. Only the installed CLI's saved account is used, with token environment overrides removed. The CLI is looked up at fixed Homebrew, official-installer, MacPorts and Nix (profile, nix-darwin, home-manager) paths, never through a login-shell PATH (build 63). Detection checks the CLI/config only, never credentials. No device flow, browser cookies, pasted tokens, Enterprise hosts or separate Monny sign-in. Older CLI versions without `--no-refresh` fail closed.
+
+Reference: active MIT CodexBar at `d34fbb47afe73f81dd591bae28a60f72c39a9fe4`, [fetcher](https://github.com/steipete/CodexBar/blob/d34fbb47afe73f81dd591bae28a60f72c39a9fe4/Sources/CodexBarCore/Providers/Copilot/CopilotUsageFetcher.swift) and [response models](https://github.com/steipete/CodexBar/blob/d34fbb47afe73f81dd591bae28a60f72c39a9fe4/Sources/CodexBarCore/CopilotUsageModels.swift). Reviewed protocol/field names and edge cases; no implementation/test code copied. Native Foundation plus the existing CLI suffice; no provider package is needed.
+
+- `GET https://api.github.com/copilot_internal/user`, GitHub OAuth token directly (`Authorization: token …`), JSON, editor/plugin/API-version headers matching the reference. Cookies/cache disabled; redirects refused. The token stays in memory, never logs or persisted readings.
+- `copilot_plan`, `quota_snapshots.premium_interactions`, `chat`, `completions`: finite `percent_remaining`, or `remaining / entitlement` with a positive denominator. Preserve category names; never label completions as premium. Explicit unlimited and zero-entitlement placeholders never become percentage bars. Numeric strings accepted. Legacy `monthly_quotas` + `limited_user_quotas` cover chat/completions only when both counters exist.
+- Monthly reset uses a valid service date; UTC date-only reset is parsed as UTC midnight. Without a known period start, no pace/forecast is inferred. Unlimited quotas show a text row. `credits_used` is consumption, not balance; premium wins, chat is fallback, never sum overlapping pools or invent a ceiling. Credit-billed plans without a metered quota explain that GitHub reports no quota limit.
+- Existing polling, stale, per-tool switches, history and once-per-low-episode alerts apply. Only premium requests enter Copilot history; chat/completions are independent rows/alerts. 401/403 hides an old reading; 429 keeps the shared cooldown.
+- Read-only live probe on 2026-10-25: the existing GitHub CLI account received HTTP 200 with the expected quota/reset fields, without a Keychain prompt. Sandbox prevented credential access; ordinary-user unsandboxed probe succeeded. No account identifiers, tokens or quota values retained. The actual Monny reader also succeeded from the Debug test host on macOS 27.0.1, without a Keychain prompt; account data was not logged or saved. Installed signed-app access and comparison with GitHub remain acceptance gates.
+
+### Copilot without the GitHub CLI — reviewed 2026-10-25
+
+- CodexBar (`d34fbb4`, 2026-10-24) does not use `gh` or Copilot's local files. It runs its own GitHub OAuth device flow with the VS Code client ID and `read:user`, then stores the token in its config/Keychain; `COPILOT_API_TOKEN` and pasted tokens are alternatives. `~/.config/github-copilot` appears there only in storage-footprint accounting. That is a separate Monny sign-in, outside the current decision; it needs an explicit product decision.
+- The Copilot language server (Xcode, JetBrains, Neovim plugins) writes `~/.config/github-copilot/`. On the reviewed Mac, `auth.db` holds encrypted `token_ciphertext` per editor plus a `legacy_files_migration_done` marker; the plaintext `oauth.json` is the migrated legacy file. Reading it would depend on a file GitHub is retiring, and the encrypted store's key is not ours to read. Not adopted. Validity of the legacy token against the usage endpoint was not tested.
+- VS Code keeps its Copilot session in its own encrypted secret storage (Keychain-protected); excluded for the same reason as other apps' Keychain items.
+
 ## Planned tools (candidates, not implemented)
 
 Screened 2026-10-24 against CodexBar's [providers.md](https://github.com/steipete/CodexBar/blob/main/docs/providers.md) at d34fbb4 (110 provider IDs). Rule (user decision 2026-10-24): Monny reuses the tool's own sign-in on this Mac; no browser cookies, pasted API keys, separate Monny login or Keychain prompt. Most CodexBar providers fail this rule. JetBrains AI now has its implemented decision above; the remaining candidates are unimplemented and unverified. Each needs its file/command shape, fields and failure modes written here before code, and fixtures where no account is available.
@@ -62,7 +80,7 @@ Screened 2026-10-24 against CodexBar's [providers.md](https://github.com/steipet
 | Codebuff | Credentials file from `codebuff login`; `POST /api/v1/usage`, `GET /api/user/subscription` | File path and weekly window fields |
 | Kilo | `~/.local/share/kilo/auth.json` (`kilo.access`), `app.kilo.ai/api/trpc` | tRPC request shape |
 | Augment | `auggie account status` CLI | Output format; cookie fallback not used |
-| GitHub Copilot | Own device-flow token → `copilot_internal` API | Only if the GitHub CLI's `gh auth token` reads it; otherwise excluded (would need a separate login) |
+| GitHub Copilot | GitHub CLI saved sign-in → `copilot_internal` API | HTTP 200 verified; implemented decision above |
 
 Excluded: Zed and Muse Code (Keychain items of another app, prompt likely), Antigravity (local server probe), Gemini (below), and every cookie-, API-key- or WebView-based provider.
 
@@ -85,7 +103,7 @@ The tiles keep a 1 pt hairline (black 10 % / white 12 %) so white tiles stay vis
 
 ## Privacy and cost
 
-- Opt-in (Settings › AI limits, off by default; each found tool can be unchecked, and an unchecked tool is not read). Off, Monny reads no credentials and makes no requests. On, the only requests go to the services of the shown tools, with the user's own tokens, which never leave memory or go anywhere else. Only percentages, reset times, plan names and the reading time are stored (`aiUsage` in UserDefaults, quota history in the existing history file).
+- Opt-in (Settings › AI limits, off by default; each found tool can be unchecked, and an unchecked tool is not read). Off, Monny reads no credentials and makes no requests. On, the only requests go to the services of the shown tools, with the user's own tokens, which never leave memory or go anywhere else. Only quota readings (percentages, reset times, plan names, optional credit counters/unlimited categories) and the reading time are stored (`aiUsage` in UserDefaults, quota history in the existing history file).
 - Checks: every 2 minutes while the popover AI tab or the AI usage page is shown, every 5 minutes otherwise (for history and the running-low notification). HTTP 429 waits for `Retry-After`, at least 5 minutes.
 - The usage endpoints are undocumented and may change. Decoding ignores unknown fields; a failed decode shows Couldn’t check and keeps the last reading as stale.
 

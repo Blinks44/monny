@@ -1,6 +1,293 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+  "Premium requests": {
+    "extractionState": "manual",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Premium requests"
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Премиум-запросы"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Premium-Anfragen"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Requêtes premium"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Solicitudes prémium"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "高级请求"
+        }
+      }
+    }
+  },
+  "Chat": {
+    "extractionState": "manual",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Chat"
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Чат"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Chat"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Chat"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Chat"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "聊天"
+        }
+      }
+    }
+  },
+  "Code completions": {
+    "extractionState": "manual",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Code completions"
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Автодополнения кода"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Codevervollständigungen"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Complétions de code"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Autocompletado de código"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "代码补全"
+        }
+      }
+    }
+  },
+  "%@ · monthly": {
+    "extractionState": "manual",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "%1$@ · monthly"
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "%1$@ · за месяц"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "%1$@ · monatlich"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "%1$@ · par mois"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "%1$@ · mensual"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "%1$@ · 每月"
+        }
+      }
+    }
+  },
+  "Credits used": {
+    "extractionState": "manual",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Credits used"
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Использовано кредитов"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Verbrauchte Credits"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Crédits utilisés"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Créditos usados"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "已用点数"
+        }
+      }
+    }
+  },
+  "GitHub does not report a quota limit for this plan.": {
+    "extractionState": "manual",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "GitHub does not report a quota limit for this plan."
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "GitHub не сообщает размер лимита для этого плана."
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "GitHub meldet für diesen Tarif kein Kontingentlimit."
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "GitHub ne fournit pas de limite de quota pour cette offre."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "GitHub no indica el límite de cuota de este plan."
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "GitHub 未提供此套餐的配额上限。"
+        }
+      }
+    }
+  },
+  "Sign in to GitHub CLI with gh auth login to see Copilot limits here. Monny needs a CLI version that supports --no-refresh.": {
+    "extractionState": "manual",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Sign in to GitHub CLI with gh auth login to see Copilot limits here. Monny needs a CLI version that supports --no-refresh."
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Войдите в GitHub CLI командой gh auth login, чтобы видеть лимиты Copilot. Нужна версия CLI с поддержкой --no-refresh."
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Melde dich mit gh auth login in GitHub CLI an, um Copilot-Limits zu sehen. Die CLI-Version muss --no-refresh unterstützen."
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Connectez-vous à GitHub CLI avec gh auth login pour voir les limites de Copilot. La version du CLI doit prendre en charge --no-refresh."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Inicia sesión en GitHub CLI con gh auth login para ver los límites de Copilot. La versión del CLI debe admitir --no-refresh."
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "使用 gh auth login 登录 GitHub CLI，即可查看 Copilot 限额。CLI 版本须支持 --no-refresh。"
+        }
+      }
+    }
+  },
     "Open a JetBrains IDE and use AI Assistant to make its quota available here." : {
       "extractionState" : "manual",
       "localizations" : {

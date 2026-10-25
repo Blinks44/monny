@@ -178,11 +178,16 @@ nonisolated struct AILowWindows {
                 continue
             }
             if window.isExhausted || window.isRunningLow {
-                let reset = window.resetsAt ?? .distantFuture
-                if low[key] != reset {
-                    low[key] = reset
-                    alerts.append(.aiLimitLow(tool, window))
-                }
+                let previousReset = low[key]
+                // A reset timestamp can be refined between checks. It is not an episode ID:
+                // re-arm only after the old reset or when the new period starts beyond it.
+                let newPeriod = previousReset.map { previous in
+                    previous <= now || (window.duration > 0 && window.resetsAt.map {
+                        $0.addingTimeInterval(-window.duration) >= previous
+                    } == true)
+                } ?? true
+                low[key] = window.resetsAt ?? previousReset ?? .distantFuture
+                if newPeriod { alerts.append(.aiLimitLow(tool, window)) }
             } else {
                 low.removeValue(forKey: key)
             }

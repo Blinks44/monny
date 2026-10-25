@@ -205,6 +205,36 @@ struct AIUsageTests {
         #expect(low.update(.claude, usage: usage(0.95), now: now).count == 1)
     }
 
+    @Test func exhaustedWindowDoesNotAlertAgainWhenResetTimeChanges() {
+        var alerts = AILowWindows()
+        let reset = now.addingTimeInterval(22 * 60)
+        func usage(reset: Date?) -> AIUsage {
+            AIUsage(windows: [AIQuotaWindow(kind: .session, used: 1, resetsAt: reset, duration: 18_000)], date: now)
+        }
+        #expect(alerts.update(.claude, usage: usage(reset: reset), now: now).count == 1)
+        // Successive checks can refine the reset, including across a whole-second boundary.
+        for (index, shift) in [0.274954, -0.5, 1.2, 30.0].enumerated() {
+            #expect(alerts.update(.claude, usage: usage(reset: reset.addingTimeInterval(shift)),
+                                  now: now.addingTimeInterval(Double(index + 1) * 120)).isEmpty)
+        }
+        // An omitted reset and its return also belong to the same exhausted episode.
+        #expect(alerts.update(.claude, usage: usage(reset: nil), now: now.addingTimeInterval(600)).isEmpty)
+        #expect(alerts.update(.claude, usage: usage(reset: reset), now: now.addingTimeInterval(720)).isEmpty)
+        // A new period can already be low even if no recovered reading was observed.
+        #expect(alerts.update(.claude, usage: usage(reset: reset.addingTimeInterval(18_000)),
+                              now: reset.addingTimeInterval(120)).count == 1)
+    }
+
+    @Test func learningAnUnknownResetDoesNotRepeatALowAlert() {
+        var alerts = AILowWindows()
+        var usage = AIUsage(windows: [AIQuotaWindow(kind: .session, used: 0.95, duration: 18_000)], date: now)
+        #expect(alerts.update(.claude, usage: usage, now: now).count == 1)
+        usage.windows[0].resetsAt = now.addingTimeInterval(600)
+        #expect(alerts.update(.claude, usage: usage, now: now.addingTimeInterval(120)).isEmpty)
+        usage.windows[0].resetsAt = now.addingTimeInterval(18_600)
+        #expect(alerts.update(.claude, usage: usage, now: now.addingTimeInterval(720)).count == 1)
+    }
+
     @MainActor @Test func historyGetsOnlyFreshWindowsThatHaveNotReset() {
         let fresh = AIUsage(plan: nil, windows: [
             AIQuotaWindow(kind: .session, used: 0.2, resetsAt: now.addingTimeInterval(-60), duration: 5 * 3_600),

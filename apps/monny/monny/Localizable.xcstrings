@@ -1,6 +1,293 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Open a JetBrains IDE and use AI Assistant to make its quota available here." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne eine JetBrains-IDE und nutze AI Assistant, damit das Kontingent hier verfügbar wird."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open a JetBrains IDE and use AI Assistant to make its quota available here."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre un IDE de JetBrains y usa AI Assistant para que su cuota esté disponible aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez un IDE JetBrains et utilisez AI Assistant pour afficher son quota ici."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Откройте IDE JetBrains и воспользуйтесь AI Assistant, чтобы здесь появились данные о лимите."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 JetBrains IDE 并使用 AI Assistant，以在此处显示配额。"
+          }
+        }
+      }
+    },
+    "AI credits · monthly" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KI-Credits · monatlich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI credits · monthly"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créditos de IA · mensuales"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crédits IA · mensuels"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ-кредиты · за месяц"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 点数 · 每月"
+          }
+        }
+      }
+    },
+    "Top-up credits" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zusätzliche Credits"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Top-up credits"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créditos adicionales"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crédits supplémentaires"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дополнительные кредиты"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "额外点数"
+          }
+        }
+      }
+    },
+    "No quota data" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Kontingentdaten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No quota data"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin datos de cuota"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune donnée de quota"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет данных о лимите"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无配额数据"
+          }
+        }
+      }
+    },
+    "Open your JetBrains IDE to refresh its quota." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne deine JetBrains-IDE, um das Kontingent zu aktualisieren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open your JetBrains IDE to refresh its quota."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre tu IDE de JetBrains para actualizar su cuota."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez votre IDE JetBrains pour actualiser son quota."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Откройте IDE JetBrains, чтобы обновить данные о лимите."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 JetBrains IDE 以刷新配额。"
+          }
+        }
+      }
+    },
+    "Monny shows usage limits for supported AI tools set up on this Mac." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny zeigt Nutzungslimits für unterstützte KI-Tools, die auf diesem Mac eingerichtet sind."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny shows usage limits for supported AI tools set up on this Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny muestra los límites de las herramientas de IA compatibles configuradas en este Mac."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny affiche les limites des outils IA pris en charge et configurés sur ce Mac."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny показывает лимиты поддерживаемых ИИ-инструментов, настроенных на этом Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monny 显示此 Mac 上已设置的受支持 AI 工具的使用限额。"
+          }
+        }
+      }
+    },
+    "Out of date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veraltet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Out of date"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactualizado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obsolète"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Устарело"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已过期"
+          }
+        }
+      }
+    },
     "Quit" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -753,7 +1040,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "in Verwendung"
+            "value" : "in Nutzung"
           }
         },
         "en" : {
@@ -795,7 +1082,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "aus dem Akku"
+            "value" : "aus der Batterie"
           }
         },
         "en" : {
@@ -903,7 +1190,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мак %@"
+            "value" : "Mac %@"
           }
         },
         "zh-Hans" : {
@@ -921,7 +1208,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Akku +%@"
+            "value" : "Batterie +%@"
           }
         },
         "en" : {
@@ -987,7 +1274,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мак"
+            "value" : "Mac"
           }
         },
         "zh-Hans" : {
@@ -1033,7 +1320,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "来自电源适配器 %@ W"
+            "value" : "适配器供电 %@ W"
           }
         }
       }
@@ -1043,7 +1330,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ W von der Batterie"
+            "value" : "%@ W aus der Batterie"
           }
         },
         "en" : {
@@ -1061,7 +1348,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ W sur la batterie"
+            "value" : "%@ W sur batterie"
           }
         },
         "ru" : {
@@ -1073,7 +1360,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ W 来自电池"
+            "value" : "电池供电 %@ W"
           }
         }
       }
@@ -1083,7 +1370,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ frei von %2$@"
+            "value" : "%1$@ von %2$@ frei"
           }
         },
         "en" : {
@@ -1788,7 +2075,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · работает %@"
+            "value" : "%1$@ · без перезагрузки %2$@"
           }
         },
         "zh-Hans" : {
@@ -2519,7 +2806,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+%@ in die Batterie"
+            "value" : "+%@ zur Batterie"
           }
         },
         "en" : {
@@ -2919,37 +3206,37 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle Werte stammen von deinem Mac. Kein Konto, keine Analysedaten."
+            "value" : "Systemmesswerte bleiben auf deinem Mac. Kein Monny-Konto, keine Nutzungsanalyse."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All readings come from your Mac. No account, no analytics."
+            "value" : "System readings stay on your Mac. No Monny account, no analytics."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Todos los datos salen de tu Mac. Sin cuenta ni analíticas."
+            "value" : "Los datos del sistema se quedan en tu Mac. Sin cuenta de Monny ni seguimiento de uso."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toutes les mesures proviennent de votre Mac. Aucun compte, aucune analyse."
+            "value" : "Les mesures système restent sur votre Mac. Sans compte Monny ni suivi d’utilisation."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Данные считываются прямо с вашего Mac. Без аккаунта и аналитики."
+            "value" : "Системные данные остаются на Mac. Без аккаунта Monny и аналитики."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "所有数据均来自你的 Mac。无需账户，无分析数据。"
+            "value" : "系统监控数据留在你的 Mac 上。无需 Monny 账户，不收集使用分析数据。"
           }
         }
       }
@@ -3319,7 +3606,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CPU-Die"
+            "value" : "CPU-Chip"
           }
         },
         "en" : {
@@ -3343,7 +3630,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Процессор"
+            "value" : "Кристалл ЦП"
           }
         },
         "zh-Hans" : {
@@ -3359,7 +3646,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CPU-Die · Spitze %@"
+            "value" : "CPU-Chip · Spitze %@"
           }
         },
         "en" : {
@@ -3383,7 +3670,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Процессор · пик %@"
+            "value" : "Кристалл ЦП · пик %@"
           }
         },
         "zh-Hans" : {
@@ -3783,7 +4070,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Лимит заряда"
+            "value" : "Лимит зарядки"
           }
         },
         "zh-Hans" : {
@@ -3805,7 +4092,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Лимит заряда недоступен на этом Mac."
+            "value" : "Лимит зарядки недоступен на этом Mac."
           }
         },
         "de" : {
@@ -3863,7 +4150,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Достигнут лимит заряда"
+            "value" : "Достигнут лимит зарядки"
           }
         },
         "zh-Hans" : {
@@ -3989,7 +4276,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已充满 · 使用电源适配器"
+            "value" : "已充电 · 使用电源适配器"
           }
         }
       }
@@ -4303,7 +4590,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Собираем данные…"
+            "value" : "Сбор данных…"
           }
         },
         "zh-Hans" : {
@@ -4343,7 +4630,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Собираем данные"
+            "value" : "Сбор данных"
           }
         },
         "zh-Hans" : {
@@ -4383,7 +4670,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Собираем данные…"
+            "value" : "Сбор данных…"
           }
         },
         "zh-Hans" : {
@@ -4977,19 +5264,19 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Température CPU"
+            "value" : "Température de la puce"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Температура ЦП"
+            "value" : "Температура кристалла"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "核心温度"
+            "value" : "芯片温度"
           }
         }
       }
@@ -5263,7 +5550,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Энергия"
+            "value" : "Энергозатраты"
           }
         },
         "zh-Hans" : {
@@ -5423,7 +5710,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Выше нормы"
+            "value" : "Повышенная"
           }
         },
         "zh-Hans" : {
@@ -5743,7 +6030,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Текущая полная ёмкость"
+            "value" : "Ёмкость при полной зарядке"
           }
         },
         "zh-Hans" : {
@@ -6109,7 +6396,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "macOS 释放内存的吃力程度"
+            "value" : "反映内存满足当前进程需求的能力"
           }
         }
       }
@@ -6859,13 +7146,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le Mac utilise"
+            "value" : "Consommation"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Мак потребляет"
+            "value" : "Mac потребляет"
           }
         },
         "zh-Hans" : {
@@ -7241,7 +7528,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monny wohnt in deiner Menüleiste. Klicke auf das Symbol oder drücke überall %@."
+            "value" : "Monny ist in deiner Menüleiste. Klicke auf das Symbol oder drücke %@ in einer beliebigen App."
           }
         },
         "en" : {
@@ -7265,7 +7552,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monny работает в строке меню. Нажмите на его значок или сочетание %@ в любом приложении."
+            "value" : "Monny работает в строке меню. Нажмите на значок или используйте сочетание %@ в любом приложении."
           }
         },
         "zh-Hans" : {
@@ -7281,7 +7568,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monny wohnt in deiner Menüleiste. Klicke auf das Symbol, um es zu öffnen."
+            "value" : "Monny ist in deiner Menüleiste. Klicke auf das Symbol, um Monny zu öffnen."
           }
         },
         "en" : {
@@ -7345,7 +7632,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monny использует лимит заряда, встроенный в macOS. Это та же настройка, что в разделе «Аккумулятор»."
+            "value" : "Monny использует лимит зарядки, встроенный в macOS. Это та же настройка, что в разделе «Аккумулятор»."
           }
         },
         "zh-Hans" : {
@@ -7441,7 +7728,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keine Analysedaten · Netzwerk nur für Updates"
+            "value" : "Keine Nutzungsanalyse · Netzwerk nur für Updates"
           }
         },
         "en" : {
@@ -7459,7 +7746,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune analyse · réseau uniquement pour les mises à jour"
+            "value" : "Sans suivi d’utilisation · réseau pour les mises à jour"
           }
         },
         "ru" : {
@@ -7471,7 +7758,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无分析数据 · 仅在检查更新时联网"
+            "value" : "不收集使用分析数据 · 仅更新需要联网"
           }
         }
       }
@@ -8099,7 +8386,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tableau de bord"
+            "value" : "Ouvrir le tableau de bord"
           }
         },
         "ru" : {
@@ -8241,37 +8528,37 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Optimiertes Laden kann das Laden ebenfalls verzögern. Monny ändert diese Einstellung nicht."
+            "value" : "Optimiertes Laden der Batterie kann das Laden ebenfalls verzögern. Du kannst es hier oder in den Batterieeinstellungen ändern."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Optimized Battery Charging can also delay charging. Monny does not change that setting."
+            "value" : "Optimized Battery Charging can also delay charging. Change it here or in Battery Settings."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La carga optimizada también puede retrasar la carga. Monny no cambia ese ajuste."
+            "value" : "La carga optimizada también puede retrasar la carga. Puedes cambiarla aquí o en los ajustes de Batería."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La recharge optimisée peut aussi différer la charge. Monny ne modifie pas ce réglage."
+            "value" : "La recharge optimisée peut aussi retarder la charge. Vous pouvez la modifier ici ou dans les réglages Batterie."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«Оптимизированная зарядка» тоже может откладывать зарядку. Monny эту настройку не меняет."
+            "value" : "«Оптимизированная зарядка» тоже может откладывать зарядку. Её можно включить или отключить здесь и в настройках аккумулятора."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "优化电池充电也可能延迟充电。Monny 不会更改该设置。"
+            "value" : "优化电池充电也可能延迟充电。你可以在此处或电池设置中更改此选项。"
           }
         }
       }
@@ -8425,7 +8712,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Подкачка страниц / с"
+            "value" : "Загрузка страниц / с"
           }
         },
         "zh-Hans" : {
@@ -8465,7 +8752,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Пассивное охлаждение. При перегреве macOS снижает производительность ЦП."
+            "value" : "Пассивное охлаждение. При сильном нагреве macOS снижает производительность ЦП."
           }
         },
         "zh-Hans" : {
@@ -9311,7 +9598,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "分区"
+            "value" : "部分"
           }
         }
       }
@@ -9511,7 +9798,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "系列"
+            "value" : "数据系列"
           }
         }
       }
@@ -9545,7 +9832,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Перегрев"
+            "value" : "Высокая температура"
           }
         },
         "zh-Hans" : {
@@ -10041,37 +10328,37 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stoppe das Laden bei 80–100 % mit dem in macOS integrierten Ladelimit."
+            "value" : "Lege mit macOS ein Ladelimit von 80 bis 100 % fest."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stop charging at 80–100% with the charge limit built into macOS."
+            "value" : "Set a charge limit from 80% to 100% using macOS."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Detén la carga entre el 80 y el 100 % con el límite integrado en macOS."
+            "value" : "Establece un límite de carga del 80 al 100 % con macOS."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Arrêtez la charge entre 80 et 100 % grâce à la limite intégrée à macOS."
+            "value" : "Définissez une limite de charge de 80 à 100 % avec macOS."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Встроенный в macOS лимит останавливает зарядку на 80–100 %."
+            "value" : "Задайте лимит зарядки от 80 до 100 % средствами macOS."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用 macOS 内置的充电上限，在 80–100% 时停止充电。"
+            "value" : "使用 macOS 将充电上限设为 80% 至 100%。"
           }
         }
       }
@@ -10613,7 +10900,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rendimiento"
+            "value" : "Velocidad de transferencia"
           }
         },
         "fr" : {
@@ -10625,7 +10912,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Трафик"
+            "value" : "Скорость передачи"
           }
         },
         "zh-Hans" : {
@@ -10985,7 +11272,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Отключить лимит заряда"
+            "value" : "Отключить лимит зарядки"
           }
         },
         "zh-Hans" : {
@@ -11625,7 +11912,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Зарезервировано системой"
+            "value" : "Зарезервированная"
           }
         },
         "zh-Hans" : {
@@ -12042,7 +12329,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "frei von %@"
+            "value" : "frei bei %@ gesamt"
           }
         },
         "en" : {
@@ -12266,7 +12553,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "macOS сохраняет его после выхода, сна и перезагрузки"
+            "value" : "Лимит сохраняется после выхода из Monny, сна и перезагрузки"
           }
         },
         "zh-Hans" : {
@@ -12787,7 +13074,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "подкачка %lld / мин"
+            "value" : "Из подкачки: %lld / мин"
           }
         },
         "zh-Hans" : {
@@ -13096,7 +13383,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ · zurückgesetzt %2$@"
+            "value" : "%1$@ · Zurücksetzen: %2$@"
           }
         },
         "fr" : {
@@ -13124,31 +13411,37 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ расходуется быстрее времени"
+            "value" : "%@ может исчерпать лимит до сброса"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ ist dem Zeitplan voraus"
+            "value" : "%@ könnte das Limit vorzeitig aufbrauchen"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ va plus vite que prévu"
+            "value" : "%@ risque d’épuiser son quota avant la réinitialisation"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ va por delante del ritmo"
+            "value" : "%@ podría agotar el límite antes de restablecerse"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 用得比时间快"
+            "value" : "%@ 可能在重置前用完额度"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ may run out before reset"
           }
         }
       }
@@ -13488,25 +13781,31 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "5-Stunden-Fenster"
+            "value" : "5-Stunden-Limit"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fenêtre de 5 heures"
+            "value" : "5 heures"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ventana de 5 horas"
+            "value" : "Límite de 5 horas"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "5 小时窗口"
+            "value" : "5 小时额度"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5-hour limit"
           }
         }
       }
@@ -13618,7 +13917,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Расход ИИ"
+            "value" : "Использование ИИ"
           }
         },
         "de" : {
@@ -13772,7 +14071,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Проверяем…"
+            "value" : "Проверка…"
           }
         },
         "de" : {
@@ -14204,7 +14503,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Próximos reinicios"
+            "value" : "Próximos restablecimientos"
           }
         },
         "zh-Hans" : {
@@ -14260,13 +14559,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keine Analysen · Netzwerk nur für Updates und KI-Limits"
+            "value" : "Keine Nutzungsanalyse · Netzwerk nur für Updates und KI-Limits"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune analyse · réseau uniquement pour les mises à jour et les limites d’IA"
+            "value" : "Sans suivi d’utilisation · réseau pour les mises à jour et les quotas IA"
           }
         },
         "es" : {
@@ -14278,7 +14577,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无分析 · 仅在更新和 AI 限额时联网"
+            "value" : "不收集使用分析数据 · 仅更新和 AI 额度查询需要联网"
           }
         }
       }
@@ -14300,13 +14599,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas encore de lecture"
+            "value" : "Pas encore de données"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aún no hay lectura"
+            "value" : "Aún no hay datos"
           }
         },
         "zh-Hans" : {
@@ -14322,7 +14621,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Остаток лимита за 7 дней"
+            "value" : "Остаток лимита · 7 дней"
           }
         },
         "de" : {
@@ -14356,7 +14655,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Остаток лимита за 24 часа"
+            "value" : "Остаток лимита · 24 часа"
           }
         },
         "de" : {
@@ -14430,13 +14729,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zurückgesetzt %@"
+            "value" : "Zurücksetzen: %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réinit. %@"
+            "value" : "Réinitialisation : %@"
           }
         },
         "es" : {
@@ -14458,25 +14757,25 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сбросы появятся после первой проверки."
+            "value" : "Время сброса появится после первой проверки."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zurücksetzungen erscheinen nach der ersten Abfrage."
+            "value" : "Die Rücksetzzeiten erscheinen nach der ersten Prüfung."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les réinitialisations apparaîtront après la première lecture."
+            "value" : "Les heures de réinitialisation apparaîtront après la première vérification."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Los reinicios aparecerán tras la primera lectura."
+            "value" : "Las horas de restablecimiento aparecerán tras la primera comprobación."
           }
         },
         "zh-Hans" : {
@@ -14498,7 +14797,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zurückgesetzt in %@"
+            "value" : "Zurücksetzen in %@"
           }
         },
         "fr" : {
@@ -14662,7 +14961,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вход истёк"
+            "value" : "Сеанс истёк"
           }
         },
         "de" : {
@@ -14674,7 +14973,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connexion expirée"
+            "value" : "Session expirée"
           }
         },
         "es" : {
@@ -14686,7 +14985,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "登录已过期"
+            "value" : "登录会话已过期"
           }
         }
       }
@@ -14832,31 +15131,37 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Отметка показывает, сколько времени осталось в периоде. Если полоса короче отметки, лимит закончится до сброса."
+            "value" : "Отметка показывает оставшееся время периода. Если полоса короче отметки, при текущем темпе лимита может не хватить до сброса."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Markierung zeigt, wie viel Zeit im Zeitraum bleibt. Ist ein Balken kürzer als seine Markierung, ist das Limit vor dem Zurücksetzen aufgebraucht."
+            "value" : "Die Markierung zeigt die verbleibende Zeit im Zeitraum. Ein kürzerer Balken bedeutet: Bei diesem Verbrauch kann das Limit vor dem Zurücksetzen aufgebraucht sein."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le repère indique le temps restant dans chaque période. Une barre plus courte que son repère sera épuisée avant la réinitialisation."
+            "value" : "Le repère indique le temps restant dans la période. Une barre plus courte signifie qu’à ce rythme, le quota risque d’être épuisé avant sa réinitialisation."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La marca indica cuánto tiempo queda en cada periodo. Una barra más corta que su marca se agotará antes del reinicio."
+            "value" : "La marca indica el tiempo que queda en el periodo. Si la barra es más corta, el límite podría agotarse antes del restablecimiento al ritmo actual."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "标记表示每个周期剩余的时间。若进度条短于标记，额度会在重置前用完。"
+            "value" : "标记表示当前周期的剩余时间。如果进度条短于标记，按当前用量，额度可能在重置前用完。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The mark shows the time left in each period. A shorter bar means the limit may run out before reset at the current pace."
           }
         }
       }
@@ -14866,31 +15171,37 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Срок входа истёк. Откройте %@, чтобы его обновить."
+            "value" : "Сеанс истёк. Запустите %@, чтобы обновить данные входа."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Anmeldung ist abgelaufen. Verwende %@ einmal, um sie zu erneuern."
+            "value" : "Deine Sitzung ist abgelaufen. Verwende %@, um die Anmeldung zu erneuern."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La connexion a expiré. Utilisez %@ une fois pour la renouveler."
+            "value" : "Votre session a expiré. Utilisez %@ pour renouveler la connexion."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La sesión ha caducado. Usa %@ una vez para renovarla."
+            "value" : "Tu sesión ha caducado. Usa %@ para renovarla."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "登录已过期。使用一次 %@ 即可续期。"
+            "value" : "登录会话已过期。请使用 %@ 更新登录状态。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your session has expired. Use %@ to refresh your sign-in."
           }
         }
       }
@@ -15002,31 +15313,37 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Окно сбросилось после последней проверки"
+            "value" : "Лимит сброшен после проверки"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das Fenster wurde seit dem letzten Stand zurückgesetzt"
+            "value" : "Limit seit letzter Prüfung erneuert"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La fenêtre a été réinitialisée depuis la dernière lecture"
+            "value" : "Quota réinitialisé depuis la vérification"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La ventana se ha reiniciado desde la última lectura"
+            "value" : "Límite restablecido desde la consulta"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自上次读取后窗口已重置"
+            "value" : "上次检查后额度已重置"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limit reset since last check"
           }
         }
       }
@@ -15184,25 +15501,25 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Лимиты ИИ-инструментов · по их входу на этом Mac"
+            "value" : "Лимиты ИИ · используются сеансы входа на этом Mac"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Limits der KI-Tools · über ihre Anmeldung auf diesem Mac"
+            "value" : "KI-Limits · mit den Anmeldedaten auf diesem Mac"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Limites des outils d’IA · via leur connexion sur ce Mac"
+            "value" : "Quotas IA · avec les sessions ouvertes sur ce Mac"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Límites de las herramientas de IA · con su sesión en este Mac"
+            "value" : "Límites de IA · con las sesiones de este Mac"
           }
         },
         "zh-Hans" : {
@@ -15218,7 +15535,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Расход Claude Code, Codex, Cursor и Grok в Monny"
+            "value" : "Лимиты Claude Code, Codex, Cursor и Grok в Monny"
           }
         },
         "de" : {
@@ -15354,31 +15671,37 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Войдите в Cursor, чтобы видеть здесь включённый в план расход."
+            "value" : "Войдите в Cursor, чтобы видеть здесь расход в рамках подписки."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Melde dich bei Cursor an, um die enthaltene Nutzung hier zu sehen."
+            "value" : "Melde dich bei Cursor an, um die im Abo enthaltene Nutzung zu sehen."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connectez-vous à Cursor pour voir ici l’utilisation incluse."
+            "value" : "Connectez-vous à Cursor pour voir l’utilisation comprise dans votre abonnement."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inicia sesión en Cursor para ver aquí el uso incluido."
+            "value" : "Inicia sesión en Cursor para ver el uso incluido en tu suscripción."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "登录 Cursor 即可在此查看套餐内用量。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to Cursor to see usage included in your plan."
           }
         }
       }
@@ -15626,31 +15949,37 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вход выполнен по API-ключу. Он оплачивается за использование, и лимитов плана у него нет."
+            "value" : "Вход с API-ключом. Для такого способа входа Monny не показывает лимиты подписки."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mit einem API-Schlüssel angemeldet. API-Schlüssel werden nach Nutzung abgerechnet und haben keine Tariflimits."
+            "value" : "Mit einem API-Schlüssel angemeldet. Monny kann für diese Anmeldung keine Abolimits anzeigen."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connecté avec une clé API. Les clés API sont facturées à l’usage et n’ont pas de limites de forfait."
+            "value" : "Connexion avec une clé API. Monny ne peut pas afficher les quotas d’abonnement pour ce mode de connexion."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sesión iniciada con una clave de API. Las claves de API se cobran por uso y no tienen límites de plan."
+            "value" : "Sesión iniciada con una clave de API. Monny no puede mostrar los límites de suscripción con este método de acceso."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已使用 API 密钥登录。API 密钥按用量计费，没有套餐限额。"
+            "value" : "已使用 API 密钥登录。Monny 无法为此登录方式显示订阅额度。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signed in with an API key. Monny cannot show subscription limits for this sign-in."
           }
         }
       }
@@ -15660,31 +15989,37 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вход по API-ключу, у него нет лимитов плана."
+            "value" : "Вход с API-ключом. Лимиты подписки недоступны."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mit API-Schlüssel angemeldet, ohne Tariflimits."
+            "value" : "Anmeldung mit API-Schlüssel. Abolimits nicht verfügbar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connecté avec une clé API, sans limites de forfait."
+            "value" : "Connexion par clé API. Quotas d’abonnement indisponibles."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sesión con clave de API, sin límites de plan."
+            "value" : "Acceso con clave de API. Límites de suscripción no disponibles."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已使用 API 密钥登录，没有套餐限额。"
+            "value" : "使用 API 密钥登录，无法显示订阅额度。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API key sign-in. Subscription limits unavailable."
           }
         }
       }
@@ -15855,6 +16190,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无限"
+          }
+        }
+      }
+    },
+    "macOS may occasionally charge to 100% to keep battery estimates accurate." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS may occasionally charge to 100% to keep battery estimates accurate."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS иногда заряжает до 100 %, чтобы точнее определять уровень заряда."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS lädt gelegentlich auf 100 %, um den Ladestand genauer zu bestimmen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS peut parfois charger à 100 % pour maintenir la précision de l’estimation du niveau de charge."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS puede cargar ocasionalmente al 100 % para mantener la precisión de la estimación de carga."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 偶尔仍会充至 100%，以保持电量估算准确。"
           }
         }
       }

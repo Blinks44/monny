@@ -10,6 +10,7 @@ extension AITool {
         case .codex: "Codex"
         case .cursor: "Cursor"
         case .grok: "Grok"
+        case .jetBrains: "JetBrains AI"
         }
     }
 
@@ -20,6 +21,7 @@ extension AITool {
         case .codex: "Codex"
         case .cursor: "Cursor"
         case .grok: "Grok CLI"
+        case .jetBrains: "JetBrains AI"
         }
     }
 
@@ -29,6 +31,7 @@ extension AITool {
         case .codex: Theme.aiCodex
         case .cursor: Theme.aiCursor
         case .grok: Theme.aiGrok
+        case .jetBrains: Theme.aiJetBrains
         }
     }
 
@@ -38,16 +41,18 @@ extension AITool {
         case .claude: Theme.aiClaude
         case .codex, .grok: Theme.aiIconWhite
         case .cursor: Theme.aiIconBlack
+        case .jetBrains: Theme.aiJetBrains
         }
     }
 
     /// The service's mark in the asset catalog (sources in research/ai-usage-limits.md).
-    var logo: ImageResource {
+    var logo: ImageResource? {
         switch self {
         case .claude: .aiClaude
         case .codex: .aiCodex
         case .cursor: .aiCursor
         case .grok: .aiGrok
+        case .jetBrains: nil
         }
     }
 
@@ -58,6 +63,7 @@ extension AITool {
         case .codex: .codexWeekly
         case .cursor: .cursorMonthly
         case .grok: .grokCredits
+        case .jetBrains: .jetBrainsMonthly
         }
     }
 
@@ -68,6 +74,7 @@ extension AITool {
         case .codex: "Sign in to Codex with your ChatGPT account to see its limits here."
         case .cursor: "Sign in to Cursor to see its included usage here."
         case .grok: "Sign in to the Grok CLI with your SuperGrok account to see its limits here."
+        case .jetBrains: "Open a JetBrains IDE and use AI Assistant to make its quota available here."
         }
     }
 }
@@ -164,9 +171,13 @@ struct AIToolIcon: View {
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
-        Image(tool.logo)
-            .resizable()
-            .scaledToFit()
+        Group {
+            if let logo = tool.logo {
+                Image(logo).resizable().scaledToFit()
+            } else {
+                Text(verbatim: "J").font(.system(size: size * 0.43, weight: .semibold)).foregroundStyle(Theme.textOnAccent)
+            }
+        }
             .frame(width: size * 0.6, height: size * 0.6)
             .frame(width: size, height: size)
             .background(tool.iconColor, in: shape)
@@ -213,12 +224,12 @@ struct QuotaRow: View {
     var isCompact = false
 
     var body: some View {
-        let hasReset = isStale && window.hasReset()
+        let hasReset = window.hasReset()
         VStack(alignment: .leading, spacing: isCompact ? 5 : 6) {
             HStack(spacing: Theme.spaceM) {
                 label
                 // The window tiles show the state by the value's color alone, as drawn.
-                if !isStale, !isCompact {
+                if !isStale, !isCompact, !hasReset {
                     if window.isExhausted {
                         Chip(title: "Limit reached", kind: .danger, isSmall: true).fixedSize()
                     } else if window.isRunningLow {
@@ -245,23 +256,29 @@ struct QuotaRow: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(window.title)
+        .accessibilityLabel(title)
         .accessibilityValue(accessibilityValue(hasReset: hasReset))
     }
 
     @ViewBuilder private var label: some View {
-        if isCompact, let resetsAt = window.resetsAt, !(isStale && window.hasReset()) {
+        if isCompact, let resetsAt = window.resetsAt, !window.hasReset() {
             Text("\(window.shortTitle) · resets \(resetsAt.resetClockText)")
                 .font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(1)
         } else if !isCompact, let dollars = dollarsText {
             Text("\(window.title) · \(dollars)")
                 .font(Theme.footnote.weight(.medium)).foregroundStyle(Theme.textPrimary).lineLimit(1)
         } else {
-            (isCompact ? window.shortTitle : window.title)
+            (isCompact ? window.shortTitle : title)
                 .font(Theme.footnote.weight(isCompact ? .regular : .medium))
                 .foregroundStyle(isCompact ? Theme.textSecondary : Theme.textPrimary)
                 .lineLimit(1)
         }
+    }
+
+    private var title: Text {
+        guard tool == .jetBrains, window.model == nil else { return window.title }
+        if !isStale, !window.hasReset(), window.isRunningLow || window.isExhausted { return Text(window.kind.title) }
+        return Text("AI credits · monthly")
     }
 
     @ViewBuilder private func value(hasReset: Bool) -> some View {
@@ -321,7 +338,7 @@ struct NoAIToolsView: View {
                 .font(Theme.bodyEmphasized)
                 .foregroundStyle(Theme.textPrimary)
                 .padding(.top, Theme.spaceL)
-            Text("Monny shows usage limits for Claude Code, Codex, Cursor and Grok when they are installed and signed in on this Mac.")
+            Text("Monny shows usage limits for supported AI tools set up on this Mac.")
                 .font(Theme.footnote.weight(.regular))
                 .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)
@@ -338,17 +355,18 @@ struct NoAIToolsView: View {
 /// "Credits · 1,250 left" at the end of the Codex card, when the account has credits.
 struct CreditsRow: View {
     let credits: Double
+    var title: LocalizedStringKey = "Credits"
     var isStale = false
 
     var body: some View {
         HStack {
-            Text("Credits").font(Theme.footnote.weight(.medium)).foregroundStyle(Theme.textPrimary)
+            Text(title).font(Theme.footnote.weight(.medium)).foregroundStyle(Theme.textPrimary)
             Spacer(minLength: Theme.spaceM)
             Group {
                 if credits.isInfinite {
                     Text("Unlimited")
                 } else {
-                    Text("\(credits.formatted(.number.precision(.fractionLength(0)))) left")
+                    Text("\(credits.formatted(.number.precision(.fractionLength(0...2)))) left")
                 }
             }
             .font(Theme.bodyEmphasized.weight(.bold))

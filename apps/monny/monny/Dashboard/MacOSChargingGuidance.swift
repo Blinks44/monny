@@ -12,6 +12,8 @@ struct MacOSChargingGuidance: View {
             Text("Optimized Battery Charging can also delay charging. Monny does not change that setting.")
             Text("macOS manages charging. The limit stays set when Monny quits.")
                 .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
+            Text("macOS may occasionally charge to 100% to keep battery estimates accurate.")
+                .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
             Link("Open Battery Settings…", destination: Self.settingsURL)
                 .buttonStyle(SecondaryButtonStyle())
         }

@@ -2,7 +2,7 @@ import Foundation
 
 /// A coding assistant whose plan limits Monny can show (Settings › AI limits).
 nonisolated enum AITool: String, CaseIterable, Codable, CodingKeyRepresentable, Sendable {
-    case claude, codex, cursor, grok
+    case claude, codex, cursor, grok, jetBrains
 }
 
 /// One rolling limit of a plan, as the service reports it.
@@ -59,6 +59,10 @@ nonisolated struct AIUsage: Codable, Equatable, Sendable {
     var date: Date
     /// Codex credits left, when the account has any; `.infinity` for unlimited.
     var credits: Double?
+    /// Purchased credits, separate from a tool's monthly plan quota.
+    var topUpCredits: Double? = nil
+    /// A local source's IDE name/version, without paths or account identifiers.
+    var source: String? = nil
 
     /// Older readings are drawn as stale.
     static let freshness: TimeInterval = 15 * 60
@@ -76,11 +80,13 @@ nonisolated enum AIUsageProblem: Error, Equatable {
     case apiKey
     /// The saved sign-in has expired; the tool renews it the next time it is used.
     case expired
+    /// The IDE is present but has not made any quota data available locally.
+    case localDataMissing
     /// The service or the network failed; `retryAfter` when the service asked to wait.
     case unavailable(retryAfter: Date?)
 
     /// The tool has no plan to show, so a reading kept from before is hidden.
-    var hidesReading: Bool { self == .signedOut || self == .apiKey }
+    var hidesReading: Bool { self == .signedOut || self == .apiKey || self == .localDataMissing }
 }
 
 // MARK: - Service responses

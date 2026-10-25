@@ -72,12 +72,14 @@ private struct AIToolCard: View {
     private var subtitle: Text {
         if state.problem == .signedOut { return Text("Signed out") }
         if state.problem == .apiKey { return Text("\(tool.appName) · API key") }
+        if state.problem == .localDataMissing { return Text("No quota data") }
+        if let source = state.usage?.source { return Text(verbatim: source) }
         guard let plan = state.usage?.planText else { return Text(verbatim: tool.appName) }
         return Text("\(tool.appName) · \(plan)")
     }
 
     @ViewBuilder private func content(now: Date) -> some View {
-        if state.problem == .signedOut {
+        if state.problem == .signedOut || state.problem == .localDataMissing {
             message(tool.signInHint)
         } else if state.problem == .apiKey {
             message("Signed in with an API key. API keys are billed per use and have no plan limits.")
@@ -88,13 +90,14 @@ private struct AIToolCard: View {
                     QuotaRow(window: window, tool: tool, isStale: isStale)
                 }
                 if let credits = usage.credits { CreditsRow(credits: credits, isStale: isStale) }
+                if let credits = usage.topUpCredits { CreditsRow(credits: credits, title: "Top-up credits", isStale: isStale) }
                 if isStale { staleNote(usage) }
             }
         } else {
             switch state.problem {
             case .expired: message("The sign-in has expired. Use \(tool.appName) once to renew it.")
             case .unavailable: message("Couldn’t check the limits. Monny tries again in a few minutes.")
-            case .signedOut, .apiKey, nil: message("Checking…")
+            case .signedOut, .apiKey, .localDataMissing, nil: message("Checking…")
             }
         }
     }
@@ -102,7 +105,9 @@ private struct AIToolCard: View {
     /// "Last reading Sat 14:02 · use Codex to refresh".
     private func staleNote(_ usage: AIUsage) -> some View {
         let date = usage.date.formatted(.dateTime.weekday(.abbreviated).hour().minute())
-        let note = state.problem == .expired
+        let note = tool == .jetBrains
+            ? Text("Open your JetBrains IDE to refresh its quota.")
+            : state.problem == .expired
             ? Text("Last reading \(date) · use \(tool.appName) to refresh")
             : Text("Last reading \(date) · Monny keeps trying")
         return note.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary)

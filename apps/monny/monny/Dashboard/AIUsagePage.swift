@@ -69,9 +69,12 @@ private struct AIToolTile: View {
                     ForEach(usage.windows, id: \.id) { window in
                         QuotaRow(window: window, tool: tool, isStale: usage.isStale(at: now), isCompact: true)
                     }
+                    if let credits = usage.topUpCredits {
+                        CreditsRow(credits: credits, title: "Top-up credits", isStale: usage.isStale(at: now))
+                    }
                 }
             } else {
-                Text(state.problem == .signedOut ? tool.signInHint
+                Text(state.problem == .signedOut || state.problem == .localDataMissing ? tool.signInHint
                      : state.problem == .apiKey ? "Signed in with an API key, which has no plan limits." : "Checking…")
                     .font(Theme.footnote.weight(.regular))
                     .foregroundStyle(Theme.textSecondary)
@@ -268,6 +271,7 @@ private struct SourcesCard: View {
 
     private func detail(_ state: AIUsageMonitor.ToolState) -> Text {
         guard let usage = state.usage else { return Text("No reading yet") }
+        if let source = usage.source { return Text("\(source) · \(usage.ageText(at: now))") }
         guard let plan = usage.planText else { return usage.ageText(at: now) }
         return Text("\(plan) · \(usage.ageText(at: now))")
     }
@@ -275,6 +279,7 @@ private struct SourcesCard: View {
     @ViewBuilder private func status(_ state: AIUsageMonitor.ToolState) -> some View {
         switch state.problem {
         case .signedOut: Chip(title: "Signed out", kind: .warning)
+        case .localDataMissing: Chip(title: "No quota data", kind: .warning)
         case .apiKey: Chip(title: "API key")
         case .expired: Chip(title: "Sign-in expired", kind: .warning)
         // A rate limit or a network hiccup does not matter while the last reading is fresh.
@@ -284,6 +289,8 @@ private struct SourcesCard: View {
         case nil:
             if state.usage == nil {
                 Chip(title: "Checking…")
+            } else if state.usage?.isStale(at: now) == true {
+                Chip(title: "Out of date", kind: .warning)
             } else {
                 Chip(title: "Connected", symbol: "checkmark.circle.fill", kind: .success)
             }

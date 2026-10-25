@@ -167,7 +167,7 @@ struct SettingsPage: View {
                 .padding(.vertical, Theme.spaceM)
             }
         }
-        .onAppear { aiUsage.refreshInstalled() }
+        .task { await aiUsage.refreshInstalled() }
     }
 
     /// "Found: Claude Code, Codex" from the tools' folders on this Mac.
@@ -183,7 +183,7 @@ struct SettingsPage: View {
             if shows { hidden.removeAll { $0 == tool.rawValue } } else if !hidden.contains(tool.rawValue) { hidden.append(tool.rawValue) }
             UserDefaults.standard.set(hidden, forKey: PreferenceKey.aiHiddenTools)
             hiddenAITools = hidden
-            aiUsage.refreshInstalled()
+            Task { await aiUsage.refreshInstalled() }
         })
     }
 }

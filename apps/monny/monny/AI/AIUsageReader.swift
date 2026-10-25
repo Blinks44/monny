@@ -24,14 +24,16 @@ actor AIUsageReader {
     }
 
     /// Tools that are set up on this Mac, judged by their configuration folders.
-    nonisolated static func installedTools() -> [AITool] {
+    func installedTools() -> [AITool] {
         let fileManager = FileManager.default
         return AITool.allCases.filter { tool in
+            if tool == .jetBrains { return !JetBrainsUsageReader.sources().isEmpty }
             let url = switch tool {
-            case .claude: home.appending(path: ".claude")
-            case .codex: home.appending(path: ".codex")
-            case .cursor: cursorDatabase
-            case .grok: home.appending(path: ".grok")
+            case .claude: Self.home.appending(path: ".claude")
+            case .codex: Self.home.appending(path: ".codex")
+            case .cursor: Self.cursorDatabase
+            case .grok: Self.home.appending(path: ".grok")
+            case .jetBrains: Self.home
             }
             return fileManager.fileExists(atPath: url.path(percentEncoded: false))
         }
@@ -43,6 +45,7 @@ actor AIUsageReader {
         case .codex: await readCodex(now: now)
         case .cursor: await readCursor(now: now)
         case .grok: await readGrok(now: now)
+        case .jetBrains: JetBrainsUsageReader.read(now: now)
         }
     }
 

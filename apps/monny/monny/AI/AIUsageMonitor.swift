@@ -59,9 +59,9 @@ final class AIUsageMonitor {
     func start() {
         defaultsObservation = NotificationCenter.default.addObserver(
             forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            MainActor.assumeIsolated { self?.applyPreference() }
+            Task { @MainActor [weak self] in await self?.applyPreference() }
         }
-        applyPreference()
+        Task { await applyPreference() }
     }
 
     /// The popover AI tab and the AI usage page report when they are on screen. A set, as in
@@ -74,8 +74,8 @@ final class AIUsageMonitor {
     }
 
     /// Looks for the tools again, as Settings does when it opens.
-    func refreshInstalled() {
-        let tools = AIUsageReader.installedTools()
+    func refreshInstalled() async {
+        let tools = await reader.installedTools()
         let hidden = Set(UserDefaults.standard.stringArray(forKey: PreferenceKey.aiHiddenTools) ?? [])
         if detected != tools { detected = tools }
         let shown = tools.filter { !hidden.contains($0.rawValue) }
@@ -86,7 +86,8 @@ final class AIUsageMonitor {
     func historyValues(at now: Date = .now) -> [HistoryMetric: Double] {
         var values: [HistoryMetric: Double] = [:]
         for (tool, state) in states where installed.contains(tool) {
-            guard isEnabled, let usage = state.usage, !usage.isStale(at: now) else { continue }
+            guard isEnabled, state.problem?.hidesReading != true,
+                  let usage = state.usage, !usage.isStale(at: now) else { continue }
             // Model limits stay out of history: the chart draws each tool's plan windows.
             for window in usage.windows where window.model == nil && !window.hasReset(at: now) {
                 values[HistoryMetric.aiQuota(tool, window.kind)] = window.left
@@ -95,20 +96,22 @@ final class AIUsageMonitor {
         return values
     }
 
-    private func applyPreference() {
+    private func applyPreference() async {
         let enabled = UserDefaults.standard.bool(forKey: PreferenceKey.showsAILimits)
         guard enabled != isEnabled else {
             // A tool shown again in Settings is read right away.
             if enabled {
                 let before = installed
-                refreshInstalled()
+                await refreshInstalled()
+                guard isEnabled else { return }
                 if installed.contains(where: { !before.contains($0) }) { restart() }
             }
             return
         }
         isEnabled = enabled
         if enabled {
-            refreshInstalled()
+            await refreshInstalled()
+            guard isEnabled else { return }
             restart()
         } else {
             task?.cancel()
@@ -129,18 +132,23 @@ final class AIUsageMonitor {
 
     private func check(now: Date = .now) async {
         lastCheck = now
-        refreshInstalled()
+        await refreshInstalled()
+        guard !Task.isCancelled, isEnabled else { return }
         var alerts: [AlertMonitor.Alert] = []
         for tool in installed {
+            guard !Task.isCancelled, isEnabled else { return }
+            let hidden = UserDefaults.standard.stringArray(forKey: PreferenceKey.aiHiddenTools) ?? []
+            guard installed.contains(tool), !hidden.contains(tool.rawValue) else { continue }
             // After a 429 the service said when to ask again.
             if case .unavailable(let retryAfter?) = states[tool]?.problem, retryAfter > now { continue }
             let result = await reader.read(tool, now: now)
             guard !Task.isCancelled, isEnabled else { return }
+            guard installed.contains(tool) else { continue }
             var state = states[tool] ?? ToolState()
             switch result {
             case .success(let usage):
                 state = ToolState(usage: usage)
-                alerts += lowWindows.update(tool, usage: usage, now: now)
+                if !usage.isStale(at: now) { alerts += lowWindows.update(tool, usage: usage, now: now) }
             case .failure(let problem):
                 state.problem = problem
             }
@@ -159,16 +167,24 @@ final class AIUsageMonitor {
 /// Which windows are low (running low or used up) now, so each low episode alerts once and
 /// re-arms only when the window recovers or resets.
 nonisolated struct AILowWindows {
-    private var low: Set<String> = []
+    private var low: [String: Date] = [:]
 
     mutating func update(_ tool: AITool, usage: AIUsage, now: Date = .now) -> [AlertMonitor.Alert] {
         var alerts: [AlertMonitor.Alert] = []
         for window in usage.windows {
             let key = "\(tool.rawValue).\(window.id)"
+            if window.hasReset(at: now) {
+                low.removeValue(forKey: key)
+                continue
+            }
             if window.isExhausted || window.isRunningLow {
-                if low.insert(key).inserted { alerts.append(.aiLimitLow(tool, window)) }
+                let reset = window.resetsAt ?? .distantFuture
+                if low[key] != reset {
+                    low[key] = reset
+                    alerts.append(.aiLimitLow(tool, window))
+                }
             } else {
-                low.remove(key)
+                low.removeValue(forKey: key)
             }
         }
         return alerts
@@ -184,6 +200,7 @@ extension HistoryMetric {
         case (.codex, _): .codexWeekly
         case (.cursor, _): .cursorMonthly
         case (.grok, _): .grokCredits
+        case (.jetBrains, _): .jetBrainsMonthly
         }
     }
 }

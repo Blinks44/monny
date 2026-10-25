@@ -63,6 +63,8 @@ enum Theme {
     static let aiCursor = Color(light: 0x5E5CE6, dark: 0x7D7AFF)
     /// Grok's brand is black and white, which Codex already uses; slate keeps the two apart.
     static let aiGrok = Color(light: 0x64748B, dark: 0x94A3B8)
+    /// DES-004 frame 23's JetBrains exploration color and letter tile.
+    static let aiJetBrains = Color(light: 0x7B3FE4, dark: 0x7B3FE4)
     /// The pace mark on a quota bar and its 1 pt outline.
     static let aiPaceMark = Color(light: 0x1D1D1F, 0.65, dark: 0xFFFFFF, 0.7)
     static let aiPaceMarkStroke = Color(light: 0xFFFFFF, dark: 0x1C1C1E)

@@ -41,10 +41,7 @@ export function SiteFooter() {
         <div className={styles.related}>
           <h2>{m.alsoFromUs()}</h2>
           <Card asChild className={styles.rebind}>
-            <a
-              href="https://github.com/blinks44/rebind"
-              aria-label={`Rebind: ${m.rebindDescription()}`}
-            >
+            <a href="https://rebind.moduix.dev" aria-label={`Rebind: ${m.rebindDescription()}`}>
               <picture>
                 <source srcSet={rebindWebp} type="image/webp" />
                 <img src={rebindPng} width="60" height="60" alt="" loading="lazy" />

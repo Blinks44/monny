@@ -105,3 +105,7 @@ Browser evidence: desktop menus; Chrome 390×844 Monny Drawer/upward popup and k
 ## Next handoff
 
 Use the newly saved Sketch Implementation notes for exports and the current local Worker previews (Monny 4177, Rebind 4176) for acceptance. Finish physical-phone/all-section, keyboard/VoiceOver, runtime reduced-motion and fluent translation review. The site is live with the 1.0.0 download and indexing. Website-only work does not rebuild the native DMG.
+
+## Companion website link — 2026-10-25
+
+Changed the Rebind footer card destination from GitHub to https://rebind.moduix.dev. Only the link target and formatter layout changed. Format, lint, TypeScript and `git diff --check` pass. Next: include this change in the next website deployment. No deployment or native app change.

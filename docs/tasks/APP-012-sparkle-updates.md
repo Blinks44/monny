@@ -20,10 +20,10 @@ Sparkle 2.10.0 replaces the GitHub Releases API check, set up as in Rebind (user
 
 ## Open checks / dependency
 
-- 1.0.0 (build 52) published 2026-10-24 with its appcast; the live `releases/latest/download/appcast.xml` lists build 52.
+- 1.0.0 (build 52) published 2026-10-24 with its appcast; the live appcast listed build 52. 1.1.0 (build 63) published 2026-10-25; the live latest appcast lists build 63 and the downloaded DMG matches its checksum.
 - End-to-end update: publish two builds, install the older and confirm Sparkle offers, verifies, installs and relaunches the newer with settings and history kept. Same-signer behavior without notarization is unverified.
 - User reported an off-device copy of `monny_sparkle_ed25519.key` on 2026-10-24.
 
 ## Next handoff
 
-With the next release (see [RELEASING](../RELEASING.md)), install 1.0.0, publish the newer build and confirm Sparkle updates it with settings and history kept. Current power draw and Settings design are already implemented; no further feature implementation is pending in this task.
+With 1.1.0 published, run **Check for Updates** in an installed 1.0.0 and confirm Sparkle updates it with settings and history kept. Current power draw and Settings design are already implemented; no further feature implementation is pending in this task.

@@ -31,6 +31,8 @@ Installed follow-ups: build-50 context-menu/Sparkle-window interaction and Voice
 
 ## Acceptance and continuation
 
+2026-10-25 website sitemap review: live XML parses with six canonical URLs and complete reciprocal language alternatives; all seven production HTTP smoke tests pass. No implementation change required. [Evidence and limits](tasks/WEB-001-landing-page.md#production-sitemap-review--2026-10-25).
+
 2026-10-21 user acceptance: installed charge-limit change (build 27, M1 Max/macOS 27.0.1), informal reading comparisons and six languages; build-37 onboarding, readings, busy-app alert, battery power, keyboard/VoiceOver/contrast/motion and real notifications. macOS 26 worked per user report, minor version unknown. These checks do not automatically accept later changes. Performance evidence: [idle cost](verification/idle-cost.md).
 
 [PLAN](PLAN.md) owns sequencing; task records own detailed evidence/open acceptance. Signed DMGs are not notarized. Clean-Mac installation, key recovery and first published Sparkle update remain separate release checks. Discharge/sailing/heat-driven control/calibration/trips are deferred.

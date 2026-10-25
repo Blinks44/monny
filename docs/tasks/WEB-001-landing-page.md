@@ -1,6 +1,6 @@
 # WEB-001: Public landing page
 
-- Updated: 2026-10-23
+- Updated: 2026-10-25
 - Stage: awaiting_verification (Sketch export handoff reviewed; website interaction/translation acceptance open)
 - Owner: Codex website implementation
 - Ownership: Codex owns the scoped website/Sketch parity review on baseline `513be0e`. Rebind’s existing website implementation on `e3540f3` is preserved. No native app or deployment changes. The earlier user server at port 3001 was no longer listening; review uses local Worker previews.
@@ -109,3 +109,9 @@ Use the newly saved Sketch Implementation notes for exports and the current loca
 ## Companion website link — 2026-10-25
 
 Changed the Rebind footer card destination from GitHub to https://rebind.moduix.dev. Only the link target and formatter layout changed. Format, lint, TypeScript and `git diff --check` pass. Next: include this change in the next website deployment. No deployment or native app change.
+
+## Production sitemap review — 2026-10-25
+
+Reviewed the unchanged implementation on main `1bb98b8`: `src/server.ts` serves XML directly before the localized HTML handler; `src/integrations/seo.ts` uses the shared site/locale configuration. Live `/sitemap.xml` returns HTTP 200 and `application/xml; charset=utf-8`. Python ElementTree parses the downloaded response: six unique canonical landing URLs, each with all six reciprocal `xhtml:link` language alternatives and `x-default`. This matches [Google's localized sitemap rules](https://developers.google.com/search/docs/specialty/international/localized-versions#sitemap). A server-generated XML response is compatible with [TanStack Start](https://tanstack.com/start/latest/docs/framework/react/guide/seo#dynamic-sitemap); no framework migration or sitemap rewrite is needed.
+
+`WEBSITE_TEST_ORIGIN=https://monny.moduix.dev pnpm test:smoke` passes all seven tests against production: six localized landing/404 pairs with canonical metadata, robots advertising the sitemap, XML response and immutable asset caching. No code change, build or deployment. The XML is minified and has no presentation stylesheet; browser presentation was not inspected, and Search Console ingestion/indexing was not verified. Next: if Google ingestion needs confirmation, submit `/sitemap.xml` in the domain's Search Console; existing device/accessibility/translation checks remain open.

@@ -125,7 +125,7 @@ At viewports from about 1440 px the hero popover container's fixed 640 px height
 
 ## AI vendor badges and selection rationale — 2026-10-26
 
-Baseline main `b264759`, uncommitted landing component/styles, six message catalogs and local vendor assets. The section shows all 11 integrations in one list, including ClinePass, Codebuff, Amp, Augment and Nous Portal. Logo tiles are 20×20 px with 16×16 px marks. At the user’s request, there is no next-release label; the website will be deployed together with the new app. Each has an authentic local mark shared with the app. Short six-language copy explains selection by usable local/API/CLI quota sources and existing sign-in, without browser-cookie import or a Monny account. Privacy copy no longer contains a stale four-service list or promises that a tool-owned CLI never renews its own session. Current download still serves build 63; no download/config change or deployment.
+Baseline main `b264759`, uncommitted landing component/styles, six message catalogs and local vendor assets. The section shows all 11 integrations in one list, including ClinePass, Codebuff, Amp, Augment and Nous Portal. Logo tiles are 20×20 px with 16×16 px marks. At the user’s request, there is no next-release label; the website will be deployed together with the new app. Each has an authentic local mark shared with the app. Short six-language copy explains selection by usable local/API/CLI quota sources and existing sign-in, without browser-cookie import or a Monny account. Privacy copy no longer contains a stale four-service list or promises that a tool-owned CLI never renews its own session. The permanent latest-download link now serves 1.1.1 build 67; no release-specific download/config change is needed.
 
 Saved Monny.sketch desktop/mobile AI sections with 11 badges in one wrapping list and explanatory copy. Reviewed both live after fixing proportional Group resizing; sections are fixed Frames with clipped glow, readable wrapped copy and unchanged screenshot aspect ratios. Other source frames remain intact. Asset sources/notice: [AI research](../research/ai-usage-limits.md#remaining-vendor-marks--2026-10-26).
 
@@ -133,4 +133,6 @@ Checks: `pnpm check` (format, lint, types, 12 tests), `pnpm deploy:dry-run` and 
 
 Follow-up verification: after unifying the list and reducing logo tiles from 22 to 20 px, `pnpm check` (12 tests) and `pnpm deploy:dry-run` pass. Both Sketch sections were reviewed live and saved; the unused next-release message was removed from all six catalogs. No app change or deployment.
 
-Next: review the AI section at desktop/phone widths in a working browser, then deploy alongside the new app as requested. Existing accessibility/translation gates remain.
+User acceptance 2026-10-26: the deployed website worked on desktop and phone after the 1.1.1 release. This closes the ordinary deployed visual/device review for the current section/site within the user’s coverage; exact browser, phone and viewport were not supplied. Earlier agent screenshot limitations remain historical evidence, not a request to repeat the accepted check.
+
+Next: revisit with a concrete regression or perform the remaining specific keyboard/VoiceOver, reduced-motion and fluent translation checks. No routine redeployment or desktop/phone visual follow-up remains.

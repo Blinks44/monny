@@ -112,4 +112,6 @@ Final `dev.sh test`: 137 tests in 17 suites passed on macOS 27.0.1. `release.sh`
 
 Assets: `Monny.dmg`, `SHA256SUMS.txt`, `appcast.xml`. Local DMG: `apps/monny/build/release/Monny.dmg`, SHA-256 `9730775d8f9e597c74a2b17fdee855b92c6d514e0c246b1db846059d85075942`. Published as latest stable, not a draft/prerelease. Unauthenticated downloads through `releases/latest/download/` match the local DMG checksum and byte-identical appcast; public appcast version, build, enclosure URL/length and update signature verified. Not notarized. No website deployment or real-account requests were performed.
 
-Next: update an installed 1.1.0 through Check for Updates, then compare the five new tools against their own usage screens/commands. Existing account/reset/history, other hardware and owner-brand-guideline limitations remain.
+User acceptance 2026-10-26: the in-app update to 1.1.1 worked. The five new providers will be compared gradually; this confirms the update flow, not account readings.
+
+Next: compare each new tool against its own usage screen/command when a signed-in account is available. Existing account/reset/history, other hardware and owner-brand-guideline limitations remain.

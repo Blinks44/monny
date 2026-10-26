@@ -104,6 +104,12 @@ Verification: 137 tests in 17 suites passed on macOS 27.0.1. Temporary native re
 
 Next: install the candidate and compare new providers with their own account sources. Existing account/reset/history and owner-brand-guideline release gates remain open.
 
-## 1.1.1 release preparation — 2026-10-26
+## 1.1.1 publication — 2026-10-26
 
-User authorized GitHub publication through gh; website deployment stays with the user. Version 1.1.1, build 67 in both configurations. Release includes the five providers, all vendor marks, expanded history legend and redirect refusal from this task. Final native test run: 137 tests in 17 suites passed on macOS 27.0.1. Release notes explicitly retain real-account limitations. Packaging/publication evidence will be recorded after the final DMG and remote download checks. Next: publish the exact tagged source and verify the latest appcast/download.
+Published [v1.1.1](https://github.com/Blinks44/monny/releases/tag/v1.1.1) through gh at the user's request. Release source/tag: `53e34d3` (version 1.1.1, build 67 in Debug and Release); website deployment remains with the user. The tag includes this conversation's provider/logo/website work and dated acceptance records. Release notes retain the five providers' real-account limitations.
+
+Final `dev.sh test`: 137 tests in 17 suites passed on macOS 27.0.1. `release.sh` passed after one transient Finder status-bar configuration error required a standard packaging retry; no workaround or signing-setting change. Apple Development app/nested-code/DMG signatures, image integrity and the Sparkle EdDSA signature passed. Mounted the final DMG read-only and extracted its app to temporary storage: version 1.1.1/build 67 and strict deep signature verified. This was a package-content check, not an installed launch/update acceptance.
+
+Assets: `Monny.dmg`, `SHA256SUMS.txt`, `appcast.xml`. Local DMG: `apps/monny/build/release/Monny.dmg`, SHA-256 `9730775d8f9e597c74a2b17fdee855b92c6d514e0c246b1db846059d85075942`. Published as latest stable, not a draft/prerelease. Unauthenticated downloads through `releases/latest/download/` match the local DMG checksum and byte-identical appcast; public appcast version, build, enclosure URL/length and update signature verified. Not notarized. No website deployment or real-account requests were performed.
+
+Next: update an installed 1.1.0 through Check for Updates, then compare the five new tools against their own usage screens/commands. Existing account/reset/history, other hardware and owner-brand-guideline limitations remain.

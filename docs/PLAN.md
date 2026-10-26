@@ -28,5 +28,5 @@ After release, Discharge may be researched again. Helper/SMC-write work is prese
 
 - Accepted 2026-10-21: installed charge-limit change on M1 Max/macOS 27.0.1; informal reading comparisons; six languages; build-37 keyboard/VoiceOver/contrast/motion, notifications and pre-release additions. macOS 26 was reported working, minor version unknown; this does not close 26.4–26.x charging acceptance.
 - Measured: background 0.0%, dashboard 2.9% (build 29); popover about 2% (user, build 37). Conditions and limits: [idle cost](verification/idle-cost.md).
-- Published 2026-10-24: 1.0.0 (build 52) on GitHub Releases and the website.
+- Published 2026-10-24: 1.0.0 (build 52) on GitHub Releases and the website. Latest app release: 1.1.1 (build 67), 2026-10-26; public DMG/appcast verified. Installed update acceptance remains open; website deployment is handled by the user.
 - Open: clean-Mac DMG installation, signing-identity recovery and off-device backup (update-key backup reported 2026-10-24); later feature-specific checks indexed in STATE. Apple Development candidates are signed but not notarized. Developer ID/notarization is not implemented.

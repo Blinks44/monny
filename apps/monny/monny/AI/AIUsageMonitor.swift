@@ -207,6 +207,14 @@ extension HistoryMetric {
         case (.grok, _): .grokCredits
         case (.jetBrains, _): .jetBrainsMonthly
         case (.copilot, _): .copilotPremium
+        case (.cline, .session): .clineSession
+        case (.cline, .weekly): .clineWeekly
+        case (.cline, .monthly): .clineMonthly
+        case (.codebuff, _): .codebuffWeekly
+        case (.amp, .session): .ampFree
+        case (.amp, _): .ampMonthly
+        case (.augment, _): .augmentMonthly
+        case (.nous, _): .nousMonthly
         }
     }
 }

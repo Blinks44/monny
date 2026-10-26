@@ -63,8 +63,8 @@
   "managedMacOS": "Managed by macOS",
   "optional": "Optional · off by default",
   "aiTitle": "AI plan limits next to CPU and memory",
-  "aiLead": "Check the remaining limits for Claude Code, Codex, Cursor and Grok before a long task. Monny uses each tool’s existing session on this Mac.",
-  "aiNote": "Enable it in Settings. Monny does not save or renew sign-in credentials. It sends them only to the corresponding service.",
+  "aiLead": "Check your remaining AI plan limits before a long task. Monny uses each supported tool’s existing session on this Mac.",
+  "aiNote": "Enable it in Settings and choose your tools. Sign-in stays with each tool; Monny does not store a separate copy of its credentials.",
   "updated": "Updated 1 min ago",
   "fiveHour": "5-hour limit",
   "monthlyLimit": "Monthly limit",
@@ -118,7 +118,7 @@
   "faqQ2": "Which Macs are supported?",
   "faqA2": "Macs with Apple silicon running macOS 26 or later. The charge limit also needs a Mac with a battery and macOS 26.4 or later. Intel Macs aren’t supported.",
   "faqQ3": "Does Monny send my data anywhere?",
-  "faqA3": "System readings stay on your Mac. Monny connects for updates and, if you enable AI limits, requests to Anthropic, OpenAI, Cursor and xAI using each tool’s existing session.",
+  "faqA3": "System readings stay on your Mac. Monny connects for updates and, if you enable AI limits, to the services you select using their tools’ existing sign-in.",
   "faqQ4": "Will the charge limit stay on after I quit Monny?",
   "faqA4": "Yes. macOS keeps its own limit after you quit Monny, through sleep and restarts. You can also change it in System Settings → Battery.",
   "faqQ5": "How do updates work?",
@@ -151,5 +151,7 @@
   "terminal": "Terminal",
   "limitOff": "Limit off",
   "charging": "Charging",
-  "limitMarker": "Limit {value}%"
+  "limitMarker": "Limit {value}%",
+  "aiSelectionTitle": "Why these tools?",
+  "aiSelectionReason": "Each integration needs a usable source for limits: a local file, a usage command or the service’s API. We add tools that work with an existing sign-in, without browser cookie imports or a separate Monny account."
 }

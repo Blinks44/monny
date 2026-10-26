@@ -8,14 +8,20 @@ nonisolated private let logger = Logger(subsystem: "blinks44.monny", category: "
 /// ([research](docs/research/ai-usage-limits.md)). Monny never stores, renews or sends the
 /// tokens anywhere else; an expired token waits until the tool itself renews it.
 actor AIUsageReader {
-    private let session: URLSession = {
+    private let session: URLSession
+
+    init(session: URLSession? = nil) {
+        self.session = session ?? Self.makeSession()
+    }
+
+    private static func makeSession() -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.timeoutIntervalForRequest = 20
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         configuration.httpCookieStorage = nil
         configuration.urlCredentialStorage = nil
-        return URLSession(configuration: configuration, delegate: CopilotRedirectPolicy(), delegateQueue: nil)
-    }()
+        return URLSession(configuration: configuration, delegate: AIUsageRedirectPolicy(), delegateQueue: nil)
+    }
 
     private static var home: URL { FileManager.default.homeDirectoryForCurrentUser }
 
@@ -32,13 +38,18 @@ actor AIUsageReader {
                 return Self.githubCLI != nil
                     && fileManager.fileExists(atPath: Self.home.appending(path: ".config/gh/hosts.yml").path)
             }
+            if tool == .amp { return AIUsageCommand.executable("amp") != nil }
+            if tool == .augment { return AIUsageCommand.executable("auggie") != nil }
+            if tool == .nous { return Self.hermesCredentialFiles.contains { fileManager.fileExists(atPath: $0.path) } }
             if tool == .jetBrains { return !JetBrainsUsageReader.sources().isEmpty }
             let url = switch tool {
             case .claude: Self.home.appending(path: ".claude")
             case .codex: Self.home.appending(path: ".codex")
             case .cursor: Self.cursorDatabase
             case .grok: Self.home.appending(path: ".grok")
-            case .jetBrains, .copilot: Self.home
+            case .cline: Self.clineCredentials
+            case .codebuff: Self.codebuffCredentials
+            case .jetBrains, .copilot, .amp, .augment, .nous: Self.home
             }
             return fileManager.fileExists(atPath: url.path(percentEncoded: false))
         }
@@ -52,6 +63,10 @@ actor AIUsageReader {
         case .grok: await readGrok(now: now)
         case .jetBrains: JetBrainsUsageReader.read(now: now)
         case .copilot: await readCopilot(now: now)
+        case .cline: await readCline(now: now)
+        case .codebuff: await readCodebuff(now: now)
+        case .amp, .augment: await readCommand(tool, now: now)
+        case .nous: await readNous(now: now)
         }
     }
 
@@ -221,10 +236,92 @@ actor AIUsageReader {
         return environment
     }
 
+    // MARK: Additional subscription tools
+
+    static var clineCredentials: URL { home.appending(path: ".cline/data/settings/providers.json") }
+    static var codebuffCredentials: URL { home.appending(path: ".config/manicode/credentials.json") }
+
+    func readCline(at file: URL = clineCredentials, now: Date) async -> Result<AIUsage, AIUsageProblem> {
+        guard let data = SavedAISession.data(at: file), let token = SavedAISession.cline(data) else {
+            return .failure(.signedOut)
+        }
+        if SavedAISession.isExpired(token, now: now) { return .failure(.expired) }
+        var request = URLRequest(url: URL(string: "https://api.cline.bot/api/v1/users/me/plan/usage-limits")!)
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return await fetch(request, now: now) { try ClineUsage.usage($0, now: now) }
+    }
+
+    func readCodebuff(at file: URL = codebuffCredentials, now: Date) async -> Result<AIUsage, AIUsageProblem> {
+        guard let data = SavedAISession.data(at: file), let token = SavedAISession.codebuff(data) else {
+            return .failure(.signedOut)
+        }
+        if SavedAISession.isExpired(token, now: now) { return .failure(.expired) }
+        var request = URLRequest(url: URL(string: "https://www.codebuff.com/api/v1/usage")!)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = Data(#"{"fingerprintId":"monny-usage"}"#.utf8)
+        let usage: Data
+        switch await fetchData(request, now: now) {
+        case .success(let data): usage = data
+        case .failure(let error): return .failure(error)
+        }
+        guard !Task.isCancelled else { return .failure(.unavailable(retryAfter: nil)) }
+        request.url = URL(string: "https://www.codebuff.com/api/user/subscription")!
+        request.httpMethod = "GET"
+        request.httpBody = nil
+        request.setValue(nil, forHTTPHeaderField: "Content-Type")
+        return await fetch(request, now: now, allowsUnmetered: true) {
+            try CodebuffUsage.usage(usage, subscription: $0, now: now)
+        }
+    }
+
+    static var hermesCredentialFiles: [URL] {
+        [".hermes/auth.json", ".hermes/shared/nous_auth.json"].map { home.appending(path: $0) }
+    }
+
+    func readNous(files: [URL] = hermesCredentialFiles, now: Date) async -> Result<AIUsage, AIUsageProblem> {
+        guard let file = files.first(where: { FileManager.default.fileExists(atPath: $0.path) }),
+              let data = SavedAISession.data(at: file) else { return .failure(.signedOut) }
+        let token: String
+        do { token = try NousUsage.credential(data, now: now) }
+        catch let problem as AIUsageProblem { return .failure(problem) }
+        catch { return .failure(.signedOut) }
+        var request = URLRequest(url: URL(string: "https://portal.nousresearch.com/api/oauth/account")!)
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return await fetch(request, now: now, allowsUnmetered: true) { try NousUsage.usage($0, now: now) }
+    }
+
+    private func readCommand(_ tool: AITool, now: Date) async -> Result<AIUsage, AIUsageProblem> {
+        let name = tool == .amp ? "amp" : "auggie"
+        guard let executable = AIUsageCommand.executable(name) else { return .failure(.signedOut) }
+        guard let output = await AIUsageCommand.run(executable, arguments: tool == .amp ? ["usage"] : ["account", "status"]) else {
+            return .failure(.unavailable(retryAfter: nil))
+        }
+        if output.status != 0 {
+            return .failure(AICommandText.problem(in: output.stdout + "\n" + output.stderr, now: now) ?? .unavailable(retryAfter: nil))
+        }
+        do {
+            return .success(try tool == .amp ? AmpUsage.usage(output.stdout, now: now) : AugmentUsage.usage(output.stdout, now: now))
+        } catch let problem as AIUsageProblem { return .failure(problem) }
+        catch { return .failure(.unavailable(retryAfter: nil)) }
+    }
+
     // MARK: Shared
 
     private func fetch(_ request: URLRequest, now: Date, allowsUnmetered: Bool = false,
                        decode: (Data) throws -> AIUsage) async -> Result<AIUsage, AIUsageProblem> {
+        switch await fetchData(request, now: now) {
+        case .failure(let error): return .failure(error)
+        case .success(let data):
+            do {
+                let usage = try decode(data)
+                return usage.windows.isEmpty && !allowsUnmetered ? .failure(.unavailable(retryAfter: nil)) : .success(usage)
+            } catch { return .failure(.unavailable(retryAfter: nil)) }
+        }
+    }
+
+    private func fetchData(_ request: URLRequest, now: Date) async -> Result<Data, AIUsageProblem> {
         var request = request
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         if request.value(forHTTPHeaderField: "User-Agent") == nil { request.setValue("Monny", forHTTPHeaderField: "User-Agent") }
@@ -232,16 +329,12 @@ actor AIUsageReader {
             let (data, response) = try await session.data(for: request)
             let status = (response as? HTTPURLResponse)?.statusCode ?? 0
             switch status {
-            case 200:
-                let usage = try decode(data)
-                return usage.windows.isEmpty && !allowsUnmetered ? .failure(.unavailable(retryAfter: nil)) : .success(usage)
-            case 401, 403:
-                return .failure(.signedOut)
+            case 200: return .success(data)
+            case 401, 403: return .failure(.signedOut)
             case 429:
-                // Anthropic answers `Retry-After: 0` while its limit lasts for minutes; asking again
-                // sooner than 5 minutes only extends it (CodexBar uses the same cooldown).
-                let seconds = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "Retry-After").flatMap(Double.init) ?? 0
-                return .failure(.unavailable(retryAfter: now.addingTimeInterval(max(seconds, 5 * 60))))
+                let raw = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "Retry-After").flatMap(Double.init) ?? 0
+                let seconds = raw.isFinite ? max(raw, 5 * 60) : 5 * 60
+                return .failure(.unavailable(retryAfter: now.addingTimeInterval(seconds)))
             default:
                 logger.error("Usage request to \(request.url?.host() ?? "", privacy: .public) returned \(status)")
                 return .failure(.unavailable(retryAfter: nil))

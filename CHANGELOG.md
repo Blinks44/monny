@@ -2,6 +2,13 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.1.1: 2026-10-26
+
+- Added AI limits for ClinePass, Codebuff, Amp, Augment and Nous Portal using the tools’ existing sign-in.
+- Added vendor logos for all supported AI tools.
+- Fixed the AI history legend layout when many tools are enabled.
+- Service requests that carry sign-in credentials now refuse redirects.
+
 ## 1.1.0: 2026-10-25
 
 - Processes: search by app or process name, and Quit or Force Quit an app or process from its context menu, with confirmation for Force Quit.

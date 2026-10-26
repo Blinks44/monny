@@ -2,7 +2,7 @@ import Foundation
 
 /// A coding assistant whose plan limits Monny can show (Settings › AI limits).
 nonisolated enum AITool: String, CaseIterable, Codable, CodingKeyRepresentable, Sendable {
-    case claude, codex, cursor, grok, jetBrains, copilot
+    case claude, codex, cursor, grok, jetBrains, copilot, cline, codebuff, amp, augment, nous
 }
 
 /// One rolling limit of a plan, as the service reports it.
@@ -21,12 +21,14 @@ nonisolated struct AIQuotaWindow: Codable, Equatable, Sendable {
     /// The model or feature of a limit beside the plan's own, such as "Opus" or "Spark".
     var model: String?
     var copilotQuota: CopilotQuota? = nil
+    var ampQuota: AmpQuota? = nil
 
-    var id: String { "\(kind.rawValue).\(model ?? "")" + (copilotQuota.map { ".\($0.rawValue)" } ?? "") }
+    var id: String { "\(kind.rawValue).\(model ?? "")" + (copilotQuota.map { ".\($0.rawValue)" } ?? "")
+        + (ampQuota.map { ".amp.\($0.rawValue)" } ?? "") }
 
     /// The plan's own limit, as history and Next resets draw it: not a model's limit or
     /// Copilot's chat and completions allowances.
-    var isPlanLimit: Bool { model == nil && (copilotQuota ?? .premium) == .premium }
+    var isPlanLimit: Bool { model == nil && (copilotQuota ?? .premium) == .premium && ampQuota != .orb }
 
     /// "Running low" below this share of the quota left, whatever the pace (user decision 2026-10-22).
     static let lowThreshold = 0.1
@@ -71,6 +73,9 @@ nonisolated struct AIUsage: Codable, Equatable, Sendable {
     /// Absolute consumption, never a remaining balance or inferred percentage.
     var creditsUsed: Double? = nil
     var unlimitedCopilotQuotas: [CopilotQuota]? = nil
+    /// Reported USD balances; never combined with percentage quota or generic credits.
+    var balanceUSD: Decimal? = nil
+    var topUpUSD: Decimal? = nil
 
     /// Older readings are drawn as stale.
     static let freshness: TimeInterval = 15 * 60

@@ -13,6 +13,8 @@ nonisolated enum HistoryMetric: String, CaseIterable, Codable, CodingKeyRepresen
     case cpuTemperature, gpuTemperature, ssdTemperature, batteryTemperature, fan
     case claudeSession, claudeWeekly, codexSession, codexWeekly, cursorMonthly, grokCredits
     case jetBrainsMonthly, copilotPremium
+    case clineSession, clineWeekly, clineMonthly, codebuffWeekly
+    case ampFree, ampMonthly, augmentMonthly, nousMonthly
 
     /// The values of one snapshot; unavailable readings are left out, never stored as zero.
     static func values(of snapshot: Snapshot) -> [HistoryMetric: Double] {

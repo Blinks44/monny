@@ -1,7 +1,7 @@
 # App and website copy review
 
-- Updated: 2026-10-25
-- Stage: awaiting_verification (copy implemented and packaged; full website/device and fluent-speaker acceptance remain open)
+- Updated: 2026-10-26
+- Stage: done (native copy/interface accepted by the user, 2026-10-26; website follow-up owned by WEB-001)
 - Owner: unassigned; copy review ownership released
 - Ownership: user paused the parallel JetBrains implementation while this review finished. Catalog/build number are available to the receiving agent again.
 - Owned surfaces: app String Catalog, charging guidance, six website catalogs, refreshed AI preview, matching English Monny.sketch text and build number.
@@ -38,6 +38,6 @@ On macOS 27.0.1, build **58** in both Debug and Release:
 
 [Apple Russian Mac/battery terminology](https://support.apple.com/ru-ru/102397), [memory terminology](https://support.apple.com/ru-ru/guide/activity-monitor/view-memory-usage-actmntr1004/mac), [macOS charge-limit behavior](https://support.apple.com/en-us/102338), [Developer ID and notarization](https://developer.apple.com/help/account/certificates/create-developer-id-certificates/).
 
-## Next handoff
+## Current acceptance and handoff — 2026-10-26
 
-Resume the existing JetBrains AI task on this checkout, preserving the reviewed catalog values and saved Sketch. Its uncommitted integration is included in build 58; finish its own source/runtime acceptance before release. Do not reuse build 58 for a later modified candidate. For website acceptance, review all sections in an active browser at desktop/phone widths in the six languages, then deploy only when requested. Review the new copy on an installed app as part of the existing localization/accessibility gate.
+The user accepted the current installed interface and translations. Version/model/OS and individual assistive-technology scenarios were not restated; this is broad user acceptance, not a newly observed six-language/native-speaker or VoiceOver audit. No further native copy review is required without a reported issue. Website physical-device, browser/translation/accessibility acceptance stays with [WEB-001](WEB-001-landing-page.md). New provider copy introduced after this acceptance requires its own verification in APP-015.

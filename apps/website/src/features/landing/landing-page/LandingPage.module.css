@@ -352,3 +352,41 @@
     width: 100%;
   }
 }
+
+.toolLogo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 6px;
+  background: #fff;
+  margin-right: 6px;
+}
+.toolLogo img {
+  object-fit: contain;
+}
+.toolLogo[data-brand='claude'] {
+  background: #d97757;
+}
+.toolLogo[data-brand='cursor'],
+.toolLogo[data-brand='jetbrains'],
+.toolLogo[data-brand='copilot'],
+.toolLogo[data-brand='codebuff'] {
+  background: #000;
+}
+.selection {
+  margin-top: 24px;
+}
+.selection h3 {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+.selection p {
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--monny-text-secondary);
+  margin: 0;
+}

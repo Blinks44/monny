@@ -28,10 +28,10 @@ Download the latest version from [GitHub Releases](https://github.com/Blinks44/m
 - **Dashboard window** with Overview, CPU, Memory, Disk, Network, Battery and Sensors pages and 1 minute to 7 day history.
 - **Battery charge limit** from 80 to 100% on macOS 26.4 and later. Monny changes the same setting as System Settings, so macOS keeps enforcing it after Monny quits. No privileged helper.
 - **Notifications** for a reached charge limit, a hot Mac, low battery, high memory pressure and an app that keeps the CPU busy.
-- **AI limits (optional, off by default):** how much of your Claude Code, Codex, Cursor, Grok, JetBrains AI and GitHub Copilot subscription limits is left, read with each tool's own sign-in on this Mac.
+- **AI limits (optional, off by default):** how much of your Claude Code, Codex, Cursor, Grok, JetBrains AI, GitHub Copilot, ClinePass, Codebuff, Amp, Augment and Nous Portal subscription limits is left, read with each tool's own sign-in on this Mac.
 - English, Russian, German, French, Spanish and Simplified Chinese.
 
-Readings never leave the Mac: no account, analytics or telemetry. The only network requests are update checks and, when AI limits are turned on, the limit checks with Anthropic, OpenAI, Cursor, xAI and GitHub (JetBrains AI is read from local IDE files). The [specification](docs/SPEC.md) lists the full scope and acceptance.
+Readings never leave the Mac: no account, analytics or telemetry. The only network requests are update checks and, when AI limits are turned on, the limit checks with Anthropic, OpenAI, Cursor, xAI, GitHub, Cline, Codebuff, Amp, Augment and Nous Portal (JetBrains AI is read from local IDE files). The [specification](docs/SPEC.md) lists the full scope and acceptance.
 
 ## Requirements
 

@@ -1,3 +1,14 @@
+import claudeLogo from '@/assets/ai/claude.svg'
+import codexLogo from '@/assets/ai/codex.svg'
+import cursorLogo from '@/assets/ai/cursor.svg'
+import grokLogo from '@/assets/ai/grok.svg'
+import jetbrainsLogo from '@/assets/ai/jetbrains.svg'
+import copilotLogo from '@/assets/ai/copilot.svg'
+import clineLogo from '@/assets/ai/cline.svg'
+import codebuffLogo from '@/assets/ai/codebuff.png'
+import ampLogo from '@/assets/ai/amp.svg'
+import augmentLogo from '@/assets/ai/augment.svg'
+import nousLogo from '@/assets/ai/nous.svg'
 import { Badge } from '@moduix/react/badge'
 import { Card } from '@moduix/react/card'
 import { Tag } from '@moduix/react/tag'
@@ -13,6 +24,35 @@ import { InstallNotice } from '../install-notice'
 import { FaqSection } from '../faq-section'
 import { SiteFooter } from '../site-footer'
 import styles from './LandingPage.module.css'
+
+const tools = [
+  ['Claude Code', claudeLogo, 'claude'],
+  ['Codex', codexLogo, 'codex'],
+  ['Cursor', cursorLogo, 'cursor'],
+  ['Grok', grokLogo, 'grok'],
+  ['JetBrains AI', jetbrainsLogo, 'jetbrains'],
+  ['GitHub Copilot', copilotLogo, 'copilot'],
+  ['ClinePass', clineLogo, 'cline'],
+  ['Codebuff', codebuffLogo, 'codebuff'],
+  ['Amp', ampLogo, 'amp'],
+  ['Augment', augmentLogo, 'augment'],
+  ['Nous Portal', nousLogo, 'nous'],
+]
+
+function ToolTags({ tools }: { tools: string[][] }) {
+  return (
+    <div className={styles.tags}>
+      {tools.map(([name, logo, brand]) => (
+        <Tag variant="secondary" key={name}>
+          <span className={styles.toolLogo} data-brand={brand}>
+            <img src={logo} width="16" height="16" alt="" loading="lazy" />
+          </span>
+          {name}
+        </Tag>
+      ))}
+    </div>
+  )
+}
 
 export function LandingPage() {
   const checks = [
@@ -77,12 +117,10 @@ export function LandingPage() {
               {m.aiTitle()}
             </h2>
             <p className={styles.lead}>{m.aiLead()}</p>
-            <div className={styles.tags}>
-              {['Claude Code', 'Codex', 'Cursor', 'Grok'].map((tool) => (
-                <Tag variant="secondary" key={tool}>
-                  {tool}
-                </Tag>
-              ))}
+            <ToolTags tools={tools} />
+            <div className={styles.selection}>
+              <h3>{m.aiSelectionTitle()}</h3>
+              <p>{m.aiSelectionReason()}</p>
             </div>
             <p className={styles.note}>{m.aiNote()}</p>
           </div>

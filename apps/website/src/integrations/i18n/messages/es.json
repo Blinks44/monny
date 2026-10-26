@@ -63,8 +63,8 @@
   "managedMacOS": "Gestionada por macOS",
   "optional": "Opcional · desactivado por defecto",
   "aiTitle": "Cuotas de IA junto a CPU y memoria",
-  "aiLead": "Consulta los límites restantes de Claude Code, Codex, Cursor y Grok antes de una tarea larga. Monny usa la sesión de cada herramienta en este Mac.",
-  "aiNote": "Actívalo en Ajustes. Monny no guarda ni renueva los datos de acceso y solo los envía al servicio correspondiente.",
+  "aiLead": "Consulta los límites de IA restantes antes de una tarea larga. Monny usa la sesión existente de cada herramienta compatible en este Mac.",
+  "aiNote": "Activa la función en Ajustes y elige tus herramientas. La sesión permanece en cada herramienta; Monny no guarda una copia aparte de sus credenciales.",
   "updated": "Actualizado hace 1 min",
   "fiveHour": "Límite de 5 horas",
   "monthlyLimit": "Límite mensual",
@@ -118,7 +118,7 @@
   "faqQ2": "¿Qué Mac son compatibles?",
   "faqA2": "Mac con Apple silicon y macOS 26 o posterior. El límite de carga también requiere batería y macOS 26.4 o posterior. Los Mac Intel no son compatibles.",
   "faqQ3": "¿Monny envía mis datos a algún sitio?",
-  "faqA3": "Los datos se quedan en tu Mac. Monny solo se conecta para actualizaciones y, si activas las cuotas de IA, para consultar Anthropic, OpenAI, Cursor y xAI con la sesión de cada herramienta.",
+  "faqA3": "Las lecturas del sistema se quedan en tu Mac. Monny se conecta para las actualizaciones y, si activas los límites de IA, a los servicios elegidos con la sesión existente de sus herramientas.",
   "faqQ4": "¿Se mantiene el límite al cerrar Monny?",
   "faqA4": "Sí. macOS conserva su límite tras cerrar Monny, el reposo y los reinicios. También puedes cambiarlo en Ajustes del Sistema → Batería.",
   "faqQ5": "¿Cómo funcionan las actualizaciones?",
@@ -151,5 +151,7 @@
   "terminal": "Terminal",
   "limitOff": "Límite desactivado",
   "charging": "Cargando",
-  "limitMarker": "Límite {value} %"
+  "limitMarker": "Límite {value} %",
+  "aiSelectionTitle": "¿Por qué estas herramientas?",
+  "aiSelectionReason": "Cada integración necesita una fuente de límites disponible: un archivo local, un comando de consumo o la API del servicio. Añadimos herramientas que funcionan con una sesión existente, sin importar cookies del navegador ni crear una cuenta de Monny."
 }

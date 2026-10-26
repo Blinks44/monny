@@ -63,8 +63,8 @@
   "managedMacOS": "Gérée par macOS",
   "optional": "Facultatif · désactivé par défaut",
   "aiTitle": "Vos quotas IA à côté du CPU et de la mémoire",
-  "aiLead": "Avant une longue tâche, consultez les quotas restants de Claude Code, Codex, Cursor et Grok. Monny utilise la session déjà ouverte dans chaque outil sur ce Mac.",
-  "aiNote": "Activez cette option dans les réglages. Monny ne conserve ni ne renouvelle les identifiants de connexion et les transmet uniquement au service concerné.",
+  "aiLead": "Vérifiez vos limites IA restantes avant une longue tâche. Monny utilise la session existante de chaque outil compatible sur ce Mac.",
+  "aiNote": "Activez la fonction dans les réglages et choisissez vos outils. La connexion reste dans chaque outil ; Monny ne conserve pas de copie séparée de ses identifiants.",
   "updated": "Actualisé il y a 1 min",
   "fiveHour": "Quota sur 5 heures",
   "monthlyLimit": "Quota mensuel",
@@ -118,7 +118,7 @@
   "faqQ2": "Quels Mac sont compatibles ?",
   "faqA2": "Les Mac avec puce Apple sous macOS 26 ou version ultérieure. La limite de charge nécessite aussi une batterie et macOS 26.4 ou version ultérieure. Les Mac Intel ne sont pas compatibles.",
   "faqQ3": "Monny transmet-il mes données ?",
-  "faqA3": "Les mesures restent sur votre Mac. Monny se connecte seulement pour les mises à jour et, si vous activez les quotas IA, pour interroger Anthropic, OpenAI, Cursor et xAI avec la connexion de chaque outil.",
+  "faqA3": "Les mesures système restent sur votre Mac. Monny se connecte pour les mises à jour et, si vous activez les limites IA, aux services choisis via la connexion existante de leurs outils.",
   "faqQ4": "La limite reste-t-elle active si je quitte Monny ?",
   "faqA4": "Oui. macOS conserve sa limite après la fermeture de Monny, la veille et les redémarrages. Vous pouvez aussi la modifier dans Réglages Système → Batterie.",
   "faqQ5": "Comment fonctionnent les mises à jour ?",
@@ -151,5 +151,7 @@
   "terminal": "Terminal",
   "limitOff": "Limite désactivée",
   "charging": "En charge",
-  "limitMarker": "Limite {value} %"
+  "limitMarker": "Limite {value} %",
+  "aiSelectionTitle": "Pourquoi ces outils ?",
+  "aiSelectionReason": "Chaque intégration nécessite une source de limites exploitable : un fichier local, une commande de suivi ou l’API du service. Nous ajoutons les outils qui fonctionnent avec une connexion existante, sans importer les cookies du navigateur ni créer de compte Monny."
 }

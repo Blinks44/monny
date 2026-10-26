@@ -103,15 +103,16 @@ struct CopilotUsageTests {
         #expect(reading.unlimitedCopilotQuotas == nil)
     }
 
-    @Test func refusesTokenBearingRedirects() async throws {
-        let source = try #require(URL(string: "https://api.github.com/copilot_internal/user"))
+    @Test(arguments: ["api.github.com", "api.cline.bot", "www.codebuff.com", "portal.nousresearch.com"])
+    func refusesTokenBearingRedirects(host: String) async throws {
+        let source = try #require(URL(string: "https://\(host)/usage"))
         let target = try #require(URL(string: "https://example.com/redirect"))
         let response = try #require(HTTPURLResponse(url: source, statusCode: 302, httpVersion: nil, headerFields: nil))
         let session = URLSession(configuration: .ephemeral)
         defer { session.invalidateAndCancel() }
         let task = session.dataTask(with: source)
         let redirected: URLRequest? = await withCheckedContinuation { continuation in
-            CopilotRedirectPolicy().urlSession(session, task: task, willPerformHTTPRedirection: response,
+            AIUsageRedirectPolicy().urlSession(session, task: task, willPerformHTTPRedirection: response,
                                                newRequest: URLRequest(url: target)) { request in
                 continuation.resume(returning: request)
             }

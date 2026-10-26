@@ -63,8 +63,8 @@
   "managedMacOS": "Von macOS verwaltet",
   "optional": "Optional · standardmäßig aus",
   "aiTitle": "KI-Limits neben CPU und Arbeitsspeicher",
-  "aiLead": "Prüfe vor einer langen Aufgabe die verbleibenden Limits für Claude Code, Codex, Cursor und Grok. Monny nutzt die bestehende Sitzung des jeweiligen Tools auf diesem Mac.",
-  "aiNote": "Aktiviere die Funktion in den Einstellungen. Monny speichert oder erneuert keine Anmeldedaten und sendet sie nur an den jeweiligen Dienst.",
+  "aiLead": "Prüfe deine verbleibenden KI-Limits vor einer längeren Aufgabe. Monny nutzt die bestehende Sitzung jedes unterstützten Tools auf diesem Mac.",
+  "aiNote": "Aktiviere die Funktion in den Einstellungen und wähle deine Tools. Die Anmeldung bleibt beim jeweiligen Tool; Monny speichert keine separate Kopie der Zugangsdaten.",
   "updated": "Vor 1 Min. aktualisiert",
   "fiveHour": "5-Stunden-Limit",
   "monthlyLimit": "Monatslimit",
@@ -118,7 +118,7 @@
   "faqQ2": "Welche Macs werden unterstützt?",
   "faqA2": "Macs mit Apple Silicon und macOS 26 oder neuer. Das Ladelimit erfordert zusätzlich einen Akku und macOS 26.4 oder neuer. Intel-Macs werden nicht unterstützt.",
   "faqQ3": "Sendet Monny meine Daten irgendwohin?",
-  "faqA3": "Systemmesswerte bleiben auf deinem Mac. Monny verbindet sich für Updates und, bei aktivierten KI-Limits, für Anfragen an Anthropic, OpenAI, Cursor und xAI mit den Anmeldedaten des jeweiligen Tools.",
+  "faqA3": "Systemwerte bleiben auf deinem Mac. Monny verbindet sich für Updates und, wenn KI-Limits aktiviert sind, mit den ausgewählten Diensten über die bestehende Anmeldung ihrer Tools.",
   "faqQ4": "Bleibt das Ladelimit nach dem Beenden von Monny aktiv?",
   "faqA4": "Ja. macOS behält sein Limit nach dem Beenden von Monny, im Ruhezustand und nach Neustarts bei. Du kannst es auch unter Systemeinstellungen → Batterie ändern.",
   "faqQ5": "Wie funktionieren Updates?",
@@ -151,5 +151,7 @@
   "terminal": "Terminal",
   "limitOff": "Limit aus",
   "charging": "Lädt",
-  "limitMarker": "Limit {value} %"
+  "limitMarker": "Limit {value} %",
+  "aiSelectionTitle": "Warum diese Tools?",
+  "aiSelectionReason": "Jede Integration braucht eine nutzbare Quelle für Limits: eine lokale Datei, einen Verbrauchsbefehl oder die API des Dienstes. Wir ergänzen Tools, die mit einer bestehenden Anmeldung funktionieren, ohne Browser-Cookies zu importieren oder ein eigenes Monny-Konto zu benötigen."
 }

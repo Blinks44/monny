@@ -1,8 +1,8 @@
 # APP-015: AI usage limits
 
-- Updated: 2026-10-25
+- Updated: 2026-10-26
 - Stage: awaiting_verification
-- Owner: unassigned (Copilot implementation complete; installed comparison next)
+- Owner: unassigned (build-65 implementation complete; real-account comparison next)
 - Owned surfaces: `apps/monny/monny/AI/`, AI popover/dashboard, Settings/onboarding, alerts and quota history
 - Requirements: [SPEC](../SPEC.md) §§3–4, 6–8; [design](DES-003-ai-usage-limits.md); [mechanisms and licensing](../research/ai-usage-limits.md)
 - Implementation: builds 43–49, baseline main `713defe` (build 50); repeated-alert fix in build 60, based on `e7db28d` (see the commit history for monitor/tests/project changes).
@@ -11,7 +11,7 @@
 
 JetBrains AI is added in build 59 by [DES-004](DES-004-power-search-quit-ai-tools.md#jetbrains-ai-implementation--2026-10-25): local-only monthly quota and separate top-up balance, source-time freshness, Settings/history/alerts. The user compared its quota with the IDE in 1.1.0 and it matched (2026-10-25). Copilot is added in build 61 below; in 1.1.0 the user compared it with GitHub and it matched (2026-10-25). This record retains all provider account/history gates.
 
-Opt-in limits with a checkbox per detected tool; off by default. Only enabled tools' own sign-ins are read. Claude Code/Codex show plan windows, supported model limits and credits; Cursor shows monthly included usage; Grok shows weekly/monthly credits; Copilot uses the saved GitHub CLI account for monthly premium requests and separate chat/completion quotas, unlimited labels and consumed credits. Gemini is unsupported. No browser-cookie import, token refresh, custom credential folders, multiple accounts or menu bar AI value.
+Opt-in limits with a checkbox per detected tool; off by default. Only enabled tools' own sign-ins are read. Claude Code/Codex show plan windows, supported model limits and credits; Cursor shows monthly included usage; Grok shows weekly/monthly credits; Copilot uses the saved GitHub CLI account for monthly premium requests and separate chat/completion quotas, unlimited labels and consumed credits. ClinePass/Codebuff are added in build 64 using their existing CLI sessions; build 65 adds bounded Amp/Augment CLI usage reads and Nous Portal through Hermes-owned credentials (below). Gemini is unsupported. No browser-cookie import, token refresh, custom credential folders, multiple accounts or menu bar AI value.
 
 Popover AI cards show quota left, pace marks, reset times and fresh/stale/signed-out/API-key/error states. Running low means **below 10% left**, independent of pace, for the chip, orange value and notification. Small chips and title-sized tabs fit localized labels. The window has tool tiles, 24h/7d quota history with resets, forecasts labelled as estimates, next resets and connection status. Service marks and saved frames are indexed in DESIGN.
 
@@ -63,3 +63,47 @@ Build 63: GitHub CLI discovery adds MacPorts and Nix paths; no other behavior ch
 - Before public release, check service marks against their owners' brand guidelines.
 
 Next: use suitable accounts and accumulated history for those checks. No design work is currently open; do not request another implementation of Cursor/Grok.
+
+## ClinePass / Codebuff — 2026-10-26
+
+Authorized scope: add remaining tools that reuse their own local sign-in with simple read-only sources. Research decision recorded before code in [sources](../research/ai-usage-limits.md#clinepass-and-codebuff--implementation-decision-2026-10-26). Reuse existing cards/letter tiles, settings, history and alerts. Live saved Monny.sketch frame `23` Light inspected through MCP; no Sketch edits. ClinePass/Codebuff use the existing neutral letter-tile pattern rather than new service marks. Implementation complete in uncommitted build 64 over main `b264759`: `AI/` reader/session/response models, dashboard, history, six-language catalog, project build number and tests. ClinePass uses only Cline's saved OAuth session, with 5-hour/weekly/monthly windows when reported and no invented monthly pace. Codebuff shows the reported weekly subscription allowance and separate remaining credits; no percentage/reset is inferred from an undated credit balance. Existing detection/settings/history/alerts and 2/5-minute cadence are reused. All token-bearing service requests now refuse redirects; no credentials are read from a disabled new tool and no CLI process, key storage or dependency is added.
+
+Verification on macOS 27.0.1:
+
+- Final `apps/monny/scripts/dev.sh test`: **124 tests in 16 suites passed**, after removing the temporary render harness. Ten new test functions (including parameterized cases) cover session selection/no API-key fallback, token/JWT expiry and bounds, strict quota decoding, missing/invalid counters, independent credit balance, histories/alert episodes, exact HTTP hosts/methods/auth/body and second-request 429 without a partial refresh. Existing redirect test now covers GitHub, Cline and Codebuff hosts.
+- Earlier suite with temporary native render harness: 125 tests in 17 suites passed. Reviewed **48 offscreen NSHostingView popover fixtures**: two tools × quota/missing-sign-in × six languages × Light/Dark. Quota states include low and exhausted windows, unknown monthly pace and separate credits. Text fits 328 pt content width; numeric/date formatting follows the host locale while copy follows the per-view locale. Temporary harness removed; images stay outside Git. This does not establish installed focus/VoiceOver or real-account readings.
+- Initial sandboxed run could not write Xcode/SwiftPM caches; authorized ordinary test reruns passed. The first new-test run had two floating-point equality assertions; corrected to tolerance and reran successfully. Existing BatteryPage Text-concatenation/AppIntents warnings remain. No system/project signing changes or security bypass.
+- `apps/monny/scripts/release.sh` passed: Apple Development signed **Monny 1.1.0 build 64**, nested-code/app/DMG signature checks, image integrity and signed appcast. `apps/monny/build/release/Monny.dmg`, SHA-256 `d03386e36519f05a971b1f49e56d4b616b464987f469602c6c4b8abb72e4021b`. Not notarized, installed or published. `git diff --check`, new six-language keys and affected local links checked.
+
+Next: compare ClinePass and Codebuff with their own account usage screens on a Mac with those CLI sessions; then observe history/reset/expiry/429 behavior. No live account request or sign-in was performed during development. Amp/Augment/Nous are implemented in the next slice below; Windsurf/Kilo/Kiro remain candidates for separate source work; no further provider is required to complete this bounded implementation.
+
+## Further provider screening — 2026-10-26
+
+Reviewed CodexBar for additional useful sources at the user's request; no code, build, sign-in or live account fetch. [Research](../research/ai-usage-limits.md#additional-screening--2026-10-26) adds Nous/Hermes and Bailian CLI candidates, retains Amp/Augment/Kilo, and identifies Kiro's direct API as an investigation rather than requiring its costly chat command. This review led to the authorized Amp/Augment/Nous slice below, preserving build-64 work and all real-account gates. Credential-expiry alerts remain a separate optional product idea. Account setup and browser access were not performed.
+
+## Amp / Augment / Nous — 2026-10-26
+
+Implement the straightforward provider slice authorized after screening. Baseline: main `b264759` plus this session's uncommitted build-64 implementation. Source/field/safety decision recorded before code in [research](../research/ai-usage-limits.md#amp-augment-and-nous--implementation-decision-2026-10-26). Existing saved frame `23` refreshed live through Sketch MCP; reuse its card/letter-tile pattern, no Sketch edits. Implementation: parsers/readers, three per-tool detection/settings entries, separate quota metrics/alerts, typed Amp labels and Decimal USD rows; no dependencies, new login flow, credential writes, browser import or shell/PTY. Amp uses the live saved coral A tile; Augment/Nous use neutral letter tiles. Detection reads metadata only; only enabled tools run their usage commands/read credentials. Existing build-64 ClinePass/Codebuff and user acceptance documentation are preserved. Code, project version 65, catalog/tests and related records remain uncommitted over `b264759`.
+
+Verification on macOS 27.0.1:
+
+- Final `apps/monny/scripts/dev.sh test`: **137 tests in 17 suites passed**, after removing the temporary render harness. Thirteen new test functions (with parameterized cases) cover current/legacy Amp and Augment formats, exact versus missing/invalid dates, independent Agent/Orb/cash counters, invalid/absent amounts, Hermes explicit/single-pool/shared selection, expiry/host rejection, null fallbacks, fixed HTTP method/host/header and no invalid-primary fallback, USD/cache round-trip, fresh-only history and nonrepeating alerts. The fake HTTP transport gained Nous; redirect refusal covers its host too. No actual provider sign-in or live account fetch was used.
+- Command fixtures exercise simultaneous stdout/stderr draining, nonzero status, missing executable, output overflow, timeout and task cancellation. Both timeout/cancellation tests observed the test-owned child PID disappear; no existing user process was stopped. Minimal command environment is checked. These establish runner behavior, not real installed CLI startup cost, token renewal or account agreement.
+- Temporary suite: **138 tests in 18 suites passed**. Reviewed **108 native offscreen popover fixtures** (three tools × low/exhausted, signed-out, stale × six languages × Light/Dark) and two Russian 11-tool dashboards. New USD rows use the view locale; legacy relative/date/allowance helpers retain the host locale. Text fits 328 pt content width. Initial 11-tool capture reproduced legend overflow that pushed the reset card outside the dashboard; a standard adaptive legend grid for more than four series fixes it, verified in final Light/Dark captures. Existing smaller legend layout stays in place. Images stay local; temporary harness removed. No installed VoiceOver or real provider account comparison is claimed.
+- Initial compiler failures were ambiguous `Decimal.init` overloads; explicit conversion fixed them. Final suite passed. Existing unrelated Text-concatenation/AppIntents and test-host service diagnostics remain; no new compiler error, system/security change or dependency.
+
+- `apps/monny/scripts/release.sh` passed: **Monny 1.1.0 build 65**, Apple Development signed app/nested Sparkle/DMG, strict signature and image-integrity checks, signed appcast. Artifact: `apps/monny/build/release/Monny.dmg`; SHA-256 `78f54b56e8bb578b3d5eabeffb1bcf244d8cedec3c273de609da94c2ca372e17`. Not notarized, installed or published. `git diff --check`, affected file links and all nine new six-language keys passed review.
+
+Next: compare each provider against its own usage command/account page on a Mac where it is signed in, observe the normal 2/5-minute cadence and a later reset/expiry. Missing CLI/custom paths, multi-entry Hermes pools and unsupported output shapes remain explicit source limitations; Kiro/Kilo/Bailian and optional menu-bar/credential-alert features are outside this completed source slice.
+
+## Vendor marks — 2026-10-26
+
+Replaced all seven remaining letter placeholders with authentic marks; the four existing marks remain. Sources, transformations and notice are in [research](../research/ai-usage-limits.md#remaining-vendor-marks--2026-10-26). Baseline is the same uncommitted build-65 work over `b264759`; final build is 66. Native Copilot/JetBrains/Amp examples and responsive website badges/copy are saved in Monny.sketch; all 11 marks are present in its website sections. No source/account-reading behavior changed.
+
+Verification: 137 tests in 17 suites passed on macOS 27.0.1. Temporary native render check passed (138 tests/18 suites); reviewed all 11 marks at 20/30 pt in Light/Dark, then removed the harness and reran the permanent suite. Initial temporary harness needed an explicit ForEach identity. Sandbox cache restrictions required the ordinary authorized Xcode rerun. Signed final DMG: `apps/monny/build/release/Monny.dmg`, 1.1.0 build 66, SHA-256 **8a7a729e07ad63a836cf3784710b77f48886ccfddc1c4e861f9b0aaebdafd447**. Release script verifies nested signatures, app/DMG integrity and signs the appcast. Not installed, notarized or published.
+
+Next: install the candidate and compare new providers with their own account sources. Existing account/reset/history and owner-brand-guideline release gates remain open.
+
+## 1.1.1 release preparation — 2026-10-26
+
+User authorized GitHub publication through gh; website deployment stays with the user. Version 1.1.1, build 67 in both configurations. Release includes the five providers, all vendor marks, expanded history legend and redirect refusal from this task. Final native test run: 137 tests in 17 suites passed on macOS 27.0.1. Release notes explicitly retain real-account limitations. Packaging/publication evidence will be recorded after the final DMG and remote download checks. Next: publish the exact tagged source and verify the latest appcast/download.

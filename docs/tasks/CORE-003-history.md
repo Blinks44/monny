@@ -1,7 +1,7 @@
 # CORE-003: History for the 1m–7d ranges
 
-- Updated: 2026-10-19
-- Stage: awaiting_verification (user rechecks the charts and hover)
+- Updated: 2026-10-26
+- Stage: done (accepted by the user within available-device coverage, 2026-10-26)
 - Owner: unassigned
 - Owned surfaces: `Readings/History.swift`, `Readings/Sampler.swift` cadence, `monnyApp.swift` load/save, `Sparkline` component
 - Requirements: SPEC §4 (history, "Collecting history"), research [history decision](../research/README.md#history-storage-decision); phase 3
@@ -37,6 +37,6 @@ Readings are kept for the 1m, 1h, 24h and 7d ranges and the 24h/7d tiers survive
 - Tests: bucketing average, span trimming, sleep gaps, unavailable values, plist round trip (`HistoryTests`, 5 tests). `dev.sh test`: 21 tests pass.
 - Quit via AppleScript after 25 s wrote `History.plist` (622 bytes); `plutil -p` showed the pending 1-minute bucket with sums and counts for all 12 metrics.
 
-## Next handoff
+## Current acceptance — 2026-10-26
 
-User: recheck the charts and the hover line after the series and hover fixes. Engineering: investigate an observed chart regression if present; later dashboard cost fell to 2.9 % in build 29 ([idle-cost evidence](../verification/idle-cost.md)). Battery controls are already implemented. Independent SMART/controller checks remain in the linked verification record.
+The user accepted monitoring/sensors/history as a whole after completing the checks available to them. Close this task for the current installed app (latest recorded release 1.1.0 build 63; version/model/OS not restated). This is user-reported acceptance, not a new agent measurement or independent hardware comparison. Previously untested chip families, fanless/spinning-fan cases and independent source checks remain coverage limitations, not pending tasks requiring more of this user's time. Reopen only for a concrete regression or newly available hardware.

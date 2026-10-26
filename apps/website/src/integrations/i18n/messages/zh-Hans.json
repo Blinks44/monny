@@ -63,8 +63,8 @@
   "managedMacOS": "由 macOS 管理",
   "optional": "可选 · 默认关闭",
   "aiTitle": "AI 套餐额度，与 CPU 和内存并排查看",
-  "aiLead": "开始长任务前，查看 Claude Code、Codex、Cursor 和 Grok 的剩余额度。Monny 使用各工具在此 Mac 上已有的登录会话。",
-  "aiNote": "在设置中启用。Monny 不保存或更新登录凭据，且只将其发送至对应服务。",
+  "aiLead": "开始长任务前，查看 AI 套餐的剩余额度。Monny 使用此 Mac 上各受支持工具的现有登录会话。",
+  "aiNote": "在设置中启用并选择工具。登录由各工具管理；Monny 不单独保存其凭据副本。",
   "updated": "1 分钟前更新",
   "fiveHour": "5 小时额度",
   "monthlyLimit": "每月额度",
@@ -118,7 +118,7 @@
   "faqQ2": "支持哪些 Mac？",
   "faqA2": "搭载 Apple 芯片且运行 macOS 26 或更高版本的 Mac。充电上限还需要配备电池并运行 macOS 26.4 或更高版本。不支持 Intel Mac。",
   "faqQ3": "Monny 会上传我的数据吗？",
-  "faqA3": "监控数据留在你的 Mac 上。Monny 仅在检查更新，以及你启用 AI 额度后，使用各工具的登录信息向 Anthropic、OpenAI、Cursor 和 xAI 查询时联网。",
+  "faqA3": "系统读数保留在你的 Mac 上。Monny 会联网检查更新；如果启用 AI 额度，还会通过各工具的现有登录连接你选择的服务。",
   "faqQ4": "退出 Monny 后，充电上限还会生效吗？",
   "faqA4": "会。退出 Monny、睡眠和重启后，macOS 都会保留自己的充电上限。你也可以在系统设置 → 电池中更改。",
   "faqQ5": "如何更新？",
@@ -151,5 +151,7 @@
   "terminal": "终端",
   "limitOff": "上限已关闭",
   "charging": "正在充电",
-  "limitMarker": "上限 {value}%"
+  "limitMarker": "上限 {value}%",
+  "aiSelectionTitle": "为什么选择这些工具？",
+  "aiSelectionReason": "每项集成都需要可用的额度来源：本地文件、用量查询命令或服务 API。我们添加能够使用现有登录的工具，无需导入浏览器 Cookie，也无需单独注册 Monny 账户。"
 }

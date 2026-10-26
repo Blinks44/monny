@@ -1,7 +1,7 @@
 # CORE-002: Temperatures and fans
 
-- Updated: 2026-10-18
-- Stage: awaiting_verification (adapter built and checked on M1 Max; independent reference, spinning fan and fanless Mac open)
+- Updated: 2026-10-26
+- Stage: done (accepted by the user within available-device coverage, 2026-10-26)
 - Owner: unassigned
 - Owned surfaces: `apps/monny/monny/Readings/SMC.swift`, `SensorReader.swift`, `docs/research/`
 - Requirements: SPEC §3 (CPU temperature chip, thermal alert), §4 Sensors page, §5 heat protection; PLAN phase 2
@@ -15,8 +15,8 @@ Read CPU, GPU, SSD and battery temperatures and fan speeds on Apple silicon behi
 
 - [x] Research records the source, private status, chip-family differences and the reference license ([research](../research/README.md#temperatures-and-fans-smc)).
 - [x] Adapter with fixture tests for decoding (`flt `, `sp78`, `fpe2`, integers), chip generation and sensor averaging.
-- [ ] Values checked on M1 Max: CPU tracks load, fans read 0 rpm while stopped ([verification](../verification/sensors-smc.md)). Open: an independent reference tool, a spinning fan, a fanless Mac showing "No fan".
-- [ ] Popover CPU temperature chip (amber/red by macOS thermal state), Battery tab "health · cycles · temperature", window Temperature KPI with GPU, no-battery strip with fan speed or "No fan". Sensors page: phase 3. Visual check against Sketch open (Sketch MCP was not available in this session).
+- [x] User accepts available-device monitoring (2026-10-26); prior evidence: values checked on M1 Max: CPU tracks load, fans read 0 rpm while stopped ([verification](../verification/sensors-smc.md)). Independent reference, spinning-fan and fanless coverage were not separately documented.
+- [x] User accepts current UI (2026-10-26); implementation: popover CPU temperature chip (amber/red by macOS thermal state), Battery tab "health · cycles · temperature", window Temperature KPI with GPU, no-battery strip with fan speed or "No fan". The Sensors page is implemented; the original 2026-10-18 session lacked Sketch access. Current UI acceptance is user-reported, not a new agent visual comparison.
 
 ## Implementation and verification
 
@@ -24,12 +24,6 @@ Read CPU, GPU, SSD and battery temperatures and fan speeds on Apple silicon behi
 
 2026-10-18, M1 Max, macOS 27.0.1: `scripts/dev.sh build` passed with no warnings; `scripts/dev.sh test` passed (16 tests). Hardware check and render in [verification](../verification/sensors-smc.md).
 
-## Open checks
+## Current acceptance — 2026-10-26
 
-- User: compare the CPU/GPU temperature with Stats or iStat Menus, and check that the fan speed appears once the fans spin (heavy load).
-- A fanless Mac and M2–M5 Macs: unverified key lists.
-- Hot-Mac notification and heat protection use these readings in phases 3–4.
-
-## Next handoff
-
-History, charts and the Sensors page are implemented. Next: compare readings with an independent reference and verify spinning-fan/fanless/later-chip behavior. Visual sensor/no-fan states still need their explicit review; fixture rendering alone is insufficient.
+The user accepted monitoring/sensors/history as a whole after completing the checks available to them. Close this task for the current installed app (latest recorded release 1.1.0 build 63; version/model/OS not restated). This is user-reported acceptance, not a new agent measurement or independent hardware comparison. Previously untested chip families, fanless/spinning-fan cases and independent source checks remain coverage limitations, not pending tasks requiring more of this user's time. Reopen only for a concrete regression or newly available hardware.

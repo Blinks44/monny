@@ -35,4 +35,4 @@ Build 41: the charge-limit controls no longer use `.disabled` while a write runs
 
 ## Next handoff
 
-No commit handoff remains: the implementation is in main. Build-40 pressed appearance and build-41 optimistic-switch/settle behavior were not separately user-verified in this record; verify these interactions with the current candidate during the next installed review.
+No implementation handoff remains. The user accepted the current interface on 2026-10-26; ordinary pressed/switch interaction follow-ups are closed within that broad report. No new isolated settle-timing or macOS compatibility measurement is claimed. macOS 26.4–26.x charge-setting verification remains in APP-007.

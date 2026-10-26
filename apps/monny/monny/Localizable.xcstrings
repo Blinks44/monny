@@ -1,6 +1,468 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+  "Sign in to the Amp CLI to see your allowances and individual balance here.": {
+    "extractionState": "manual",
+    "comment": "AI account usage or balance; Agent/Orb are Amp feature names and commands remain unchanged.",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Sign in to the Amp CLI to see your allowances and individual balance here."
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Войдите в Amp CLI, чтобы видеть лимиты и личный баланс."
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Melde dich in der Amp CLI an, um deine Kontingente und dein persönliches Guthaben zu sehen."
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Connectez-vous à Amp CLI pour voir vos quotas et votre solde personnel."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Inicia sesión en Amp CLI para ver tus límites y tu saldo personal."
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "登录 Amp CLI，以在此查看限额和个人余额。"
+        }
+      }
+    }
+  },
+  "Sign in with auggie login to see your monthly credits here.": {
+    "extractionState": "manual",
+    "comment": "AI account usage or balance; Agent/Orb are Amp feature names and commands remain unchanged.",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Sign in with auggie login to see your monthly credits here."
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Войдите через auggie login, чтобы видеть месячный лимит кредитов."
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Melde dich mit auggie login an, um dein monatliches Guthaben zu sehen."
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Connectez-vous avec auggie login pour voir vos crédits mensuels."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Inicia sesión con auggie login para ver tus créditos mensuales."
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "通过 auggie login 登录，以在此查看每月点数。"
+        }
+      }
+    }
+  },
+  "Sign in to Nous Portal in Hermes Agent to see your monthly allowance and balances here.": {
+    "extractionState": "manual",
+    "comment": "AI account usage or balance; Agent/Orb are Amp feature names and commands remain unchanged.",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Sign in to Nous Portal in Hermes Agent to see your monthly allowance and balances here."
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Войдите в Nous Portal через Hermes Agent, чтобы видеть месячный лимит и остатки средств."
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Melde dich in Hermes Agent bei Nous Portal an, um dein Monatskontingent und deine Guthaben zu sehen."
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Connectez-vous à Nous Portal dans Hermes Agent pour voir votre quota mensuel et vos soldes."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Inicia sesión en Nous Portal desde Hermes Agent para ver tu límite mensual y tus saldos."
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "在 Hermes Agent 中登录 Nous Portal，以在此查看每月限额和余额。"
+        }
+      }
+    }
+  },
+  "Free allowance": {
+    "extractionState": "manual",
+    "comment": "AI account usage or balance; Agent/Orb are Amp feature names and commands remain unchanged.",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Free allowance"
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Бесплатный лимит"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Kostenloses Kontingent"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Quota gratuit"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Límite gratuito"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "免费额度"
+        }
+      }
+    }
+  },
+  "Agent usage": {
+    "extractionState": "manual",
+    "comment": "AI account usage or balance; Agent/Orb are Amp feature names and commands remain unchanged.",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Agent usage"
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Лимит Agent"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Agent-Kontingent"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Quota Agent"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Límite de Agent"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Agent 额度"
+        }
+      }
+    }
+  },
+  "Other usage": {
+    "extractionState": "manual",
+    "comment": "AI account usage or balance; Agent/Orb are Amp feature names and commands remain unchanged.",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Other usage"
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Другой лимит"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Sonstiges Kontingent"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Autre quota"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Otro límite"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "其他额度"
+        }
+      }
+    }
+  },
+  "Orb usage": {
+    "extractionState": "manual",
+    "comment": "AI account usage or balance; Agent/Orb are Amp feature names and commands remain unchanged.",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Orb usage"
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Лимит Orb"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Orb-Kontingent"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Quota Orb"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Límite de Orb"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Orb 额度"
+        }
+      }
+    }
+  },
+  "Balance": {
+    "extractionState": "manual",
+    "comment": "AI account usage or balance; Agent/Orb are Amp feature names and commands remain unchanged.",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Balance"
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Баланс"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Guthaben"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Solde"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Saldo"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "余额"
+        }
+      }
+    }
+  },
+  "Top-up balance": {
+    "extractionState": "manual",
+    "comment": "AI account usage or balance; Agent/Orb are Amp feature names and commands remain unchanged.",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Top-up balance"
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Купленные средства"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Zugekauftes Guthaben"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Solde acheté"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Saldo comprado"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "充值余额"
+        }
+      }
+    }
+  },
+  "Sign in with cline auth to see your ClinePass subscription limits here.": {
+    "extractionState": "manual",
+    "comment": "Setup guidance for an existing CLI account; command names remain unchanged.",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Sign in with cline auth to see your ClinePass subscription limits here."
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Войдите через cline auth, чтобы видеть лимиты подписки ClinePass."
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Melde dich mit cline auth an, um die Limits deines ClinePass-Abos zu sehen."
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Connectez-vous avec cline auth pour voir les limites de votre abonnement ClinePass."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Inicia sesión con cline auth para ver los límites de tu suscripción a ClinePass."
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "通过 cline auth 登录，以在此查看 ClinePass 订阅限额。"
+        }
+      }
+    }
+  },
+  "Sign in with codebuff login to see your weekly limits and credit balance here.": {
+    "extractionState": "manual",
+    "comment": "Setup guidance for an existing CLI account; command names remain unchanged.",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Sign in with codebuff login to see your weekly limits and credit balance here."
+        }
+      },
+      "ru": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Войдите через codebuff login, чтобы видеть недельные лимиты и остаток кредитов."
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Melde dich mit codebuff login an, um deine Wochenlimits und dein Guthaben zu sehen."
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Connectez-vous avec codebuff login pour voir vos limites hebdomadaires et votre solde de crédits."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Inicia sesión con codebuff login para ver tus límites semanales y tu saldo de créditos."
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "通过 codebuff login 登录，以在此查看每周限额和剩余点数。"
+        }
+      }
+    }
+  },
   "Premium requests": {
     "extractionState": "manual",
     "localizations": {

@@ -12,6 +12,11 @@ extension AITool {
         case .grok: "Grok"
         case .jetBrains: "JetBrains AI"
         case .copilot: "Copilot"
+        case .cline: "ClinePass"
+        case .codebuff: "Codebuff"
+        case .amp: "Amp"
+        case .augment: "Augment"
+        case .nous: "Nous Portal"
         }
     }
 
@@ -24,6 +29,11 @@ extension AITool {
         case .grok: "Grok CLI"
         case .jetBrains: "JetBrains AI"
         case .copilot: "GitHub Copilot"
+        case .cline: "Cline"
+        case .codebuff: "Codebuff"
+        case .amp: "Amp"
+        case .augment: "Auggie"
+        case .nous: "Hermes Agent"
         }
     }
 
@@ -34,7 +44,8 @@ extension AITool {
         case .cursor: Theme.aiCursor
         case .grok: Theme.aiGrok
         case .jetBrains: Theme.aiJetBrains
-        case .copilot: Theme.aiCodex
+        case .amp: Theme.aiAmp
+        case .copilot, .cline, .codebuff, .augment, .nous: Theme.aiCodex
         }
     }
 
@@ -44,19 +55,25 @@ extension AITool {
         case .claude: Theme.aiClaude
         case .codex, .grok: Theme.aiIconWhite
         case .cursor: Theme.aiIconBlack
-        case .jetBrains: Theme.aiJetBrains
-        case .copilot: Theme.aiCopilot
+        case .jetBrains, .copilot, .codebuff: Theme.aiIconBlack
+        case .amp, .cline, .augment, .nous: Theme.aiIconWhite
         }
     }
 
     /// The service's mark in the asset catalog (sources in research/ai-usage-limits.md).
-    var logo: ImageResource? {
+    var logo: ImageResource {
         switch self {
         case .claude: .aiClaude
         case .codex: .aiCodex
         case .cursor: .aiCursor
         case .grok: .aiGrok
-        case .jetBrains, .copilot: nil
+        case .jetBrains: .aiJetBrains
+        case .copilot: .aiCopilot
+        case .cline: .aiCline
+        case .codebuff: .aiCodebuff
+        case .amp: .aiAmp
+        case .augment: .aiAugment
+        case .nous: .aiNous
         }
     }
 
@@ -69,6 +86,11 @@ extension AITool {
         case .grok: .grokCredits
         case .jetBrains: .jetBrainsMonthly
         case .copilot: .copilotPremium
+        case .cline: .clineMonthly
+        case .codebuff: .codebuffWeekly
+        case .amp: .ampMonthly
+        case .augment: .augmentMonthly
+        case .nous: .nousMonthly
         }
     }
 
@@ -80,6 +102,11 @@ extension AITool {
         case .cursor: "Sign in to Cursor to see its included usage here."
         case .grok: "Sign in to the Grok CLI with your SuperGrok account to see its limits here."
         case .jetBrains: "Open a JetBrains IDE and use AI Assistant to make its quota available here."
+        case .amp: "Sign in to the Amp CLI to see your allowances and individual balance here."
+        case .augment: "Sign in with auggie login to see your monthly credits here."
+        case .nous: "Sign in to Nous Portal in Hermes Agent to see your monthly allowance and balances here."
+        case .cline: "Sign in with cline auth to see your ClinePass subscription limits here."
+        case .codebuff: "Sign in with codebuff login to see your weekly limits and credit balance here."
         case .copilot: "Sign in to GitHub CLI with gh auth login to see Copilot limits here. Monny needs a CLI version that supports --no-refresh."
         }
     }
@@ -108,15 +135,16 @@ extension AIQuotaWindow.Kind {
 extension AIQuotaWindow {
     /// "Claude", or "Claude Opus" for a model's own limit, in notification titles.
     func serviceName(_ tool: AITool) -> String {
+        if let ampQuota { return "\(tool.name) · \(String(localized: ampQuota.label))" }
         if let copilotQuota { return "\(tool.name) · \(copilotQuota.name)" }
         return model.map { "\(tool.name) \($0)" } ?? tool.name
     }
 
     /// "5-hour window", or "Opus only · weekly" for a model's own limit.
-    var title: Text { copilotQuota.map { Text("\(Text($0.label)) · monthly") } ?? model.map { modelTitle($0) } ?? Text(kind.title) }
+    var title: Text { ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text("\(Text($0.label)) · monthly") } ?? model.map { modelTitle($0) } ?? Text(kind.title) }
 
     /// "5 hours" in the window's tiles and reset list.
-    var shortTitle: Text { copilotQuota.map { Text($0.label) } ?? model.map { modelTitle($0) } ?? Text(kind.shortTitle) }
+    var shortTitle: Text { ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text($0.label) } ?? model.map { modelTitle($0) } ?? Text(kind.shortTitle) }
 
     private func modelTitle(_ model: String) -> Text {
         switch kind {
@@ -180,14 +208,8 @@ struct AIToolIcon: View {
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
-        Group {
-            if let logo = tool.logo {
-                Image(logo).resizable().scaledToFit()
-            } else {
-                Text(verbatim: String(tool.name.prefix(1))).font(.system(size: size * 0.43, weight: .semibold)).foregroundStyle(Theme.textOnAccent)
-            }
-        }
-            .frame(width: size * 0.6, height: size * 0.6)
+        Image(tool.logo).resizable().scaledToFit()
+            .frame(width: size * (tool == .jetBrains ? 0.9 : 0.6), height: size * (tool == .jetBrains ? 0.9 : 0.6))
             .frame(width: size, height: size)
             .background(tool.iconColor, in: shape)
             .overlay { shape.strokeBorder(Theme.aiIconStroke) }
@@ -238,7 +260,7 @@ struct QuotaRow: View {
             HStack(spacing: Theme.spaceM) {
                 label
                 // The window tiles show the state by the value's color alone, as drawn.
-                if tool != .copilot, !isStale, !isCompact, !hasReset { stateChip }
+                if tool != .copilot, tool != .amp, !isStale, !isCompact, !hasReset { stateChip }
                 Spacer(minLength: Theme.spaceM)
                 value(hasReset: hasReset)
             }
@@ -251,7 +273,10 @@ struct QuotaRow: View {
                 QuotaBar(window: window, color: tool.color, isStale: isStale)
             }
             // Copilot's longer labels leave no room for the chip beside them.
-            if tool == .copilot, !isStale, !isCompact, !hasReset { stateChip }
+            if tool == .copilot || tool == .amp, !isStale, !isCompact, !hasReset { stateChip }
+            if !isCompact, tool == .amp, !hasReset, let dollars = dollarsText {
+                dollars.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(1)
+            }
             if !isCompact, let line = footer(hasReset: hasReset) {
                 line.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(1)
             } else if isCompact, !hasReset, let dollars = dollarsText {
@@ -283,7 +308,7 @@ struct QuotaRow: View {
         } else if isCompact, let resetsAt = window.resetsAt, !window.hasReset() {
             Text("\(window.shortTitle) · resets \(resetsAt.resetClockText)")
                 .font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(1)
-        } else if !isCompact, let dollars = dollarsText {
+        } else if !isCompact, tool != .amp, let dollars = dollarsText {
             Text("\(window.title) · \(dollars)")
                 .font(Theme.footnote.weight(.medium)).foregroundStyle(Theme.textPrimary).lineLimit(1)
         } else {
@@ -438,5 +463,38 @@ struct CopilotDetails: View {
                 .font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
+    }
+}
+
+extension AmpQuota {
+    var label: LocalizedStringResource {
+        switch self {
+        case .free: "Free allowance"
+        case .agent: "Agent usage"
+        case .other: "Other usage"
+        case .orb: "Orb usage"
+        }
+    }
+}
+
+/// Balances reported in USD, separate from generic tool credits and subscription windows.
+struct AIDollarBalances: View {
+    let usage: AIUsage
+    @Environment(\.locale) private var locale
+
+    var body: some View {
+        if let value = usage.balanceUSD { row("Balance", value: value) }
+        if let value = usage.topUpUSD { row("Top-up balance", value: value) }
+    }
+
+    private func row(_ title: LocalizedStringKey, value: Decimal) -> some View {
+        HStack {
+            Text(title)
+            Spacer(minLength: Theme.spaceM)
+            Text(value, format: .currency(code: "USD").locale(locale)).monospacedDigit()
+        }
+        .font(Theme.footnote.weight(.medium))
+        .foregroundStyle(usage.isStale() ? Theme.textTertiary : Theme.textPrimary)
+        .accessibilityElement(children: .combine)
     }
 }

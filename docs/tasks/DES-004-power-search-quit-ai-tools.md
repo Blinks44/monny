@@ -1,6 +1,6 @@
 # DES-004: Power draw, process search and quit, more AI tools; Sketch matches the app
 
-- Updated: 2026-10-25
+- Updated: 2026-10-26
 - Stage: awaiting_verification (JetBrains AI implemented in build 59; remaining AI candidates planned)
 - Owner: unassigned (JetBrains implementation ownership released 2026-10-25)
 - Surfaces: Monny.sketch pages `01 · Popover`, `02 · Window`, `03 · Flows & System`; power/process UI and shared readers; AI popover/window/Settings, local JetBrains quota reader, history/alerts, catalog and tests
@@ -84,17 +84,12 @@ Not drawn: Battery “on adapter, not charging” power row (implemented in buil
 - APP-016 completed build 58 during the pause, including the then-in-progress JetBrains work and temporary harness. Build 59 supersedes it for this implementation review; all copy-review changes remain intact. Local inspection found no quota XML and no recognized quota amounts in the bounded IDE log tail. Real monthly quota/reset/top-up agreement and installed opt-out/keyboard/VoiceOver/contrast remain **unverified**; fixture math does not establish a real plan reading. Only source shape/record presence was inspected; no account values were retained.
 - `apps/monny/scripts/release.sh` passed after final tests: `apps/monny/build/release/Monny-1.0.0-59.dmg`, SHA-256 `413f97a78942dffaeb744840b36560fa865389afa0858b2b22f98ea99f093c05`. Existing Apple Development app/nested-code/DMG signatures and image integrity passed; signed appcast generated. Signed, not notarized. No install/publication/Sketch save/charge-setting change. Affected links/catalog/build versions and `git diff --check` passed.
 
-## Open checks / dependency
+## Current acceptance / remaining work — 2026-10-26
 
-- Design and Sketch cleanup accepted by the user on 2026-10-25. SPEC §1/§3/§8 updated the same day.
-- Before each AI tool: complete its row in [research](../research/ai-usage-limits.md#planned-tools-candidates-not-implemented); Copilot satisfied that source gate and is implemented in build 61 (APP-015).
-- Overview: user reports the build-54 layout good (2026-10-25); named Mac/OS, source-transition freshness, Battery navigation, VoiceOver and Increase Contrast were not restated or separately accepted.
-- Battery panel: user reports build 55 looks good (2026-10-25), without named Mac/OS or specific charging states. Real charging below the limit, source transitions, expanded/error-state scrolling, VoiceOver and Increase Contrast remain open; fixture math/layout checks do not establish these.
-- Process search: user reports build 56 works on 2026-10-25; Mac/OS and individual interaction cases were not restated. VoiceOver/Increase Contrast remain open; the final strengthened search tests passed in build 57.
-- Quit/Force Quit: user reports build 57 works (2026-10-25); Mac/OS and individual scenarios were not restated. Detailed Cancel/Escape, error/panel lifetime, save-dialog/helper cleanup, keyboard/VoiceOver/Increase Contrast and six-language alert checks remain open. JetBrains AI matched the IDE in installed 1.1.0 (user report, 2026-10-25); opt-out and accessibility remain open. The remaining AI candidates still need research, implementation and acceptance.
+The user accepted the current interface and translations after available checks, including the power panel, search and process actions discussed in the plan review. Close the ordinary installed UI follow-ups; this is user-reported acceptance of the current app (latest recorded release 1.1.0 build 63, version/model/OS not restated), not a new agent-run error-lifetime, charging-transition or assistive-technology audit. Charging compatibility on macOS 26.4–26.x remains in APP-007; unexercised special states are coverage limits rather than another mandatory review of the accepted UI.
+
+JetBrains AI and Copilot matched their sources in 1.1.0 (2026-10-25). Additional simple AI providers are now authorized and owned by [APP-015](APP-015-ai-usage-limits.md#clinepass--codebuff--2026-10-26). Real-account/reset/history checks remain there. Each provider still requires its research decision before implementation. Reopen the accepted interface slice only for a reported regression.
 
 ## Next handoff
 
-Verification: Copilot and JetBrains readings matched their sources in 1.1.0 (2026-10-25); verify tool opt-out and accessibility. Preserve the earlier power/process acceptance gates above.
-
-App, when requested: research Windsurf or the next eligible AI tool; do not claim the entire multi-tool item is complete.
+Finish ClinePass/Codebuff source tests, localized rendering and the signed candidate in APP-015; compare them with real accounts when available. Remaining provider candidates are optional future slices, not unfinished UI design.

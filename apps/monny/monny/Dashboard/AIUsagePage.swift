@@ -70,6 +70,10 @@ private struct AIToolTile: View {
                         QuotaRow(window: window, tool: tool, isStale: usage.isStale(at: now), isCompact: true)
                     }
                     if tool == .copilot { CopilotDetails(usage: usage) }
+                    AIDollarBalances(usage: usage)
+                    if tool == .codebuff, let credits = usage.credits {
+                        CreditsRow(credits: credits, isStale: usage.isStale(at: now))
+                    }
                     if let credits = usage.topUpCredits {
                         CreditsRow(credits: credits, title: "Top-up credits", isStale: usage.isStale(at: now))
                     }
@@ -99,7 +103,16 @@ private struct QuotaHistoryCard: View {
     let range: HistoryRange
 
     private var series: [(tool: AITool, points: [(date: Date, value: Double)])] {
-        tools.map { ($0, tier.series($0.historyMetric)) }
+        tools.map { tool in
+            let metric: HistoryMetric
+            if tool == .cline {
+                metric = !tier.series(.clineMonthly).isEmpty ? .clineMonthly
+                    : !tier.series(.clineWeekly).isEmpty ? .clineWeekly : .clineSession
+            } else if tool == .amp {
+                metric = !tier.series(.ampMonthly).isEmpty ? .ampMonthly : .ampFree
+            } else { metric = tool.historyMetric }
+            return (tool, tier.series(metric))
+        }
     }
 
     var body: some View {
@@ -107,7 +120,17 @@ private struct QuotaHistoryCard: View {
         VStack(alignment: .leading, spacing: Theme.spaceL) {
             CardHeader(range == .day ? "Quota left over 24 hours" : "Quota left over 7 days",
                        subtitle: Text("Weekly or monthly limits · refills at each reset")) {
-                HStack(spacing: Theme.spaceL) {
+                if series.filter({ $0.points.count > 1 }).count <= 4 {
+                    HStack(spacing: Theme.spaceL) {
+                        ForEach(series.filter { $0.points.count > 1 }, id: \.tool) { item in
+                            ChartLegend(title: LocalizedStringKey(item.tool.name), color: item.tool.color)
+                        }
+                    }
+                }
+            }
+            if series.filter({ $0.points.count > 1 }).count > 4 {
+                // More tools use ordinary adaptive columns instead of widening the history card.
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 100), alignment: .leading)], alignment: .leading, spacing: 6) {
                     ForEach(series.filter { $0.points.count > 1 }, id: \.tool) { item in
                         ChartLegend(title: LocalizedStringKey(item.tool.name), color: item.tool.color)
                     }

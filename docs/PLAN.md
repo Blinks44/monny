@@ -16,7 +16,7 @@ Complete the native monitor's remaining compatibility/release checks and AI-limi
 
 ## Next features
 
-Process search by name, PID or port, the compact sort pop-up and Needs attention are implemented and accepted in build 68 ([DES-005](tasks/DES-005-process-port-search.md)); they ship with the next release.
+Process search by name, PID or port, the compact sort pop-up and Needs attention are accepted and released in 1.2.0 ([DES-005](tasks/DES-005-process-port-search.md)).
 
 The pre-release additions are implemented: grouped processes ([APP-008](tasks/APP-008-grouped-processes-keyboard-idle-cost.md)), menu bar readings ([APP-010](tasks/APP-010-menu-bar-readings.md)), sustained-load alert ([APP-011](tasks/APP-011-busy-app-alert.md)), native onboarding ([APP-009](tasks/APP-009-native-onboarding.md)), power draw ([APP-013](tasks/APP-013-power-draw.md)) and Sparkle ([APP-012](tasks/APP-012-sparkle-updates.md)). Their build-37 user acceptance is dated evidence, not acceptance of later changes.
 

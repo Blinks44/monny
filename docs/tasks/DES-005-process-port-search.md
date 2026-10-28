@@ -44,4 +44,4 @@ Compact sort (user decision 2026-10-28, the tabs + search + sort stack looked he
 
 ## Next handoff
 
-Done. Ship it with the next release. Coverage not separately claimed: IPv6-only and several-listener cases beyond tests, ignored SIGTERM, PID reuse and launcher restarts on real servers; revisit with an actual issue.
+Done and released in 1.2.0 (build 69, 2026-10-28). Coverage not separately claimed: IPv6-only and several-listener cases beyond tests, ignored SIGTERM, PID reuse and launcher restarts on real servers; revisit with an actual issue.

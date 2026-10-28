@@ -25,6 +25,7 @@ Download the latest version from [GitHub Releases](https://github.com/Blinks44/m
 ## Features
 
 - **Menu bar popover** with Overview, Battery and Processes tabs, refreshed every few seconds, and a global shortcut (⌥⌘M by default).
+- **Processes:** find what holds a port or PID (`3002`, `localhost:3002`), see where it was started from, and quit just that process. Processes that keep a core busy show at the top.
 - **Dashboard window** with Overview, CPU, Memory, Disk, Network, Battery and Sensors pages and 1 minute to 7 day history.
 - **Battery charge limit** from 80 to 100% on macOS 26.4 and later. Monny changes the same setting as System Settings, so macOS keeps enforcing it after Monny quits. No privileged helper.
 - **Notifications** for a reached charge limit, a hot Mac, low battery, high memory pressure and an app that keeps the CPU busy.

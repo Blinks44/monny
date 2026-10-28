@@ -2,6 +2,13 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.2.0: 2026-10-28
+
+- Processes: search by PID or port as well as by name. `3002`, `:3002`, `localhost:3002` and local URLs find the process listening on that port.
+- A found process shows its folder, executable, parent process and listening ports. Quit and Force Quit end only that process, and Monny checks that it actually exited.
+- Processes that keep a core busy for over a minute appear at the top of the list with a Quit button.
+- The sort menu now sits next to the search field, leaving room for one more row.
+
 ## 1.1.1: 2026-10-26
 
 - Added AI limits for ClinePass, Codebuff, Amp, Augment and Nous Portal using the tools’ existing sign-in.

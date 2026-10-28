@@ -1,7 +1,7 @@
 # WEB-002: Website refresh: show what Monny can do
 
 - Updated: 2026-10-28
-- Stage: awaiting_verification (implemented; Sketch save, deployment and manual checks open)
+- Stage: awaiting_verification (deployed; manual checks open)
 - Owner: current design/website chat (Claude Code)
 - Ownership checked: main `b07c30a` at start; another chat meanwhile committed and released DES-005 (main `56782b2`, 1.2.0). Pre-existing uncommitted SPEC/DESIGN/WEB-001 edits were not this task's and were left as found.
 - Owned surfaces: `Monny.sketch → 05 · Website` landing frames, notes and the `99 · Archive` page; `apps/website/` landing sections, navigation and messages; this record.
@@ -23,8 +23,8 @@ Exclusions: no invented numbers, ratings or testimonials (every demo is labelled
 - [x] Old desktop/mobile landings moved to `99 · Archive`; no prototype links pointed at them.
 - [x] Mobile landing and the Port 3002 demo state; refresh notes cover interaction and motion.
 - [x] Implementation and six-language copy; automated checks below.
-- [ ] User saves Monny.sketch (edits were made through MCP and are not saved by this chat).
-- [ ] Deployment (maintainer).
+- [x] Monny.sketch saved by the user (2026-10-28).
+- [x] Deployed by the user (2026-10-28); live HTML on `/`, `/ru/`, `/de/` contains the new section anchors. First impression reported fine; no specific browser or device stated.
 - [ ] Manual checks on the deployed site: desktop and phone, keyboard/VoiceOver on chip groups, Reduce Motion, translations by fluent readers.
 
 ## Sketch source
@@ -43,4 +43,4 @@ Verification: `pnpm check` (format, lint, types, 12 tests), production build, 7 
 
 ## Next handoff
 
-Save Monny.sketch, deploy the website, then check it on desktop and phone.
+Review the live site on desktop and phone, including the Processes section, keyboard/VoiceOver on the chip groups, Reduce Motion and translations.

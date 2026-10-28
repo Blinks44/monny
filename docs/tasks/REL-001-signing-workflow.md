@@ -20,6 +20,6 @@ The release command selects the pinned existing Apple Development identity, buil
 
 ## Open checks and next action
 
-Verify installation and launch from a downloaded DMG on a clean second Mac. Confirm recovery/signing with the current identity and availability of an off-device encrypted backup with its password stored separately. The separate Sparkle key backup was reported off-device on 2026-10-24; end-to-end same-signer update belongs to [APP-012](APP-012-sparkle-updates.md).
+Verify installation and launch from a downloaded DMG on a clean second Mac. Confirm recovery/signing with the current identity and availability of an off-device encrypted backup with its password stored separately. The separate Sparkle key backup was reported off-device on 2026-10-24; in-app updates between published builds were accepted on 2026-10-25 and 2026-10-26.
 
 Legacy keychain migration, retired credentials and intermediate packages are no longer startup instructions. They require no further action on main. Do not reset trust, permissions or background services to bypass a failure.

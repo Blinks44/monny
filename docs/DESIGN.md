@@ -20,13 +20,13 @@ Open **Monny.sketch** through Sketch MCP (load `mcp`, then `use`; resolve the op
 
 Colors are 94 Color Variables named `Light/<Group>/<Name>` and `Dark/<Group>/<Name>` (Text, Surface, Fill, Accent, Metric, Status, State); 12 text styles and 4 layer styles. Code mirrors these variables as one token set; change a token in both places.
 
-Screens are drawn in English only; other languages are checked in the app. Copy reviewed and saved 2026-10-25: AI/reset/forecast, onboarding, charging guidance and website battery/privacy/install/FAQ wording; mobile battery spacing and status badges accommodate the revised text. Website AI preview was refreshed from its transparent export Frame. Six-language native Light/Dark text-fit evidence and remaining browser checks: [copy review](tasks/APP-016-copy-localization-review.md).
+Screens are drawn in English only; other languages are checked in the app. Copy reviewed and saved 2026-10-25: AI/reset/forecast, onboarding, charging guidance and website battery/privacy/install/FAQ wording; mobile battery spacing and status badges accommodate the revised text. Website AI preview was refreshed from its transparent export Frame. Six-language native text-fit evidence is dated in [history](history/2026-10.md); remaining browser checks are in [WEB-001](tasks/WEB-001-landing-page.md).
 
-The saved DMG frame/background was reviewed live on 2026-10-19 ([REL-002](tasks/REL-002-branded-dmg.md)). DMG background is a fixed light, text-free installation canvas apart from the Monny brand; Finder owns the actual icons and filenames.
+The saved DMG frame/background was reviewed live on 2026-10-19. DMG background is a fixed light, text-free installation canvas apart from the Monny brand; Finder owns the actual icons and filenames.
 
 ## Battery: what the app implements — 2026-10-21
 
-The app implements the native charge limit only ([APP-007](tasks/APP-007-native-simplification-design-parity.md)): the popover Battery hero (72 pt gauge, dotted limit marker), the standalone `16 · Battery · Native limit control` reference (80/85/90/95/100 slider where 100% means no limit, then an Optimized Battery Charging switch; 2026-10-22, [APP-014](tasks/APP-014-limit-slider-optimized-charging.md)) and the macOS charging guidance popover. Sketch shows the app as built (user decision 2026-10-24): helper, Charge/Discharge, sailing, heat protection, calibration and trip frames were removed on 2026-10-25 and are redrawn when that work is taken up ([DES-004](tasks/DES-004-power-search-quit-ai-tools.md)). Window content begins at x=248 with a 776 pt column in a 1040 pt window; the toolbar starts at y=20.
+The app implements the native charge limit only ([APP-007](tasks/APP-007-native-simplification-design-parity.md)): the popover Battery hero (72 pt gauge, dotted limit marker), the standalone `16 · Battery · Native limit control` reference (80/85/90/95/100 slider where 100% means no limit, then an Optimized Battery Charging switch; 2026-10-22) and the macOS charging guidance popover. Sketch shows the app as built (user decision 2026-10-24): helper, Charge/Discharge, sailing, heat protection, calibration and trip frames were removed on 2026-10-25 and are redrawn when that work is taken up ([DES-004](tasks/DES-004-power-search-quit-ai-tools.md)). Window content begins at x=248 with a 776 pt column in a 1040 pt window; the toolbar starts at y=20.
 
 ## Readiness
 
@@ -34,7 +34,7 @@ The onboarding Ready step gained the automatic updates toggle on 2026-10-21 (Spa
 
 AI limits: `01 · Popover` frames `11`–`13 · Popover · AI limits` and `02 · Window` frames `19 · Window · AI limits` and `20 · Window · Settings · AI limits`, `03 · Flows & System` frame `13 · Onboarding · Ready · AI limits`, Light/Dark ([DES-003](tasks/DES-003-ai-usage-limits.md), 2026-10-22). Implemented for Claude Code, Codex, Cursor and Grok ([APP-015](tasks/APP-015-ai-usage-limits.md)). Added 2026-10-22: `14 · Popover · AI limits · Model limits`, `15 · Popover · AI limits · Cursor & Grok` (Grok slate with “G”), `02 · Window` › `21 · Window · AI limits · Four tools` (2×2 tiles, four reset rows) and `22 · Window · Settings · AI tools` (a checkbox per found tool); Light/Dark, saved. The taller frames put Dark at y 1100. Service marks are the `Light/…` and `Dark/AI Logo/<tool>` symbols (brand tiles: Claude coral, Codex and Grok white, Cursor black), used in all AI frames.
 
-All listed frames are saved. Every current SPEC state has a frame, including empty, unavailable and no-battery states ([DES-001](tasks/DES-001-missing-states.md)); update checks use Sparkle's own windows. Accessibility and the other five languages are checked in the app.
+All listed frames are saved. Every current SPEC state has a frame, including empty, unavailable and no-battery states; update checks use Sparkle's own windows. Accessibility and the other five languages are checked in the app.
 
 The right-click specimen shows Check for Updates instead of About Monny (requested 2026-10-23, drawn 2026-10-25).
 

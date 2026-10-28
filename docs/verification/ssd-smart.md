@@ -6,4 +6,4 @@
 
 Probe and Disk page agreed on percentage used/derived health, critical warning, available spare and rounded data-written units. NVMe-log temperature and SMC SSD temperature differed by 1 °C. This proves access and consistent decoding/display, not vendor accuracy.
 
-Open: compare with `smartctl -a disk0` or another independent tool; check controller selection with an external NVMe attached. Owned by [CORE-003](../tasks/CORE-003-history.md).
+Open: compare with `smartctl -a disk0` or another independent tool; check controller selection with an external NVMe attached. Revisit with an actual issue.

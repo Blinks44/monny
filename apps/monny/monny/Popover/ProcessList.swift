@@ -33,7 +33,7 @@ struct ProcessList: View {
                                        forceQuit: { confirmation = request(for: $0) },
                                        show: { query = String($0) })
                 }
-                list(limit: attention.isEmpty ? 8 : 7 - attention.count)
+                list(limit: attention.isEmpty ? 9 : 8 - attention.count)
             } else {
                 ProcessLookupList(query: lookup, processes: processes, refresh: refresh, show: { query = String($0) })
             }

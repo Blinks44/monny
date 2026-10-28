@@ -17,4 +17,4 @@
 
 Sampling cost (median of 10 passes): 5.7 ms without processes, 26 ms with processes. Free-space lookup took 54 ms, so refreshed every 30 s. Battery health via `system_profiler` took 0.14 s in this check and runs at most every six hours.
 
-Not covered by this check: Activity Monitor side by side, popover cost, network/disk throughput under load or a Mac without a battery. Later performance results: [idle cost](idle-cost.md); remaining acceptance: [CORE-003](../tasks/CORE-003-history.md).
+Not covered by this check: Activity Monitor side by side, popover cost, network/disk throughput under load or a Mac without a battery. Later performance results: [idle cost](idle-cost.md); accepted by the user on 2026-10-26 within available-device coverage.

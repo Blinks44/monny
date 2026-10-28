@@ -54,8 +54,17 @@ Do not add protocols, dependency-injection containers or view models where a pla
 - Charts animate only when Reduce Motion is off; keep chart data bounded so redraws stay cheap.
 - Check Light/Dark, Increase Contrast, VoiceOver labels for every value (with units), and localized expansion in all six languages.
 
+## Copy and translations
+
+App strings live in `Localizable.xcstrings`, website strings in `apps/website/src/integrations/i18n/messages/*.json`. Write natural copy in each language rather than word-for-word translation, keep placeholders and plural rules, and keep one term per concept across app and website.
+
+- Follow Apple's terminology for each language (Activity Monitor, System Settings, Battery, memory types). Keep **Mac** in Latin script and product, tool and command names unchanged.
+- Thermal state values: EN Nominal/Fair/Serious/Critical; RU Норма/Тепло/Горячо/Критично; DE Normal/Erhöht/Hoch/Kritisch; FR Normal/Modéré/Élevé/Critique; ES Normal/Moderado/Grave/Crítica; zh 正常/偏高/过高/危急. The website thermal demo uses the same words.
+- Russian uses «лимит зарядки», «ЦП» in compact UI, «Конфиденциальность», «вход»/«сеанс» rather than literal “window”/“sign-in” calques. German uses informal *du* throughout; ES uses *tú*.
+- Avoid filler and marketing phrasing; explain unavailable readings and estimates plainly. References: [Apple Russian Mac/battery terms](https://support.apple.com/ru-ru/102397), [memory terms](https://support.apple.com/ru-ru/guide/activity-monitor/view-memory-usage-actmntr1004/mac), [charge-limit behavior](https://support.apple.com/en-us/102338).
+
 ## Dependencies and skills
 
-Before building non-trivial functionality from scratch, search native APIs, Swift Package Index and maintained open-source macOS projects. Check macOS 26 compatibility, maintenance and license; prefer the simpler reliable option and record decisions in [research](research/README.md). Likely candidates to evaluate rather than assume: a global keyboard-shortcut package, an update-check approach (plain GitHub Releases API vs Sparkle), and sensor/SMC references. GPL sources may inform research but must not be copied.
+Before building non-trivial functionality from scratch, search native APIs, Swift Package Index and maintained open-source macOS projects. Check macOS 26 compatibility, maintenance and license; prefer the simpler reliable option and record decisions in [research](research/README.md). GPL sources may inform research but must not be copied.
 
 Reviewed project skills live in `.agents/skills/` with `manifest.json` recording source, revision, license and reasons for skipped candidates. Read only the relevant skill; routing is in AGENTS §5. Upstream iOS-only advice (UIKit, `UIScreen`, BGTaskScheduler) does not apply.

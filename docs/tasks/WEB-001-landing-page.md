@@ -117,7 +117,7 @@ Reviewed the unchanged implementation on main `1bb98b8`: `src/server.ts` serves 
 
 ## Six-language copy review — 2026-10-25
 
-Revised all six message catalogs and refreshed the AI-limit design preview from saved Monny.sketch. Installation describes the published DMG; charge-limit, privacy/session, notarization and translated terminology are more precise. Final format/lint/types, 12 tests and rebuilding Worker dry-run pass; seven production-preview HTTP smoke tests pass. Russian desktop/390 px hero reviewed; later Chrome/Safari capture failures leave full six-language/device visual acceptance open. No deployment. [Owning copy evidence and next action](APP-016-copy-localization-review.md).
+Revised all six message catalogs and refreshed the AI-limit design preview from saved Monny.sketch. Installation describes the published DMG; charge-limit, privacy/session, notarization and translated terminology are more precise. Final format/lint/types, 12 tests and rebuilding Worker dry-run pass; seven production-preview HTTP smoke tests pass. Russian desktop/390 px hero reviewed; later Chrome/Safari capture failures leave full six-language/device visual acceptance open. No deployment.
 
 ## Hero popover crop and image sharpness — 2026-10-25
 

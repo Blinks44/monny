@@ -30,8 +30,8 @@ Design only. Each new or changed frame was checked by MCP screenshot in Light an
 
 ## Open checks / dependency
 
-- Sustained-load alert implemented with 80 % of one core for 5 minutes ([APP-011](APP-011-busy-app-alert.md)).
-- Power card implemented with shorter copy (no “Mac uses ·”, fits the minimum window width); on-battery values are compared against the battery's own output ([APP-013](APP-013-power-draw.md)).
+- Sustained-load alert implemented with 80 % of one core for 5 minutes.
+- Power card implemented with shorter copy (no “Mac uses ·”, fits the minimum window width); on-battery values are compared against the battery's own output.
 - 2026-10-22: frame `17` (Light/Dark) revised. “Show in menu bar” checkboxes are stacked vertically instead of one row, because the three labels overflowed and wrapped in some languages; the Menu bar card is taller and About moved under Notifications in the right column. About now shows the “Check for updates automatically” row (as build 34 already does). Implemented in build 42 (`SettingsPage.swift`: the readings are a vertical stack, About sits under Notifications); 44 tests pass, `release.sh` produced `Monny-1.0-42.dmg`. Not yet viewed in German/French in the running app. The old custom “update available” Settings state is replaced by Sparkle's standard window.
 - The menu bar label width in German/French and the readings layout on a crowded menu bar are checked in the app.
 

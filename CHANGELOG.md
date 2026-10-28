@@ -2,6 +2,11 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.2.1: 2026-10-28
+
+- Processes: the list shows nine apps instead of eight.
+- Clearer wording in Russian, German, French, Spanish and Chinese; thermal states use the same words everywhere.
+
 ## 1.2.0: 2026-10-28
 
 - Processes: search by PID or port as well as by name. `3002`, `:3002`, `localhost:3002` and local URLs find the process listening on that port.

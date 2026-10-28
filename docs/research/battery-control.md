@@ -1,6 +1,6 @@
 # Battery control: current mechanism and historical alternatives
 
-Updated 2026-10-23. Main uses the persistent macOS 26.4+ charge-limit preference as an ordinary user. No helper, XPC, SMC writes or adapter isolation. Current behavior: [SPEC §5](../SPEC.md#5-battery-control); implementation/acceptance: [APP-007](../tasks/APP-007-native-simplification-design-parity.md), [APP-014](../tasks/APP-014-limit-slider-optimized-charging.md).
+Updated 2026-10-23. Main uses the persistent macOS 26.4+ charge-limit preference as an ordinary user. No helper, XPC, SMC writes or adapter isolation. Current behavior: [SPEC §5](../SPEC.md#5-battery-control); implementation/acceptance: [APP-007](../tasks/APP-007-native-simplification-design-parity.md).
 
 ## Native limit decision
 

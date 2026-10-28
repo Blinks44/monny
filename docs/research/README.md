@@ -2,7 +2,7 @@
 
 > Battery helper and Discharge task/verification records referenced here (BAT-*, APP-005/006, helper verification) were retired from main on 2026-10-21; they are preserved on the `experiments/discharge` branch.
 
-Updated 2026-10-25. Readings and history storage are decided ([CORE-001](../tasks/CORE-001-readings-research.md)); battery control on main uses the native macOS charge limit. Record dates, sources, revisions, licenses and what was actually tested.
+Updated 2026-10-25. Readings and history storage are decided; battery control on main uses the native macOS charge limit. Record dates, sources, revisions, licenses and what was actually tested.
 
 ## Readings
 
@@ -24,7 +24,7 @@ Researched 2026-10-18 on a MacBook Pro M1 Max (2 E + 8 P cores) running macOS 27
 | Thermal state | `ProcessInfo.thermalState` + `thermalStateDidChangeNotification` (public) | Nominal/Fair/Serious/Critical | — | |
 | Top processes | `proc_listallpids` + `proc_pid_rusage(RUSAGE_INFO_V6)` (public libproc) | CPU % = CPU-time delta ÷ wall time (100 % = one core, as in Activity Monitor); memory = `ri_phys_footprint` | Other users' processes are hidden for an unprivileged app, as in Activity Monitor without admin | |
 | Energy per process | `ri_energy_nj` delta from `rusage_info_v6` (public libproc) | Average watts over the interval; the kernel's estimate, not Activity Monitor's "Energy Impact" | Labelled as an estimate. `ri_billed_energy` gave implausible values (µW at a full core) | Rebind ≈ 3 W at 100 % of a core |
-| Processes grouped by app | Responsible process from `responsibility_get_pid_responsible_for_pid` (exported by libsystem, no public header; looked up with `dlsym`, missing symbol = each process is its own), then the outermost `.app` in its `proc_pidpath` (public). Coalition info (`PROC_PIDCOALITIONINFO`) is not in the SDK either | Owner looked up once per PID; helpers, XPC/WebKit content and tools an app launched sum into it, as in Activity Monitor; no `.app` = system process | Checked 2026-10-21 on M1 Max, macOS 27.0.1: Chrome helpers and crashpad → Chrome, Mail's WebKit processes → Mail, `SafariPlatformSupport.Helper` → the app using it. Bundle-path-only grouping missed WebKit and shared helpers | [APP-008](../tasks/APP-008-grouped-processes-keyboard-idle-cost.md) |
+| Processes grouped by app | Responsible process from `responsibility_get_pid_responsible_for_pid` (exported by libsystem, no public header; looked up with `dlsym`, missing symbol = each process is its own), then the outermost `.app` in its `proc_pidpath` (public). Coalition info (`PROC_PIDCOALITIONINFO`) is not in the SDK either | Owner looked up once per PID; helpers, XPC/WebKit content and tools an app launched sum into it, as in Activity Monitor; no `.app` = system process | Checked 2026-10-21 on M1 Max, macOS 27.0.1: Chrome helpers and crashpad → Chrome, Mail's WebKit processes → Mail, `SafariPlatformSupport.Helper` → the app using it. Bundle-path-only grouping missed WebKit and shared helpers | Activity Monitor |
 | Network per process | None public (nettop uses private NetworkStatistics) | — | Not shown; SPEC updated | |
 | CPU user/system | Same ticks as CPU total | System = system ticks ÷ all; user = busy − system | — | Unit test |
 | Load average | `getloadavg` (public libc) | Runnable threads over 1/5/15 min | — | `sysctl vm.loadavg` |
@@ -42,7 +42,7 @@ Researched 2026-10-18 on a MacBook Pro M1 Max (2 E + 8 P cores) running macOS 27
 
 ### Temperatures and fans (SMC)
 
-Decided 2026-10-18 on the M1 Max ([CORE-002](../tasks/CORE-002-temperatures-fans.md)).
+Decided 2026-10-18 on the M1 Max.
 
 - **Source:** `IOServiceOpen("AppleSMC")` + `IOConnectCallStructMethod` selector 2 with the 80-byte `SMCParamStruct` (read key info, then bytes). Public IOKit calls, undocumented struct and keys. Works without privileges or entitlements with App Sandbox off.
 - **Rejected:** HID temperature services. `IOHIDEventSystemClientCreateSimpleClient` lists the sensors but returns no values; reading them needs the private `IOHIDEventSystemClientCreate`/`IOHIDServiceClientCopyEvent`, and the names ("PMU tdie3") do not say which part is CPU or GPU. `powermetrics` needs root. No maintained Swift SMC package exists (beltex/SMCKit is Intel-era and unmaintained), so the reader is about 100 lines of our own code.
@@ -51,7 +51,7 @@ Decided 2026-10-18 on the M1 Max ([CORE-002](../tasks/CORE-002-temperatures-fans
 
 ### History storage (decision)
 
-In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 1h = 10 s averages (360), 24h = 1 min (1 440), 7d = 10 min (1 008). Only the 24h and 7d tiers are persisted: about 12 metrics × 2 448 points × 8 bytes ≈ 235 KB, written as a binary property list in Application Support every 5 minutes and at quit. SwiftData/SQLite were rejected as heavier than the need (fixed-size series, no queries). Implemented 2026-10-18 with 1 s buckets for the 1m tier (refresh can be 1 s) and a 10 s background cadence ([CORE-003](../tasks/CORE-003-history.md)).
+In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 1h = 10 s averages (360), 24h = 1 min (1 440), 7d = 10 min (1 008). Only the 24h and 7d tiers are persisted: about 12 metrics × 2 448 points × 8 bytes ≈ 235 KB, written as a binary property list in Application Support every 5 minutes and at quit. SwiftData/SQLite were rejected as heavier than the need (fixed-size series, no queries). Implemented 2026-10-18 with 1 s buckets for the 1m tier (refresh can be 1 s) and a 10 s background cadence.
 
 ## Battery control
 
@@ -66,14 +66,14 @@ Explicit process Quit/Force Quit uses native AppKit and Darwin APIs, with sample
 
 | Need | Candidates to evaluate | Decision |
 | --- | --- | --- |
-| Global shortcut | Native `NSEvent` global monitors (need Accessibility permission), Carbon `RegisterEventHotKey` by hand, sindresorhus/KeyboardShortcuts | KeyboardShortcuts 1.17.0 (MIT, active, Swift 6, Carbon hot keys without permissions, recorder UI localized in our languages); 2026-10-18 ([APP-003](../tasks/APP-003-settings-alerts.md)) |
-| Update check | GitHub Releases API vs Sparkle | 2026-10-21: [Sparkle](https://github.com/sparkle-project/Sparkle) 2.10.0 (MIT) through SPM for checks and installs (user decision; replaces the 2026-10-18 GitHub Releases API check, which only opened the release page). Same setup as Rebind, already in use there: `SPUStandardUpdaterController`, appcast attached to each GitHub release and read from `releases/latest/download/appcast.xml`, the DMG as the update archive, `generate_appcast` in `release.sh`, Sparkle's nested code re-signed with the app's identity for Hardened Runtime. Own EdDSA key ([SIGNING](../SIGNING.md#update-signing-key)). An end-to-end update between two published Apple Development builds is still unverified ([APP-012](../tasks/APP-012-sparkle-updates.md)) |
+| Global shortcut | Native `NSEvent` global monitors (need Accessibility permission), Carbon `RegisterEventHotKey` by hand, sindresorhus/KeyboardShortcuts | KeyboardShortcuts 1.17.0 (MIT, active, Swift 6, Carbon hot keys without permissions, recorder UI localized in our languages); 2026-10-18 |
+| Update check | GitHub Releases API vs Sparkle | 2026-10-21: [Sparkle](https://github.com/sparkle-project/Sparkle) 2.10.0 (MIT) through SPM for checks and installs (user decision; replaces the 2026-10-18 GitHub Releases API check, which only opened the release page). Same setup as Rebind, already in use there: `SPUStandardUpdaterController`, appcast attached to each GitHub release and read from `releases/latest/download/appcast.xml`, the DMG as the update archive, `generate_appcast` in `release.sh`, Sparkle's nested code re-signed with the app's identity for Hardened Runtime. Own EdDSA key ([SIGNING](../SIGNING.md#update-signing-key)). In-app updates between published builds were accepted by the user (1.0.0 → 1.1.0 on 2026-10-25, to 1.1.1 on 2026-10-26) |
 | History storage | Ring buffers + file, SwiftData, SQLite | Ring buffers + binary plist (see above) |
 | AI usage limits | CodexBar's sources: OAuth usage endpoints, browser cookies, CLI PTY, local session logs, `codex app-server` | 2026-10-22: Anthropic and ChatGPT usage endpoints with the tools' own sign-in, Claude's read through `/usr/bin/security`; Copilot via saved GitHub CLI sign-in (2026-10-25); no refresh, no cookies ([ai-usage-limits.md](ai-usage-limits.md)) |
 
 ## DMG packaging — 2026-10-19
 
-Use installed [create-dmg](https://github.com/create-dmg/create-dmg) 1.3.0 (MIT), already used by Rebind, for Finder background/icon layout and Applications target. It remains a build-time tool, not an app dependency; no sources or binaries copied. Native hdiutil still verifies the final image, and existing codesign checks remain. A single shipping TIFF is exported from live Sketch, with no permanent generator. The release command stops with setup instructions if the tool is missing. Verified source/native layout and artifact: [REL-002](../tasks/REL-002-branded-dmg.md).
+Use installed [create-dmg](https://github.com/create-dmg/create-dmg) 1.3.0 (MIT), already used by Rebind, for Finder background/icon layout and Applications target. It remains a build-time tool, not an app dependency; no sources or binaries copied. Native hdiutil still verifies the final image, and existing codesign checks remain. A single shipping TIFF is exported from live Sketch, with no permanent generator. The release command stops with setup instructions if the tool is missing.
 
 ## Recording a new decision
 

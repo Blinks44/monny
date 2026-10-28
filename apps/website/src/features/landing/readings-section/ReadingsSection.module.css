@@ -1,0 +1,130 @@
+.row {
+  display: grid;
+  gap: 4px;
+  margin-top: 24px;
+}
+.row:first-of-type {
+  margin-top: 8px;
+}
+.row strong,
+.thermal strong {
+  font-size: 16px;
+  font-weight: 500;
+}
+.row > span,
+.thermal > span {
+  color: var(--monny-text-secondary);
+  font-size: 13px;
+}
+.track {
+  position: relative;
+  height: 12px;
+  margin: 18px 6px 0;
+  background: linear-gradient(var(--monny-track), var(--monny-track)) center / 100% 2px no-repeat;
+}
+.track i {
+  position: absolute;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: var(--monny-metric-cpu);
+}
+.track[data-every='10'] i {
+  background: var(--monny-text-tertiary);
+}
+/* The cover hides reads that have not happened yet and slides off over 30 seconds. */
+@media (prefers-reduced-motion: no-preference) {
+  .track::after {
+    content: '';
+    position: absolute;
+    inset: -2px -8px -2px auto;
+    width: calc(100% + 16px);
+    background: #17181cd9;
+    animation: sweep 30s linear infinite;
+  }
+}
+@keyframes sweep {
+  to {
+    width: 0;
+  }
+}
+.axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  color: var(--monny-text-tertiary);
+  font-size: 13px;
+}
+.thermal {
+  display: grid;
+  gap: 4px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--monny-separator);
+}
+.thermal ul,
+.sensors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 16px 0 0;
+  list-style: none;
+}
+.thermal li {
+  padding: 5px 14px;
+  border-radius: 15px;
+  font-size: 13px;
+}
+.thermal [data-state='nominal'] {
+  color: #4ade80;
+  background: #22c55e2e;
+}
+.thermal [data-state='fair'] {
+  color: #fbbf24;
+  background: #f59e0b2e;
+}
+.thermal [data-state='serious'] {
+  color: #f87171;
+  background: #ef44442e;
+}
+.thermal [data-state='critical'] {
+  color: #fca5a5;
+  background: #ef444447;
+}
+.sensors {
+  display: grid;
+  grid-template-columns: repeat(3, 82px) minmax(0, 1fr);
+  margin-top: 0;
+}
+.sensors li {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fb923c1f;
+  font-size: 13px;
+}
+.sensors strong {
+  font-size: 16px;
+  font-weight: 500;
+}
+.sensors [data-unavailable] {
+  background: #ffffff0a;
+}
+.sensors [data-unavailable] strong {
+  color: var(--monny-text-secondary);
+}
+@media (max-width: 700px) {
+  .track i {
+    width: 10px;
+    height: 10px;
+    margin-left: -5px;
+    top: 1px;
+  }
+  .sensors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

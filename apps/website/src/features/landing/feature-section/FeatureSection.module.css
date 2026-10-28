@@ -1,0 +1,185 @@
+/* Monny.sketch > 05 · Website > Web · Landing · Desktop/Mobile, WEB-002 sections. */
+.section {
+  --metric: var(--monny-text-tertiary);
+  display: grid;
+  grid-template-columns: minmax(0, 480px) minmax(0, 640px);
+  grid-template-areas:
+    'text visual'
+    'extras visual';
+  grid-template-rows: auto 1fr;
+  column-gap: 80px;
+  row-gap: 40px;
+  justify-content: space-between;
+  align-items: start;
+  padding-block: 96px 80px;
+  scroll-margin-top: 72px;
+}
+.visualFirst {
+  grid-template-areas:
+    'visual text'
+    'visual extras';
+  grid-template-columns: minmax(0, 640px) minmax(0, 480px);
+}
+.text {
+  grid-area: text;
+  padding-top: 8px;
+}
+.visual {
+  grid-area: visual;
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+.extras {
+  grid-area: extras;
+  display: grid;
+  gap: 24px;
+  align-content: start;
+  min-width: 0;
+}
+.eyebrow {
+  color: var(--metric);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0;
+}
+.title {
+  font-size: 44px;
+  line-height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.9px;
+  margin: 12px 0 24px;
+  text-wrap: balance;
+}
+.lead {
+  color: var(--monny-text-secondary);
+  font-size: 18px;
+  line-height: 28px;
+  margin: 0;
+}
+.card {
+  --moduix-card-radius: 28px;
+  position: relative;
+  gap: 0;
+  padding: 32px;
+  border: 1px solid var(--moduix-border);
+  background: #17181c;
+  min-width: 0;
+}
+.side {
+  --moduix-card-radius: 20px;
+  padding: 24px;
+}
+.cardLabel {
+  color: var(--monny-text-tertiary);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+}
+.rows {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+}
+.rows > div {
+  display: grid;
+  grid-template-columns: minmax(96px, auto) 1fr;
+  gap: 16px;
+  align-items: baseline;
+}
+.rows dt {
+  font-size: 16px;
+}
+.rows dd {
+  margin: 0;
+  font-size: 16px;
+}
+.rows dd::before {
+  content: '→';
+  color: var(--monny-text-tertiary);
+  margin-right: 10px;
+}
+.note {
+  color: var(--monny-text-tertiary);
+  font-size: 13px;
+  line-height: 19px;
+  margin: 16px 0 0;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.chip {
+  border-radius: 999px;
+  border: 1px solid var(--moduix-border);
+  background: #ffffff0d;
+  color: var(--monny-text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+  padding-inline: 14px;
+}
+.chip[data-state='on'] {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--metric) 18%, transparent);
+  color: color-mix(in srgb, var(--metric) 60%, white);
+}
+@media (max-width: 1000px) {
+  .section,
+  .visualFirst {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'text'
+      'visual'
+      'extras';
+    grid-template-rows: auto;
+    max-width: 640px;
+    margin-inline: auto;
+    padding-block: 64px;
+    row-gap: 32px;
+  }
+}
+@media (max-width: 700px) {
+  .section,
+  .visualFirst {
+    row-gap: 16px;
+    padding-block: 40px 48px;
+  }
+  .text {
+    padding: 0 0 8px;
+  }
+  .eyebrow {
+    font-size: 11px;
+  }
+  .title {
+    font-size: 30px;
+    line-height: 36px;
+    letter-spacing: -0.7px;
+    margin: 10px 0 16px;
+  }
+  .lead {
+    font-size: 17px;
+    line-height: 24px;
+  }
+  .visual,
+  .extras {
+    gap: 16px;
+  }
+  .card {
+    --moduix-card-radius: 22px;
+    padding: 24px 20px;
+  }
+  .rows > div {
+    grid-template-columns: minmax(84px, auto) 1fr;
+  }
+  .rows dt,
+  .rows dd {
+    font-size: 15px;
+  }
+}

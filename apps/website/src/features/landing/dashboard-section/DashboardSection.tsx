@@ -33,7 +33,11 @@ export function DashboardSection() {
               <BatteryDemo />
             </div>
           ) : (
-            <ProductImage view={view} alt={m.screenshotAlt({ view: label })} />
+            <ProductImage
+              view={view}
+              alt={m.screenshotAlt({ view: label })}
+              sizes="(max-width: 700px) 100vw, 880px"
+            />
           )}
         </TabsContent>
       ))}

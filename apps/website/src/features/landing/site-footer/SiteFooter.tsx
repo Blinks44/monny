@@ -20,8 +20,8 @@ export function SiteFooter() {
         </div>
         <nav aria-label={m.product()}>
           <h2>{m.product()}</h2>
-          <Link to="/" hash="features">
-            {m.features()}
+          <Link to="/" hash="menu-bar">
+            {m.menuBar()}
           </Link>
           <Link to="/" hash="battery">
             {m.battery()}

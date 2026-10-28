@@ -30,8 +30,8 @@
 }
 .panel > picture {
   margin-inline: auto;
-  margin-top: -14px;
-  width: min(100%, 1160px);
+  margin-top: -10px;
+  width: min(100%, 880px);
 }
 .battery {
   width: min(100%, 600px);

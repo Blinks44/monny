@@ -1,0 +1,123 @@
+.chart {
+  position: relative;
+  height: 228px;
+  margin-top: 8px;
+  border-bottom: 1px solid var(--monny-track);
+  color: #fbbf24;
+  font-size: 13px;
+}
+.window {
+  position: absolute;
+  inset: 0 0 0 16.67%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0 0 10px;
+  background: #fbbf2414;
+}
+.threshold {
+  position: absolute;
+  inset: 20% 0 auto;
+  border-top: 1px dashed #fbbf24b3;
+}
+.threshold small {
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  font-size: 13px;
+}
+.window small {
+  font-size: 13px;
+}
+.chart svg {
+  position: absolute;
+  top: 7.9%;
+  left: 0;
+  width: 100%;
+  height: 68.4%;
+  overflow: visible;
+}
+.chart path {
+  fill: none;
+  stroke: var(--monny-metric-cpu);
+  stroke-width: 2.5px;
+  stroke-linejoin: round;
+}
+.axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  color: var(--monny-text-tertiary);
+  font-size: 13px;
+}
+.banner {
+  display: flex;
+  gap: 12px;
+  width: min(360px, 100%);
+  margin: 28px auto 0;
+  padding: 14px;
+  border: 1px solid #ffffff1a;
+  border-radius: 18px;
+  background: #2c2c2e;
+}
+.banner img {
+  flex: none;
+  align-self: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+}
+.banner div {
+  display: grid;
+  gap: 2px;
+  font-size: 13px;
+}
+.banner strong {
+  font-weight: 600;
+}
+.banner span {
+  color: #d1d1d6;
+}
+.sent {
+  margin: 20px 0 0;
+  color: var(--monny-text-secondary);
+  font-size: 13px;
+  text-align: center;
+}
+.settings {
+  display: grid;
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: 16px;
+}
+.settings li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.box {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #ffffff33;
+  border-radius: 4px;
+  background: #ffffff0d;
+}
+[data-on] > .box {
+  border-color: transparent;
+  background: #0a84ff;
+}
+@media (max-width: 700px) {
+  .threshold small {
+    top: 6px;
+    bottom: auto;
+    left: 20%;
+  }
+  .settings {
+    font-size: 15px;
+  }
+}

@@ -1,6 +1,6 @@
 # WEB-001: Public landing page
 
-- Updated: 2026-10-25
+- Updated: 2026-10-28
 - Stage: awaiting_verification (Sketch export handoff reviewed; website interaction/translation acceptance open)
 - Owner: unassigned
 - Owned surfaces: `apps/website/`, website sections in shared docs; Monny/Rebind export containers, website screenshot sources and export annotations in Sketch
@@ -11,7 +11,7 @@
 
 Iteration two replaces the minimal shells with the saved website design: desktop/narrow landing and 404, shared navigation/mobile Drawer, monitoring cards, native battery demo, AI limits, dashboard gallery, privacy cards, installation tabs and copy feedback, FAQ, CTA and footer. Direct moduix components, CSS Modules, Lucide, the existing TanStack Start/React 19 Worker and Paraglide structure are preserved. All new text and accessible names are translated into EN/RU/DE/FR/ES/zh-Hans.
 
-Live at monny.moduix.dev since 2026-10-24 with indexing (`index, follow`; 404 keeps `noindex`) and the 2400×1260 link preview. Since 2026-10-25 the hero shows the whole popover window. Downloads use the permanent `releases/latest/download/Monny.dmg` link ([history](../history/2026-10.md#2026-10-25-permanent-download-link)); that change awaits deployment. Website-only work does not rebuild the native DMG.
+Live at monny.moduix.dev since 2026-10-24 with indexing (`index, follow`; 404 keeps `noindex`) and the 2400×1260 link preview. Since 2026-10-25 the hero shows the whole popover window. Downloads use the permanent `releases/latest/download/Monny.dmg` link ([history](../history/2026-10.md#2026-10-25-permanent-download-link)); deployed (live HTML checked 2026-10-28). Website-only work does not rebuild the native DMG.
 
 ## Acceptance
 
@@ -22,9 +22,9 @@ Live at monny.moduix.dev since 2026-10-24 with indexing (`index, follow`; 404 ke
 - [x] Oxlint, Oxfmt, TypeScript and twelve tests (foundation and product-image SSR integration) pass.
 - [x] Production preview runs in workerd; Wrangler packaging succeeds with `--dry-run`.
 - [x] All website sections and 404 implemented from the live source; desktop and narrow-layout review performed.
-- [ ] Exact 390 px/physical-phone comparison and final active-window tab-indicator check (see review limits below).
+- [x] Desktop and phone review of the deployed site (user, 2026-10-26; exact browser/viewport not supplied).
 - [ ] Review final translations, keyboard/assistive technology and responsive behavior.
-- [ ] Real release download and first-launch installation flow (remove the notice when notarized).
+- [x] Real release download through the permanent latest link (1.1.1, 2026-10-26). The first-launch notice stays until notarization.
 - [x] First production deployment (user, 2026-10-24); HTTPS, download link, indexing and 404 `noindex` verified on `monny.moduix.dev`.
 
 ## Design source
@@ -103,11 +103,11 @@ Browser evidence: desktop menus; Chrome 390×844 Monny Drawer/upward popup and k
 
 ## Next handoff
 
-Finish physical-phone/all-section, keyboard/VoiceOver, runtime reduced-motion and fluent translation review on the live site or a local preview. Releases need no download-link change.
+Open: keyboard/VoiceOver, runtime reduced-motion and fluent translation review on the live site. Releases need no download-link change. The [website family contract](../SPEC.md#10-public-website) (2026-10-28) defines what stays shared with Rebind. The Monny landing middle was redesigned under [WEB-002](WEB-002-website-refresh.md) (2026-10-28), which owns its sections and checks.
 
 ## Companion website link — 2026-10-25
 
-Changed the Rebind footer card destination from GitHub to https://rebind.moduix.dev. Only the link target and formatter layout changed. Format, lint, TypeScript and `git diff --check` pass. Next: include this change in the next website deployment. No deployment or native app change.
+Changed the Rebind footer card destination from GitHub to https://rebind.moduix.dev. Only the link target and formatter layout changed. Format, lint, TypeScript and `git diff --check` pass. Deployed; the live footer links to rebind.moduix.dev (checked 2026-10-28).
 
 ## Production sitemap review — 2026-10-25
 

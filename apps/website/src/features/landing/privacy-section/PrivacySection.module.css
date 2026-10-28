@@ -1,0 +1,40 @@
+.table {
+  display: grid;
+  margin: 0;
+}
+.table > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding-block: 14px;
+}
+.table > div + div {
+  border-top: 1px solid var(--monny-separator);
+}
+.table dt {
+  font-size: 16px;
+}
+.table dd {
+  margin: 0;
+  padding: 5px 14px;
+  border: 1px solid var(--moduix-border);
+  border-radius: 15px;
+  background: #ffffff0d;
+  font-size: 13px;
+}
+.table dd[data-local] {
+  border-color: transparent;
+  background: #2dd4bf2e;
+  color: #5eead4;
+}
+@media (max-width: 700px) {
+  .table > div {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .table dt {
+    font-size: 15px;
+  }
+}

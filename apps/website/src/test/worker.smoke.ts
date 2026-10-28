@@ -27,10 +27,13 @@ for (const locale of settings.locales) {
     assert.equal(html.match(/<h1\b/g)?.length, 1)
     for (const key of [
       'heroTitle',
-      'featuresTitle',
-      'batteryTitle',
-      'aiTitle',
       'dashboardTitle',
+      'menuBarTitle',
+      'readingsTitle',
+      'processesTitle',
+      'batteryTitle',
+      'notificationsTitle',
+      'aiTitle',
       'privacyTitle',
       'installTitle',
       'questions',
@@ -38,7 +41,17 @@ for (const locale of settings.locales) {
     ]) {
       assert.ok(html.includes(messages[key]), `Missing localized section: ${locale}/${key}`)
     }
-    for (const id of ['features', 'battery', 'ai-limits', 'install', 'faq'])
+    for (const id of [
+      'menu-bar',
+      'readings',
+      'processes',
+      'battery',
+      'notifications',
+      'ai-limits',
+      'privacy',
+      'install',
+      'faq',
+    ])
       assert.ok(html.includes(`id="${id}"`))
     assert.ok(html.includes('type="image/webp"'))
     assert.ok(html.includes('loading="lazy"'))

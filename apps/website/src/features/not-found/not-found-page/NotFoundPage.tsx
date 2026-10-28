@@ -31,8 +31,8 @@ export function NotFoundPage() {
           </Button>
         </div>
         <nav className={styles.links} aria-label={m.product()}>
-          <Link to="/" hash="features">
-            {m.features()}
+          <Link to="/" hash="menu-bar">
+            {m.menuBar()}
           </Link>
           <Link to="/" hash="install">
             {m.install()}

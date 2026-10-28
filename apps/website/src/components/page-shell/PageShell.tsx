@@ -19,7 +19,7 @@ import styles from './PageShell.module.css'
 export function PageShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const links = [
-    ['features', m.features()],
+    ['menu-bar', m.menuBar()],
     ['battery', m.battery()],
     ['ai-limits', m.aiLimits()],
     ['install', m.install()],

@@ -1,6 +1,6 @@
 # Monny website
 
-TanStack Start, React 19 and TypeScript, built with Vite for Cloudflare Workers at **https://monny.moduix.dev**. Iteration two implements the landing and 404 from **Monny.sketch → 05 · Website**, inspected live on 2026-10-23. It includes the responsive header/Drawer, monitoring cards, battery illustration, AI limits, dashboard gallery, privacy, installation, FAQ, CTA and footer. The previous MVP was removed in commit `8c4b4e6`.
+TanStack Start, React 19 and TypeScript, built with Vite for Cloudflare Workers at **https://monny.moduix.dev**. Iteration two implements the landing and 404 from **Monny.sketch → 05 · Website**, inspected live on 2026-10-23. It includes the responsive header/Drawer, dashboard gallery, the product demo sections from WEB-002 (menu bar, readings, processes, battery and power, notifications, AI limits, privacy), installation, FAQ, CTA and footer. Product sections share `features/landing/feature-section`. The previous MVP was removed in commit `8c4b4e6`.
 
 ## Local development
 

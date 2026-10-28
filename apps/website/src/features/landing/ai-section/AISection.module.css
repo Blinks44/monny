@@ -1,0 +1,176 @@
+.tool {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tool > span:last-child {
+  display: grid;
+  gap: 2px;
+  font-size: 13px;
+  color: var(--monny-text-secondary);
+}
+.tool strong {
+  color: var(--moduix-foreground);
+  font-size: 16px;
+  font-weight: 500;
+}
+.tool .toolLogo {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  margin: 0;
+}
+.window {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 10px 12px;
+  margin-top: 28px;
+  color: var(--monny-text-secondary);
+  font-size: 13px;
+}
+.window strong {
+  color: var(--moduix-foreground);
+  font-size: 16px;
+  font-weight: 500;
+}
+.bar {
+  position: relative;
+  grid-column: 1 / -1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--monny-track);
+}
+.bar i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: #d97757;
+}
+.bar b {
+  position: absolute;
+  top: -5px;
+  width: 2px;
+  height: 18px;
+  margin-left: -1px;
+  background: var(--moduix-foreground);
+}
+.states {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--monny-separator);
+}
+.states ul {
+  display: grid;
+  gap: 18px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.states li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px minmax(108px, auto);
+  grid-template-areas: 'text bar chip';
+  align-items: center;
+  gap: 16px;
+}
+.states li > span {
+  grid-area: text;
+  display: grid;
+  gap: 2px;
+  color: var(--monny-text-secondary);
+  font-size: 13px;
+}
+.states strong {
+  color: var(--moduix-foreground);
+  font-size: 16px;
+  font-weight: 500;
+}
+.states li > i {
+  grid-area: bar;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--monny-track);
+}
+.states li > i b {
+  display: block;
+  height: 100%;
+  min-width: 6px;
+  border-radius: 3px;
+  background: #d97757;
+}
+.states [data-state='reached'] > i b {
+  display: none;
+}
+.states [data-state='stale'] > span > span {
+  color: #fdba74;
+}
+.states [data-state='stale'] > i b {
+  background: #636366;
+}
+.states em {
+  grid-area: chip;
+  justify-self: end;
+  padding: 4px 12px;
+  border-radius: 13px;
+  font-size: 13px;
+  font-style: normal;
+}
+[data-state='low'] > em {
+  color: #fbbf24;
+  background: #f59e0b2e;
+}
+[data-state='reached'] > em {
+  color: #f87171;
+  background: #ef44442e;
+}
+.sources {
+  display: grid;
+  gap: 24px;
+}
+.sources p {
+  margin: 0 0 12px;
+  color: var(--monny-text-tertiary);
+  font-size: 13px;
+}
+.sources .note {
+  margin: 0;
+  line-height: 20px;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.toolLogo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 6px;
+  background: #fff;
+  margin-right: 6px;
+}
+.toolLogo img {
+  object-fit: contain;
+}
+.toolLogo[data-brand='claude'] {
+  background: #d97757;
+}
+.toolLogo[data-brand='cursor'],
+.toolLogo[data-brand='jetbrains'],
+.toolLogo[data-brand='copilot'],
+.toolLogo[data-brand='codebuff'] {
+  background: #000;
+}
+@media (max-width: 700px) {
+  .states li {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'text chip'
+      'bar bar';
+    gap: 10px;
+  }
+}

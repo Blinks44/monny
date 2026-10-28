@@ -9,10 +9,10 @@ struct ProcessSearchField: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass").foregroundStyle(Theme.textTertiary).accessibilityHidden(true)
-            TextField("Search processes", text: $query)
+            TextField("Name, PID or port", text: $query)
                 .textFieldStyle(.plain)
                 .focused($isFocused)
-                .accessibilityLabel(Text("Search processes"))
+                .accessibilityLabel(Text("Search by name, PID or port"))
             if !query.isEmpty {
                 Button("Clear search", systemImage: "xmark.circle.fill") {
                     query = ""

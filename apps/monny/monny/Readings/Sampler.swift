@@ -52,6 +52,7 @@ final class Sampler {
     private(set) var snapshot: Snapshot?
     private(set) var batteryHealth: BatteryHealth?
     private(set) var ssdHealth: SSDHealth?
+    private(set) var busyProcesses = BusyProcesses()
     let history = History()
     /// Called on the main actor after every pass, for alerts.
     @ObservationIgnored var onSample: ((Snapshot) -> Void)?
@@ -111,6 +112,7 @@ final class Sampler {
                                                    watchesBusyApps: UserDefaults.standard.bool(forKey: PreferenceKey.notifyBusyApp))
                 guard let self, !Task.isCancelled else { return }
                 self.snapshot = snapshot
+                busyProcesses.update(snapshot.processes, now: .now)
                 history.record(snapshot, adding: extraHistoryValues())
                 onSample?(snapshot)
                 // Settings shows 2 s until the user picks a rate; `integer(forKey:)` would read 0 then.

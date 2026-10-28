@@ -7,7 +7,7 @@ struct ProcessesTab: View {
     @State private var query = ""
 
     var body: some View {
-        ProcessList(processes: sampler.snapshot?.processes ?? [], sort: $sort, query: $query,
+        ProcessList(processes: sampler.snapshot?.processes ?? [], busy: sampler.busyProcesses, sort: $sort, query: $query,
                     refresh: { sampler.refreshProcesses() })
             .onAppear { sampler.setProcessListVisible(true) }
             .onDisappear { sampler.setProcessListVisible(false) }

@@ -252,6 +252,23 @@ struct TintedButtonStyle: ButtonStyle {
     }
 }
 
+/// Soft red capsule for an action that loses data (`Button/Destructive`), such as Force Quit….
+struct DestructiveButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(Theme.bodyEmphasized)
+            .foregroundStyle(Theme.statusDangerText)
+            .padding(.horizontal, 14)
+            .frame(height: 32)
+            .background(Theme.statusDangerBg, in: .capsule)
+            .overlay { Capsule().fill(configuration.isPressed ? Theme.statePressed : .clear) }
+            .opacity(isEnabled ? 1 : 0.45)
+            .contentShape(.capsule)
+    }
+}
+
 /// Accent text without a background (`Button/Plain`), for links such as Open Dashboard.
 struct PlainLinkButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled

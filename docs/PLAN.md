@@ -16,6 +16,8 @@ Complete the native monitor's remaining compatibility/release checks and AI-limi
 
 ## Next features
 
+Process search by name, PID or port, the compact sort pop-up and Needs attention are implemented and accepted in build 68 ([DES-005](tasks/DES-005-process-port-search.md)); they ship with the next release.
+
 The pre-release additions are implemented: grouped processes ([APP-008](tasks/APP-008-grouped-processes-keyboard-idle-cost.md)), menu bar readings ([APP-010](tasks/APP-010-menu-bar-readings.md)), sustained-load alert ([APP-011](tasks/APP-011-busy-app-alert.md)), native onboarding ([APP-009](tasks/APP-009-native-onboarding.md)), power draw ([APP-013](tasks/APP-013-power-draw.md)) and Sparkle ([APP-012](tasks/APP-012-sparkle-updates.md)). Their build-37 user acceptance is dated evidence, not acceptance of later changes.
 
 Power UI, process search and Quit/Force Quit ([DES-004](tasks/DES-004-power-search-quit-ai-tools.md)) are implemented and the current interface/translations were accepted 2026-10-26. JetBrains AI and Copilot matched their real sources in installed 1.1.0. Simple additional AI tools are authorized: ClinePass/Codebuff are implemented in build 64 and Amp/Augment/Nous in build 65, awaiting real-account agreement. Build 66 adds authentic vendor marks; the deployed website has six-language badges/selection rationale accepted on desktop and phone; remaining candidates need their own source decision. Existing-hardware acceptance does not establish every charging/accessibility edge case or Mac configuration.

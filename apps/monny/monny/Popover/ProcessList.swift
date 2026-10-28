@@ -1,9 +1,11 @@
 import AppKit
 import SwiftUI
 
-/// Search, sorting and visible grouped process rows from one shared sampler snapshot.
+/// Search, sorting and visible grouped process rows from one shared sampler snapshot. A PID,
+/// port or local URL in the search field switches to `ProcessLookupList`.
 struct ProcessList: View {
     let processes: [ProcessUsage]
+    var busy = BusyProcesses()
     @Binding var sort: ProcessSort
     @Binding var query: String
     var refresh: () -> Void = { }
@@ -13,14 +15,52 @@ struct ProcessList: View {
     @State private var terminator = ProcessTerminator()
 
     var body: some View {
+        let lookup = ProcessQuery(query)
         VStack(spacing: 10) {
-            ProcessSearchField(query: $query)
-            SegmentedControl(title: "Sort by", selection: $sort, options: [
-                (.cpu, "CPU"), (.memory, "Memory"), (.energy, "Energy"),
-            ], style: .chips)
-            .padding(.vertical, 2)
+            HStack(spacing: Theme.spaceM) {
+                ProcessSearchField(query: $query)
+                if case .name = lookup {
+                    PopupPicker(title: "Sort by", selection: $sort, options: [
+                        (.cpu, Text("CPU")), (.memory, Text("Memory")), (.energy, Text("Energy")),
+                    ])
+                }
+            }
+            if case .name(let name) = lookup {
+                let attention = name.isEmpty ? busy.attention(in: processes, now: .now) : []
+                if !attention.isEmpty {
+                    NeedsAttentionCard(items: attention, isEnding: isEnding,
+                                       quit: { request(for: $0).map { end($0, force: false) } },
+                                       forceQuit: { confirmation = request(for: $0) },
+                                       show: { query = String($0) })
+                }
+                list(limit: attention.isEmpty ? 8 : 7 - attention.count)
+            } else {
+                ProcessLookupList(query: lookup, processes: processes, refresh: refresh, show: { query = String($0) })
+            }
+        }
+        .alert(LocalizedStringResource("Force quit “\(confirmation?.target.name ?? "")”?"), item: $confirmation) { request in
+            Button("Cancel", role: .cancel) { }
+            Button("Force Quit", role: .destructive) { end(request, force: true) }
+        } message: { _ in
+            Text("Unsaved changes will be lost.")
+        }
+        .alert(LocalizedStringResource("Couldn’t quit “\(failure?.name ?? "")”"), item: $failure) { _ in
+            Button("OK", role: .cancel) { }
+        } message: { failure in
+            Text(failure.reason.message)
+        }
+    }
 
-            let rows = sort.rows(in: processes, matching: query, limit: 8)
+    /// A Needs attention row ends only its own process, never the app it is grouped under.
+    private func request(for process: ProcessUsage) -> ProcessTerminationRequest? {
+        var single = process
+        single.app = nil
+        return ProcessTerminationRequest(row: single, processes: [])
+    }
+
+    private func list(limit: Int) -> some View {
+        Group {
+            let rows = sort.rows(in: processes, matching: query, limit: limit)
             let top = rows.first.map(value(of:)) ?? 0
             VStack(spacing: 0) {
                 if rows.isEmpty {
@@ -64,17 +104,6 @@ struct ProcessList: View {
             .padding(.vertical, 9)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .card()
-        }
-        .alert(LocalizedStringResource("Force quit “\(confirmation?.target.name ?? "")”?"), item: $confirmation) { request in
-            Button("Cancel", role: .cancel) { }
-            Button("Force Quit", role: .destructive) { end(request, force: true) }
-        } message: { _ in
-            Text("Unsaved changes will be lost.")
-        }
-        .alert(LocalizedStringResource("Couldn’t quit “\(failure?.name ?? "")”"), item: $failure) { _ in
-            Button("OK", role: .cancel) { }
-        } message: { failure in
-            Text(failure.reason.message)
         }
     }
 
@@ -129,7 +158,7 @@ struct ProcessList: View {
     }
 }
 
-private struct ProcessActionFailure {
+struct ProcessActionFailure {
     let name: String
     let reason: ProcessTerminationFailure
 }

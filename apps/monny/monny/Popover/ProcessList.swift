@@ -81,7 +81,7 @@ struct ProcessList: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 } else {
-                    ForEach(rows.enumerated(), id: \.element.id) { index, process in
+                    ForEach(Array(rows.enumerated()), id: \.element.id) { index, process in
                         if index > 0 { Theme.fillSeparator.frame(height: 1).padding(.leading, 42) }
                         ProcessRow(process: process, value: valueText(of: process), detail: detail(of: process),
                                    share: top > 0 ? value(of: process) / top : nil, color: color)

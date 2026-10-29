@@ -70,9 +70,14 @@ appcast="$output/appcast.xml"
 rm -f "$appcast"
 cp "$dmg" "$staging/"
 rm -rf "$staging/Monny.app"
+# The update window shows what changed: docs/releases/<Version>.md without its title and install
+# section, which generate_appcast embeds as Monny.md next to Monny.dmg.
+notes="$app_root/../../docs/releases/$version.md"
+[[ -f "$notes" ]] || { echo "Missing release notes: $notes" >&2; exit 1; }
+sed -e '1{/^# /d;}' -e '/^## Install or update/,$d' "$notes" > "$staging/Monny.md"
 "$app_root/build/DerivedData/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_appcast" --account monny \
     --download-url-prefix "https://github.com/Blinks44/monny/releases/download/v$version/" \
-    --full-release-notes-url "https://github.com/Blinks44/monny/releases/tag/v$version" \
+    --full-release-notes-url "https://github.com/Blinks44/monny/releases/tag/v$version" --embed-release-notes \
     --link "https://github.com/Blinks44/monny" -o "$appcast" "$staging" > "$output/appcast.log" 2>&1 \
     || { echo "Appcast failed (is the update signing key in the keychain?); see $output/appcast.log" >&2; exit 1; }
 echo "Package: $dmg (Monny $version, build $build; signed, not notarized)"

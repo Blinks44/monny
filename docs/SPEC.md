@@ -1,7 +1,7 @@
 # Monny: product specification
 
 **Status:** specification derived from saved Monny.sketch; native-only scope revised by user instruction on 2026-10-21. Implementation and hardware support must be independently verified; a requirement here does not mean it exists.
-**Platform:** macOS 26+ on Apple silicon only (Intel Macs are out of scope, user decision 2026-10-18), native SwiftUI/AppKit, distributed outside the Mac App Store.
+**Platform:** macOS 15+ on Apple silicon only (lowered from 26 by user decision 2026-10-29; the native charge limit still needs 26.4+, earlier versions monitor only) (Intel Macs are out of scope, user decision 2026-10-18), native SwiftUI/AppKit, distributed outside the Mac App Store.
 **Companion files:** [AGENTS](../AGENTS.md), [STATE](STATE.md), [WORKFLOW](WORKFLOW.md), [PLAN](PLAN.md), [DESIGN](DESIGN.md). Visual states, layout and exact copy live in Sketch; this file owns behavior and acceptance.
 
 ## 1. Product vision

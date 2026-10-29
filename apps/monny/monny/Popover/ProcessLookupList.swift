@@ -388,7 +388,7 @@ struct NeedsAttentionCard: View {
                 .font(Theme.footnote.weight(.semibold)).foregroundStyle(Theme.textSecondary)
                 .padding(.top, 4)
                 .accessibilityAddTraits(.isHeader)
-            ForEach(items.enumerated(), id: \.element.process.id) { index, item in
+            ForEach(Array(items.enumerated()), id: \.element.process.id) { index, item in
                 if index > 0 { Theme.fillSeparator.frame(height: 1).padding(.leading, 42) }
                 HStack(spacing: Theme.spaceL) {
                     Button {

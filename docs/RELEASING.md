@@ -13,7 +13,7 @@ Never publish different bytes under a version that is already public: raise the 
 
 ## 2. Write the notes and changelog
 
-Add `## <Version>: <date>` to [CHANGELOG](../CHANGELOG.md) and the release notes in `docs/releases/<Version>.md` (see [1.0.0](releases/1.0.0.md)): what changed, how to install, known limits and the tested Mac/macOS. Commit everything, so the tag points at the exact source of the package.
+Add `## <Version>: <date>` to [CHANGELOG](../CHANGELOG.md) and the release notes in `docs/releases/<Version>.md` (see [1.0.0](releases/1.0.0.md)): what changed, how to install, known limits and the tested Mac/macOS. `release.sh` requires this file and embeds its text above `## Install or update` (without the title) in the appcast, so the update window shows it. Commit everything, so the tag points at the exact source of the package.
 
 ## 3. Build the package
 

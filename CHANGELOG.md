@@ -2,6 +2,12 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.3.0: 2026-10-29
+
+- Runs on macOS 15 and later. The charge limit still needs macOS 26.4.
+- The update window shows what's new.
+- Onboarding: the button on the last step no longer crowds the settings above it.
+
 ## 1.2.1: 2026-10-28
 
 - Processes: the list shows nine apps instead of eight.

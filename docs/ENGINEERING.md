@@ -4,7 +4,7 @@ Read before changing app code or choosing a reading/charging mechanism. Workflow
 
 ## Platform and baseline
 
-- **macOS 26+ on Apple silicon only** (user decision 2026-10-18). Intel Macs are out of scope; Release builds should target `arm64` only (set in the release task).
+- **macOS 15+ on Apple silicon only** (deployment target lowered from 26 by user decision 2026-10-29; Apple silicon only by user decision 2026-10-18). Intel Macs are out of scope; Release builds should target `arm64` only (set in the release task).
 - Swift 6 language mode, complete strict concurrency, `MainActor` default isolation, approachable concurrency (all set in the Xcode project). Current stable Xcode toolchain.
 - SwiftUI for UI, Swift Charts for charts, AppKit only where SwiftUI is insufficient (status item with right-click menu, global shortcut, window/popover behavior). Prefer `MenuBarExtra` if it satisfies the status-item states and right-click menu; otherwise an `NSStatusItem` hosting SwiftUI content.
 - One app process; no privileged helper/XPC service on main. Native limit is a direct system preference; experimental helper/SMC control is on experiments/discharge.
@@ -65,6 +65,6 @@ App strings live in `Localizable.xcstrings`, website strings in `apps/website/sr
 
 ## Dependencies and skills
 
-Before building non-trivial functionality from scratch, search native APIs, Swift Package Index and maintained open-source macOS projects. Check macOS 26 compatibility, maintenance and license; prefer the simpler reliable option and record decisions in [research](research/README.md). GPL sources may inform research but must not be copied.
+Before building non-trivial functionality from scratch, search native APIs, Swift Package Index and maintained open-source macOS projects. Check macOS 15 compatibility, maintenance and license; prefer the simpler reliable option and record decisions in [research](research/README.md). GPL sources may inform research but must not be copied.
 
 Reviewed project skills live in `.agents/skills/` with `manifest.json` recording source, revision, license and reasons for skipped candidates. Read only the relevant skill; routing is in AGENTS §5. Upstream iOS-only advice (UIKit, `UIScreen`, BGTaskScheduler) does not apply.

@@ -200,16 +200,17 @@ struct UnavailableValue: View {
 
 // Pressed buttons darken like native push buttons instead of fading.
 
-/// Accent capsule for the one primary action (`Button/Primary`).
+/// Accent capsule for the one primary action (`Button/Primary`, or `Button/Large Primary`).
 struct PrimaryButtonStyle: ButtonStyle {
+    var isLarge = false
     @Environment(\.isEnabled) private var isEnabled
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(Theme.bodyEmphasized)
             .foregroundStyle(Theme.textOnAccent)
-            .padding(.horizontal, 14)
-            .frame(height: 32)
+            .padding(.horizontal, isLarge ? 24 : 14)
+            .frame(height: isLarge ? 40 : 32)
             .background(Theme.accentBrand.gradient, in: .capsule)
             .overlay { Capsule().fill(configuration.isPressed ? Theme.statePressed : .clear) }
             .opacity(isEnabled ? 1 : 0.4)

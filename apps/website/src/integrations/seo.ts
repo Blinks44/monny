@@ -59,7 +59,7 @@ export function pageHead(locale: Locale, notFound = false) {
               url,
               description,
               inLanguage: locale,
-              operatingSystem: 'macOS 26+',
+              operatingSystem: 'macOS 15+',
               applicationCategory: 'UtilitiesApplication',
             }),
           },

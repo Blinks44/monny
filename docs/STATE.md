@@ -1,10 +1,10 @@
 # Monny: current state
 
-Updated **2026-10-28**. Main is a native monitor with the macOS 26.4+ system charge limit; no helper, XPC, SMC writes or Discharge. The retired experiment and its detailed records remain on **experiments/discharge** at `09595b5`.
+Updated **2026-10-29**. Main is a native monitor with the macOS 26.4+ system charge limit; no helper, XPC, SMC writes or Discharge. The retired experiment and its detailed records remain on **experiments/discharge** at `09595b5`.
 
 ## Implemented baseline
 
-- macOS 26+ / Apple silicon, SwiftUI/AppKit, Swift 6 complete concurrency. Target/module `monny`, product `Monny.app`, bundle ID `blinks44.monny`. Hardened Runtime on, App Sandbox off. Six-language String Catalog (EN/RU/DE/FR/ES/zh-Hans).
+- macOS 15+ / Apple silicon (lowered from 26 on 2026-10-29; charge limit 26.4+), SwiftUI/AppKit, Swift 6 complete concurrency. Target/module `monny`, product `Monny.app`, bundle ID `blinks44.monny`. Hardened Runtime on, App Sandbox off. Six-language String Catalog (EN/RU/DE/FR/ES/zh-Hans).
 - One shared sampler: CPU/memory/disk/network/process/battery, SMC temperatures/fans and NVMe health; history 1m–7d. Unsupported readings stay unavailable.
 - Native charge limit: explicit 80–100% target with read-back; 100% disables it. Independent Optimized Battery Charging switch when readable. macOS keeps/enforces the preference after quit/sleep/restart; launch/wake only read. Monitoring remains available below macOS 26.4 with an information banner. Private runtime compatibility is a limitation, not a public API guarantee.
 - Processes search by name, PID or local port with single-PID details and Quit/Force Quit…, a compact sort pop-up and Needs attention for busy processes: accepted by the user 2026-10-28 and released in 1.2.0 ([DES-005](tasks/DES-005-process-port-search.md)).
@@ -18,6 +18,7 @@ Updated **2026-10-28**. Main is a native monitor with the macOS 26.4+ system cha
 
 | Outcome | Stage | Next step |
 | --- | --- | --- |
+| [macOS 15 support, update notes](tasks/APP-016-macos-15-and-update-notes.md) | awaiting_verification | 1.3.0 build 74 packaged; macOS 15.6 VM check accepted by the user 2026-10-29. Website copy deployed by the user 2026-10-29. Check the update window from 1.2.1 after publication. |
 | [Native charging / production review](tasks/APP-007-native-simplification-design-parity.md) | awaiting_verification | Verify charge control on macOS 26.4–26.x; installed M1 Max/macOS 27.0.1 behavior accepted. |
 | [AI limits](tasks/APP-015-ai-usage-limits.md) | awaiting_verification | ClinePass/Codebuff and Amp/Augment/Nous ready for account comparison; Copilot/JetBrains accepted in 1.1.0; repeated-alert fix initially accepted; multi-poll/new-period, other accounts/history/expiry/429 and service-mark gates remain. |
 | [Website](tasks/WEB-001-landing-page.md) | awaiting_verification | Deployed desktop/phone review accepted by the user 2026-10-26. Specific keyboard/VoiceOver, reduced-motion and fluent translation checks remain. Shared shell vs product sections with Rebind: SPEC §10 (2026-10-28). |

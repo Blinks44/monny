@@ -34,7 +34,8 @@ struct OnboardingView: View {
                 case .ready: ready
                 }
             }
-            .frame(maxHeight: .infinity, alignment: .top)
+            // Keeps the drawn gap above the buttons; longer translations make the window taller.
+            Spacer(minLength: 16)
             HStack(spacing: 20) {
                 PageDots(count: steps.count, current: steps.firstIndex(of: step) ?? 0)
                 Spacer()
@@ -42,11 +43,13 @@ struct OnboardingView: View {
             }
         }
         // The content sits below the hidden 32 pt title bar, which the window adds to its size:
-        // 52 pt from the window top and 540 pt in all, as drawn.
-        .padding(.top, 20)
-        .padding([.horizontal, .bottom], 40)
-        // Ready has a third setting row and is 24 pt taller, as drawn.
-        .frame(width: 600, height: step == .ready ? 532 : 508)
+        // 52 pt from the window top, buttons 30 pt from the bottom and 540 pt in all, as drawn.
+        // Ready has a third setting row: it starts 12 pt higher, ends 6 pt lower and is 24 pt taller.
+        .padding(.top, step == .ready ? 8 : 20)
+        .padding(.horizontal, 40)
+        .padding(.bottom, step == .ready ? 24 : 30)
+        .frame(width: 600)
+        .frame(minHeight: step == .ready ? 532 : 508)
         .background { WindowBackground() }
         .onDisappear { completed = true }
     }
@@ -160,7 +163,7 @@ struct OnboardingView: View {
         switch step {
         case .welcome:
             Button("Continue") { advance() }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryButtonStyle(isLarge: true))
                 .keyboardShortcut(.defaultAction)
         case .chargeLimit:
             Button("Not Now") { advance() }
@@ -172,12 +175,12 @@ struct OnboardingView: View {
                     if !model.chargeLimit.failed { advance() }
                 }
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(PrimaryButtonStyle(isLarge: true))
             .keyboardShortcut(.defaultAction)
             .disabled(model.chargeLimit.isBusy || model.chargeLimit.setting?.available.contains(80) != true)
         case .ready:
             Button("Open Monny") { finish() }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryButtonStyle(isLarge: true))
                 .keyboardShortcut(.defaultAction)
         }
     }

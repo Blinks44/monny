@@ -25,8 +25,13 @@ struct DashboardView: View {
         // An empty unified toolbar gives the window the tall titlebar of a sidebar app, so macOS
         // places the window buttons inside the sidebar panel.
         .toolbar {
-            ToolbarItem(placement: .navigation) { Color.clear.frame(width: 1, height: 1) }
-                .sharedBackgroundVisibility(.hidden)
+            // macOS 15 has no Liquid Glass background to hide behind the item.
+            if #available(macOS 26, *) {
+                ToolbarItem(placement: .navigation) { Color.clear.frame(width: 1, height: 1) }
+                    .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem(placement: .navigation) { Color.clear.frame(width: 1, height: 1) }
+            }
         }
         .toolbar(removing: .title)
         .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)

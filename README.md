@@ -6,7 +6,7 @@
 
 <p align="center">
   See what your Mac is doing, and keep its battery healthy while it stays plugged in.<br>
-  Free, open source, native on macOS 26+.
+  Free, open source, native on macOS 15+.
 </p>
 
 A native macOS menu bar utility for resource monitoring and battery charge control. A click on the menu bar icon shows CPU, memory, disk, network, cores and battery at a glance; a dashboard window adds history charts, top processes and temperature sensors. Battery controls use the built-in macOS charge limit where available; macOS manages charging.
@@ -36,7 +36,7 @@ Readings never leave the Mac: no account, analytics or telemetry. The only netwo
 
 ## Requirements
 
-- A Mac with **Apple silicon** running macOS **26 or later**. Intel Macs are not supported. Charge limits need a Mac with a battery, macOS 26.4+ and a compatible native runtime.
+- A Mac with **Apple silicon** running macOS **15 or later**. Intel Macs are not supported. Charge limits need a Mac with a battery, macOS 26.4+ and a compatible native runtime.
 - Full Xcode with a **Swift 6.2+ compiler** and a **macOS 26+ SDK** to build from source.
 
 ## Build and run

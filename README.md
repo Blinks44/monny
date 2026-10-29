@@ -13,6 +13,8 @@ A native macOS menu bar utility for resource monitoring and battery charge contr
 
 Download the latest version from [GitHub Releases](https://github.com/Blinks44/monny/releases/latest); what changed in each version is in the [changelog](CHANGELOG.md).
 
+Made by Sergey V. News and updates: [@TheBlinks182 on X](https://x.com/TheBlinks182).
+
 ## Repository layout
 
 | Path | Contents |

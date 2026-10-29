@@ -136,3 +136,7 @@ Follow-up verification: after unifying the list and reducing logo tiles from 22 
 User acceptance 2026-10-26: the deployed website worked on desktop and phone after the 1.1.1 release. This closes the ordinary deployed visual/device review for the current section/site within the user’s coverage; exact browser, phone and viewport were not supplied. Earlier agent screenshot limitations remain historical evidence, not a request to repeat the accepted check.
 
 Next: revisit with a concrete regression or perform the remaining specific keyboard/VoiceOver, reduced-motion and fluent translation checks. No routine redeployment or desktop/phone visual follow-up remains.
+
+## Author link on X — 2026-10-29
+
+User request: make the author findable. The footer Project list gains an `X` link to https://x.com/TheBlinks182 (no translation needed), share metadata adds `twitter:site`/`twitter:creator`, and the structured data names the author with `sameAs` (X and GitHub profile). The root README links the same account. `pnpm check` (12 tests), build and seven smoke tests pass; rendered HTML contains the new tags. Not deployed. The footer is part of the shared shell with Rebind (SPEC §10), so the same link is still to be added there; Monny.sketch `05 · Website` was updated first and saved the same day: `Link · X` after GitHub in the desktop and mobile footers, footers and landing frames 28 pt taller, and the mobile `Menu bar` link no longer wraps.

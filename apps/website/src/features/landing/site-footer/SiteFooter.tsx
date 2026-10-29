@@ -34,6 +34,7 @@ export function SiteFooter() {
         <nav aria-label={m.project()}>
           <h2>{m.project()}</h2>
           <a href={site.repository}>GitHub</a>
+          <a href={site.author.x}>X</a>
           <a href={site.releases}>{m.releases()}</a>
           <a href={`${site.repository}/issues`}>{m.reportIssue()}</a>
           <a href={`${site.repository}/blob/main/LICENSE`}>{m.license()}</a>

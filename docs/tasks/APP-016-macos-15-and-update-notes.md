@@ -1,7 +1,7 @@
 # APP-016: macOS 15 support and release notes in the update window
 
 - Updated: 2026-10-29
-- Stage: awaiting_verification
+- Stage: done
 - Owner: unassigned
 - Ownership checked: 2026-10-29, released
 - Owned surfaces: deployment target, onboarding layout and `PrimaryButtonStyle(isLarge:)`, `DashboardView` toolbar, process list `ForEach`, `scripts/release.sh` appcast notes, platform statements in README/SPEC/ENGINEERING/DEVELOPMENT/AGENTS/website
@@ -22,9 +22,9 @@ User decision 2026-10-29: Monny runs on macOS 15+ (Apple silicon only, unchanged
 ## Open checks / dependency
 
 - [x] 2026-10-29, user-reported: installed build 74 on macOS 15.6 (Apple silicon VM, Russian) works, including onboarding Ready spacing, popover, dashboard Overview/Memory/Disk and window chrome. The VM has no battery or real sensors, so temperatures/SSD health show unavailable, as expected; sensors and charge limit on macOS 15 hardware are not covered.
-- [ ] Update window shows the notes when updating from 1.2.1 (after publication).
+- [x] 2026-10-29, user-reported: updating an installed 1.2.1 through Check for Updates showed the 1.3.0 notes and installed.
 - [x] Website copy (macOS 15+) deployed by the user 2026-10-29.
 
 ## Next handoff
 
-Update an installed 1.2.1 through Check for Updates and confirm the notes appear.
+None. Sensors and the charge-limit banner on real macOS 15 hardware stay unverified; revisit with an actual issue or device.

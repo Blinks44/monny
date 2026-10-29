@@ -6,7 +6,7 @@
 - Ownership checked: 2026-10-29, released
 - Owned surfaces: deployment target, onboarding layout and `PrimaryButtonStyle(isLarge:)`, `DashboardView` toolbar, process list `ForEach`, `scripts/release.sh` appcast notes, platform statements in README/SPEC/ENGINEERING/DEVELOPMENT/AGENTS/website
 - Requirements: SPEC header (platform), §7 updates
-- Code baseline: main `1df8958`, uncommitted build 74 (1.3.0)
+- Code baseline: main `af68534`, released as `v1.3.0` (build 74) on 2026-10-29
 
 ## Outcome and scope
 
@@ -27,4 +27,4 @@ User decision 2026-10-29: Monny runs on macOS 15+ (Apple silicon only, unchanged
 
 ## Next handoff
 
-Commit, publish 1.3.0 per RELEASING and deploy the website; then check the update window from 1.2.1.
+Update an installed 1.2.1 through Check for Updates and confirm the notes appear.

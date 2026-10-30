@@ -2,6 +2,10 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.3.1: 2026-10-30
+
+- The right-click menu opens in full below the menu bar, without a scroll arrow.
+
 ## 1.3.0: 2026-10-29
 
 - Runs on macOS 15 and later. The charge limit still needs macOS 26.4.

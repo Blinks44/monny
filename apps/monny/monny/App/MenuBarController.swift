@@ -67,11 +67,12 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         }
     }
 
+    /// Attaches the menu only for this click so the system positions it below the menu bar;
+    /// a manual `popUp` origin overlapped the menu bar and AppKit scrolled the first item away.
     private func showMenu() {
-        guard let button = statusItem.button else { return }
-        // Top-left corner of the menu just below the button, like a status item's own menu.
-        let origin = NSPoint(x: 0, y: button.isFlipped ? button.bounds.maxY + 5 : -5)
-        menu.popUp(positioning: nil, at: origin, in: button)
+        statusItem.menu = menu
+        statusItem.button?.performClick(nil)
+        statusItem.menu = nil
     }
 
     // MARK: Badge

@@ -5,6 +5,7 @@ Notable changes to Monny. Versions follow the app version shown in **Settings â†
 ## 1.3.1: 2026-10-30
 
 - The right-click menu opens in full below the menu bar, without a scroll arrow.
+- Processes: in Russian, the Force Quit button beside Quit stays on one line.
 
 ## 1.3.0: 2026-10-29
 

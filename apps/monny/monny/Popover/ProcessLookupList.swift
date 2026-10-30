@@ -198,7 +198,7 @@ struct ProcessLookupList: View {
             if request(for: match) != nil {
                 Button("Quit") { end(match, force: false) }
                     .buttonStyle(SecondaryButtonStyle())
-                Button(LocalizedStringResource("process.forceQuit.menu", defaultValue: "Force Quit…")) { confirmation = match }
+                Button(LocalizedStringResource("process.forceQuit.button", defaultValue: "Force Quit…")) { confirmation = match }
                     .buttonStyle(DestructiveButtonStyle())
             } else {
                 Text("Monny cannot end this process.")

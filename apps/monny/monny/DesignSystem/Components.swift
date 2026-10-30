@@ -226,6 +226,7 @@ struct SecondaryButtonStyle: ButtonStyle {
         configuration.label
             .font(Theme.bodyEmphasized)
             .foregroundStyle(Theme.textPrimary)
+            .lineLimit(1)
             .padding(.horizontal, 14)
             .frame(height: 32)
             .background(Theme.surfaceControl, in: .capsule)
@@ -244,6 +245,7 @@ struct TintedButtonStyle: ButtonStyle {
         configuration.label
             .font(Theme.bodyEmphasized)
             .foregroundStyle(Theme.accentBrand)
+            .lineLimit(1)
             .padding(.horizontal, 14)
             .frame(height: 32)
             .background(Theme.statusInfoBg, in: .capsule)
@@ -261,6 +263,7 @@ struct DestructiveButtonStyle: ButtonStyle {
         configuration.label
             .font(Theme.bodyEmphasized)
             .foregroundStyle(Theme.statusDangerText)
+            .lineLimit(1)
             .padding(.horizontal, 14)
             .frame(height: 32)
             .background(Theme.statusDangerBg, in: .capsule)

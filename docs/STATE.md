@@ -1,6 +1,6 @@
 # Monny: current state
 
-Updated **2026-10-30**. 1.3.1 (build 77) fixes the status item right-click menu scroll arrow (accepted by the user on build 75) and keeps the Russian Force Quit button on one line (check pending); packaged and committed, not published. [History](history/2026-10.md#2026-10-30-status-item-menu-without-the-scroll-arrow-131-build-76). Main is a native monitor with the macOS 26.4+ system charge limit; no helper, XPC, SMC writes or Discharge. The retired experiment and its detailed records remain on **experiments/discharge** at `09595b5`.
+Updated **2026-10-30**. 1.3.1 (build 77) fixes the status item right-click menu scroll arrow (accepted by the user on build 75) and keeps the Russian Force Quit button on one line; both accepted by the user on build 77. [History](history/2026-10.md#2026-10-30-status-item-menu-without-the-scroll-arrow-131-build-76). Main is a native monitor with the macOS 26.4+ system charge limit; no helper, XPC, SMC writes or Discharge. The retired experiment and its detailed records remain on **experiments/discharge** at `09595b5`.
 
 ## Implemented baseline
 

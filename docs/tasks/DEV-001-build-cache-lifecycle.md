@@ -29,3 +29,7 @@ Monny 1.4.0/build 79 was repackaged for tooling verification, with unchanged app
 ## Next use
 
 Use the normal dev.sh/release.sh commands; default tests/packaging clean themselves. Use dev.sh clean once an intentional build/run artifact is no longer needed. If a Desktop dialog recurs from an installed app, identify that distinct protected-file access; the build-location change does not alter system privacy grants.
+
+## Interrupted runs and cold builds (2026-11-04 follow-up)
+
+Default test/packaging runs write their owner PID to `owner.pid`; `dev.sh clean` now also removes `TestRuns`/`ReleaseRuns` directories whose owner is gone (force-killed scripts cannot run their traps), keeping a run whose owner is alive. Stub check with a temporary HOME: a dead-owner run and a run without a PID file were removed, a live-owner run was kept, and the persistent cache was cleared. Accepted trade-off: every default test/release run is a cold build that re-resolves Swift packages over the network; this is documented in DEVELOPMENT.

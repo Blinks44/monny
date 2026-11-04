@@ -18,6 +18,8 @@ trap 'exit 143' TERM
 if [[ -z "${MONNY_DERIVED_DATA:-}" ]]; then
     mkdir -p "$HOME/Library/Caches/Monny/ReleaseRuns"
     temporary_release_data="$(mktemp -d "$HOME/Library/Caches/Monny/ReleaseRuns/run.XXXXXX")"
+    # dev.sh clean keeps a run while this PID is alive.
+    echo "$$" > "$temporary_release_data/owner.pid"
     export MONNY_DERIVED_DATA="$temporary_release_data"
 fi
 monny_derived_data="$MONNY_DERIVED_DATA"

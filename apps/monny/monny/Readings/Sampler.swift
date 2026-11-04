@@ -27,6 +27,8 @@ actor ReadingSource {
     private var power = PowerReader()
     private let sensors = SensorReader()
     private let signposter = OSSignposter(subsystem: "blinks44.monny", category: "Sampler")
+    /// Launch identities from the latest process read, keyed by PID.
+    private var identities: [pid_t: UInt64] = [:]
 
     /// Process enumeration is most of a pass's cost, so it runs only while a process list is shown,
     /// or for the busy app alert while the whole CPU does at least the work of its threshold;
@@ -35,17 +37,16 @@ actor ReadingSource {
         let state = signposter.beginInterval("Sample")
         defer { signposter.endInterval("Sample", state) }
         // The bounded child waits off the main actor only while a network list is visible.
-        // Check launch identities across the interval so recycled PIDs cannot inherit traffic.
-        let identities = includeNetworkProcesses
-            ? Dictionary(uniqueKeysWithValues: processes.read().compactMap { row in row.startTime.map { (row.id, $0) } })
-            : [:]
         let rates = includeNetworkProcesses ? await ProcessNetworkReader.read() : nil
         guard !Task.isCancelled else {
             return Snapshot(thermalState: ProcessInfo.processInfo.thermalState, processes: [])
         }
-        var rows = includeProcesses || includeNetworkProcesses ? processes.read() : []
+        // Only processes already seen by the previous read existed for the whole network window,
+        // so a recycled PID cannot inherit traffic; a new process gets its rate on the next pass.
+        let earlier = identities
+        var rows = includeProcesses || includeNetworkProcesses ? readProcesses() : []
         if let rates {
-            for index in rows.indices where rows[index].startTime != nil && identities[rows[index].id] == rows[index].startTime {
+            for index in rows.indices where rows[index].startTime != nil && earlier[rows[index].id] == rows[index].startTime {
                 // A readable live process absent from a valid socket snapshot has no reported traffic.
                 rows[index].network = rates[rows[index].id] ?? NetworkRates(download: 0, upload: 0)
             }
@@ -54,9 +55,15 @@ actor ReadingSource {
         let mayHaveBusyApp = load.map { $0.total * Double($0.cores.count) >= AlertMonitor.busyAppCPU } ?? false
         return Snapshot(cpu: load, memory: memory.read(), disk: disk.read(includeSpace: isVisible), network: network.read(),
                         battery: power.read(), sensors: sensors.read(), thermalState: ProcessInfo.processInfo.thermalState,
-                        processes: includeProcesses || includeNetworkProcesses ? rows : (watchesBusyApps && mayHaveBusyApp ? processes.read() : []),
+                        processes: includeProcesses || includeNetworkProcesses ? rows : (watchesBusyApps && mayHaveBusyApp ? readProcesses() : []),
                         loadAverage: LoadAverage.read(), gpu: GPUReading.read(),
                         processNetworkAvailable: includeNetworkProcesses ? rates != nil : nil)
+    }
+
+    private func readProcesses() -> [ProcessUsage] {
+        let rows = processes.read()
+        identities = Dictionary(uniqueKeysWithValues: rows.compactMap { row in row.startTime.map { (row.id, $0) } })
+        return rows
     }
 }
 

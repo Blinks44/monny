@@ -36,6 +36,8 @@ if [[ "$command_name" == test && -z "${MONNY_DERIVED_DATA:-}" ]]; then
     mkdir -p "$cache_root/TestRuns"
     temporary_test_data="$(mktemp -d "$cache_root/TestRuns/run.XXXXXX")"
     derived_data="$temporary_test_data"
+    # The owner PID lets clean tell a running test from one left by a force-killed script.
+    echo "$$" > "$temporary_test_data/owner.pid"
     trap cleanup_test_build EXIT
     trap 'exit 130' INT
     trap 'exit 143' TERM
@@ -93,6 +95,13 @@ case "$command_name" in
             exit 1
         fi
         rm -rf -- "$derived_data"
+        # Runs left by a force-killed test or release; a run whose script is still alive is kept.
+        for run in "$cache_root/TestRuns/run."* "$cache_root/ReleaseRuns/run."*; do
+            [[ -d "$run" ]] || continue
+            owner="$(cat "$run/owner.pid" 2>/dev/null || true)"
+            if [[ -n "$owner" ]] && kill -0 "$owner" 2>/dev/null; then continue; fi
+            rm -rf -- "$run"
+        done
         echo "Build cache cleared. Packaged releases were kept."
         ;;
     release)

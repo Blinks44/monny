@@ -90,7 +90,7 @@ struct ProcessList: View {
                         if index > 0 { Theme.fillSeparator.frame(height: 1).padding(.leading, 42) }
                         ProcessRow(process: process, value: valueText(of: process), detail: detail(of: process),
                                    share: top > 0 ? value(of: process) / top : nil, color: color,
-                                   secondaryValue: sort == .network ? process.network.map { "↑ " + $0.upload.rateText } ?? "—" : nil)
+                                   secondaryValue: sort == .network ? process.network?.upload.rateText ?? "—" : nil)
                             .contentShape(.rect)
                             .contextMenu {
                                 if let request = ProcessTerminationRequest(row: process, processes: processes) {
@@ -150,7 +150,7 @@ struct ProcessList: View {
         switch sort {
         case .cpu: process.cpu.formatted(.percent.precision(.fractionLength(1)))
         case .memory: process.memory.memoryText
-        case .network: process.network.map { "↓ " + $0.download.rateText } ?? "—"
+        case .network: process.network?.download.rateText ?? "—"
         // Energy is the kernel's estimate, so it is marked as approximate.
         case .energy: "≈ " + Measurement(value: process.power, unit: UnitPower.watts)
             .formatted(.measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(1))))
@@ -209,10 +209,12 @@ private struct ProcessRow: View {
             .lineLimit(1)
             Spacer(minLength: Theme.spaceM)
             VStack(alignment: .trailing, spacing: 6) {
-                Text(value).font(Theme.bodyEmphasized.weight(.bold)).foregroundStyle(Theme.textPrimary).monospacedDigit()
+                // Direction arrows are visual only; VoiceOver hears the named direction instead.
+                Text(verbatim: secondaryValue == nil ? value : "↓ " + value)
+                    .font(Theme.bodyEmphasized.weight(.bold)).foregroundStyle(Theme.textPrimary).monospacedDigit()
                     .accessibilityLabel(secondaryValue == nil ? Text(verbatim: value) : Text("Download") + Text(verbatim: ": " + value))
                 if let secondaryValue {
-                    Text(secondaryValue).font(Theme.footnote).foregroundStyle(Theme.textSecondary).monospacedDigit()
+                    Text(verbatim: "↑ " + secondaryValue).font(Theme.footnote).foregroundStyle(Theme.textSecondary).monospacedDigit()
                         .accessibilityLabel(Text("Upload") + Text(verbatim: ": " + secondaryValue))
                 } else {
                     CapsuleBar(fraction: share, color: color, height: 4)

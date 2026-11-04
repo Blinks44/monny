@@ -16,7 +16,7 @@ nonisolated struct ProcessUsage: Sendable, Equatable, Identifiable {
     /// Bytes per second read from and written to storage over the interval.
     var diskRead: Double = 0
     var diskWrite: Double = 0
-    /// TCP/UDP external-interface bytes per second; nil means no readable network sample.
+    /// TCP/UDP non-loopback and unclassified-interface bytes per second; nil means no readable network sample.
     var network: NetworkRates? = nil
     /// Kernel launch identity, retained so an explicit action can reject a recycled PID.
     var startTime: UInt64? = nil
@@ -43,10 +43,11 @@ nonisolated struct ProcessUsage: Sendable, Equatable, Identifiable {
                 group.power += process.power
                 group.diskRead += process.diskRead
                 group.diskWrite += process.diskWrite
+                // A helper without a reading yet (just launched) must not hide the app's traffic.
                 if let current = group.network, let next = process.network {
                     group.network = NetworkRates(download: current.download + next.download, upload: current.upload + next.upload)
-                } else {
-                    group.network = nil
+                } else if group.network == nil {
+                    group.network = process.network
                 }
                 group.count += 1
                 groups[app.pid] = group

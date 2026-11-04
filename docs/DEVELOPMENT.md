@@ -28,11 +28,11 @@ Build/run/build-for-testing products use `~/Library/Caches/Monny/DerivedData/`, 
 
 `dev.sh test` uses a fresh `~/Library/Caches/Monny/TestRuns/run.*` directory and removes it on completion, failure or a handled interrupt. Only `~/Library/Caches/Monny/LastTestSummary.json` is retained, replacing the previous small summary. Compiler/test output remains in the calling terminal or its chosen log file. An explicit `-resultBundlePath` is retained where requested.
 
-`release.sh` similarly owns a temporary `ReleaseRuns/run.*` directory, passes it to dev.sh, and removes intermediate products after packaging or failure. It keeps the final signed app, DMG, checksum and appcast in the repository's release directory.
+`release.sh` similarly owns a temporary `ReleaseRuns/run.*` directory, passes it to dev.sh, and removes intermediate products after packaging or failure. It keeps the final signed app, DMG, checksum and appcast in the repository's release directory. Because every default test and packaging run starts from an empty directory, it is a full build that also downloads the Swift packages again (network required); use the persistent `build` cache or an explicit override for quick iterations.
 
 Set `MONNY_DERIVED_DATA` to an absolute, unprotected path when products/full results must survive for investigation or a hardware check. An explicit override belongs to the caller and is never automatically removed. Remove an isolated verification checkout/cache once its evidence has been recorded and no process uses it; do not leave redundant multi-hundred-megabyte copies between sessions.
 
-`apps/monny/scripts/dev.sh clean` removes only the default persistent DerivedData cache. It refuses an explicit override or files held by a running cached app/build. Use it when build/run/build-for-testing products are no longer needed. Force-killed processes cannot run cleanup traps; inspect any interrupted run directory before removing it manually.
+`apps/monny/scripts/dev.sh clean` removes the default persistent DerivedData cache and any `TestRuns`/`ReleaseRuns` directories left by a force-killed script (each run records its owner PID; a run whose owner is still alive is kept). It refuses an explicit override or files held by a running cached app/build. Use it when build/run/build-for-testing products are no longer needed.
 
 Do not run concurrent builds against the same explicit/persistent DerivedData directory. Default test/packaging runs have separate directories. Extra arguments are forwarded to xcodebuild; a second `-derivedDataPath` should not be passed. For example, to keep a full diagnostic result:
 

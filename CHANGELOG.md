@@ -2,12 +2,12 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
-## 1.4.0: unreleased
+## 1.4.0: 2026-11-04
 
-- See each app's download and upload speed in Processes by choosing Network.
-- The Network dashboard now lists the apps using the most bandwidth.
-- Daily traffic shows a date, download, upload and estimated total for each of the last seven days.
-- Adjusted the spacing at the bottom of the menu bar panel.
+- Processes can be sorted by Network to see each app's download and upload speed.
+- The Network dashboard lists the apps using the network.
+- Traffic for the last seven days shows the date, download, upload and total for each day.
+- Fixed spacing at the bottom of the menu bar panel.
 
 ## 1.3.1: 2026-10-30
 

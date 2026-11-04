@@ -34,6 +34,11 @@ struct ProcessNetworkTests {
         #expect(ProcessNetworkReader.parse(",bytes_in,bytes_out,\n,bytes_in,bytes_out,\n") == [:])
     }
 
+    @Test func commasInProcessNamesKeepTheirColumns() {
+        #expect(ProcessNetworkReader.parse(",bytes_in,bytes_out,\n,bytes_in,bytes_out,\nFoo, Inc.42,7,3,\n")?[42]
+                == NetworkRates(download: 7, upload: 3))
+    }
+
     @Test(arguments: ["-1,20", "1 KiB,20", "bad,20", "20", "18446744073709551616,20"])
     func malformedDataStaysUnavailable(_ fields: String) {
         #expect(ProcessNetworkReader.parse(",bytes_in,bytes_out,\n,bytes_in,bytes_out,\napp.42,\(fields),\n") == nil)
@@ -52,8 +57,11 @@ struct ProcessNetworkTests {
         let grouped = try #require(ProcessSort.network.rows(in: rows, matching: "Worker", limit: 9).first)
         #expect(grouped.count == 2)
         #expect(grouped.network == NetworkRates(download: 600, upload: 200))
+        // A helper without a reading yet leaves the app's known traffic visible.
         var missing = rows
         missing[1].network = nil
+        #expect(ProcessUsage.groupedByApp(missing).first { $0.id == 10 }?.network == NetworkRates(download: 100, upload: 200))
+        missing[0].network = nil
         #expect(ProcessUsage.groupedByApp(missing).first { $0.id == 10 }?.network == nil)
     }
 

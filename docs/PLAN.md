@@ -4,6 +4,10 @@ Updated 2026-11-04. [STATE](STATE.md) indexes implementation and open work; [SPE
 
 ## Current slice
 
+Kimi availability was accepted on build 86; verify detailed 5-hour/monthly quota agreement and short-lived session recovery in the 1.5.0 release ([APP-015](tasks/APP-015-ai-usage-limits.md#kimi-code-implementation--2026-11-04)).
+
+Verify the reported temperature/core-layout regressions on the affected Mac using the local build-83 candidate ([APP-018](tasks/APP-018-sensor-and-layout-regressions.md)). Publication of the combined 1.5.0 release is authorized.
+
 Process network rates and daily traffic ship in 1.4.0; only macOS 15/26 checks remain ([APP-017](tasks/APP-017-process-network.md)). Complete the native monitor's remaining compatibility/release checks and AI-limit account/history verification. Website design transfer/style corrections and the reviewed Monny/Rebind Sketch export handoff are ready; deployed desktop/phone review and the in-app update to 1.1.1 were accepted by the user on 2026-10-26. Specific accessibility/translation and remaining compatibility/account checks continue independently. Select a bounded slice from STATE; do not reimplement accepted features.
 
 ## App phases
@@ -22,7 +26,7 @@ The pre-release additions (grouped processes, menu bar readings, sustained-load 
 
 Power UI, process search and Quit/Force Quit ([DES-004](tasks/DES-004-power-search-quit-ai-tools.md)) are implemented and the current interface/translations were accepted 2026-10-26. JetBrains AI and Copilot matched their real sources in installed 1.1.0. Simple additional AI tools are authorized: ClinePass/Codebuff are implemented in build 64 and Amp/Augment/Nous in build 65, awaiting real-account agreement. Build 66 adds authentic vendor marks; the deployed website has six-language badges/selection rationale accepted on desktop and phone; remaining candidates need their own source decision. Existing-hardware acceptance does not establish every charging/accessibility edge case or Mac configuration.
 
-Opt-in AI limits are implemented for Claude Code, Codex, Cursor, Grok, local-only JetBrains AI, GitHub Copilot (build 61, existing GitHub CLI sign-in), ClinePass/Codebuff (build 64, own CLI sessions), Amp/Augment (bounded own CLI usage commands) and Nous Portal (Hermes session, build 65). Remaining real-account/history checks belong to [APP-015](tasks/APP-015-ai-usage-limits.md); Gemini is unsupported under the current credential/privacy contract.
+Opt-in AI limits are implemented for Claude Code, Codex, Cursor, Grok, local-only JetBrains AI, GitHub Copilot (build 61, existing GitHub CLI sign-in), ClinePass/Codebuff (build 64, own CLI sessions), Amp/Augment (bounded own CLI usage commands), Nous Portal (Hermes session, build 65) and Kimi Code (default CLI session, regional session selection in local build 86). Remaining real-account/history checks belong to [APP-015](tasks/APP-015-ai-usage-limits.md); Gemini is unsupported under the current credential/privacy contract.
 
 After release, Discharge may be researched again. Helper/SMC-write work is preserved on **experiments/discharge** at `09595b5`; main excludes it. A mechanism, safety and distribution decision is required before code on main. Sailing, heat-driven charging, calibration and trips are deferred; GPU load, battery health trends and widgets are not planned.
 

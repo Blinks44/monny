@@ -50,7 +50,7 @@ struct CPUPage: View {
 }
 
 /// One bar per core in two columns, Performance and Efficiency (`Card · Per-core load`).
-private struct PerCoreCard: View {
+struct PerCoreCard: View {
     let cpu: CPULoad?
 
     private func cores(_ kind: CoreKind) -> [Double?] {
@@ -64,17 +64,17 @@ private struct PerCoreCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             CardHeader("Per-core load",
-                       subtitle: Text("\(SystemInfo.performanceCores) P-cores · \(SystemInfo.efficiencyCores) E-cores"))
+                       subtitle: Text("\(cores(.performance).count) P-cores · \(cores(.efficiency).count) E-cores"))
             HStack(alignment: .top, spacing: 12) {
                 column(prefix: "P", loads: cores(.performance), color: Theme.metricCPU)
                 column(prefix: "E", loads: cores(.efficiency), color: Theme.metricCPUEfficiency)
             }
-            Spacer(minLength: 0)
         }
-        .dashboardCard(height: 284)
+        .fixedSize(horizontal: false, vertical: true)
+        .dashboardCard(minHeight: 284)
     }
 
-    /// One row per core; rows tighten so up to ten fit the card.
+    /// Keep all cores readable; the card grows and the dashboard owns scrolling.
     private func column(prefix: String, loads: [Double?], color: Color) -> some View {
         VStack(spacing: loads.count > 6 ? 4 : 8) {
             ForEach(Array(loads.enumerated()), id: \.offset) { index, load in

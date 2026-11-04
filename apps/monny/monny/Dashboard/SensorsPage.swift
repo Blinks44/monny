@@ -53,14 +53,17 @@ private struct TemperaturesCard: View {
 
     var body: some View {
         let series = kinds.map { HistoryChart.Series(id: $0.metric.rawValue, points: tier.series($0.metric), color: $0.color) }
+        let values = series.flatMap { $0.points.map(\.value) }
+        let lower = min(20, ((values.min() ?? 20) / 20).rounded(.down) * 20)
+        let upper = max(100, ((values.max() ?? 100) / 20).rounded(.up) * 20)
         VStack(alignment: .leading, spacing: 12) {
-            CardHeader("Temperatures", subtitle: range.periodName) {
-                HStack(spacing: Theme.spaceL) {
-                    ForEach(kinds) { ChartLegend(title: $0.title, color: $0.color) }
-                }
+            CardHeader("Temperatures", subtitle: range.periodName)
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), alignment: .leading)], alignment: .leading, spacing: 6) {
+                ForEach(kinds) { ChartLegend(title: $0.title, color: $0.color, wraps: true) }
             }
             if series.contains(where: { $0.points.count > 1 }) {
-                HistoryChart(series: series, tier: tier, range: range, yDomain: 20...100, yTicks: [20, 40, 60, 80, 100],
+                HistoryChart(series: series, tier: tier, range: range, yDomain: lower...upper,
+                             yTicks: Array(stride(from: lower, through: upper, by: 20)),
                              format: { $0.temperatureText(unit) })
             } else {
                 CollectingHistoryContent().frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -128,6 +131,12 @@ private struct ThermalStateCard: View {
             } else {
                 Text("Passively cooled. macOS slows the CPU when it gets hot.")
                     .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
+            }
+        } else {
+            HStack {
+                Text("Fan").font(Theme.body).foregroundStyle(Theme.textSecondary)
+                Spacer()
+                UnavailableValue(font: Theme.body)
             }
         }
     }

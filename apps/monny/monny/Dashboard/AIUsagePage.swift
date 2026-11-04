@@ -79,7 +79,7 @@ private struct AIToolTile: View {
                     }
                 }
             } else {
-                Text(state.problem == .signedOut || state.problem == .localDataMissing ? tool.signInHint
+                Text(state.problem == .signedOut || state.problem == .localDataMissing || state.problem == .expired ? tool.signInHint
                      : state.problem == .apiKey ? "Signed in with an API key, which has no plan limits." : "Checking…")
                     .font(Theme.footnote.weight(.regular))
                     .foregroundStyle(Theme.textSecondary)
@@ -108,6 +108,9 @@ private struct QuotaHistoryCard: View {
             if tool == .cline {
                 metric = !tier.series(.clineMonthly).isEmpty ? .clineMonthly
                     : !tier.series(.clineWeekly).isEmpty ? .clineWeekly : .clineSession
+            } else if tool == .kimi {
+                metric = !tier.series(.kimiMonthly).isEmpty ? .kimiMonthly
+                    : !tier.series(.kimiWeekly).isEmpty ? .kimiWeekly : .kimiSession
             } else if tool == .amp {
                 metric = !tier.series(.ampMonthly).isEmpty ? .ampMonthly : .ampFree
             } else { metric = tool.historyMetric }

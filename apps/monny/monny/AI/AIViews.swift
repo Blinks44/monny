@@ -17,6 +17,7 @@ extension AITool {
         case .amp: "Amp"
         case .augment: "Augment"
         case .nous: "Nous Portal"
+        case .kimi: "Kimi Code"
         }
     }
 
@@ -34,6 +35,7 @@ extension AITool {
         case .amp: "Amp"
         case .augment: "Auggie"
         case .nous: "Hermes Agent"
+        case .kimi: "Kimi Code CLI"
         }
     }
 
@@ -45,7 +47,7 @@ extension AITool {
         case .grok: Theme.aiGrok
         case .jetBrains: Theme.aiJetBrains
         case .amp: Theme.aiAmp
-        case .copilot, .cline, .codebuff, .augment, .nous: Theme.aiCodex
+        case .copilot, .cline, .codebuff, .augment, .nous, .kimi: Theme.aiCodex
         }
     }
 
@@ -56,12 +58,12 @@ extension AITool {
         case .codex, .grok: Theme.aiIconWhite
         case .cursor: Theme.aiIconBlack
         case .jetBrains, .copilot, .codebuff: Theme.aiIconBlack
-        case .amp, .cline, .augment, .nous: Theme.aiIconWhite
+        case .amp, .cline, .augment, .nous, .kimi: Theme.aiIconWhite
         }
     }
 
     /// The service's mark in the asset catalog (sources in research/ai-usage-limits.md).
-    var logo: ImageResource {
+    var logo: ImageResource? {
         switch self {
         case .claude: .aiClaude
         case .codex: .aiCodex
@@ -74,6 +76,7 @@ extension AITool {
         case .amp: .aiAmp
         case .augment: .aiAugment
         case .nous: .aiNous
+        case .kimi: nil
         }
     }
 
@@ -91,6 +94,7 @@ extension AITool {
         case .amp: .ampMonthly
         case .augment: .augmentMonthly
         case .nous: .nousMonthly
+        case .kimi: .kimiMonthly
         }
     }
 
@@ -104,6 +108,7 @@ extension AITool {
         case .jetBrains: "Open a JetBrains IDE and use AI Assistant to make its quota available here."
         case .amp: "Sign in to the Amp CLI to see your allowances and individual balance here."
         case .augment: "Sign in with auggie login to see your monthly credits here."
+        case .kimi: "Sign in to the Kimi Code CLI to see your limits here. Open Kimi again if your sign-in expires."
         case .nous: "Sign in to Nous Portal in Hermes Agent to see your monthly allowance and balances here."
         case .cline: "Sign in with cline auth to see your ClinePass subscription limits here."
         case .codebuff: "Sign in with codebuff login to see your weekly limits and credit balance here."
@@ -208,7 +213,15 @@ struct AIToolIcon: View {
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
-        Image(tool.logo).resizable().scaledToFit()
+        Group {
+            if let logo = tool.logo {
+                Image(logo).resizable().scaledToFit()
+            } else {
+                Text(verbatim: String(tool.name.prefix(1)))
+                    .font(.system(size: size * 0.6, weight: .semibold))
+                    .foregroundStyle(Theme.aiIconBlack)
+            }
+        }
             .frame(width: size * (tool == .jetBrains ? 0.9 : 0.6), height: size * (tool == .jetBrains ? 0.9 : 0.6))
             .frame(width: size, height: size)
             .background(tool.iconColor, in: shape)

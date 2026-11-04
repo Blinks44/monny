@@ -230,7 +230,7 @@ private struct SensorsCard: View {
     }
 
     private var fan: Text {
-        guard let rpm = sensors?.fanRPM else { return Text(verbatim: "") }
+        guard let rpm = sensors?.fanRPM else { return Text("Not available") }
         guard let fastest = rpm.max() else { return Text("No fan") }
         return Text("Fan \(fastest.rpmText)")
     }

@@ -1,6 +1,48 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+      "Sign in to the Kimi Code CLI to see your limits here. Open Kimi again if your sign-in expires.": {
+        "comment": "Kimi Code CLI setup and short-lived session recovery. Keep the product name unchanged.",
+        "extractionState": "manual",
+        "localizations": {
+          "en": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Sign in to the Kimi Code CLI to see your limits here. Open Kimi again if your sign-in expires."
+            }
+          },
+          "ru": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Войдите в Kimi Code CLI, чтобы видеть лимиты здесь. Если сеанс истечёт, откройте Kimi снова."
+            }
+          },
+          "de": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Melde dich in der Kimi Code CLI an, um hier deine Limits zu sehen. Öffne Kimi erneut, wenn deine Sitzung abläuft."
+            }
+          },
+          "fr": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Connectez-vous à Kimi Code CLI pour voir vos limites ici. Rouvrez Kimi si votre session expire."
+            }
+          },
+          "es": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "Inicia sesión en Kimi Code CLI para ver tus límites aquí. Si la sesión caduca, vuelve a abrir Kimi."
+            }
+          },
+          "zh-Hans": {
+            "stringUnit": {
+              "state": "translated",
+              "value": "登录 Kimi Code CLI 即可在此查看额度。登录过期后，请重新打开 Kimi。"
+            }
+          }
+        }
+      },
     "Name, PID or port" : {
       "comment" : "Placeholder of the Processes search field.",
       "extractionState" : "manual",

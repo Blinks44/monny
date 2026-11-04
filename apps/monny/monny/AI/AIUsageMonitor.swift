@@ -215,6 +215,9 @@ extension HistoryMetric {
         case (.amp, _): .ampMonthly
         case (.augment, _): .augmentMonthly
         case (.nous, _): .nousMonthly
+        case (.kimi, .session): .kimiSession
+        case (.kimi, .weekly): .kimiWeekly
+        case (.kimi, .monthly): .kimiMonthly
         }
     }
 }

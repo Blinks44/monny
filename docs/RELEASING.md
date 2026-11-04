@@ -11,6 +11,12 @@ In Xcode, open target **monny** → General → Identity, or edit `apps/monny/mo
 
 Never publish different bytes under a version that is already public: raise the build and the version instead. Set the version before packaging any build you install: an installed local package with the same build number as the release (even under an older version) makes Sparkle report it as up to date. Builds before 34 only have the old manual update check and must be replaced by hand once.
 
+### Sharing a local review DMG
+
+A user who installed from GitHub can quit Monny and replace the app in Applications with a directly shared signed review build. Preserve the bundle identifier, code signer, `SUFeedURL` and `SUPublicEDKey`. Settings remain in the existing app data; the review app continues to check the ordinary public feed. A newly downloaded, non-notarized build can still require macOS first-launch approval; signer continuity is not a notarization guarantee.
+
+Sharing a DMG does not make it appear in Check for Updates. For that route, publish the matching DMG and signed appcast in a new stable GitHub release. Sparkle's EdDSA archive signature is separate from the app's code signature. A public release must exceed the highest build shared with testers, even if the changes are otherwise identical. For example, local build 86 is superseded by 1.5.0/build 87. Keep previously published version assets unchanged.
+
 ## 2. Write the notes and changelog
 
 Add `## <Version>: <date>` to [CHANGELOG](../CHANGELOG.md) and the release notes in `docs/releases/<Version>.md` (see [1.0.0](releases/1.0.0.md)): what changed, how to install, known limits and the tested Mac/macOS. `release.sh` requires this file and embeds its text above `## Install or update` (without the title) in the appcast, so the update window shows it. Commit everything, so the tag points at the exact source of the package.

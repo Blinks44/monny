@@ -9,7 +9,7 @@ nonisolated struct SMCValue: Sendable, Equatable {
     /// The value as a number, or `nil` for types Monny does not read.
     /// `flt ` is a little-endian Float on Apple silicon; the fixed-point and integer types are big-endian.
     var number: Double? {
-        switch type {
+        let value: Double? = switch type {
         case "flt " where bytes.count == 4:
             Double(Float(bitPattern: bytes.reversed().reduce(0) { $0 << 8 | UInt32($1) }))
         case "sp78" where bytes.count == 2:
@@ -23,6 +23,7 @@ nonisolated struct SMCValue: Sendable, Equatable {
         default:
             nil
         }
+        return value.flatMap { $0.isFinite ? $0 : nil }
     }
 }
 

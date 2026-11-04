@@ -3,7 +3,7 @@ import SwiftUI
 
 /// "CPU load & temperature" (Sketch `Card · CPU history`): Performance and Efficiency load as
 /// areas, CPU temperature as a dashed line, and a tooltip under the pointer. Temperature shares
-/// the 0–100 axis, read as °C, so no second axis is needed.
+/// the load axis at 100 °C per unit; hotter readings expand the domain.
 struct CPUHistoryCard: View {
     let tier: HistoryTier
     let range: HistoryRange
@@ -74,7 +74,7 @@ struct CPUHistoryCard: View {
             .interpolationMethod(.monotone)
     }
 
-    /// Temperature shares the 0...1 load scale: 100 °C is the top.
+    /// Temperature shares the load scale: 100 °C aligns with 100% load.
     private var temperaturePlot: some ChartContent {
         LinePlot(PlotPoint.series("T", temperature, scale: 0.01), x: .value("Time", \.date), y: .value("Load", \.value),
                  series: .value("Series", \.series))
@@ -102,7 +102,7 @@ struct CPUHistoryCard: View {
         // Monotone curves do not overshoot the data, and the plot is clipped like the Sketch frame.
         .chartPlotStyle { $0.clipped() }
         .chartXScale(domain: Date.now.addingTimeInterval(-tier.span)...Date.now)
-        .chartYScale(domain: 0...1)
+        .chartYScale(domain: 0...max(1, ((temperature.map(\.value).max() ?? 100) / 20).rounded(.up) / 5))
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 5)) { _ in
                 AxisValueLabel(format: range.timeFormat)
@@ -165,14 +165,15 @@ struct CPUHistoryCard: View {
 struct ChartLegend: View {
     let title: LocalizedStringKey
     let color: Color
+    var wraps = false
 
     var body: some View {
         HStack(spacing: 5) {
             Circle().fill(color).frame(width: 8, height: 8)
             Text(title).font(Theme.footnote.weight(.semibold)).foregroundStyle(Theme.textSecondary)
         }
-        .lineLimit(1)
-        .fixedSize()
+        .lineLimit(wraps ? nil : 1)
+        .fixedSize(horizontal: !wraps, vertical: true)
     }
 }
 

@@ -7,8 +7,9 @@ nonisolated struct SensorReading: Sendable, Equatable {
     var gpu: Double?
     var ssd: Double?
     var battery: Double?
-    /// One speed per fan in rpm, empty on a fanless Mac. 0 means stopped, which is normal at low load.
-    var fanRPM: [Double]
+    /// Speeds in rpm; nil when unreadable, empty only on a confirmed fanless Mac.
+    /// 0 means stopped, which is normal at low load.
+    var fanRPM: [Double]?
     /// Each fan's maximum rpm (`F<n>Mx`), when the SMC reports it.
     var fanMaxRPM: [Double] = []
 }
@@ -52,10 +53,10 @@ nonisolated enum SensorKeys {
         return Int(match.1)
     }
 
-    /// Mean of the plausible readings. Absent sensors read 0 on some Macs, so values outside
-    /// 1...150 °C are ignored.
-    static func average(_ values: [Double]) -> Double? {
-        let valid = values.filter { (1...150).contains($0) }
+    /// Mean of current, plausible readings. CPU/GPU callers use 10...120 °C to exclude
+    /// power-gated-core placeholders (including 1.5–5 °C); see research and Stats #3692.
+    static func average(_ values: [Double], validRange: ClosedRange<Double> = 1...150) -> Double? {
+        let valid = values.filter { $0.isFinite && validRange.contains($0) }
         return valid.isEmpty ? nil : valid.reduce(0, +) / Double(valid.count)
     }
 }
@@ -68,15 +69,27 @@ nonisolated final class SensorReader {
 
     func read() -> SensorReading? {
         guard let smc else { return nil }
-        func temperature(_ keys: [String]) -> Double? { SensorKeys.average(keys.compactMap { smc.read($0)?.number }) }
-        let fanCount = smc.read("FNum")?.number.map(Int.init) ?? 0
-        let fans = (0..<fanCount).compactMap { smc.read("F\($0)Ac")?.number }.map { max($0, 0) }
+        return Self.read(generation: generation, value: { smc.read($0)?.number })
+    }
+
+    /// The same aggregation for live SMC reads and deterministic source fixtures.
+    static func read(generation: Int?, value: (String) -> Double?) -> SensorReading {
+        func temperature(_ keys: [String], die: Bool = false) -> Double? {
+            SensorKeys.average(keys.compactMap(value), validRange: die ? 10...120 : 1...150)
+        }
+        // F<n> keys have one decimal digit. Never infer a fanless Mac from a failed count/read.
+        let fanCount = value("FNum").flatMap { Int(exactly: $0) }.flatMap { (0...10).contains($0) ? $0 : nil }
+        let fans = fanCount.flatMap { count -> [Double]? in
+            let speeds = (0..<count).compactMap { value("F\($0)Ac") }.filter { $0.isFinite && $0 >= 0 }
+            return speeds.count == count ? speeds : nil
+        }
+        let maxima = (0..<(fanCount ?? 0)).compactMap { value("F\($0)Mx") }.filter { $0.isFinite && $0 > 0 }
         return SensorReading(
-            cpu: generation.flatMap { temperature(SensorKeys.cpu(generation: $0)) },
-            gpu: generation.flatMap { temperature(SensorKeys.gpu(generation: $0)) },
+            cpu: generation.flatMap { temperature(SensorKeys.cpu(generation: $0), die: true) },
+            gpu: generation.flatMap { temperature(SensorKeys.gpu(generation: $0), die: true) },
             ssd: temperature(SensorKeys.ssd),
             battery: temperature(SensorKeys.battery),
             fanRPM: fans,
-            fanMaxRPM: (0..<fanCount).compactMap { smc.read("F\($0)Mx")?.number }.filter { $0 > 0 })
+            fanMaxRPM: maxima.count == fanCount ? maxima : [])
     }
 }

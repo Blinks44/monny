@@ -2,6 +2,13 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.5.0: 2026-11-04
+
+- Added Kimi Code limits, including international accounts, using the existing sign-in.
+- Fixed CPU/GPU temperatures dropping when cores are idle.
+- The CPU core list grows to fit the Mac's cores.
+- Fixed fan status, clipped temperature charts and crowded sensor legends.
+
 ## 1.4.0: 2026-11-04
 
 - Processes can be sorted by Network to see each app's download and upload speed.

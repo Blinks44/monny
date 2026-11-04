@@ -49,6 +49,7 @@ actor AIUsageReader {
             case .grok: Self.home.appending(path: ".grok")
             case .cline: Self.clineCredentials
             case .codebuff: Self.codebuffCredentials
+            case .kimi: Self.kimiHomes.first(where: { fileManager.fileExists(atPath: $0.path) }) ?? Self.kimiHomes[0]
             case .jetBrains, .copilot, .amp, .augment, .nous: Self.home
             }
             return fileManager.fileExists(atPath: url.path(percentEncoded: false))
@@ -67,6 +68,7 @@ actor AIUsageReader {
         case .codebuff: await readCodebuff(now: now)
         case .amp, .augment: await readCommand(tool, now: now)
         case .nous: await readNous(now: now)
+        case .kimi: await readKimi(now: now)
         }
     }
 
@@ -274,6 +276,26 @@ actor AIUsageReader {
         return await fetch(request, now: now, allowsUnmetered: true) {
             try CodebuffUsage.usage(usage, subscription: $0, now: now)
         }
+    }
+
+    /// Prefer the new CLI; never fall through to another account after rejection/expiry.
+    static var kimiHomes: [URL] { [".kimi-code", ".kimi"].map { home.appending(path: $0) } }
+
+    func readKimi(homes: [URL] = kimiHomes, now: Date) async -> Result<AIUsage, AIUsageProblem> {
+        guard let directory = homes.first(where: { FileManager.default.fileExists(atPath: $0.path) }),
+              let source = KimiSession.locate(in: directory),
+              let data = SavedAISession.data(at: source.file) else {
+            return .failure(.signedOut)
+        }
+        let token: String
+        do { token = try KimiUsage.credential(data, now: now, region: source.region) }
+        catch let problem as AIUsageProblem { return .failure(problem) }
+        catch { return .failure(.signedOut) }
+        // The official CLI quota fetch sends only bearer/Accept; no device identity or cookies.
+        guard let url = URL(string: source.region.apiBase + "/usages") else { return .failure(.unavailable(retryAfter: nil)) }
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return await fetch(request, now: now) { try KimiUsage.usage($0, now: now) }
     }
 
     static var hermesCredentialFiles: [URL] {

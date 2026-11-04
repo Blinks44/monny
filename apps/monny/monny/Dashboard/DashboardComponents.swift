@@ -35,12 +35,13 @@ struct CardHeader<Trailing: View>: View {
 }
 
 extension View {
-    /// The window card frame: 18 pt sides, 16 pt top, fixed height (Sketch rows are 284 and 176 pt).
-    func dashboardCard(height: CGFloat) -> some View {
+    /// Sketch rows are 284/176 pt; variable-length content can opt into a minimum height.
+    func dashboardCard(height: CGFloat? = nil, minHeight: CGFloat? = nil) -> some View {
         padding(.horizontal, 18)
             .padding(.top, 16)
             .padding(.bottom, 10)
             .frame(maxWidth: .infinity, alignment: .topLeading)
+            .frame(minHeight: minHeight, alignment: .top)
             .frame(height: height, alignment: .top)
             .card()
     }

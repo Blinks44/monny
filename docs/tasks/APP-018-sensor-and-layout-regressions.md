@@ -3,10 +3,10 @@
 - Updated: 2026-11-04
 - Stage: awaiting_verification
 - Owner: unassigned; implementation complete, affected-device check pending
-- Ownership checked: main `9327dab`; this task's edits are uncommitted; released
+- Ownership checked: main `9327dab`; implementation committed in `d7f9d02`; ownership released
 - Owned surfaces: SensorReader/SMC decoding, CPU per-core card, related sensor UI, regression tests and affected documentation
 - Requirements: SPEC §3–4 (shared readings, per-core load, unavailable sensors); ENGINEERING readings/UI contracts
-- Code baseline: main `9327dab` (published 1.4.0/build 82); this task's edits are uncommitted
+- Code baseline: main `9327dab` (published 1.4.0/build 82); source released in `d7f9d02` as 1.5.0/build 87
 
 ## Outcome and scope
 
@@ -44,3 +44,5 @@ The bounded review covered CPU topology/layout, common dashboard sizing, sensor 
 Next: check build 83 on the reporter's Mac at idle and during normal work, compare the CPU temperature with an independent sensor tool and confirm all P/E rows stay within their card. Record chip/macOS and the comparison; investigate model-specific raw keys if low readings persist. Combined 1.5.0 publication was authorized on 2026-11-04; affected-device verification remains open.
 
 Combined review 2026-11-04: the sensor/fan/layout diff was re-read alongside Kimi; no blocking code defect found. Shared build 84 contains both scopes and retains the recorded 168-test passing result; no tests rerun or app code changed during review. Build 83 above remains the isolated sensor artifact. Update/signing compatibility evidence and next-release numbering: [APP-015](APP-015-ai-usage-limits.md#combined-review-and-update-compatibility--2026-11-04). Affected-device acceptance stays open.
+
+Published with Kimi Code in [1.5.0/build 87](https://github.com/Blinks44/monny/releases/tag/v1.5.0) on 2026-11-04, source `d7f9d02`. All 172 combined tests pass and public asset/appcast checks match. The affected-Mac runtime checks above remain open.

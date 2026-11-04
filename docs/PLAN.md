@@ -6,7 +6,7 @@ Updated 2026-11-04. [STATE](STATE.md) indexes implementation and open work; [SPE
 
 Kimi availability was accepted on build 86; verify detailed 5-hour/monthly quota agreement and short-lived session recovery in the 1.5.0 release ([APP-015](tasks/APP-015-ai-usage-limits.md#kimi-code-implementation--2026-11-04)).
 
-Verify the reported temperature/core-layout regressions on the affected Mac using the local build-83 candidate ([APP-018](tasks/APP-018-sensor-and-layout-regressions.md)). Publication of the combined 1.5.0 release is authorized.
+Verify the reported temperature/core-layout regressions on the affected Mac using the local build-83 candidate ([APP-018](tasks/APP-018-sensor-and-layout-regressions.md)). The combined 1.5.0 release is published; affected-device verification remains open.
 
 Process network rates and daily traffic ship in 1.4.0; only macOS 15/26 checks remain ([APP-017](tasks/APP-017-process-network.md)). Complete the native monitor's remaining compatibility/release checks and AI-limit account/history verification. Website design transfer/style corrections and the reviewed Monny/Rebind Sketch export handoff are ready; deployed desktop/phone review and the in-app update to 1.1.1 were accepted by the user on 2026-10-26. Specific accessibility/translation and remaining compatibility/account checks continue independently. Select a bounded slice from STATE; do not reimplement accepted features.
 
@@ -34,5 +34,5 @@ After release, Discharge may be researched again. Helper/SMC-write work is prese
 
 - Accepted 2026-10-21: installed charge-limit change on M1 Max/macOS 27.0.1; informal reading comparisons; six languages; build-37 keyboard/VoiceOver/contrast/motion, notifications and pre-release additions. macOS 26 was reported working, minor version unknown; this does not close 26.4–26.x charging acceptance.
 - Measured: background 0.0%, dashboard 2.9% (build 29); popover about 2% (user, build 37). Conditions and limits: [idle cost](verification/idle-cost.md).
-- Published 2026-10-24: 1.0.0 (build 52) on GitHub Releases and the website. Published on 2026-10-30: 1.3.1 (build 77); DMG/appcast evidence is in STATE. Published on 2026-11-04: 1.4.0 (build 82). The user accepted the in-app update to 1.1.1 and the deployed desktop/phone website on 2026-10-26.
+- Published 2026-11-04: 1.5.0/build 87, Kimi Code and sensor/layout fixes; public DMG/appcast checks pass. Earlier releases and installed update/website acceptance are recorded in [STATE](STATE.md) and [history](history/2026-10.md).
 - Open: clean-Mac DMG installation, signing-identity recovery and off-device backup (update-key backup reported 2026-10-24); later feature-specific checks indexed in STATE. Apple Development candidates are signed but not notarized. Developer ID/notarization is not implemented.

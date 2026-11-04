@@ -31,8 +31,10 @@ struct OverviewTab: View {
             CoresCard(cpu: snapshot?.cpu).opens(.cpu, with: open)
             if SystemInfo.hasBattery {
                 BatteryStrip(battery: snapshot?.battery).opens(.battery, with: open)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
             } else {
                 ThermalStrip(state: snapshot?.thermalState, fanRPM: snapshot?.sensors?.fanRPM).opens(.sensors, with: open)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
             }
         }
     }

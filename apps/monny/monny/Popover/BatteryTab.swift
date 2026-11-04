@@ -10,23 +10,26 @@ struct BatteryTab: View {
 
     var body: some View {
         if SystemInfo.hasBattery {
-            ScrollView {
-                VStack(spacing: 10) {
-                    BatteryHero(battery: battery, health: health, temperature: temperature,
-                                limit: controller.activeLimit)
-                    VStack(alignment: .leading, spacing: 12) {
-                        NativeLimitControls(controller: controller)
-                        Button("macOS charging settings") { showsGuidance = true }
-                            .buttonStyle(PlainLinkButtonStyle())
-                            .popover(isPresented: $showsGuidance) { MacOSChargingGuidance() }
+            VStack(spacing: Theme.spaceL) {
+                ScrollView {
+                    VStack(spacing: 10) {
+                        BatteryHero(battery: battery, health: health, temperature: temperature,
+                                    limit: controller.activeLimit)
+                        VStack(alignment: .leading, spacing: 12) {
+                            NativeLimitControls(controller: controller)
+                            Button("macOS charging settings") { showsGuidance = true }
+                                .buttonStyle(PlainLinkButtonStyle())
+                                .popover(isPresented: $showsGuidance) { MacOSChargingGuidance() }
+                        }
+                        .padding(16).card()
                     }
-                    .padding(16).card()
-                    Text("macOS manages charging. The limit stays set when Monny quits.")
-                        .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
-                        .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 16)
                 }
+                .scrollBounceBehavior(.basedOnSize)
+                Text("macOS manages charging. The limit stays set when Monny quits.")
+                    .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 16)
             }
-            .scrollBounceBehavior(.basedOnSize)
         } else {
             NoBatteryView(openSensors: openSensors).frame(maxWidth: .infinity, maxHeight: .infinity).card()
         }

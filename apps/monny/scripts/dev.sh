@@ -20,7 +20,27 @@ fi
 
 command_name="${1:-build}"
 if [[ $# -gt 0 ]]; then shift; fi
-common_args=(-project monny.xcodeproj -scheme monny -destination 'platform=macOS' -derivedDataPath "$repo_root/build/DerivedData")
+# Executable files stay outside protected Desktop/Documents checkouts.
+cache_root="$HOME/Library/Caches/Monny"
+derived_data="${MONNY_DERIVED_DATA:-$cache_root/DerivedData}"
+temporary_test_data=""
+
+cleanup_test_build() {
+    if [[ -n "$temporary_test_data" ]]; then
+        rm -rf -- "$temporary_test_data"
+    fi
+}
+
+# An explicit path belongs to the caller and is never automatically deleted.
+if [[ "$command_name" == test && -z "${MONNY_DERIVED_DATA:-}" ]]; then
+    mkdir -p "$cache_root/TestRuns"
+    temporary_test_data="$(mktemp -d "$cache_root/TestRuns/run.XXXXXX")"
+    derived_data="$temporary_test_data"
+    trap cleanup_test_build EXIT
+    trap 'exit 130' INT
+    trap 'exit 143' TERM
+fi
+common_args=(-project monny.xcodeproj -scheme monny -destination 'platform=macOS' -derivedDataPath "$derived_data")
 
 case "$command_name" in
     doctor)
@@ -31,8 +51,49 @@ case "$command_name" in
         sw_vers
         exec xcodebuild -list -project monny.xcodeproj "$@"
         ;;
-    build|build-for-testing|test)
+    build|build-for-testing)
         exec xcodebuild "$command_name" "${common_args[@]}" -configuration Debug "$@"
+        ;;
+    test)
+        status=0
+        xcodebuild test "${common_args[@]}" -configuration Debug "$@" || status=$?
+        # Keep one small summary; the full default test build/report is disposable.
+        result_bundle=""
+        previous_argument=""
+        for argument in "$@"; do
+            if [[ "$previous_argument" == -resultBundlePath ]]; then result_bundle="$argument"; fi
+            previous_argument="$argument"
+        done
+        if [[ -z "$result_bundle" ]]; then
+            for candidate in "$derived_data/Logs/Test/"*.xcresult; do
+                if [[ -d "$candidate" ]]; then result_bundle="$candidate"; fi
+            done
+        fi
+        if [[ -n "$result_bundle" ]] && xcrun xcresulttool get test-results summary \
+            --path "$result_bundle" --format json > "$derived_data/test-summary.json" 2>/dev/null; then
+            mkdir -p "$cache_root"
+            mv -f "$derived_data/test-summary.json" "$cache_root/LastTestSummary.json"
+            echo "Test summary: $cache_root/LastTestSummary.json"
+        fi
+        exit "$status"
+        ;;
+    clean)
+        # Only this project's fixed default build cache can be removed here.
+        # Never delete a caller-supplied directory or a running app/build's files.
+        if [[ -n "${MONNY_DERIVED_DATA:-}" ]]; then
+            echo "Unset MONNY_DERIVED_DATA to clean the default build cache." >&2
+            exit 1
+        fi
+        # Missing products can make lsof exit nonzero even when another file has users.
+        active_users="$(/usr/sbin/lsof -t "$derived_data/Build/Products/Debug/Monny.app/Contents/MacOS/Monny" \
+            "$derived_data/Build/Products/Release/Monny.app/Contents/MacOS/Monny" \
+            "$derived_data/Build/Intermediates.noindex/XCBuildData/build.db" 2>/dev/null || true)"
+        if [[ -n "$active_users" ]]; then
+            echo "Stop builds and quit the app running from the cache before cleaning." >&2
+            exit 1
+        fi
+        rm -rf -- "$derived_data"
+        echo "Build cache cleared. Packaged releases were kept."
         ;;
     release)
         exec xcodebuild build "${common_args[@]}" -configuration Release "$@"
@@ -42,10 +103,10 @@ case "$command_name" in
         ;;
     run)
         xcodebuild build "${common_args[@]}" -configuration Debug "$@"
-        exec open "$repo_root/build/DerivedData/Build/Products/Debug/Monny.app"
+        exec open "$derived_data/Build/Products/Debug/Monny.app"
         ;;
     *)
-        echo "Usage: $0 {doctor|build|release|build-for-testing|test|resolve|run} [xcodebuild arguments]" >&2
+        echo "Usage: $0 {doctor|build|release|build-for-testing|test|resolve|run|clean} [xcodebuild arguments]" >&2
         exit 2
         ;;
 esac

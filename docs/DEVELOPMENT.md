@@ -24,7 +24,21 @@ The script respects `DEVELOPER_DIR` or a valid `xcode-select` selection, then fa
 DEVELOPER_DIR=/Applications/Xcode-beta.app/Contents/Developer apps/monny/scripts/dev.sh build
 ```
 
-Build output is under ignored `apps/monny/build/DerivedData/`. Do not run concurrent builds against the same DerivedData directory. Extra arguments are forwarded to `xcodebuild`, for example `apps/monny/scripts/dev.sh test -resultBundlePath build/Tests.xcresult` (use a fresh path each run).
+Build/run/build-for-testing products use `~/Library/Caches/Monny/DerivedData/`, outside protected Desktop/Documents checkouts. Keep Xcode's standard Derived Data location rather than a project-relative Desktop path. Packaged releases remain in ignored `apps/monny/build/release/`.
+
+`dev.sh test` uses a fresh `~/Library/Caches/Monny/TestRuns/run.*` directory and removes it on completion, failure or a handled interrupt. Only `~/Library/Caches/Monny/LastTestSummary.json` is retained, replacing the previous small summary. Compiler/test output remains in the calling terminal or its chosen log file. An explicit `-resultBundlePath` is retained where requested.
+
+`release.sh` similarly owns a temporary `ReleaseRuns/run.*` directory, passes it to dev.sh, and removes intermediate products after packaging or failure. It keeps the final signed app, DMG, checksum and appcast in the repository's release directory.
+
+Set `MONNY_DERIVED_DATA` to an absolute, unprotected path when products/full results must survive for investigation or a hardware check. An explicit override belongs to the caller and is never automatically removed. Remove an isolated verification checkout/cache once its evidence has been recorded and no process uses it; do not leave redundant multi-hundred-megabyte copies between sessions.
+
+`apps/monny/scripts/dev.sh clean` removes only the default persistent DerivedData cache. It refuses an explicit override or files held by a running cached app/build. Use it when build/run/build-for-testing products are no longer needed. Force-killed processes cannot run cleanup traps; inspect any interrupted run directory before removing it manually.
+
+Do not run concurrent builds against the same explicit/persistent DerivedData directory. Default test/packaging runs have separate directories. Extra arguments are forwarded to xcodebuild; a second `-derivedDataPath` should not be passed. For example, to keep a full diagnostic result:
+
+```sh
+apps/monny/scripts/dev.sh test -resultBundlePath /tmp/monny-tests-unique.xcresult
+```
 
 ## Project settings
 

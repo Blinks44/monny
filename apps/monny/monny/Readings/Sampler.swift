@@ -14,6 +14,7 @@ nonisolated struct Snapshot: Sendable {
     /// 1, 5 and 15 minutes.
     var loadAverage: [Double]? = nil
     var gpu: GPUReading? = nil
+    var processNetworkAvailable: Bool? = nil
 }
 
 /// Owns the readers and their previous counters; runs off the main actor.
@@ -30,15 +31,32 @@ actor ReadingSource {
     /// Process enumeration is most of a pass's cost, so it runs only while a process list is shown,
     /// or for the busy app alert while the whole CPU does at least the work of its threshold;
     /// free disk space is refreshed only while something is visible.
-    func sample(isVisible: Bool, includeProcesses: Bool, watchesBusyApps: Bool = false) -> Snapshot {
+    func sample(isVisible: Bool, includeProcesses: Bool, watchesBusyApps: Bool = false, includeNetworkProcesses: Bool = false) async -> Snapshot {
         let state = signposter.beginInterval("Sample")
         defer { signposter.endInterval("Sample", state) }
+        // The bounded child waits off the main actor only while a network list is visible.
+        // Check launch identities across the interval so recycled PIDs cannot inherit traffic.
+        let identities = includeNetworkProcesses
+            ? Dictionary(uniqueKeysWithValues: processes.read().compactMap { row in row.startTime.map { (row.id, $0) } })
+            : [:]
+        let rates = includeNetworkProcesses ? await ProcessNetworkReader.read() : nil
+        guard !Task.isCancelled else {
+            return Snapshot(thermalState: ProcessInfo.processInfo.thermalState, processes: [])
+        }
+        var rows = includeProcesses || includeNetworkProcesses ? processes.read() : []
+        if let rates {
+            for index in rows.indices where rows[index].startTime != nil && identities[rows[index].id] == rows[index].startTime {
+                // A readable live process absent from a valid socket snapshot has no reported traffic.
+                rows[index].network = rates[rows[index].id] ?? NetworkRates(download: 0, upload: 0)
+            }
+        }
         let load = cpu.read()
         let mayHaveBusyApp = load.map { $0.total * Double($0.cores.count) >= AlertMonitor.busyAppCPU } ?? false
         return Snapshot(cpu: load, memory: memory.read(), disk: disk.read(includeSpace: isVisible), network: network.read(),
                         battery: power.read(), sensors: sensors.read(), thermalState: ProcessInfo.processInfo.thermalState,
-                        processes: includeProcesses || (watchesBusyApps && mayHaveBusyApp) ? processes.read() : [],
-                        loadAverage: LoadAverage.read(), gpu: GPUReading.read())
+                        processes: includeProcesses || includeNetworkProcesses ? rows : (watchesBusyApps && mayHaveBusyApp ? processes.read() : []),
+                        loadAverage: LoadAverage.read(), gpu: GPUReading.read(),
+                        processNetworkAvailable: includeNetworkProcesses ? rates != nil : nil)
     }
 }
 
@@ -66,6 +84,8 @@ final class Sampler {
     @ObservationIgnored private var ssdHealthDate: Date?
     /// Process lists on screen (popover Processes, window Overview); processes are read while any is.
     @ObservationIgnored private var processLists = 0
+    @ObservationIgnored private var networkProcessLists = 0
+    var showsNetworkProcesses: Bool { networkProcessLists > 0 }
     var showsProcesses: Bool { processLists > 0 }
     /// Menu bar readings follow the refresh rate, without the work done only for visible views.
     @ObservationIgnored var updatesMenuBar = false {
@@ -76,6 +96,10 @@ final class Sampler {
 
     func setProcessListVisible(_ isVisible: Bool) {
         processLists = max(processLists + (isVisible ? 1 : -1), 0)
+    }
+
+    func setNetworkProcessListVisible(_ isVisible: Bool) {
+        networkProcessLists = max(networkProcessLists + (isVisible ? 1 : -1), 0)
     }
 
     /// An explicit process action wakes the shared loop; it never starts a second sampler.
@@ -108,8 +132,10 @@ final class Sampler {
             }
             while !Task.isCancelled {
                 guard let isVisible = self.map({ !$0.visible.isEmpty }) else { return }
+                let passStarted = ContinuousClock.now
                 let snapshot = await source.sample(isVisible: isVisible, includeProcesses: isVisible && self?.showsProcesses == true,
-                                                   watchesBusyApps: UserDefaults.standard.bool(forKey: PreferenceKey.notifyBusyApp))
+                                                   watchesBusyApps: UserDefaults.standard.bool(forKey: PreferenceKey.notifyBusyApp),
+                                                   includeNetworkProcesses: isVisible && self?.showsNetworkProcesses == true)
                 guard let self, !Task.isCancelled else { return }
                 self.snapshot = snapshot
                 busyProcesses.update(snapshot.processes, now: .now)
@@ -118,7 +144,8 @@ final class Sampler {
                 // Settings shows 2 s until the user picks a rate; `integer(forKey:)` would read 0 then.
                 let refresh = max(UserDefaults.standard.object(forKey: PreferenceKey.refreshInterval) as? Int ?? 2, 1)
                 let isFrequent = isVisible || self.updatesMenuBar
-                try? await Task.sleep(for: .seconds(isFrequent ? refresh : 10))
+                let remaining = Duration.seconds(isFrequent ? refresh : 10) - (ContinuousClock.now - passStarted)
+                try? await Task.sleep(for: max(remaining, .milliseconds(50)))
             }
         }
     }

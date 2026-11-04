@@ -6,6 +6,7 @@ import SwiftUI
 struct ProcessList: View {
     let processes: [ProcessUsage]
     var busy = BusyProcesses()
+    var networkAvailable: Bool? = nil
     @Binding var sort: ProcessSort
     @Binding var query: String
     var refresh: () -> Void = { }
@@ -21,7 +22,7 @@ struct ProcessList: View {
                 ProcessSearchField(query: $query)
                 if case .name = lookup {
                     PopupPicker(title: "Sort by", selection: $sort, options: [
-                        (.cpu, Text("CPU")), (.memory, Text("Memory")), (.energy, Text("Energy")),
+                        (.cpu, Text("CPU")), (.memory, Text("Memory")), (.energy, Text("Energy")), (.network, Text("Network")),
                     ])
                 }
             }
@@ -33,7 +34,11 @@ struct ProcessList: View {
                                        forceQuit: { confirmation = request(for: $0) },
                                        show: { query = String($0) })
                 }
-                list(limit: attention.isEmpty ? 9 : 8 - attention.count)
+                if sort == .network, networkAvailable == false {
+                    Text("Process network usage is unavailable.")
+                        .font(Theme.footnote).foregroundStyle(Theme.textSecondary)
+                }
+                list(limit: (attention.isEmpty ? 9 : 8 - attention.count) - (sort == .network && networkAvailable == false ? 1 : 0))
             } else {
                 ProcessLookupList(query: lookup, processes: processes, refresh: refresh, show: { query = String($0) })
             }
@@ -84,7 +89,8 @@ struct ProcessList: View {
                     ForEach(Array(rows.enumerated()), id: \.element.id) { index, process in
                         if index > 0 { Theme.fillSeparator.frame(height: 1).padding(.leading, 42) }
                         ProcessRow(process: process, value: valueText(of: process), detail: detail(of: process),
-                                   share: top > 0 ? value(of: process) / top : nil, color: color)
+                                   share: top > 0 ? value(of: process) / top : nil, color: color,
+                                   secondaryValue: sort == .network ? process.network.map { "↑ " + $0.upload.rateText } ?? "—" : nil)
                             .contentShape(.rect)
                             .contextMenu {
                                 if let request = ProcessTerminationRequest(row: process, processes: processes) {
@@ -126,6 +132,7 @@ struct ProcessList: View {
         switch sort {
         case .cpu: Theme.metricCPU
         case .memory: Theme.metricMemory
+        case .network: Theme.metricNetwork
         case .energy: Theme.metricBattery
         }
     }
@@ -134,6 +141,7 @@ struct ProcessList: View {
         switch sort {
         case .cpu: process.cpu
         case .memory: Double(process.memory)
+        case .network: process.network.map { $0.download + $0.upload } ?? 0
         case .energy: process.power
         }
     }
@@ -142,6 +150,7 @@ struct ProcessList: View {
         switch sort {
         case .cpu: process.cpu.formatted(.percent.precision(.fractionLength(1)))
         case .memory: process.memory.memoryText
+        case .network: process.network.map { "↓ " + $0.download.rateText } ?? "—"
         // Energy is the kernel's estimate, so it is marked as approximate.
         case .energy: "≈ " + Measurement(value: process.power, unit: UnitPower.watts)
             .formatted(.measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(1))))
@@ -170,6 +179,7 @@ private struct ProcessRow: View {
     let detail: String
     let share: Double?
     let color: Color
+    var secondaryValue: String? = nil
 
     var body: some View {
         let app = NSRunningApplication(processIdentifier: process.id)
@@ -200,9 +210,15 @@ private struct ProcessRow: View {
             Spacer(minLength: Theme.spaceM)
             VStack(alignment: .trailing, spacing: 6) {
                 Text(value).font(Theme.bodyEmphasized.weight(.bold)).foregroundStyle(Theme.textPrimary).monospacedDigit()
-                CapsuleBar(fraction: share, color: color, height: 4)
-                    .frame(width: 50)
-                    .accessibilityHidden(true)
+                    .accessibilityLabel(secondaryValue == nil ? Text(verbatim: value) : Text("Download") + Text(verbatim: ": " + value))
+                if let secondaryValue {
+                    Text(secondaryValue).font(Theme.footnote).foregroundStyle(Theme.textSecondary).monospacedDigit()
+                        .accessibilityLabel(Text("Upload") + Text(verbatim: ": " + secondaryValue))
+                } else {
+                    CapsuleBar(fraction: share, color: color, height: 4)
+                        .frame(width: 50)
+                        .accessibilityHidden(true)
+                }
             }
         }
         .frame(height: 47)

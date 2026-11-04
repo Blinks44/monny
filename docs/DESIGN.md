@@ -42,8 +42,11 @@ Next release design, accepted by the user 2026-10-25: popover `16`–`23` (power
 
 Saved 2026-10-28: process search ([DES-005](tasks/DES-005-process-port-search.md)), page `01 · Popover`, frames `24 · Needs attention`, `25 · Search by port or PID`, `26 · Process details`, `27 · Force quit process`, `28 · Port is free` in Light/Dark, plus the DES-005 behavior handoff at y 1820. The compact sort pop-up beside the search field replaces the sort row in frames `19`–`22` and `24` (user decision 2026-10-28). Reuses process chrome, buttons and the `Light|Dark/Process/Port row` and `Process/Inspector` symbols. Implemented in build 68; Sketch copy matches the app (no "not responding" row, "“node” has quit").
 
+Saved and reviewed 2026-11-04: popover frame `29 · Processes · Network` (Light/Dark) adds the Network sort and download/upload rate pairs. Window frame `23 · Network · Recorded daily traffic` (Light/Dark) replaces the small weekly bars with dated download/upload/total rows and comparison bars; `APP-017 · Network behavior and placement` beside it specifies placement below the existing process ranking, unavailable states and sampling/history semantics. Existing window Network frame `05` still owns the process-table layout; its small weekly specimen is superseded by frame 23. Native implementation and verification: [APP-017](tasks/APP-017-process-network.md).
+
 ## Rules that apply to every screen
 
+- Popover footer spacing refinement requested 2026-11-04: follow SPEC §3's symmetric separator gaps. Live Overview power/Battery power frames reviewed; native spacing supersedes their unequal gaps. Sketch was inspected only, without edits or save.
 - Use the shared symbols and color variables; no raw hex on screens.
 - A metric keeps its color everywhere (card icon, chart, bar, chip).
 - Values that cannot be read show as unavailable, never as zero.

@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// Window Network (Sketch `05 · Window · Network`). Per-process network and open connections
-/// have no public source (SPEC §3), so the process card and the Connections KPI are left out;
-/// the week's totals take the bottom row.
+/// Shared system throughput, grouped process rates and recorded daily traffic.
 struct NetworkPage: View {
     let sampler: Sampler
     @AppStorage(PreferenceKey.historyRange) private var range = HistoryRange.hour
@@ -32,7 +30,25 @@ struct NetworkPage: View {
                 ThroughputCard(tier: tier, range: range)
                 ConnectionCard(info: info).frame(width: 244)
             }
+            if sampler.snapshot?.processNetworkAvailable == false {
+                Text("Process network usage is unavailable.")
+                    .font(Theme.body).foregroundStyle(Theme.textSecondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            ProcessListCard("Top processes by network", columns: ("Download", "Upload"),
+                            processes: ProcessSort.network.rows(in: sampler.snapshot?.processes ?? [], matching: "", limit: 4),
+                            color: Theme.metricNetwork, value: { $0.network.map { $0.download + $0.upload } ?? -1 },
+                            primary: { $0.network?.download.rateText ?? "—" },
+                            secondary: { $0.network?.upload.rateText ?? "—" })
             WeekCard(week: sampler.history.week)
+        }
+        .onAppear {
+            sampler.setProcessListVisible(true)
+            sampler.setNetworkProcessListVisible(true)
+        }
+        .onDisappear {
+            sampler.setProcessListVisible(false)
+            sampler.setNetworkProcessListVisible(false)
         }
         .task {
             // Interface details change rarely; read them off the main actor every 10 s while shown.
@@ -139,30 +155,50 @@ private struct ConnectionCard: View {
     }
 }
 
-/// Daily totals over the last seven days from the 7 d tier (10-minute averages × 600 s).
-private struct WeekCard: View {
+/// Daily estimates from recorded 10-minute history buckets; unobserved days stay unavailable.
+struct WeekCard: View {
     let week: HistoryTier
-
-    private var days: [PeriodBars.Bar] {
-        let calendar = Calendar.current
-        var totals: [Date: Double] = [:]
-        for metric in [HistoryMetric.download, .upload] {
-            for point in week.series(metric) {
-                totals[calendar.startOfDay(for: point.date), default: 0] += point.value * week.step
-            }
-        }
-        let today = calendar.startOfDay(for: .now)
-        return (0..<7).reversed().compactMap { calendar.date(byAdding: .day, value: -$0, to: today) }
-            .map { PeriodBars.Bar(date: $0, value: totals[$0] ?? 0) }
-    }
+    @Environment(\.calendar) private var calendar
+    @Environment(\.locale) private var locale
 
     var body: some View {
-        let days = days
-        let total = days.map(\.value).reduce(0, +)
-        VStack(alignment: .leading, spacing: 10) {
-            CardHeader("This week", subtitle: total > 0 ? Text("\(Int64(total).storageText) total") : Text("Collecting history…"))
-            PeriodBars(bars: days, unit: .day, color: Theme.metricNetwork, label: .dateTime.weekday(.abbreviated))
+        let days = DailyTraffic.days(in: week, calendar: calendar)
+        let peak = days.compactMap(\.total).max() ?? 0
+        VStack(alignment: .leading, spacing: 8) {
+            CardHeader("Last 7 days", subtitle: Text("Estimated traffic recorded while Monny is running."))
+            Grid(alignment: .trailing, horizontalSpacing: 16, verticalSpacing: 0) {
+                GridRow {
+                    Text("Day").frame(maxWidth: .infinity, alignment: .leading)
+                    Text("Download")
+                    Text("Upload")
+                    Text("Total")
+                }
+                .font(Theme.caption).foregroundStyle(Theme.textSecondary)
+                .padding(.vertical, 8)
+                ForEach(days) { day in
+                    GridRow {
+                        HStack(spacing: 12) {
+                            Text(day.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).locale(locale))
+                                .frame(minWidth: 96, alignment: .leading)
+                            CapsuleBar(fraction: day.total.map { peak > 0 ? $0 / peak : 0 }, color: Theme.metricNetwork, height: 6)
+                                .frame(maxWidth: .infinity)
+                                .accessibilityHidden(true)
+                        }
+                        Text(day.download.map { Int64($0).storageText } ?? "—")
+                        Text(day.upload.map { Int64($0).storageText } ?? "—")
+                        Text(day.total.map { "≈ " + Int64($0).storageText } ?? "—")
+                            .font(Theme.bodyEmphasized)
+                    }
+                    .font(Theme.body).foregroundStyle(Theme.textPrimary).monospacedDigit()
+                    .padding(.vertical, 8)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text(day.date, format: .dateTime.weekday(.wide).day().month(.wide).locale(locale)))
+                    .accessibilityValue(Text("Download: \(day.download.map { Int64($0).storageText } ?? "—"); upload: \(day.upload.map { Int64($0).storageText } ?? "—"); total: \(day.total.map { Int64($0).storageText } ?? "—")"))
+                }
+            }
         }
-        .dashboardCard(height: 176)
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card()
     }
 }

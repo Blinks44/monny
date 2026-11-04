@@ -30,8 +30,8 @@ struct PopoverView: View {
                 }
             }
             .padding(.horizontal, Theme.spaceXL)
-            // One height for every tab, so the popover does not jump when switching.
-            .frame(height: 484, alignment: .top)
+            // The Overview needs 487 pt; keep every tab on the same 4 pt grid height.
+            .frame(height: 488, alignment: .top)
 
             footer
         }
@@ -78,7 +78,7 @@ struct PopoverView: View {
     private var footer: some View {
         VStack(spacing: 0) {
             Theme.fillSeparator.frame(height: 1).padding(.horizontal, Theme.spaceXL)
-            HStack(spacing: 6) {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Button("Open Dashboard") { model.openDashboard(nil) }
                     .buttonStyle(PlainLinkButtonStyle())
                 if let shortcut = KeyboardShortcuts.Name.openDashboard.shortcut?.description {
@@ -100,9 +100,9 @@ struct PopoverView: View {
                 }
             }
             .padding(.horizontal, 22)
-            .frame(height: 36)
+            .padding(.vertical, Theme.spaceL)
         }
-        .padding(.top, Theme.spaceM)
+        .padding(.top, Theme.spaceL)
     }
 
     private func openActivityMonitor() {

@@ -6,6 +6,21 @@ set -euo pipefail
 
 app_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 output="$app_root/build/release"
+temporary_release_data=""
+staging=""
+cleanup_release_build() {
+    if [[ -n "$staging" ]]; then rm -rf -- "$staging"; fi
+    if [[ -n "$temporary_release_data" ]]; then rm -rf -- "$temporary_release_data"; fi
+}
+trap cleanup_release_build EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+if [[ -z "${MONNY_DERIVED_DATA:-}" ]]; then
+    mkdir -p "$HOME/Library/Caches/Monny/ReleaseRuns"
+    temporary_release_data="$(mktemp -d "$HOME/Library/Caches/Monny/ReleaseRuns/run.XXXXXX")"
+    export MONNY_DERIVED_DATA="$temporary_release_data"
+fi
+monny_derived_data="$MONNY_DERIVED_DATA"
 # The pinned Apple Development certificate (docs/SIGNING.md); a missing key stops packaging.
 identity="${MONNY_SIGN_IDENTITY:-69D383553450694A1E9D78650B3FC6E69446BD4F}"
 
@@ -20,7 +35,7 @@ mkdir -p "$output"
 
 app="$output/Monny.app"
 rm -rf "$app"
-ditto "$app_root/build/DerivedData/Build/Products/Release/Monny.app" "$app"
+ditto "$monny_derived_data/Build/Products/Release/Monny.app" "$app"
 # DerivedData can keep owner-only modes from older builds; installed apps must be world-readable.
 chmod -R u+rwX,go+rX,go-w "$app"
 sign=(codesign --force --options runtime --timestamp=none --sign "$identity")
@@ -47,7 +62,6 @@ build="$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$info")"
 dmg="$output/Monny.dmg"
 
 staging="$(mktemp -d)"
-trap 'rm -rf "$staging"' EXIT
 ditto "$app" "$staging/Monny.app"
 create-dmg --overwrite --volname Monny \
     --volicon "$app/Contents/Resources/AppIcon.icns" \
@@ -75,7 +89,7 @@ rm -rf "$staging/Monny.app"
 notes="$app_root/../../docs/releases/$version.md"
 [[ -f "$notes" ]] || { echo "Missing release notes: $notes" >&2; exit 1; }
 sed -e '1{/^# /d;}' -e '/^## Install or update/,$d' "$notes" > "$staging/Monny.md"
-"$app_root/build/DerivedData/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_appcast" --account monny \
+"$monny_derived_data/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_appcast" --account monny \
     --download-url-prefix "https://github.com/Blinks44/monny/releases/download/v$version/" \
     --full-release-notes-url "https://github.com/Blinks44/monny/releases/tag/v$version" --embed-release-notes \
     --link "https://github.com/Blinks44/monny" -o "$appcast" "$staging" > "$output/appcast.log" 2>&1 \

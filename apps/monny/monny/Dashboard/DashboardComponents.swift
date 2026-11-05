@@ -94,8 +94,10 @@ struct ProcessListCard: View {
     let color: Color
 
     /// Sorts by `value` and keeps the top four.
-    init(_ title: LocalizedStringKey, columns: (LocalizedStringKey, LocalizedStringKey), processes: [ProcessUsage],
-         color: Color, value: (ProcessUsage) -> Double, primary: (ProcessUsage) -> String, secondary: (ProcessUsage) -> String) {
+    init(
+        _ title: LocalizedStringKey, columns: (LocalizedStringKey, LocalizedStringKey), processes: [ProcessUsage],
+        color: Color, value: (ProcessUsage) -> Double, primary: (ProcessUsage) -> String, secondary: (ProcessUsage) -> String
+    ) {
         self.title = title
         self.columns = columns
         self.color = color
@@ -200,8 +202,11 @@ struct HistoryChart: View {
                 let points = PlotPoint.series(series.id, series.points)
                 if series.filled {
                     AreaPlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
-                        .foregroundStyle(LinearGradient(colors: [series.color.opacity(0.3), series.color.opacity(0.02)],
-                                                        startPoint: .top, endPoint: .bottom))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [series.color.opacity(0.3), series.color.opacity(0.02)],
+                                startPoint: .top, endPoint: .bottom)
+                        )
                         .interpolationMethod(.monotone)
                 }
                 LinePlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))

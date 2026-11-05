@@ -11,15 +11,19 @@ struct OverviewTab: View {
     var body: some View {
         VStack(spacing: Theme.spaceM) {
             HStack(spacing: Theme.spaceM) {
-                RingCard(title: "CPU", symbol: "cpu", color: Theme.metricCPU, unit: "load",
-                         fraction: snapshot?.cpu?.total, footnote: cpuFootnote) {
+                RingCard(
+                    title: "CPU", symbol: "cpu", color: Theme.metricCPU, unit: "load",
+                    fraction: snapshot?.cpu?.total, footnote: cpuFootnote
+                ) {
                     if let celsius = snapshot?.sensors?.cpu, let snapshot {
                         TemperatureChip(text: celsius.temperatureText(temperatureUnit), state: snapshot.thermalState)
                     }
                 }
                 .opens(.cpu, with: open)
-                RingCard(title: "Memory", symbol: "memorychip", color: Theme.metricMemory, unit: "used",
-                         fraction: snapshot?.memory?.fraction, footnote: memoryFootnote) {
+                RingCard(
+                    title: "Memory", symbol: "memorychip", color: Theme.metricMemory, unit: "used",
+                    fraction: snapshot?.memory?.fraction, footnote: memoryFootnote
+                ) {
                     if let pressure = snapshot?.memory?.pressure { PressureChip(pressure: pressure) }
                 }
                 .opens(.memory, with: open)
@@ -50,12 +54,16 @@ struct OverviewTab: View {
     }
 }
 
-private extension View {
+extension View {
     /// Makes the whole card a button without changing how it looks.
-    func opens(_ page: DashboardPage, with open: @escaping (DashboardPage) -> Void) -> some View {
-        Button { open(page) } label: { self }
-            .buttonStyle(StaticButtonStyle())
-            .contentShape(.focusEffect, .rect(cornerRadius: Theme.radiusCard, style: .continuous))
+    fileprivate func opens(_ page: DashboardPage, with open: @escaping (DashboardPage) -> Void) -> some View {
+        Button {
+            open(page)
+        } label: {
+            self
+        }
+        .buttonStyle(StaticButtonStyle())
+        .contentShape(.focusEffect, .rect(cornerRadius: Theme.radiusCard, style: .continuous))
     }
 }
 
@@ -69,8 +77,10 @@ private struct RingCard<Accessory: View>: View {
     let footnote: Text?
     @ViewBuilder var accessory: Accessory
 
-    init(title: LocalizedStringKey, symbol: String, color: Color, unit: LocalizedStringKey, fraction: Double?,
-         footnote: Text?, @ViewBuilder accessory: () -> Accessory = { EmptyView() }) {
+    init(
+        title: LocalizedStringKey, symbol: String, color: Color, unit: LocalizedStringKey, fraction: Double?,
+        footnote: Text?, @ViewBuilder accessory: () -> Accessory = { EmptyView() }
+    ) {
         self.title = title
         self.symbol = symbol
         self.color = color
@@ -216,7 +226,8 @@ private struct CoresCard: View {
 
     private var bars: [(load: Double?, kind: CoreKind)] {
         guard let cpu else {
-            let kinds = Array(repeating: CoreKind.performance, count: SystemInfo.performanceCores)
+            let kinds =
+                Array(repeating: CoreKind.performance, count: SystemInfo.performanceCores)
                 + Array(repeating: CoreKind.efficiency, count: SystemInfo.efficiencyCores)
             return kinds.map { (nil, $0) }
         }

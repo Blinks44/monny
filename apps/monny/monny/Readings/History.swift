@@ -124,8 +124,10 @@ final class History {
     @ObservationIgnored private var lastSave = Date.now
 
     init() {
-        let tiers = [HistoryTier(span: 60, step: 1), HistoryTier(span: 3_600, step: 10),
-                     HistoryTier(span: 86_400, step: 60), HistoryTier(span: 7 * 86_400, step: 600)]
+        let tiers = [
+            HistoryTier(span: 60, step: 1), HistoryTier(span: 3_600, step: 10),
+            HistoryTier(span: 86_400, step: 60), HistoryTier(span: 7 * 86_400, step: 600),
+        ]
         (minute, hour, day, week) = (tiers[0], tiers[1], tiers[2], tiers[3])
         working = tiers
     }

@@ -63,22 +63,27 @@ struct OnboardingView: View {
                 .frame(width: 118, height: 118)
                 .frame(width: 96, height: 96)
                 .accessibilityHidden(true)
-            header("Welcome to Monny",
-                   SystemInfo.hasBattery
-                       ? "See what your Mac is doing, and keep its battery healthy while it stays plugged in."
-                       : "See what your Mac is doing, right from the menu bar.")
+            header(
+                "Welcome to Monny",
+                SystemInfo.hasBattery
+                    ? "See what your Mac is doing, and keep its battery healthy while it stays plugged in."
+                    : "See what your Mac is doing, right from the menu bar.")
             VStack(alignment: .leading, spacing: 20) {
-                Feature(symbol: "waveform.path.ecg", color: Theme.metricCPU, title: "Stats in the menu bar",
-                        detail: "CPU, memory, disk, network and temperatures, one click away.")
+                Feature(
+                    symbol: "waveform.path.ecg", color: Theme.metricCPU, title: "Stats in the menu bar",
+                    detail: "CPU, memory, disk, network and temperatures, one click away.")
                 if SystemInfo.hasBattery {
-                    Feature(symbol: "battery.100percent", color: Theme.metricBattery, title: "Charge limit",
-                            detail: "Stop charging at 80–100% with the charge limit built into macOS.")
+                    Feature(
+                        symbol: "battery.100percent", color: Theme.metricBattery, title: "Charge limit",
+                        detail: "Stop charging at 80–100% with the charge limit built into macOS.")
                 } else {
-                    Feature(symbol: "thermometer.medium", color: Theme.metricHeat, title: "Sensors and history",
-                            detail: "Temperatures, fan speed and up to 7 days of history.")
+                    Feature(
+                        symbol: "thermometer.medium", color: Theme.metricHeat, title: "Sensors and history",
+                        detail: "Temperatures, fan speed and up to 7 days of history.")
                 }
-                Feature(symbol: "lock", color: Theme.accentBrand, title: "Works offline",
-                        detail: "All readings come from your Mac. No account, no analytics.")
+                Feature(
+                    symbol: "lock", color: Theme.accentBrand, title: "Works offline",
+                    detail: "All readings come from your Mac. No account, no analytics.")
             }
             .padding(.top, 26)
             .padding(.horizontal, 58)
@@ -89,8 +94,9 @@ struct OnboardingView: View {
     private var chargeLimit: some View {
         VStack(spacing: 0) {
             GlyphTile(symbol: "battery.100percent.bolt")
-            header("Keep your battery healthy",
-                   "Monny uses the charge limit built into macOS, the same setting as in Battery Settings.")
+            header(
+                "Keep your battery healthy",
+                "Monny uses the charge limit built into macOS, the same setting as in Battery Settings.")
             VStack(alignment: .leading, spacing: 12) {
                 CheckItem(title: "Stops charging at your limit", detail: "Choose 80, 85, 90, 95 or 100%")
                 CheckItem(title: "Stays on when Monny is closed", detail: "macOS keeps it after quit, sleep and restart")
@@ -118,12 +124,16 @@ struct OnboardingView: View {
             MenuBarMock()
                 .padding(.top, 24)
             VStack(spacing: 0) {
-                SettingRow(title: "Launch Monny at login",
-                           detail: "Recommended so Monny is always in your menu bar", isOn: $launchAtLogin)
+                SettingRow(
+                    title: "Launch Monny at login",
+                    detail: "Recommended so Monny is always in your menu bar", isOn: $launchAtLogin)
                 Divider().overlay(Theme.fillSeparator)
-                SettingRow(title: "Check for updates automatically",
-                           detail: "Monny asks before installing a new version", isOn: Binding(get: { model.updater.automaticallyChecksForUpdates },
-                                         set: { model.updater.automaticallyChecksForUpdates = $0 }))
+                SettingRow(
+                    title: "Check for updates automatically",
+                    detail: "Monny asks before installing a new version",
+                    isOn: Binding(
+                        get: { model.updater.automaticallyChecksForUpdates },
+                        set: { model.updater.automaticallyChecksForUpdates = $0 }))
                 Divider().overlay(Theme.fillSeparator)
                 SettingRow(title: "Show AI limits", detail: "Claude Code, Codex, Cursor and Grok usage in Monny", isOn: $showsAILimits)
             }

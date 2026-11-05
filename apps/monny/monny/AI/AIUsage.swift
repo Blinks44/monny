@@ -23,8 +23,10 @@ nonisolated struct AIQuotaWindow: Codable, Equatable, Sendable {
     var copilotQuota: CopilotQuota? = nil
     var ampQuota: AmpQuota? = nil
 
-    var id: String { "\(kind.rawValue).\(model ?? "")" + (copilotQuota.map { ".\($0.rawValue)" } ?? "")
-        + (ampQuota.map { ".amp.\($0.rawValue)" } ?? "") }
+    var id: String {
+        "\(kind.rawValue).\(model ?? "")" + (copilotQuota.map { ".\($0.rawValue)" } ?? "")
+            + (ampQuota.map { ".amp.\($0.rawValue)" } ?? "")
+    }
 
     /// The plan's own limit, as history and Next resets draw it: not a model's limit or
     /// Copilot's chat and completions allowances.
@@ -151,7 +153,9 @@ nonisolated struct ClaudeUsageResponse: Decodable, Sendable {
             if let seconds = try? container.decodeIfPresent(Double.self, forKey: .resetsAt) {
                 resetsAt = Date(timeIntervalSince1970: seconds)
             } else {
-                resetsAt = (try? container.decodeIfPresent(String.self, forKey: .resetsAt)).flatMap { $0.flatMap(ClaudeUsageResponse.date(from:)) }
+                resetsAt = (try? container.decodeIfPresent(String.self, forKey: .resetsAt)).flatMap {
+                    $0.flatMap(ClaudeUsageResponse.date(from:))
+                }
             }
         }
     }
@@ -173,28 +177,37 @@ nonisolated struct ClaudeUsageResponse: Decodable, Sendable {
     /// The 5-hour and weekly windows, then each model's own weekly limit (Max plans).
     func windows() -> [AIQuotaWindow] {
         let week = 7 * 86_400.0
-        var windows = [(fiveHour, AIQuotaWindow.Kind.session, 5 * 3_600.0), (sevenDay, .weekly, week)].compactMap { window, kind, duration in
-            window?.utilization.map { AIQuotaWindow(kind: kind, used: $0 / 100, resetsAt: window?.resetsAt.flatMap(Self.date(from:)),
-                                                    duration: duration) }
+        var windows = [(fiveHour, AIQuotaWindow.Kind.session, 5 * 3_600.0), (sevenDay, .weekly, week)].compactMap {
+            window, kind, duration in
+            window?.utilization.map {
+                AIQuotaWindow(
+                    kind: kind, used: $0 / 100, resetsAt: window?.resetsAt.flatMap(Self.date(from:)),
+                    duration: duration)
+            }
         }
         for limit in (limits ?? []).compactMap(\.value) where limit.kind == "weekly_scoped" && limit.group == "weekly" {
             guard let percent = limit.percent, percent.isFinite,
-                  let model = limit.scope?.model?.displayName?.trimmingCharacters(in: .whitespaces), !model.isEmpty,
-                  model.lowercased() != "all models", !windows.contains(where: { $0.model == model }) else { continue }
+                let model = limit.scope?.model?.displayName?.trimmingCharacters(in: .whitespaces), !model.isEmpty,
+                model.lowercased() != "all models", !windows.contains(where: { $0.model == model })
+            else { continue }
             windows.append(AIQuotaWindow(kind: .weekly, used: percent / 100, resetsAt: limit.resetsAt, duration: week, model: model))
         }
         // Older answers carry the model weeks as their own fields.
         for (window, model) in [(sevenDayOpus, "Opus"), (sevenDaySonnet, "Sonnet")] {
             guard let utilization = window?.utilization, !windows.contains(where: { $0.model == model }) else { continue }
-            windows.append(AIQuotaWindow(kind: .weekly, used: utilization / 100, resetsAt: window?.resetsAt.flatMap(Self.date(from:)),
-                                         duration: week, model: model))
+            windows.append(
+                AIQuotaWindow(
+                    kind: .weekly, used: utilization / 100, resetsAt: window?.resetsAt.flatMap(Self.date(from:)),
+                    duration: week, model: model))
         }
         return windows
     }
 
     /// ISO 8601 with microseconds, as in "2026-10-22T14:30:00.274954+00:00".
     static func date(from string: String) -> Date? {
-        if let date = try? Date(string, strategy: .iso8601.year().month().day().time(includingFractionalSeconds: true).timeZone(separator: .colon)) {
+        if let date = try? Date(
+            string, strategy: .iso8601.year().month().day().time(includingFractionalSeconds: true).timeZone(separator: .colon))
+        {
             return date
         }
         return try? Date(string, strategy: .iso8601)
@@ -253,7 +266,8 @@ nonisolated struct CodexUsageResponse: Decodable, Sendable {
             hasCredits = (try? container.decodeIfPresent(Bool.self, forKey: .hasCredits)) ?? false
             unlimited = (try? container.decodeIfPresent(Bool.self, forKey: .unlimited)) ?? false
             // The balance arrives as a string, "1250".
-            balance = (try? container.decodeIfPresent(Double.self, forKey: .balance))
+            balance =
+                (try? container.decodeIfPresent(Double.self, forKey: .balance))
                 ?? (try? container.decodeIfPresent(String.self, forKey: .balance)).flatMap { $0.flatMap(Double.init) }
         }
     }
@@ -288,12 +302,15 @@ nonisolated struct CodexUsageResponse: Decodable, Sendable {
     }
 
     private static func windows(of rateLimit: RateLimit?, model: String?) -> [AIQuotaWindow] {
-        [(rateLimit?.primaryWindow, AIQuotaWindow.Kind.session, 5 * 3_600.0),
-         (rateLimit?.secondaryWindow, .weekly, 7 * 86_400.0)].compactMap { window, kind, fallback in
+        [
+            (rateLimit?.primaryWindow, AIQuotaWindow.Kind.session, 5 * 3_600.0),
+            (rateLimit?.secondaryWindow, .weekly, 7 * 86_400.0),
+        ].compactMap { window, kind, fallback in
             guard let window else { return nil }
-            return AIQuotaWindow(kind: kind, used: window.usedPercent / 100,
-                                 resetsAt: window.resetAt.map { Date(timeIntervalSince1970: $0) },
-                                 duration: window.limitWindowSeconds ?? fallback, model: model)
+            return AIQuotaWindow(
+                kind: kind, used: window.usedPercent / 100,
+                resetsAt: window.resetAt.map { Date(timeIntervalSince1970: $0) },
+                duration: window.limitWindowSeconds ?? fallback, model: model)
         }
     }
 
@@ -337,22 +354,26 @@ nonisolated struct CursorUsageResponse: Decodable, Sendable {
     func windows() -> [AIQuotaWindow] {
         let plan = individualUsage?.plan
         let usage = plan ?? individualUsage?.overall
-        let percent: Double? = if let total = plan?.totalPercentUsed {
-            total
-        } else if let auto = plan?.autoPercentUsed, let api = plan?.apiPercentUsed {
-            (auto + api) / 2
-        } else if let used = usage?.used, let limit = usage?.limit, limit > 0 {
-            used / limit * 100
-        } else {
-            plan?.apiPercentUsed ?? plan?.autoPercentUsed
-        }
+        let percent: Double? =
+            if let total = plan?.totalPercentUsed {
+                total
+            } else if let auto = plan?.autoPercentUsed, let api = plan?.apiPercentUsed {
+                (auto + api) / 2
+            } else if let used = usage?.used, let limit = usage?.limit, limit > 0 {
+                used / limit * 100
+            } else {
+                plan?.apiPercentUsed ?? plan?.autoPercentUsed
+            }
         guard let percent else { return [] }
         let start = billingCycleStart.flatMap(ClaudeUsageResponse.date(from:))
         let end = billingCycleEnd.flatMap(ClaudeUsageResponse.date(from:))
         let duration = start.flatMap { start in end.map { $0.timeIntervalSince(start) } } ?? 30 * 86_400
         let dollars = usage?.limit.flatMap { $0 > 0 ? (used: (usage?.used ?? 0) / 100, limit: $0 / 100) : nil }
-        return [AIQuotaWindow(kind: .monthly, used: percent / 100, resetsAt: end, duration: max(duration, 86_400),
-                              dollarsUsed: dollars?.used, dollarsLimit: dollars?.limit)]
+        return [
+            AIQuotaWindow(
+                kind: .monthly, used: percent / 100, resetsAt: end, duration: max(duration, 86_400),
+                dollarsUsed: dollars?.used, dollarsLimit: dollars?.limit)
+        ]
     }
 }
 
@@ -385,21 +406,25 @@ nonisolated struct GrokBillingResponse: Decodable, Sendable {
 
     func windows() -> [AIQuotaWindow] {
         guard let config else { return [] }
-        let percent: Double? = if let reported = config.creditUsagePercent, reported.isFinite {
-            reported
-        } else if let cap = config.onDemandCap?.val, cap > 0, let used = config.onDemandUsed?.val {
-            used / cap * 100
-        } else {
-            nil
-        }
+        let percent: Double? =
+            if let reported = config.creditUsagePercent, reported.isFinite {
+                reported
+            } else if let cap = config.onDemandCap?.val, cap > 0, let used = config.onDemandUsed?.val {
+                used / cap * 100
+            } else {
+                nil
+            }
         guard let percent else { return [] }
         // The start and end of one period, never mixed across the current and the billing period.
         let usesCurrent = config.currentPeriod?.end != nil
         let end = (usesCurrent ? config.currentPeriod?.end : config.billingPeriodEnd).flatMap(ClaudeUsageResponse.date(from:))
         let start = (usesCurrent ? config.currentPeriod?.start : config.billingPeriodStart).flatMap(ClaudeUsageResponse.date(from:))
         let duration = start.flatMap { start in end.map { $0.timeIntervalSince(start) } } ?? 7 * 86_400
-        return [AIQuotaWindow(kind: duration > 8 * 86_400 ? .monthly : .weekly, used: percent / 100, resetsAt: end,
-                              duration: max(duration, 3_600))]
+        return [
+            AIQuotaWindow(
+                kind: duration > 8 * 86_400 ? .monthly : .weekly, used: percent / 100, resetsAt: end,
+                duration: max(duration, 3_600))
+        ]
     }
 }
 

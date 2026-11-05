@@ -24,7 +24,8 @@ nonisolated struct CopilotUsageResponse: Decodable, Sendable {
         init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             func number(_ key: CodingKeys) -> Double? {
-                let value = (try? values.decode(Double.self, forKey: key))
+                let value =
+                    (try? values.decode(Double.self, forKey: key))
                     ?? (try? values.decode(String.self, forKey: key)).flatMap(Double.init)
                 return value.flatMap { $0.isFinite ? $0 : nil }
             }
@@ -69,26 +70,31 @@ nonisolated struct CopilotUsageResponse: Decodable, Sendable {
             var used = quota?.used
             // Older free plans publish monthly totals and remaining chat/completion counts.
             if used == nil, category != .premium,
-               let total = monthlyQuotas?[key], total.isFinite, total > 0,
-               let remaining = limitedUserQuotas?[key], remaining.isFinite, remaining >= 0 {
+                let total = monthlyQuotas?[key], total.isFinite, total > 0,
+                let remaining = limitedUserQuotas?[key], remaining.isFinite, remaining >= 0
+            {
                 used = max(0, 1 - remaining / total)
             }
             if let used {
-                windows.append(AIQuotaWindow(kind: .monthly, used: used, resetsAt: reset,
-                                             duration: 0, copilotQuota: category))
+                windows.append(
+                    AIQuotaWindow(
+                        kind: .monthly, used: used, resetsAt: reset,
+                        duration: 0, copilotQuota: category))
             } else if quota?.unlimited == true {
                 unlimited.append(category)
             }
         }
         // These counters can describe the same pool. Never add them together.
-        let reportedCredits = quotaSnapshots?["premium_interactions"]?.value?.creditsUsed
+        let reportedCredits =
+            quotaSnapshots?["premium_interactions"]?.value?.creditsUsed
             ?? quotaSnapshots?["chat"]?.value?.creditsUsed
         let credits = reportedCredits.flatMap { $0 > 0 || tokenBasedBilling == true || !unlimited.isEmpty ? $0 : nil }
         guard !windows.isEmpty || !unlimited.isEmpty || tokenBasedBilling == true || credits != nil else {
             throw AIUsageProblem.unavailable(retryAfter: nil)
         }
-        return AIUsage(plan: copilotPlan, windows: windows, date: now,
-                       creditsUsed: credits, unlimitedCopilotQuotas: unlimited)
+        return AIUsage(
+            plan: copilotPlan, windows: windows, date: now,
+            creditsUsed: credits, unlimitedCopilotQuotas: unlimited)
     }
 
     static func resetDate(_ string: String) -> Date? {

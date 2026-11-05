@@ -9,15 +9,19 @@ nonisolated enum NousUsage {
             state = nous
         } else if let pool = root["credential_pool"] as? [String: Any], pool.keys.contains("nous") {
             guard let entries = pool["nous"] as? [[String: Any]], entries.count == 1,
-                  let only = entries.first else { throw AIUsageProblem.signedOut }
+                let only = entries.first
+            else { throw AIUsageProblem.signedOut }
             state = only
-        } else { state = root }
+        } else {
+            state = root
+        }
         guard let token = SavedAISession.token(state["access_token"]) else { throw AIUsageProblem.signedOut }
         if let stored = state["portal_base_url"], !(stored is NSNull) {
             guard let raw = stored as? String, let url = URL(string: raw), url.scheme == "https",
-                  url.host() == "portal.nousresearch.com", url.port == nil || url.port == 443,
-                  url.user == nil, url.password == nil, url.query == nil, url.fragment == nil,
-                  url.path.isEmpty || url.path == "/" else { throw AIUsageProblem.signedOut }
+                url.host() == "portal.nousresearch.com", url.port == nil || url.port == 443,
+                url.user == nil, url.password == nil, url.query == nil, url.fragment == nil,
+                url.path.isEmpty || url.path == "/"
+            else { throw AIUsageProblem.signedOut }
         }
         if let expiry = state["expires_at"], !(expiry is NSNull) {
             guard let raw = expiry as? String, let date = ClaudeUsageResponse.date(from: raw) else { throw AIUsageProblem.signedOut }
@@ -61,7 +65,8 @@ nonisolated enum NousUsage {
             windows.append(AIQuotaWindow(kind: .monthly, used: max(1 - remaining / grant, 0), resetsAt: reset, duration: 0))
         }
         guard !windows.isEmpty || topUp != nil || total != nil else { throw AIUsageProblem.unavailable(retryAfter: nil) }
-        return AIUsage(plan: subscription["plan"] as? String, windows: windows, date: now,
-                       balanceUSD: try total.map { try AIServiceJSON.decimal($0) }, topUpUSD: try topUp.map { try AIServiceJSON.decimal($0) })
+        return AIUsage(
+            plan: subscription["plan"] as? String, windows: windows, date: now,
+            balanceUSD: try total.map { try AIServiceJSON.decimal($0) }, topUpUSD: try topUp.map { try AIServiceJSON.decimal($0) })
     }
 }

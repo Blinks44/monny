@@ -85,9 +85,12 @@ private struct PageHeader: View {
                 SegmentedControl(title: "Time range", selection: $aiRange, options: [(.day, "24h"), (.week, "7d")], height: 32)
                     .frame(width: 100)
             } else if page.showsTimeRange {
-                SegmentedControl(title: "Time range", selection: $range, options: [
-                    (.minute, "1m"), (.hour, "1h"), (.day, "24h"), (.week, "7d"),
-                ], height: 32)
+                SegmentedControl(
+                    title: "Time range", selection: $range,
+                    options: [
+                        (.minute, "1m"), (.hour, "1h"), (.day, "24h"), (.week, "7d"),
+                    ], height: 32
+                )
                 .frame(width: 192)
             }
             IconButton(symbol: "arrow.down.right.and.arrow.up.left", label: "Show in the menu bar", action: collapse)
@@ -106,7 +109,8 @@ private struct PageHeader: View {
         let memory = SystemInfo.physicalMemory.formatted(.byteCount(style: .memory))
         switch page {
         case .cpu:
-            return Text("\(SystemInfo.chipName) · \(SystemInfo.performanceCores) performance + \(SystemInfo.efficiencyCores) efficiency cores")
+            return Text(
+                "\(SystemInfo.chipName) · \(SystemInfo.performanceCores) performance + \(SystemInfo.efficiencyCores) efficiency cores")
         case .memory:
             return Text("\(memory) unified memory")
         default:

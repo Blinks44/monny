@@ -79,11 +79,14 @@ private struct AIToolTile: View {
                     }
                 }
             } else {
-                Text(state.problem == .signedOut || state.problem == .localDataMissing || state.problem == .expired ? tool.signInHint
-                     : state.problem == .apiKey ? "Signed in with an API key, which has no plan limits." : "Checking…")
-                    .font(Theme.footnote.weight(.regular))
-                    .foregroundStyle(Theme.textSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
+                Text(
+                    state.problem == .signedOut || state.problem == .localDataMissing || state.problem == .expired
+                        ? tool.signInHint
+                        : state.problem == .apiKey ? "Signed in with an API key, which has no plan limits." : "Checking…"
+                )
+                .font(Theme.footnote.weight(.regular))
+                .foregroundStyle(Theme.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(.horizontal, 16)
@@ -106,14 +109,20 @@ private struct QuotaHistoryCard: View {
         tools.map { tool in
             let metric: HistoryMetric
             if tool == .cline {
-                metric = !tier.series(.clineMonthly).isEmpty ? .clineMonthly
+                metric =
+                    !tier.series(.clineMonthly).isEmpty
+                    ? .clineMonthly
                     : !tier.series(.clineWeekly).isEmpty ? .clineWeekly : .clineSession
             } else if tool == .kimi {
-                metric = !tier.series(.kimiMonthly).isEmpty ? .kimiMonthly
+                metric =
+                    !tier.series(.kimiMonthly).isEmpty
+                    ? .kimiMonthly
                     : !tier.series(.kimiWeekly).isEmpty ? .kimiWeekly : .kimiSession
             } else if tool == .amp {
                 metric = !tier.series(.ampMonthly).isEmpty ? .ampMonthly : .ampFree
-            } else { metric = tool.historyMetric }
+            } else {
+                metric = tool.historyMetric
+            }
             return (tool, tier.series(metric))
         }
     }
@@ -121,8 +130,10 @@ private struct QuotaHistoryCard: View {
     var body: some View {
         let series = series
         VStack(alignment: .leading, spacing: Theme.spaceL) {
-            CardHeader(range == .day ? "Quota left over 24 hours" : "Quota left over 7 days",
-                       subtitle: Text("Weekly or monthly limits · refills at each reset")) {
+            CardHeader(
+                range == .day ? "Quota left over 24 hours" : "Quota left over 7 days",
+                subtitle: Text("Weekly or monthly limits · refills at each reset")
+            ) {
                 if series.filter({ $0.points.count > 1 }).count <= 4 {
                     HStack(spacing: Theme.spaceL) {
                         ForEach(series.filter { $0.points.count > 1 }, id: \.tool) { item in
@@ -151,10 +162,12 @@ private struct QuotaHistoryCard: View {
     private func chart(_ series: [(tool: AITool, points: [(date: Date, value: Double)])]) -> some View {
         Chart {
             ForEach(series, id: \.tool) { item in
-                LinePlot(PlotPoint.series(item.tool.rawValue, item.points), x: .value("Time", \.date), y: .value("Left", \.value),
-                         series: .value("Series", \.series))
-                    .foregroundStyle(item.tool.color)
-                    .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                LinePlot(
+                    PlotPoint.series(item.tool.rawValue, item.points), x: .value("Time", \.date), y: .value("Left", \.value),
+                    series: .value("Series", \.series)
+                )
+                .foregroundStyle(item.tool.color)
+                .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                 ForEach(Self.resets(in: item.points), id: \.self) { date in
                     RuleMark(x: .value("Reset", date), yStart: .value("Left", 0), yEnd: .value("Left", 1))
                         .foregroundStyle(item.tool.color.opacity(0.3))
@@ -170,7 +183,9 @@ private struct QuotaHistoryCard: View {
         .chartYScale(domain: 0...1.12)
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 5)) { _ in
-                AxisValueLabel(format: range == .day ? .dateTime.hour().minute() : .dateTime.weekday(.abbreviated)).font(Theme.caption.weight(.regular)).foregroundStyle(Theme.textTertiary)
+                AxisValueLabel(format: range == .day ? .dateTime.hour().minute() : .dateTime.weekday(.abbreviated)).font(
+                    Theme.caption.weight(.regular)
+                ).foregroundStyle(Theme.textTertiary)
             }
         }
         .chartYAxis {
@@ -251,19 +266,21 @@ private struct NextResetsCard: View {
         let time = date.resetClockText
         let margin = Duration.seconds(resetsAt.timeIntervalSince(date))
             .formatted(.units(allowed: [.days, .hours, .minutes], width: .wide, maximumUnitCount: 1))
-        let body = window.kind == .session
+        let body =
+            window.kind == .session
             ? Text("At this pace the 5-hour limit runs out around \(time), about \(margin) before it resets. Estimate.")
             : Text("At this pace the weekly limit runs out around \(time), about \(margin) before it resets. Estimate.")
-        return AnyView(VStack(alignment: .leading, spacing: 4) {
-            Text("\(tool.name) is ahead of pace").font(Theme.footnote.weight(.semibold)).foregroundStyle(Theme.statusWarningText)
-                .fixedSize(horizontal: false, vertical: true)
-            body.font(Theme.caption.weight(.regular)).foregroundStyle(Theme.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.statusWarningBg, in: .rect(cornerRadius: Theme.radiusControl, style: .continuous))
-        .accessibilityElement(children: .combine))
+        return AnyView(
+            VStack(alignment: .leading, spacing: 4) {
+                Text("\(tool.name) is ahead of pace").font(Theme.footnote.weight(.semibold)).foregroundStyle(Theme.statusWarningText)
+                    .fixedSize(horizontal: false, vertical: true)
+                body.font(Theme.caption.weight(.regular)).foregroundStyle(Theme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Theme.statusWarningBg, in: .rect(cornerRadius: Theme.radiusControl, style: .continuous))
+            .accessibilityElement(children: .combine))
     }
 }
 

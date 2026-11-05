@@ -13,18 +13,22 @@ struct PopoverView: View {
         VStack(spacing: 0) {
             header
             SegmentedControl(title: "Section", selection: $model.popoverTab, options: tabs)
-            .focused($tabsFocused)
-            .padding(.horizontal, Theme.spaceXL)
-            .padding(.bottom, Theme.spaceL)
+                .focused($tabsFocused)
+                .padding(.horizontal, Theme.spaceXL)
+                .padding(.bottom, Theme.spaceL)
 
             Group {
                 switch model.popoverTab {
-                case .overview: OverviewTab(snapshot: model.sampler.snapshot, history: model.sampler.history,
-                                            open: { model.openDashboard($0) })
-                case .battery: BatteryTab(battery: model.sampler.snapshot?.battery, health: model.sampler.batteryHealth,
-                                           temperature: model.sampler.snapshot?.sensors?.battery,
-                                          controller: model.chargeLimit,
-                                          openSensors: { model.openDashboard(.sensors) })
+                case .overview:
+                    OverviewTab(
+                        snapshot: model.sampler.snapshot, history: model.sampler.history,
+                        open: { model.openDashboard($0) })
+                case .battery:
+                    BatteryTab(
+                        battery: model.sampler.snapshot?.battery, health: model.sampler.batteryHealth,
+                        temperature: model.sampler.snapshot?.sensors?.battery,
+                        controller: model.chargeLimit,
+                        openSensors: { model.openDashboard(.sensors) })
                 case .processes: ProcessesTab(sampler: model.sampler)
                 case .ai: AILimitsTab(monitor: model.aiUsage)
                 }
@@ -46,7 +50,9 @@ struct PopoverView: View {
     }
 
     private var tabs: [(value: PopoverTab, label: LocalizedStringKey)] {
-        var tabs: [(value: PopoverTab, label: LocalizedStringKey)] = [(.overview, "Overview"), (.battery, "Battery"), (.processes, "Processes")]
+        var tabs: [(value: PopoverTab, label: LocalizedStringKey)] = [
+            (.overview, "Overview"), (.battery, "Battery"), (.processes, "Processes"),
+        ]
         if showsAILimits { tabs.append((.ai, "AI")) }
         return tabs
     }

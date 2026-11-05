@@ -112,7 +112,8 @@ extension AITool {
         case .nous: "Sign in to Nous Portal in Hermes Agent to see your monthly allowance and balances here."
         case .cline: "Sign in with cline auth to see your ClinePass subscription limits here."
         case .codebuff: "Sign in with codebuff login to see your weekly limits and credit balance here."
-        case .copilot: "Sign in to GitHub CLI with gh auth login to see Copilot limits here. Monny needs a CLI version that supports --no-refresh."
+        case .copilot:
+            "Sign in to GitHub CLI with gh auth login to see Copilot limits here. Monny needs a CLI version that supports --no-refresh."
         }
     }
 }
@@ -146,10 +147,15 @@ extension AIQuotaWindow {
     }
 
     /// "5-hour window", or "Opus only · weekly" for a model's own limit.
-    var title: Text { ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text("\(Text($0.label)) · monthly") } ?? model.map { modelTitle($0) } ?? Text(kind.title) }
+    var title: Text {
+        ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text("\(Text($0.label)) · monthly") } ?? model.map { modelTitle($0) }
+            ?? Text(kind.title)
+    }
 
     /// "5 hours" in the window's tiles and reset list.
-    var shortTitle: Text { ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text($0.label) } ?? model.map { modelTitle($0) } ?? Text(kind.shortTitle) }
+    var shortTitle: Text {
+        ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text($0.label) } ?? model.map { modelTitle($0) } ?? Text(kind.shortTitle)
+    }
 
     private func modelTitle(_ model: String) -> Text {
         switch kind {
@@ -197,7 +203,9 @@ extension AIQuotaWindow {
         let seconds = resetsAt.timeIntervalSince(now)
         if isExhausted {
             return seconds < 86_400
-                ? Text("Available again in \(Duration.seconds(max(seconds, 60)).estimateText) · \(resetsAt.formatted(.dateTime.hour().minute()))")
+                ? Text(
+                    "Available again in \(Duration.seconds(max(seconds, 60)).estimateText) · \(resetsAt.formatted(.dateTime.hour().minute()))"
+                )
                 : Text("Available again \(resetsAt.resetClockText)")
         }
         return seconds < 86_400
@@ -222,11 +230,11 @@ struct AIToolIcon: View {
                     .foregroundStyle(Theme.aiIconBlack)
             }
         }
-            .frame(width: size * (tool == .jetBrains ? 0.9 : 0.6), height: size * (tool == .jetBrains ? 0.9 : 0.6))
-            .frame(width: size, height: size)
-            .background(tool.iconColor, in: shape)
-            .overlay { shape.strokeBorder(Theme.aiIconStroke) }
-            .accessibilityHidden(true)
+        .frame(width: size * (tool == .jetBrains ? 0.9 : 0.6), height: size * (tool == .jetBrains ? 0.9 : 0.6))
+        .frame(width: size, height: size)
+        .background(tool.iconColor, in: shape)
+        .overlay { shape.strokeBorder(Theme.aiIconStroke) }
+        .accessibilityHidden(true)
     }
 }
 
@@ -371,7 +379,8 @@ struct QuotaRow: View {
     private func accessibilityValue(hasReset: Bool) -> Text {
         guard !hasReset else { return Text("Window has reset since the last reading") }
         // The chip is part of the value, as VoiceOver does not see its color.
-        let left = window.isRunningLow && !isStale
+        let left =
+            window.isRunningLow && !isStale
             ? Text("\(Text("Running low")), \(Text("\(window.left.percentText) left"))")
             : Text("\(window.left.percentText) left")
         guard let reset = window.resetLine() else { return left }

@@ -53,34 +53,47 @@ struct CPUHistoryCard: View {
 
     // Vectorized plots: one mark per series instead of one per point, redrawn every sample.
     @ChartContentBuilder private var loadPlots: some ChartContent {
-        AreaPlot(PlotPoint.series("P", performance), x: .value("Time", \.date), y: .value("Load", \.value),
-                 series: .value("Series", \.series))
-            .foregroundStyle(LinearGradient(colors: [Theme.metricCPU.opacity(0.45), Theme.metricCPU.opacity(0.08)],
-                                            startPoint: .top, endPoint: .bottom))
-            .interpolationMethod(.monotone)
-        LinePlot(PlotPoint.series("P", performance), x: .value("Time", \.date), y: .value("Load", \.value),
-                 series: .value("Series", \.series))
-            .foregroundStyle(Theme.metricCPU)
-            .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
-            .interpolationMethod(.monotone)
-        AreaPlot(PlotPoint.series("E", efficiency), x: .value("Time", \.date), y: .value("Load", \.value),
-                 series: .value("Series", \.series))
-            .foregroundStyle(Theme.metricCPUEfficiency.opacity(0.2))
-            .interpolationMethod(.monotone)
-        LinePlot(PlotPoint.series("E", efficiency), x: .value("Time", \.date), y: .value("Load", \.value),
-                 series: .value("Series", \.series))
-            .foregroundStyle(Theme.metricCPUEfficiency)
-            .lineStyle(StrokeStyle(lineWidth: 1.5))
-            .interpolationMethod(.monotone)
+        AreaPlot(
+            PlotPoint.series("P", performance), x: .value("Time", \.date), y: .value("Load", \.value),
+            series: .value("Series", \.series)
+        )
+        .foregroundStyle(
+            LinearGradient(
+                colors: [Theme.metricCPU.opacity(0.45), Theme.metricCPU.opacity(0.08)],
+                startPoint: .top, endPoint: .bottom)
+        )
+        .interpolationMethod(.monotone)
+        LinePlot(
+            PlotPoint.series("P", performance), x: .value("Time", \.date), y: .value("Load", \.value),
+            series: .value("Series", \.series)
+        )
+        .foregroundStyle(Theme.metricCPU)
+        .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
+        .interpolationMethod(.monotone)
+        AreaPlot(
+            PlotPoint.series("E", efficiency), x: .value("Time", \.date), y: .value("Load", \.value),
+            series: .value("Series", \.series)
+        )
+        .foregroundStyle(Theme.metricCPUEfficiency.opacity(0.2))
+        .interpolationMethod(.monotone)
+        LinePlot(
+            PlotPoint.series("E", efficiency), x: .value("Time", \.date), y: .value("Load", \.value),
+            series: .value("Series", \.series)
+        )
+        .foregroundStyle(Theme.metricCPUEfficiency)
+        .lineStyle(StrokeStyle(lineWidth: 1.5))
+        .interpolationMethod(.monotone)
     }
 
     /// Temperature shares the load scale: 100 °C aligns with 100% load.
     private var temperaturePlot: some ChartContent {
-        LinePlot(PlotPoint.series("T", temperature, scale: 0.01), x: .value("Time", \.date), y: .value("Load", \.value),
-                 series: .value("Series", \.series))
-            .foregroundStyle(LinearGradient(colors: [Theme.metricHeat, Theme.metricHeatHot], startPoint: .leading, endPoint: .trailing))
-            .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, dash: [4, 4]))
-            .interpolationMethod(.monotone)
+        LinePlot(
+            PlotPoint.series("T", temperature, scale: 0.01), x: .value("Time", \.date), y: .value("Load", \.value),
+            series: .value("Series", \.series)
+        )
+        .foregroundStyle(LinearGradient(colors: [Theme.metricHeat, Theme.metricHeatHot], startPoint: .leading, endPoint: .trailing))
+        .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, dash: [4, 4]))
+        .interpolationMethod(.monotone)
     }
 
     private var chart: some View {

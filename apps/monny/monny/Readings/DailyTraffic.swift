@@ -13,7 +13,8 @@ nonisolated struct DailyTraffic: Identifiable, Sendable {
     }
 
     static func days(in tier: HistoryTier, now: Date = .now, calendar: Calendar = .current) -> [DailyTraffic] {
-        var down: [Date: Double] = [:], up: [Date: Double] = [:]
+        var down: [Date: Double] = [:]
+        var up: [Date: Double] = [:]
         for point in tier.series(.download) {
             down[calendar.startOfDay(for: point.date), default: 0] += point.value * tier.step
         }

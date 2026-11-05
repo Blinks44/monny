@@ -1,18 +1,20 @@
 import Foundation
 import Testing
+
 @testable import monny
 
 /// SMC data types and sensor selection, with byte fixtures shaped like the M1 Max readings.
 struct SensorDecodingTests {
-    @Test(arguments: [
-        (SMCValue(type: "flt ", bytes: [0x00, 0x00, 0x02, 0x42]), 32.5),   // TB0T, little-endian Float
-        (SMCValue(type: "sp78", bytes: [0x2A, 0x80]), 42.5),               // signed 8.8 fixed point
-        (SMCValue(type: "sp78", bytes: [0xFF, 0x00]), -1),
-        (SMCValue(type: "fpe2", bytes: [0x17, 0x70]), 1_500),              // unsigned 14.2, older fan keys
-        (SMCValue(type: "ui8 ", bytes: [0x02]), 2),                        // FNum
-        (SMCValue(type: "ui16", bytes: [0x01, 0x00]), 256),
-        (SMCValue(type: "ui32", bytes: [0x00, 0x00, 0x08, 0xCB]), 2_251),  // #KEY
-    ] as [(SMCValue, Double)])
+    @Test(
+        arguments: [
+            (SMCValue(type: "flt ", bytes: [0x00, 0x00, 0x02, 0x42]), 32.5),  // TB0T, little-endian Float
+            (SMCValue(type: "sp78", bytes: [0x2A, 0x80]), 42.5),  // signed 8.8 fixed point
+            (SMCValue(type: "sp78", bytes: [0xFF, 0x00]), -1),
+            (SMCValue(type: "fpe2", bytes: [0x17, 0x70]), 1_500),  // unsigned 14.2, older fan keys
+            (SMCValue(type: "ui8 ", bytes: [0x02]), 2),  // FNum
+            (SMCValue(type: "ui16", bytes: [0x01, 0x00]), 256),
+            (SMCValue(type: "ui32", bytes: [0x00, 0x00, 0x08, 0xCB]), 2_251),  // #KEY
+        ] as [(SMCValue, Double)])
     func decodesNumbers(value: SMCValue, expected: Double) {
         #expect(value.number == expected)
     }
@@ -46,9 +48,11 @@ struct SensorDecodingTests {
     }
 
     @Test func idleCorePlaceholdersDoNotLowerDieTemperatures() {
-        let values = ["Tp09": 44.0, "Tp0T": 46, "Tp01": 1.5, "Tp05": 3, "Tp0D": 5,
-                      "Tp0H": 0, "Tp0L": -4, "Tp0P": 150, "Tg05": 2, "Tg0D": 48,
-                      "TB0T": 5, "TH0x": 8]
+        let values = [
+            "Tp09": 44.0, "Tp0T": 46, "Tp01": 1.5, "Tp05": 3, "Tp0D": 5,
+            "Tp0H": 0, "Tp0L": -4, "Tp0P": 150, "Tg05": 2, "Tg0D": 48,
+            "TB0T": 5, "TH0x": 8,
+        ]
         let reading = SensorReader.read(generation: 1, value: { values[$0] })
         #expect(reading.cpu == 45)
         #expect(reading.gpu == 48)

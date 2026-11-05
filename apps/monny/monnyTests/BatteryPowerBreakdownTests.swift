@@ -1,11 +1,15 @@
 import Testing
+
 @testable import monny
 
 struct BatteryPowerBreakdownTests {
-    private func reading(_ state: BatteryReading.State = .charging, mac: Double? = 17,
-                         charging: Double? = 12, adapter: Int? = 96) -> BatteryReading {
-        BatteryReading(level: 0.64, state: state, isFullyCharged: false, adapterWatts: adapter,
-                       systemLoad: mac, batteryPower: charging)
+    private func reading(
+        _ state: BatteryReading.State = .charging, mac: Double? = 17,
+        charging: Double? = 12, adapter: Int? = 96
+    ) -> BatteryReading {
+        BatteryReading(
+            level: 0.64, state: state, isFullyCharged: false, adapterWatts: adapter,
+            systemLoad: mac, batteryPower: charging)
     }
 
     @Test func chargingIncludesBothFlowsAndScalesToAdapterRating() throws {

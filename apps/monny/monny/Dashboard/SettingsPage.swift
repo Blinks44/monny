@@ -48,24 +48,33 @@ struct SettingsPage: View {
                 Toggle("Launch at login", isOn: Binding(get: { loginItem.isEnabled }, set: loginItem.setEnabled))
             }
             SettingsRow("Refresh rate") {
-                PopupPicker(title: "Refresh rate", selection: $refreshInterval, options: [1, 2, 5].map { seconds in
-                    (seconds, Text("Every \(Duration.seconds(seconds).formatted(.units(width: .narrow)))"))
-                })
+                PopupPicker(
+                    title: "Refresh rate", selection: $refreshInterval,
+                    options: [1, 2, 5].map { seconds in
+                        (seconds, Text("Every \(Duration.seconds(seconds).formatted(.units(width: .narrow)))"))
+                    })
             }
             SettingsRow("Temperature unit") {
-                PopupPicker(title: "Temperature unit", selection: $temperatureUnit, options: [
-                    (.celsius, Text("°C Celsius")), (.fahrenheit, Text("°F Fahrenheit")),
-                ])
+                PopupPicker(
+                    title: "Temperature unit", selection: $temperatureUnit,
+                    options: [
+                        (.celsius, Text("°C Celsius")), (.fahrenheit, Text("°F Fahrenheit")),
+                    ])
             }
             SettingsRow("Appearance") {
-                PopupPicker(title: "Appearance", selection: $appearance, options: [
-                    (.system, Text("System")), (.light, Text("Light")), (.dark, Text("Dark")),
-                ])
+                PopupPicker(
+                    title: "Appearance", selection: $appearance,
+                    options: [
+                        (.system, Text("System")), (.light, Text("Light")), (.dark, Text("Dark")),
+                    ])
             }
             SettingsRow("Language", isLast: !language.needsRestart) {
-                PopupPicker(title: "Language", selection: $language, options: AppLanguage.allCases.map { language in
-                    (language, language.nativeName.map { Text(verbatim: $0) } ?? Text("System"))
-                })
+                PopupPicker(
+                    title: "Language", selection: $language,
+                    options: AppLanguage.allCases.map { language in
+                        (language, language.nativeName.map { Text(verbatim: $0) } ?? Text("System"))
+                    }
+                )
                 .onChange(of: language) { _, language in language.select() }
             }
             if language.needsRestart {
@@ -108,8 +117,12 @@ struct SettingsPage: View {
         SettingsSection("About") {
             updateRow
             automaticUpdatesRow
-            SettingsRow("Privacy", subtitle: showsAILimits ? "No analytics · network only for updates and AI limits"
-                                                           : "No analytics · network only for updates", isLast: true) {
+            SettingsRow(
+                "Privacy",
+                subtitle: showsAILimits
+                    ? "No analytics · network only for updates and AI limits"
+                    : "No analytics · network only for updates", isLast: true
+            ) {
                 EmptyView()
             }
         }
@@ -126,8 +139,11 @@ struct SettingsPage: View {
 
     private var automaticUpdatesRow: some View {
         SettingsRow("Check for updates automatically", subtitle: "Monny asks before installing a new version") {
-            Toggle("Check for updates automatically", isOn: Binding(get: { updater.automaticallyChecksForUpdates },
-                                                                     set: { updater.automaticallyChecksForUpdates = $0 }))
+            Toggle(
+                "Check for updates automatically",
+                isOn: Binding(
+                    get: { updater.automaticallyChecksForUpdates },
+                    set: { updater.automaticallyChecksForUpdates = $0 }))
         }
     }
 
@@ -173,18 +189,25 @@ struct SettingsPage: View {
     /// "Found: Claude Code, Codex" from the tools' folders on this Mac.
     private var foundTools: LocalizedStringKey {
         let names = aiUsage.detected.map(\.appName)
-        return names.isEmpty ? "No supported AI tools are set up on this Mac"
-                             : "Found: \(names.formatted(.list(type: .and, width: .narrow)))"
+        return names.isEmpty
+            ? "No supported AI tools are set up on this Mac"
+            : "Found: \(names.formatted(.list(type: .and, width: .narrow)))"
     }
 
     private func shows(_ tool: AITool) -> Binding<Bool> {
-        Binding(get: { !hiddenAITools.contains(tool.rawValue) }, set: { shows in
-            var hidden = hiddenAITools
-            if shows { hidden.removeAll { $0 == tool.rawValue } } else if !hidden.contains(tool.rawValue) { hidden.append(tool.rawValue) }
-            UserDefaults.standard.set(hidden, forKey: PreferenceKey.aiHiddenTools)
-            hiddenAITools = hidden
-            Task { await aiUsage.refreshInstalled() }
-        })
+        Binding(
+            get: { !hiddenAITools.contains(tool.rawValue) },
+            set: { shows in
+                var hidden = hiddenAITools
+                if shows {
+                    hidden.removeAll { $0 == tool.rawValue }
+                } else if !hidden.contains(tool.rawValue) {
+                    hidden.append(tool.rawValue)
+                }
+                UserDefaults.standard.set(hidden, forKey: PreferenceKey.aiHiddenTools)
+                hiddenAITools = hidden
+                Task { await aiUsage.refreshInstalled() }
+            })
     }
 }
 
@@ -223,8 +246,10 @@ private struct SettingsRow<Control: View>: View {
     var isLast = false
     @ViewBuilder let control: Control
 
-    init(_ title: LocalizedStringKey, subtitle: LocalizedStringKey? = nil, subtitleColor: Color = Theme.textSecondary,
-         isLast: Bool = false, @ViewBuilder control: () -> Control) {
+    init(
+        _ title: LocalizedStringKey, subtitle: LocalizedStringKey? = nil, subtitleColor: Color = Theme.textSecondary,
+        isLast: Bool = false, @ViewBuilder control: () -> Control
+    ) {
         self.title = title
         self.subtitle = subtitle
         self.subtitleColor = subtitleColor

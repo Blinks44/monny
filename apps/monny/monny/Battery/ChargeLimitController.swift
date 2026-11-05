@@ -90,8 +90,9 @@ actor ChargeLimitStore {
                 let state = MonnyReadChargeLimit()
                 guard state.available else { return nil }
                 let limits = withUnsafeBytes(of: state.limits) { $0.prefix(Int(state.count)).map(Int.init) }
-                return ChargeLimit(available: limits, limit: Int(state.limit), isEnabled: state.enabled,
-                                   isOptimized: state.optimizedKnown ? state.optimized : nil)
+                return ChargeLimit(
+                    available: limits, limit: Int(state.limit), isEnabled: state.enabled,
+                    isOptimized: state.optimizedKnown ? state.optimized : nil)
             },
             setLimit: { MonnySetChargeLimit(UInt8(clamping: $0)) },
             setEnabled: { MonnySetChargeLimitEnabled($0) },

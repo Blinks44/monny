@@ -11,10 +11,12 @@ struct SensorsPage: View {
     private var sensors: SensorReading? { sampler.snapshot?.sensors }
 
     private var kinds: [SensorKind] {
-        [SensorKind(title: "CPU die", metric: .cpuTemperature, color: Theme.metricHeat, value: sensors?.cpu),
-         SensorKind(title: "GPU", metric: .gpuTemperature, color: Theme.metricHeatHot, value: sensors?.gpu),
-         SensorKind(title: "SSD", metric: .ssdTemperature, color: Theme.metricDisk, value: sensors?.ssd),
-         SensorKind(title: "Battery", metric: .batteryTemperature, color: Theme.metricBattery, value: sensors?.battery)]
+        [
+            SensorKind(title: "CPU die", metric: .cpuTemperature, color: Theme.metricHeat, value: sensors?.cpu),
+            SensorKind(title: "GPU", metric: .gpuTemperature, color: Theme.metricHeatHot, value: sensors?.gpu),
+            SensorKind(title: "SSD", metric: .ssdTemperature, color: Theme.metricDisk, value: sensors?.ssd),
+            SensorKind(title: "Battery", metric: .batteryTemperature, color: Theme.metricBattery, value: sensors?.battery),
+        ]
     }
 
     var body: some View {
@@ -23,10 +25,11 @@ struct SensorsPage: View {
             HStack(spacing: Theme.spaceL) {
                 ForEach(kinds) { kind in
                     let points = tier.series(kind.metric)
-                    KPICard(title: kind.title, symbol: "thermometer.medium", color: kind.color,
-                            value: kind.value?.temperatureText(temperatureUnit),
-                            detail: points.map(\.value).max().map { Text("peak \($0.temperatureText(temperatureUnit))") },
-                            points: kind.value == nil ? nil : points)
+                    KPICard(
+                        title: kind.title, symbol: "thermometer.medium", color: kind.color,
+                        value: kind.value?.temperatureText(temperatureUnit),
+                        detail: points.map(\.value).max().map { Text("peak \($0.temperatureText(temperatureUnit))") },
+                        points: kind.value == nil ? nil : points)
                 }
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
@@ -62,9 +65,10 @@ private struct TemperaturesCard: View {
                 ForEach(kinds) { ChartLegend(title: $0.title, color: $0.color, wraps: true) }
             }
             if series.contains(where: { $0.points.count > 1 }) {
-                HistoryChart(series: series, tier: tier, range: range, yDomain: lower...upper,
-                             yTicks: Array(stride(from: lower, through: upper, by: 20)),
-                             format: { $0.temperatureText(unit) })
+                HistoryChart(
+                    series: series, tier: tier, range: range, yDomain: lower...upper,
+                    yTicks: Array(stride(from: lower, through: upper, by: 20)),
+                    format: { $0.temperatureText(unit) })
             } else {
                 CollectingHistoryContent().frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -97,8 +101,10 @@ private struct ThermalStateCard: View {
                 }
                 .padding(.horizontal, 12)
                 .frame(height: 32)
-                .background(isCurrent ? item.1.opacity(0.15) : Theme.fillTrack.opacity(0.6),
-                            in: .rect(cornerRadius: 10, style: .continuous))
+                .background(
+                    isCurrent ? item.1.opacity(0.15) : Theme.fillTrack.opacity(0.6),
+                    in: .rect(cornerRadius: 10, style: .continuous)
+                )
                 .overlay {
                     if isCurrent { RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(item.1.opacity(0.4)) }
                 }

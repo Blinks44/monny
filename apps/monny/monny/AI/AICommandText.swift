@@ -9,7 +9,8 @@ nonisolated enum AICommandText {
 
     static func groups(_ pattern: String, in text: String) -> [String]? {
         guard let regex = try? NSRegularExpression(pattern: pattern),
-              let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) else { return nil }
+            let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text))
+        else { return nil }
         return (1..<match.numberOfRanges).map { index in
             Range(match.range(at: index), in: text).map { String(text[$0]) } ?? ""
         }
@@ -38,7 +39,8 @@ nonisolated enum AICommandText {
 
     static func problem(in text: String, now: Date) -> AIUsageProblem? {
         let lower = text.lowercased()
-        if ["not authenticated", "authentication failed", "not logged in", "please log in", "please login"].contains(where: lower.contains) {
+        if ["not authenticated", "authentication failed", "not logged in", "please log in", "please login"].contains(where: lower.contains)
+        {
             return .signedOut
         }
         if lower.contains("http 429") || lower.contains("rate limit exceeded") {

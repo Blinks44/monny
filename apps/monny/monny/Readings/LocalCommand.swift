@@ -1,6 +1,6 @@
+import Darwin
 import Foundation
 import Synchronization
-import Darwin
 
 /// Bounded local child execution shared by usage commands and the system network reader.
 nonisolated enum LocalCommand {
@@ -10,7 +10,9 @@ nonisolated enum LocalCommand {
         let status: Int32
     }
 
-    static func run(_ executable: URL, arguments: [String], timeout: Duration = .seconds(10), environment: [String: String]? = nil) async -> Output? {
+    static func run(_ executable: URL, arguments: [String], timeout: Duration = .seconds(10), environment: [String: String]? = nil) async
+        -> Output?
+    {
         guard !Task.isCancelled else { return nil }
         let process = Process()
         process.executableURL = executable
@@ -18,7 +20,8 @@ nonisolated enum LocalCommand {
         process.environment = environment ?? ["PATH": "/usr/bin:/bin", "LC_ALL": "C", "LANG": "C"]
         process.currentDirectoryURL = URL(filePath: "/")
         process.standardInput = FileHandle.nullDevice
-        let out = Pipe(), err = Pipe()
+        let out = Pipe()
+        let err = Pipe()
         process.standardOutput = out
         process.standardError = err
         let capture = Capture()
@@ -45,7 +48,8 @@ nonisolated enum LocalCommand {
                 guard !snapshot.overflow, ContinuousClock.now < deadline else { return nil }
                 if !process.isRunning, snapshot.outEnded, snapshot.errEnded {
                     guard let stdout = String(data: snapshot.out, encoding: .utf8),
-                          let stderr = String(data: snapshot.err, encoding: .utf8) else { return nil }
+                        let stderr = String(data: snapshot.err, encoding: .utf8)
+                    else { return nil }
                     return Output(stdout: stdout, stderr: stderr, status: process.terminationStatus)
                 }
                 // Only active during this bounded child invocation, not an extra monitoring timer.

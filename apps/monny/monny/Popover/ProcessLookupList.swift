@@ -6,7 +6,7 @@ import SwiftUI
 struct ProcessLookupList: View {
     let query: ProcessQuery
     let processes: [ProcessUsage]
-    var refresh: () -> Void = { }
+    var refresh: () -> Void = {}
     /// Searches for another PID, such as the parent that started a process.
     var show: (pid_t) -> Void = { _ in }
     @State private var result: ProcessLookupResult?
@@ -58,13 +58,13 @@ struct ProcessLookupList: View {
             expanded = all.count == 1 ? all.first?.id : nil
         }
         .alert(LocalizedStringResource("Force quit “\(confirmation?.name ?? "")”?"), item: $confirmation) { match in
-            Button("Cancel", role: .cancel) { }
+            Button("Cancel", role: .cancel) {}
             Button("Force Quit", role: .destructive) { end(match, force: true) }
         } message: { match in
             Text("Only this process (PID \(String(match.id))) stops. Unsaved work in it will be lost.")
         }
         .alert(LocalizedStringResource("Couldn’t quit “\(failure?.name ?? "")”"), item: $failure) { _ in
-            Button("OK", role: .cancel) { }
+            Button("OK", role: .cancel) {}
         } message: { failure in
             Text(failure.reason.message)
         }
@@ -323,8 +323,9 @@ struct ProcessLookupList: View {
             do {
                 try await terminator.terminate(request, force: force)
             } catch {
-                failure = ProcessActionFailure(name: displayName(match),
-                                               reason: error as? ProcessTerminationFailure ?? .denied)
+                failure = ProcessActionFailure(
+                    name: displayName(match),
+                    reason: error as? ProcessTerminationFailure ?? .denied)
                 refresh()
                 result = await ProcessLookup.find(query)
                 return

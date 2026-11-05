@@ -7,7 +7,7 @@ import SwiftUI
 /// it or Escape closes it, and it fades in and out.
 final class MenuBarPanel: NSPanel {
     /// Called once the panel has closed for any reason.
-    var onClose: () -> Void = { }
+    var onClose: () -> Void = {}
 
     private var dismissesOutsideClicks: Bool { attachedSheet == nil && NSApp.modalWindow == nil }
     private var monitors: [Any] = []
@@ -89,19 +89,25 @@ final class MenuBarPanel: NSPanel {
     private func startMonitoring(ignoring button: NSStatusBarButton) {
         stopMonitoring()
         let mask: NSEvent.EventTypeMask = [.leftMouseDown, .rightMouseDown, .otherMouseDown]
-        if let global = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: { [weak self, weak button] _ in
-            MainActor.assumeIsolated {
-                guard let self, self.dismissesOutsideClicks, !Self.isMouse(on: button) else { return }
-                self.close()
-            }
-        }) {
+        if let global = NSEvent.addGlobalMonitorForEvents(
+            matching: mask,
+            handler: { [weak self, weak button] _ in
+                MainActor.assumeIsolated {
+                    guard let self, self.dismissesOutsideClicks, !Self.isMouse(on: button) else { return }
+                    self.close()
+                }
+            })
+        {
             monitors.append(global)
         }
-        if let local = NSEvent.addLocalMonitorForEvents(matching: mask, handler: { [weak self, weak button] event in
-            guard let self, self.dismissesOutsideClicks, !Self.isMouse(on: button) else { return event }
-            if event.window !== self || !self.panelFrame.contains(NSEvent.mouseLocation) { self.close() }
-            return event
-        }) {
+        if let local = NSEvent.addLocalMonitorForEvents(
+            matching: mask,
+            handler: { [weak self, weak button] event in
+                guard let self, self.dismissesOutsideClicks, !Self.isMouse(on: button) else { return event }
+                if event.window !== self || !self.panelFrame.contains(NSEvent.mouseLocation) { self.close() }
+                return event
+            })
+        {
             monitors.append(local)
         }
     }
@@ -114,9 +120,10 @@ final class MenuBarPanel: NSPanel {
     /// The drawn panel in screen coordinates, without the shadow margin.
     private var panelFrame: NSRect {
         let insets = PanelChrome<EmptyView>.shadowInsets
-        return NSRect(x: frame.minX + insets.leading, y: frame.minY + insets.bottom,
-                      width: frame.width - insets.leading - insets.trailing,
-                      height: frame.height - insets.top - insets.bottom)
+        return NSRect(
+            x: frame.minX + insets.leading, y: frame.minY + insets.bottom,
+            width: frame.width - insets.leading - insets.trailing,
+            height: frame.height - insets.top - insets.bottom)
     }
 
     private func stopMonitoring() {

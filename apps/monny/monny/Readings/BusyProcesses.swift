@@ -26,10 +26,13 @@ nonisolated struct BusyProcesses: Equatable {
     }
 
     /// The longest-busy processes, each with how long it has been busy.
-    func attention(in processes: [ProcessUsage], now: Date, currentPID: pid_t = getpid()) -> [(process: ProcessUsage, duration: TimeInterval)] {
+    func attention(in processes: [ProcessUsage], now: Date, currentPID: pid_t = getpid()) -> [(
+        process: ProcessUsage, duration: TimeInterval
+    )] {
         processes.compactMap { process -> (process: ProcessUsage, duration: TimeInterval)? in
             guard let entry = since[process.id], entry.start == process.startTime, process.cpu >= AlertMonitor.busyAppCPU,
-                  ProcessTarget(process)?.isAllowed(currentPID: currentPID) == true else { return nil }
+                ProcessTarget(process)?.isAllowed(currentPID: currentPID) == true
+            else { return nil }
             let duration = now.timeIntervalSince(entry.date)
             return duration >= Self.minimumDuration ? (process, duration) : nil
         }

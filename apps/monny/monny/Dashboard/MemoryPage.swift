@@ -11,28 +11,33 @@ struct MemoryPage: View {
         let tier = sampler.history.tier(range)
         VStack(spacing: Theme.spaceL) {
             HStack(spacing: Theme.spaceL) {
-                KPICard(title: "Used", symbol: "memorychip", color: Theme.metricMemory, value: memory?.used.memoryText,
-                        detail: memory.map { Text("of \($0.total.memoryText) · \($0.fraction.percentText)") },
-                        points: tier.series(.memory), domain: 0...1)
-                KPICard(title: "Pressure", symbol: "waveform.path.ecg", color: Theme.metricBattery,
-                        value: memory?.pressureLevel?.percentText, detail: pressureDetail,
-                        points: tier.series(.memoryPressure), domain: 0...1)
-                KPICard(title: "Swap", symbol: "internaldrive", color: Theme.metricDisk, value: memory?.swapUsed.memoryText,
-                        detail: memory?.swapInsPerMinute.map { Text("swap-ins \(Int($0.rounded())) / min") },
-                        points: tier.series(.swap))
-                KPICard(title: "Compressed", symbol: "rectangle.compress.vertical", color: Theme.metricCPU,
-                        value: memory?.compressed.memoryText,
-                        detail: memory?.compressionRatio.map { Text("ratio \($0.formatted(.number.precision(.fractionLength(1)))) ×") },
-                        points: tier.series(.compressed))
+                KPICard(
+                    title: "Used", symbol: "memorychip", color: Theme.metricMemory, value: memory?.used.memoryText,
+                    detail: memory.map { Text("of \($0.total.memoryText) · \($0.fraction.percentText)") },
+                    points: tier.series(.memory), domain: 0...1)
+                KPICard(
+                    title: "Pressure", symbol: "waveform.path.ecg", color: Theme.metricBattery,
+                    value: memory?.pressureLevel?.percentText, detail: pressureDetail,
+                    points: tier.series(.memoryPressure), domain: 0...1)
+                KPICard(
+                    title: "Swap", symbol: "internaldrive", color: Theme.metricDisk, value: memory?.swapUsed.memoryText,
+                    detail: memory?.swapInsPerMinute.map { Text("swap-ins \(Int($0.rounded())) / min") },
+                    points: tier.series(.swap))
+                KPICard(
+                    title: "Compressed", symbol: "rectangle.compress.vertical", color: Theme.metricCPU,
+                    value: memory?.compressed.memoryText,
+                    detail: memory?.compressionRatio.map { Text("ratio \($0.formatted(.number.precision(.fractionLength(1)))) ×") },
+                    points: tier.series(.compressed))
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
                 CompositionCard(memory: memory, pressure: tier, range: range)
                 PressureCard(memory: memory).frame(width: 244)
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
-                ProcessListCard("Top processes by memory", columns: ("CPU", "Memory"), processes: sampler.snapshot?.processes ?? [],
-                                color: Theme.metricMemory, value: { Double($0.memory) },
-                                primary: { $0.cpu.cpuShareText }, secondary: { $0.memory.memoryText })
+                ProcessListCard(
+                    "Top processes by memory", columns: ("CPU", "Memory"), processes: sampler.snapshot?.processes ?? [],
+                    color: Theme.metricMemory, value: { Double($0.memory) },
+                    primary: { $0.cpu.cpuShareText }, secondary: { $0.memory.memoryText })
                 MemoryDetailsCard(memory: memory).frame(width: 244)
             }
         }
@@ -67,26 +72,33 @@ private struct CompositionCard: View {
 
     private var parts: [(title: LocalizedStringKey, bytes: Int64, color: Color)] {
         guard let memory else { return [] }
-        return [("App", memory.app, Theme.metricMemory), ("Wired", memory.wired, Theme.metricCPU),
-                ("Compressed", memory.compressed, Theme.metricDisk), ("Cached files", memory.cached, Theme.metricNetworkLight),
-                ("Free", memory.free, Theme.fillTrack)]
+        return [
+            ("App", memory.app, Theme.metricMemory), ("Wired", memory.wired, Theme.metricCPU),
+            ("Compressed", memory.compressed, Theme.metricDisk), ("Cached files", memory.cached, Theme.metricNetworkLight),
+            ("Free", memory.free, Theme.fillTrack),
+        ]
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            CardHeader("Memory composition", subtitle: memory.map {
-                Text("\($0.total.memoryText) unified · \($0.used.memoryText) used · \(max($0.total - $0.used, 0).memoryText) available")
-            })
+            CardHeader(
+                "Memory composition",
+                subtitle: memory.map {
+                    Text("\($0.total.memoryText) unified · \($0.used.memoryText) used · \(max($0.total - $0.used, 0).memoryText) available")
+                })
             bar
             legend
             Text("Memory pressure · \(range.periodName)").font(Theme.footnote.weight(.semibold)).foregroundStyle(Theme.textSecondary)
             let points = pressure.series(.memoryPressure)
             if points.count > 1 {
-                HistoryChart(series: [.init(id: "pressure", points: points, color: Theme.statusSuccessText)],
-                             tier: pressure, range: range, yDomain: 0...1, yTicks: [], format: { $0.percentText },
-                             bands: [(0...0.5, Theme.statusSuccessBg.opacity(0.5)), (0.5...0.8, Theme.statusWarningBg.opacity(0.6)),
-                                     (0.8...1, Theme.statusDangerBg.opacity(0.6))],
-                             showsAxes: false)
+                HistoryChart(
+                    series: [.init(id: "pressure", points: points, color: Theme.statusSuccessText)],
+                    tier: pressure, range: range, yDomain: 0...1, yTicks: [], format: { $0.percentText },
+                    bands: [
+                        (0...0.5, Theme.statusSuccessBg.opacity(0.5)), (0.5...0.8, Theme.statusWarningBg.opacity(0.6)),
+                        (0.8...1, Theme.statusDangerBg.opacity(0.6)),
+                    ],
+                    showsAxes: false)
             } else {
                 Text("Collecting history…").font(Theme.footnote).foregroundStyle(Theme.textTertiary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -178,7 +190,9 @@ private struct MemoryDetailsCard: View {
             FactRow(title: "Wired", value: memory.map { Text($0.wired.memoryText) }, height: 30)
             FactRow(title: "Purgeable", value: memory.map { Text($0.purgeable.memoryText) }, height: 30)
             FactRow(title: "Page-ins / s", value: memory?.pageInsPerSecond.map { Text(Int($0.rounded()).formatted()) }, height: 30)
-            FactRow(title: "Swap file", value: memory.map { $0.swapUsed > 0 ? Text($0.swapUsed.memoryText) : Text("None") }, isLast: true, height: 30)
+            FactRow(
+                title: "Swap file", value: memory.map { $0.swapUsed > 0 ? Text($0.swapUsed.memoryText) : Text("None") }, isLast: true,
+                height: 30)
         }
         .dashboardCard(height: 176)
     }

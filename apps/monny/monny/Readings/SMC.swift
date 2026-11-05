@@ -9,20 +9,21 @@ nonisolated struct SMCValue: Sendable, Equatable {
     /// The value as a number, or `nil` for types Monny does not read.
     /// `flt ` is a little-endian Float on Apple silicon; the fixed-point and integer types are big-endian.
     var number: Double? {
-        let value: Double? = switch type {
-        case "flt " where bytes.count == 4:
-            Double(Float(bitPattern: bytes.reversed().reduce(0) { $0 << 8 | UInt32($1) }))
-        case "sp78" where bytes.count == 2:
-            Double(Int16(bitPattern: UInt16(bytes[0]) << 8 | UInt16(bytes[1]))) / 256
-        case "fpe2" where bytes.count == 2:
-            Double(UInt16(bytes[0]) << 8 | UInt16(bytes[1])) / 4
-        case "ui8 " where bytes.count == 1,
-             "ui16" where bytes.count == 2,
-             "ui32" where bytes.count == 4:
-            Double(bytes.reduce(UInt32(0)) { $0 << 8 | UInt32($1) })
-        default:
-            nil
-        }
+        let value: Double? =
+            switch type {
+            case "flt " where bytes.count == 4:
+                Double(Float(bitPattern: bytes.reversed().reduce(0) { $0 << 8 | UInt32($1) }))
+            case "sp78" where bytes.count == 2:
+                Double(Int16(bitPattern: UInt16(bytes[0]) << 8 | UInt16(bytes[1]))) / 256
+            case "fpe2" where bytes.count == 2:
+                Double(UInt16(bytes[0]) << 8 | UInt16(bytes[1])) / 4
+            case "ui8 " where bytes.count == 1,
+                "ui16" where bytes.count == 2,
+                "ui32" where bytes.count == 4:
+                Double(bytes.reduce(UInt32(0)) { $0 << 8 | UInt32($1) })
+            default:
+                nil
+            }
         return value.flatMap { $0.isFinite ? $0 : nil }
     }
 }

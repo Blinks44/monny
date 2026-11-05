@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import monny
 
 /// Fixture values for the reading math; the readers only add the system calls around it.
@@ -44,9 +45,9 @@ struct ReadingMathTests {
 
     @Test func batteryHealthFromSystemProfiler() throws {
         let json = """
-        {"SPPowerDataType":[{"_name":"spbattery_information","sppower_battery_health_info":\
-        {"sppower_battery_cycle_count":96,"sppower_battery_health":"Good","sppower_battery_health_maximum_capacity":"97 %"}}]}
-        """
+            {"SPPowerDataType":[{"_name":"spbattery_information","sppower_battery_health_info":\
+            {"sppower_battery_cycle_count":96,"sppower_battery_health":"Good","sppower_battery_health_maximum_capacity":"97 %"}}]}
+            """
         let health = try #require(BatteryHealthReader.parse(Data(json.utf8)))
         #expect(health.maximumCapacity == 0.97)
         #expect(health.condition == "Good")

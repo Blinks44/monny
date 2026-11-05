@@ -19,7 +19,8 @@ nonisolated struct ProcessIdentity: Sendable {
         var info = proc_bsdinfo()
         let size = Int32(MemoryLayout<proc_bsdinfo>.size)
         guard proc_pidinfo(pid, PROC_PIDTBSDINFO, 0, &info, size) == size,
-              let start = readStartTime(of: pid) else { throw ProcessTerminationFailure.gone }
+            let start = readStartTime(of: pid)
+        else { throw ProcessTerminationFailure.gone }
         var buffer = [CChar](repeating: 0, count: 256)
         let length = proc_name(pid, &buffer, UInt32(buffer.count))
         guard length > 0 else { throw ProcessTerminationFailure.gone }

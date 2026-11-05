@@ -22,11 +22,17 @@ nonisolated enum SensorKeys {
         switch generation {
         case 1: ["Tp09", "Tp0T", "Tp01", "Tp05", "Tp0D", "Tp0H", "Tp0L", "Tp0P", "Tp0X", "Tp0b"]
         case 2: ["Tp1h", "Tp1t", "Tp1p", "Tp1l", "Tp01", "Tp05", "Tp09", "Tp0D", "Tp0X", "Tp0b", "Tp0f", "Tp0j"]
-        case 3: ["Te05", "Te0L", "Te0P", "Te0S", "Tf04", "Tf09", "Tf0A", "Tf0B", "Tf0D", "Tf0E",
-                 "Tf44", "Tf49", "Tf4A", "Tf4B", "Tf4D", "Tf4E"]
+        case 3:
+            [
+                "Te05", "Te0L", "Te0P", "Te0S", "Tf04", "Tf09", "Tf0A", "Tf0B", "Tf0D", "Tf0E",
+                "Tf44", "Tf49", "Tf4A", "Tf4B", "Tf4D", "Tf4E",
+            ]
         case 4: ["Te05", "Te0S", "Te09", "Te0H", "Tp01", "Tp05", "Tp09", "Tp0D", "Tp0V", "Tp0Y", "Tp0b", "Tp0e"]
-        case 5: ["Tp00", "Tp04", "Tp08", "Tp0C", "Tp0G", "Tp0K", "Tp0O", "Tp0R", "Tp0U", "Tp0X", "Tp0a", "Tp0d",
-                 "Tp0g", "Tp0j", "Tp0m", "Tp0p", "Tp0u", "Tp0y"]
+        case 5:
+            [
+                "Tp00", "Tp04", "Tp08", "Tp0C", "Tp0G", "Tp0K", "Tp0O", "Tp0R", "Tp0U", "Tp0X", "Tp0a", "Tp0d",
+                "Tp0g", "Tp0j", "Tp0m", "Tp0p", "Tp0u", "Tp0y",
+            ]
         default: []
         }
     }

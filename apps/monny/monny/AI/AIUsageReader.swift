@@ -42,16 +42,17 @@ actor AIUsageReader {
             if tool == .augment { return AIUsageCommand.executable("auggie") != nil }
             if tool == .nous { return Self.hermesCredentialFiles.contains { fileManager.fileExists(atPath: $0.path) } }
             if tool == .jetBrains { return !JetBrainsUsageReader.sources().isEmpty }
-            let url = switch tool {
-            case .claude: Self.home.appending(path: ".claude")
-            case .codex: Self.home.appending(path: ".codex")
-            case .cursor: Self.cursorDatabase
-            case .grok: Self.home.appending(path: ".grok")
-            case .cline: Self.clineCredentials
-            case .codebuff: Self.codebuffCredentials
-            case .kimi: Self.kimiHomes.first(where: { fileManager.fileExists(atPath: $0.path) }) ?? Self.kimiHomes[0]
-            case .jetBrains, .copilot, .amp, .augment, .nous: Self.home
-            }
+            let url =
+                switch tool {
+                case .claude: Self.home.appending(path: ".claude")
+                case .codex: Self.home.appending(path: ".codex")
+                case .cursor: Self.cursorDatabase
+                case .grok: Self.home.appending(path: ".grok")
+                case .cline: Self.clineCredentials
+                case .codebuff: Self.codebuffCredentials
+                case .kimi: Self.kimiHomes.first(where: { fileManager.fileExists(atPath: $0.path) }) ?? Self.kimiHomes[0]
+                case .jetBrains, .copilot, .amp, .augment, .nous: Self.home
+                }
             return fileManager.fileExists(atPath: url.path(percentEncoded: false))
         }
     }
@@ -76,8 +77,9 @@ actor AIUsageReader {
 
     private func readClaude(now: Date) async -> Result<AIUsage, AIUsageProblem> {
         guard let data = await claudeCredentialData(),
-              let oauth = try? JSONDecoder().decode(ClaudeCredentials.self, from: data).claudeAiOauth,
-              let token = oauth.accessToken, !token.isEmpty else {
+            let oauth = try? JSONDecoder().decode(ClaudeCredentials.self, from: data).claudeAiOauth,
+            let token = oauth.accessToken, !token.isEmpty
+        else {
             return .failure(await Self.claudeUsesAPIKey() ? .apiKey : .signedOut)
         }
         if let expiresAt = oauth.expiresAt, Date(timeIntervalSince1970: expiresAt / 1_000) <= now { return .failure(.expired) }
@@ -106,8 +108,11 @@ actor AIUsageReader {
     /// item's existence is checked; the key is not read.
     private static func claudeUsesAPIKey() async -> Bool {
         if let data = try? Data(contentsOf: home.appending(path: ".claude.json")),
-           let config = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-           (config["primaryApiKey"] as? String)?.isEmpty == false { return true }
+            let config = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+            (config["primaryApiKey"] as? String)?.isEmpty == false
+        {
+            return true
+        }
         return await run("/usr/bin/security", ["find-generic-password", "-s", "Claude Code"]) != nil
     }
 
@@ -116,7 +121,8 @@ actor AIUsageReader {
     private func readCodex(now: Date) async -> Result<AIUsage, AIUsageProblem> {
         let file = Self.home.appending(path: ".codex/auth.json")
         guard let data = try? Data(contentsOf: file),
-              let credentials = try? JSONDecoder().decode(CodexCredentials.self, from: data) else { return .failure(.signedOut) }
+            let credentials = try? JSONDecoder().decode(CodexCredentials.self, from: data)
+        else { return .failure(.signedOut) }
         if credentials.usesAPIKey { return .failure(.apiKey) }
         guard let tokens = credentials.tokens, let token = tokens.accessToken, !token.isEmpty else { return .failure(.signedOut) }
         if let expiry = CodexCredentials.expiry(ofJWT: token), expiry <= now { return .failure(.expired) }
@@ -136,9 +142,10 @@ actor AIUsageReader {
     /// `WorkosCursorSessionToken=<user ID>::<token>`.
     private func readCursor(now: Date) async -> Result<AIUsage, AIUsageProblem> {
         guard let token = Self.cursorToken(), let claims = JWT.claims(of: token),
-              let subject = claims["sub"] as? String,
-              let userID = subject.split(separator: "|").last.map(String.init),
-              userID.allSatisfy({ $0.isLetter || $0.isNumber || "._-".contains($0) }) else { return .failure(.signedOut) }
+            let subject = claims["sub"] as? String,
+            let userID = subject.split(separator: "|").last.map(String.init),
+            userID.allSatisfy({ $0.isLetter || $0.isNumber || "._-".contains($0) })
+        else { return .failure(.signedOut) }
         if let exp = claims["exp"] as? Double, Date(timeIntervalSince1970: exp) <= now { return .failure(.expired) }
 
         var request = URLRequest(url: URL(string: "https://cursor.com/api/usage-summary")!)
@@ -163,21 +170,25 @@ actor AIUsageReader {
         defer { sqlite3_close(db) }
         sqlite3_busy_timeout(db, 250)
         var statement: OpaquePointer?
-        guard sqlite3_prepare_v2(db, "SELECT value FROM ItemTable WHERE key = 'cursorAuth/accessToken' LIMIT 1", -1,
-                                 &statement, nil) == SQLITE_OK else { return nil }
+        guard
+            sqlite3_prepare_v2(
+                db, "SELECT value FROM ItemTable WHERE key = 'cursorAuth/accessToken' LIMIT 1", -1,
+                &statement, nil) == SQLITE_OK
+        else { return nil }
         defer { sqlite3_finalize(statement) }
         guard sqlite3_step(statement) == SQLITE_ROW else { return nil }
-        let value: String? = switch sqlite3_column_type(statement, 0) {
-        case SQLITE_TEXT: sqlite3_column_text(statement, 0).map { String(cString: $0) }
-        case SQLITE_BLOB:
-            // Some versions store the token as a BLOB, sometimes UTF-16LE.
-            sqlite3_column_blob(statement, 0).map { bytes in
-                let data = Data(bytes: bytes, count: Int(sqlite3_column_bytes(statement, 0)))
-                let text = data.contains(0) ? String(data: data, encoding: .utf16LittleEndian) : String(data: data, encoding: .utf8)
-                return text ?? ""
+        let value: String? =
+            switch sqlite3_column_type(statement, 0) {
+            case SQLITE_TEXT: sqlite3_column_text(statement, 0).map { String(cString: $0) }
+            case SQLITE_BLOB:
+                // Some versions store the token as a BLOB, sometimes UTF-16LE.
+                sqlite3_column_blob(statement, 0).map { bytes in
+                    let data = Data(bytes: bytes, count: Int(sqlite3_column_bytes(statement, 0)))
+                    let text = data.contains(0) ? String(data: data, encoding: .utf16LittleEndian) : String(data: data, encoding: .utf8)
+                    return text ?? ""
+                }
+            default: nil
             }
-        default: nil
-        }
         let token = value?.trimmingCharacters(in: CharacterSet(charactersIn: "\"").union(.whitespacesAndNewlines))
         return token?.isEmpty == false ? token : nil
     }
@@ -186,7 +197,8 @@ actor AIUsageReader {
 
     private func readGrok(now: Date) async -> Result<AIUsage, AIUsageProblem> {
         guard let data = try? Data(contentsOf: Self.home.appending(path: ".grok/auth.json")),
-              let credentials = GrokCredentials.token(from: data) else { return .failure(.signedOut) }
+            let credentials = GrokCredentials.token(from: data)
+        else { return .failure(.signedOut) }
         if let expiresAt = credentials.expiresAt, expiresAt <= now { return .failure(.expired) }
 
         var request = URLRequest(url: URL(string: "https://cli-chat-proxy.grok.com/v1/billing?format=credits")!)
@@ -205,19 +217,23 @@ actor AIUsageReader {
     /// A login-shell PATH lookup is avoided: it would run the user's shell startup files.
     static var githubCLI: String? {
         let user = NSUserName()
-        return ["/opt/homebrew/bin/gh", "/usr/local/bin/gh", "/opt/local/bin/gh",
-                home.appending(path: ".nix-profile/bin/gh").path(percentEncoded: false),
-                "/run/current-system/sw/bin/gh", "/etc/profiles/per-user/\(user)/bin/gh"].first {
+        return [
+            "/opt/homebrew/bin/gh", "/usr/local/bin/gh", "/opt/local/bin/gh",
+            home.appending(path: ".nix-profile/bin/gh").path(percentEncoded: false),
+            "/run/current-system/sw/bin/gh", "/etc/profiles/per-user/\(user)/bin/gh",
+        ].first {
             FileManager.default.isExecutableFile(atPath: $0)
         }
     }
 
     private func readCopilot(now: Date) async -> Result<AIUsage, AIUsageProblem> {
         guard let path = Self.githubCLI,
-              let data = await Self.run(path, ["auth", "token", "--hostname", "github.com", "--no-refresh"],
-                                        environment: Self.githubEnvironment),
-              let token = String(data: data, encoding: .utf8), !token.isEmpty,
-              !token.contains(where: { $0.isWhitespace || $0.isNewline }) else { return .failure(.signedOut) }
+            let data = await Self.run(
+                path, ["auth", "token", "--hostname", "github.com", "--no-refresh"],
+                environment: Self.githubEnvironment),
+            let token = String(data: data, encoding: .utf8), !token.isEmpty,
+            !token.contains(where: { $0.isWhitespace || $0.isNewline })
+        else { return .failure(.signedOut) }
         var request = URLRequest(url: URL(string: "https://api.github.com/copilot_internal/user")!)
         request.setValue("token \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("vscode/1.96.2", forHTTPHeaderField: "Editor-Version")
@@ -232,8 +248,10 @@ actor AIUsageReader {
     /// Ignore injected API keys and custom hosts/config; use only gh's ordinary saved account.
     static var githubEnvironment: [String: String] {
         var environment = ProcessInfo.processInfo.environment
-        for key in ["GH_TOKEN", "GITHUB_TOKEN", "GH_ENTERPRISE_TOKEN", "GITHUB_ENTERPRISE_TOKEN",
-                    "GH_HOST", "GH_CONFIG_DIR", "XDG_CONFIG_HOME"] { environment.removeValue(forKey: key) }
+        for key in [
+            "GH_TOKEN", "GITHUB_TOKEN", "GH_ENTERPRISE_TOKEN", "GITHUB_ENTERPRISE_TOKEN",
+            "GH_HOST", "GH_CONFIG_DIR", "XDG_CONFIG_HOME",
+        ] { environment.removeValue(forKey: key) }
         environment["GH_PROMPT_DISABLED"] = "1"
         return environment
     }
@@ -283,14 +301,15 @@ actor AIUsageReader {
 
     func readKimi(homes: [URL] = kimiHomes, now: Date) async -> Result<AIUsage, AIUsageProblem> {
         guard let directory = homes.first(where: { FileManager.default.fileExists(atPath: $0.path) }),
-              let source = KimiSession.locate(in: directory),
-              let data = SavedAISession.data(at: source.file) else {
+            let source = KimiSession.locate(in: directory),
+            let data = SavedAISession.data(at: source.file)
+        else {
             return .failure(.signedOut)
         }
         let token: String
-        do { token = try KimiUsage.credential(data, now: now, region: source.region) }
-        catch let problem as AIUsageProblem { return .failure(problem) }
-        catch { return .failure(.signedOut) }
+        do { token = try KimiUsage.credential(data, now: now, region: source.region) } catch let problem as AIUsageProblem {
+            return .failure(problem)
+        } catch { return .failure(.signedOut) }
         // The official CLI quota fetch sends only bearer/Accept; no device identity or cookies.
         guard let url = URL(string: source.region.apiBase + "/usages") else { return .failure(.unavailable(retryAfter: nil)) }
         var request = URLRequest(url: url)
@@ -304,11 +323,12 @@ actor AIUsageReader {
 
     func readNous(files: [URL] = hermesCredentialFiles, now: Date) async -> Result<AIUsage, AIUsageProblem> {
         guard let file = files.first(where: { FileManager.default.fileExists(atPath: $0.path) }),
-              let data = SavedAISession.data(at: file) else { return .failure(.signedOut) }
+            let data = SavedAISession.data(at: file)
+        else { return .failure(.signedOut) }
         let token: String
-        do { token = try NousUsage.credential(data, now: now) }
-        catch let problem as AIUsageProblem { return .failure(problem) }
-        catch { return .failure(.signedOut) }
+        do { token = try NousUsage.credential(data, now: now) } catch let problem as AIUsageProblem { return .failure(problem) } catch {
+            return .failure(.signedOut)
+        }
         var request = URLRequest(url: URL(string: "https://portal.nousresearch.com/api/oauth/account")!)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return await fetch(request, now: now, allowsUnmetered: true) { try NousUsage.usage($0, now: now) }
@@ -325,14 +345,15 @@ actor AIUsageReader {
         }
         do {
             return .success(try tool == .amp ? AmpUsage.usage(output.stdout, now: now) : AugmentUsage.usage(output.stdout, now: now))
-        } catch let problem as AIUsageProblem { return .failure(problem) }
-        catch { return .failure(.unavailable(retryAfter: nil)) }
+        } catch let problem as AIUsageProblem { return .failure(problem) } catch { return .failure(.unavailable(retryAfter: nil)) }
     }
 
     // MARK: Shared
 
-    private func fetch(_ request: URLRequest, now: Date, allowsUnmetered: Bool = false,
-                       decode: (Data) throws -> AIUsage) async -> Result<AIUsage, AIUsageProblem> {
+    private func fetch(
+        _ request: URLRequest, now: Date, allowsUnmetered: Bool = false,
+        decode: (Data) throws -> AIUsage
+    ) async -> Result<AIUsage, AIUsageProblem> {
         switch await fetchData(request, now: now) {
         case .failure(let error): return .failure(error)
         case .success(let data):
@@ -369,8 +390,10 @@ actor AIUsageReader {
 
     /// Runs a tool and returns its trimmed output, or `nil` on failure or after `timeout`, so a
     /// Keychain dialog that the item's access list did not expect cannot block refreshes.
-    private static func run(_ path: String, _ arguments: [String], timeout: Duration = .seconds(3),
-                            environment: [String: String]? = nil) async -> Data? {
+    private static func run(
+        _ path: String, _ arguments: [String], timeout: Duration = .seconds(3),
+        environment: [String: String]? = nil
+    ) async -> Data? {
         let process = Process()
         process.executableURL = URL(filePath: path)
         process.arguments = arguments

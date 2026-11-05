@@ -1,5 +1,5 @@
-import Foundation
 import CoreFoundation
+import Foundation
 
 /// Only quota amounts and refill timing leave JetBrains' local XML/JSON records.
 nonisolated struct JetBrainsQuota: Sendable {
@@ -10,22 +10,26 @@ nonisolated struct JetBrainsQuota: Sendable {
     var date: Date
 
     func usage(source: String) -> AIUsage {
-        AIUsage(windows: [AIQuotaWindow(kind: .monthly, used: used, resetsAt: reset, duration: duration)],
-                date: date, topUpCredits: topUpCredits, source: source)
+        AIUsage(
+            windows: [AIQuotaWindow(kind: .monthly, used: used, resetsAt: reset, duration: duration)],
+            date: date, topUpCredits: topUpCredits, source: source)
     }
 
     static func xml(_ data: Data, date: Date) -> Self? {
         guard data.count <= 256 * 1_024,
-              !String(decoding: data, as: UTF8.self).contains("<!DOCTYPE"),
-              let document = try? XMLDocument(data: data, options: [.nodeLoadExternalEntitiesNever]),
-              let component = try? document.nodes(forXPath: "//component[@name='AIAssistantQuotaManager2']").first else { return nil }
+            !String(decoding: data, as: UTF8.self).contains("<!DOCTYPE"),
+            let document = try? XMLDocument(data: data, options: [.nodeLoadExternalEntitiesNever]),
+            let component = try? document.nodes(forXPath: "//component[@name='AIAssistantQuotaManager2']").first
+        else { return nil }
         func option(_ name: String) -> [String: Any]? {
             guard let value = try? component.nodes(forXPath: "option[@name='\(name)']/@value").first?.stringValue,
-                  let data = value.data(using: .utf8) else { return nil }
+                let data = value.data(using: .utf8)
+            else { return nil }
             return try? JSONSerialization.jsonObject(with: data) as? [String: Any]
         }
         guard let json = option("quotaInfo"), json["type"] as? String == "Available",
-              var quota = decode(json, date: date, allowsLegacy: true) else { return nil }
+            var quota = decode(json, date: date, allowsLegacy: true)
+        else { return nil }
         if let refill = option("nextRefill"), refill["type"] as? String == "Known" {
             quota.reset = (refill["next"] as? String).flatMap(ClaudeUsageResponse.date(from:))
             let tariff = refill["tariff"] as? [String: Any]
@@ -41,26 +45,31 @@ nonisolated struct JetBrainsQuota: Sendable {
             monthly = tariff
         } else {
             guard allowsLegacy, json["tariffQuota"] == nil,
-                  number((json["topUpQuota"] as? [String: Any])?["maximum"]) ?? 0 == 0 else { return nil }
+                number((json["topUpQuota"] as? [String: Any])?["maximum"]) ?? 0 == 0
+            else { return nil }
             monthly = json
         }
         guard let current = number(monthly["current"]), let maximum = number(monthly["maximum"]),
-              current >= 0, maximum > 0 else { return nil }
+            current >= 0, maximum > 0
+        else { return nil }
         // A present remaining amount must also be valid; the bar itself follows used / limit.
         if let available = monthly["available"], number(available).map({ $0 >= 0 }) != true { return nil }
         let extra = json["topUpQuota"] as? [String: Any]
-        let balance: Double? = if let maximum = number(extra?["maximum"]), maximum > 0,
-                                 let available = number(extra?["available"]), available >= 0 {
-            min(available, maximum) / 100_000
-        } else { nil }
+        let balance: Double? =
+            if let maximum = number(extra?["maximum"]), maximum > 0,
+                let available = number(extra?["available"]), available >= 0
+            {
+                min(available, maximum) / 100_000
+            } else { nil }
         return Self(used: min(current / maximum, 1), topUpCredits: balance, date: date)
     }
 
     static func number(_ value: Any?) -> Double? {
         if let nested = value as? [String: Any] { return number(nested["amount"]) }
-        let result: Double? = if let text = value as? String { Double(text) }
-        else if let number = value as? NSNumber, CFGetTypeID(number) != CFBooleanGetTypeID() { number.doubleValue }
-        else { nil }
+        let result: Double? =
+            if let text = value as? String {
+                Double(text)
+            } else if let number = value as? NSNumber, CFGetTypeID(number) != CFBooleanGetTypeID() { number.doubleValue } else { nil }
         return result.flatMap { $0.isFinite ? $0 : nil }
     }
 
@@ -80,8 +89,9 @@ nonisolated struct JetBrainsQuota: Sendable {
             value = text.dropLast()
         }
         guard let amount = Double(value), amount.isFinite, amount > 0,
-              let multiplier = ["d": 86_400.0, "h": 3_600, "m": 60, "s": 1][suffix],
-              (amount * multiplier).isFinite else { return nil }
+            let multiplier = ["d": 86_400.0, "h": 3_600, "m": 60, "s": 1][suffix],
+            (amount * multiplier).isFinite
+        else { return nil }
         return amount * multiplier
     }
 }

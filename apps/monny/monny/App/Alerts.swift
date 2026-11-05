@@ -51,7 +51,8 @@ nonisolated struct AlertMonitor {
         if chargeLimit == nil || snapshot.battery?.state == .onBattery {
             reachedLimit = nil
         } else if let chargeLimit, let battery = snapshot.battery, reachedLimit != chargeLimit,
-                  battery.state == .onAdapter, battery.level >= Double(chargeLimit) / 100 {
+            battery.state == .onAdapter, battery.level >= Double(chargeLimit) / 100
+        {
             alerts.append(.chargeLimitReached(chargeLimit))
             reachedLimit = chargeLimit
         }
@@ -184,14 +185,15 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
 
     /// Monny is often frontmost while its dashboard is open; show banners then too.
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async
-        -> UNNotificationPresentationOptions {
+        -> UNNotificationPresentationOptions
+    {
         [.banner, .list]
     }
 }
 
-private extension AlertMonitor.Alert {
+extension AlertMonitor.Alert {
     /// Matches the `@AppStorage` defaults in Settings.
-    var isOnByDefault: Bool {
+    fileprivate var isOnByDefault: Bool {
         switch self {
         case .hot, .chargeLimitReached: true
         case .lowBattery, .memoryPressure, .busyApp, .aiLimitLow: false

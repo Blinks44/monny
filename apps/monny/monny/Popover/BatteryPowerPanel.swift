@@ -48,14 +48,22 @@ struct BatteryPowerPanel: View {
                     HStack(spacing: 16) {
                         HStack(spacing: 4) {
                             Circle().fill(Theme.metricDisk).frame(width: 7, height: 7).accessibilityHidden(true)
-                            if let watts = power.macWatts { Text("Mac \(watts.wattsText)") }
-                            else { Text("Mac"); UnavailableValue(font: Theme.caption) }
+                            if let watts = power.macWatts {
+                                Text("Mac \(watts.wattsText)")
+                            } else {
+                                Text("Mac")
+                                UnavailableValue(font: Theme.caption)
+                            }
                         }
                         if battery?.state == .charging, power.chargingWatts == nil || (power.chargingWatts ?? 0) >= 1 {
                             HStack(spacing: 4) {
                                 Circle().fill(Theme.metricBattery).frame(width: 7, height: 7).accessibilityHidden(true)
-                                if let watts = power.chargingWatts { Text("Battery +\(watts.wattsText)") }
-                                else { Text("Battery"); UnavailableValue(font: Theme.caption) }
+                                if let watts = power.chargingWatts {
+                                    Text("Battery +\(watts.wattsText)")
+                                } else {
+                                    Text("Battery")
+                                    UnavailableValue(font: Theme.caption)
+                                }
                             }
                         }
                     }

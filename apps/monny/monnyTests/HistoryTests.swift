@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import monny
 
 /// Bucketing, trimming and persistence of the history tiers.
@@ -37,8 +38,9 @@ struct HistoryTests {
     }
 
     @Test func unavailableReadingsAreNotStored() {
-        let snapshot = Snapshot(cpu: nil, memory: nil, disk: nil, network: NetworkRates(download: 10, upload: 2), battery: nil,
-                                sensors: nil, thermalState: .nominal, processes: [])
+        let snapshot = Snapshot(
+            cpu: nil, memory: nil, disk: nil, network: NetworkRates(download: 10, upload: 2), battery: nil,
+            sensors: nil, thermalState: .nominal, processes: [])
         let values = HistoryMetric.values(of: snapshot)
         #expect(values == [.download: 10, .upload: 2])
     }
@@ -46,8 +48,9 @@ struct HistoryTests {
     /// Views see a tier change only when a bucket closes, not on every sample.
     @MainActor @Test func publishesATierWhenABucketCloses() {
         let history = History()
-        let snapshot = Snapshot(cpu: nil, memory: nil, disk: nil, network: NetworkRates(download: 10, upload: 2), battery: nil,
-                                sensors: nil, thermalState: .nominal, processes: [])
+        let snapshot = Snapshot(
+            cpu: nil, memory: nil, disk: nil, network: NetworkRates(download: 10, upload: 2), battery: nil,
+            sensors: nil, thermalState: .nominal, processes: [])
         history.record(snapshot, at: start)
         history.record(snapshot, at: start.addingTimeInterval(2))
         #expect(history.minute.series(.download).count == 2)

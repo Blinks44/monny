@@ -13,18 +13,21 @@ struct ProcessesTab: View {
     }
 
     var body: some View {
-        ProcessList(processes: sampler.snapshot?.processes ?? [], busy: sampler.busyProcesses, networkAvailable: sampler.snapshot?.processNetworkAvailable, sort: $sort, query: $query,
-                    refresh: { sampler.refreshProcesses() })
-            .onAppear {
-                sampler.setProcessListVisible(true)
-                if showsNetworkList { sampler.setNetworkProcessListVisible(true) }
-            }
-            .onDisappear {
-                sampler.setProcessListVisible(false)
-                if showsNetworkList { sampler.setNetworkProcessListVisible(false) }
-            }
-            .onChange(of: showsNetworkList) { _, isVisible in
-                sampler.setNetworkProcessListVisible(isVisible)
-            }
+        ProcessList(
+            processes: sampler.snapshot?.processes ?? [], busy: sampler.busyProcesses,
+            networkAvailable: sampler.snapshot?.processNetworkAvailable, sort: $sort, query: $query,
+            refresh: { sampler.refreshProcesses() }
+        )
+        .onAppear {
+            sampler.setProcessListVisible(true)
+            if showsNetworkList { sampler.setNetworkProcessListVisible(true) }
+        }
+        .onDisappear {
+            sampler.setProcessListVisible(false)
+            if showsNetworkList { sampler.setNetworkProcessListVisible(false) }
+        }
+        .onChange(of: showsNetworkList) { _, isVisible in
+            sampler.setNetworkProcessListVisible(isVisible)
+        }
     }
 }

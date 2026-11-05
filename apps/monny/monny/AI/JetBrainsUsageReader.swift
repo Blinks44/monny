@@ -15,22 +15,31 @@ nonisolated enum JetBrainsUsageReader {
 
     /// Directory discovery alone: never reads quota, log content or credentials.
     static func sources(home: URL = FileManager.default.homeDirectoryForCurrentUser) -> [Source] {
-        let prefixes = ["IntelliJIdea", "IdeaIC", "PyCharm", "WebStorm", "GoLand", "CLion", "DataGrip", "RubyMine",
-                        "Rider", "PhpStorm", "RustRover", "AndroidStudio", "Fleet", "Aqua", "DataSpell", "AppCode"]
+        let prefixes = [
+            "IntelliJIdea", "IdeaIC", "PyCharm", "WebStorm", "GoLand", "CLion", "DataGrip", "RubyMine",
+            "Rider", "PhpStorm", "RustRover", "AndroidStudio", "Fleet", "Aqua", "DataSpell", "AppCode",
+        ]
         var result: [Source] = []
         for vendor in ["JetBrains", "Google"] {
             let root = home.appending(path: "Library/Application Support/\(vendor)")
-            let folders = (try? FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: [.isDirectoryKey],
-                                                                        options: [.skipsHiddenFiles])) ?? []
+            let folders =
+                (try? FileManager.default.contentsOfDirectory(
+                    at: root, includingPropertiesForKeys: [.isDirectoryKey],
+                    options: [.skipsHiddenFiles])) ?? []
             for folder in folders.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
                 guard result.count < 64, (try? folder.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true,
-                      let prefix = prefixes.first(where: { folder.lastPathComponent.hasPrefix($0) }) else { continue }
+                    let prefix = prefixes.first(where: { folder.lastPathComponent.hasPrefix($0) })
+                else { continue }
                 let version = String(folder.lastPathComponent.dropFirst(prefix.count))
-                guard version.count <= 32, version.allSatisfy({ $0.isASCII && ($0.isLetter || $0.isNumber || ".- ".contains($0)) }) else { continue }
+                guard version.count <= 32, version.allSatisfy({ $0.isASCII && ($0.isLetter || $0.isNumber || ".- ".contains($0)) }) else {
+                    continue
+                }
                 let xml = folder.appending(path: "options/AIAssistantQuotaManager2.xml")
                 let log = home.appending(path: "Library/Logs/\(vendor)/\(folder.lastPathComponent)/idea.log")
-                result.append(Source(name: version.isEmpty ? prefix : "\(prefix) \(version)", xml: xml, log: log,
-                                     xmlDate: modified(xml), logDate: modified(log)))
+                result.append(
+                    Source(
+                        name: version.isEmpty ? prefix : "\(prefix) \(version)", xml: xml, log: log,
+                        xmlDate: modified(xml), logDate: modified(log)))
             }
         }
         return result
@@ -50,12 +59,14 @@ nonisolated enum JetBrainsUsageReader {
         }
         let content = logTail(source.log)
         let log = content.flatMap(JetBrainsQuotaLog.latest(in:))
-        let selected: JetBrainsQuota? = if let xml {
-            log.flatMap { $0.date > xml.date ? $0 : nil } ?? xml
-        } else { log }
+        let selected: JetBrainsQuota? =
+            if let xml {
+                log.flatMap { $0.date > xml.date ? $0 : nil } ?? xml
+            } else { log }
         guard let selected else {
             if source.xmlDate == nil, let content,
-               !content.contains(JetBrainsQuotaLog.quotaMarker), !content.contains(JetBrainsQuotaLog.junieMarker) {
+                !content.contains(JetBrainsQuotaLog.quotaMarker), !content.contains(JetBrainsQuotaLog.junieMarker)
+            {
                 return .failure(.localDataMissing)
             }
             return .failure(.unavailable(retryAfter: nil))
@@ -72,8 +83,9 @@ nonisolated enum JetBrainsUsageReader {
         guard let file = try? FileHandle(forReadingFrom: url) else { return nil }
         defer { try? file.close() }
         guard let size = try? file.seekToEnd(), size > 0, size <= UInt64(limit),
-              (try? file.seek(toOffset: 0)) != nil,
-              let data = try? file.read(upToCount: Int(size)), data.count == Int(size) else { return nil }
+            (try? file.seek(toOffset: 0)) != nil,
+            let data = try? file.read(upToCount: Int(size)), data.count == Int(size)
+        else { return nil }
         return data
     }
 
@@ -85,8 +97,9 @@ nonisolated enum JetBrainsUsageReader {
         let count = Int(min(end, UInt64(limit)))
         let start = end - UInt64(count)
         guard (try? file.seek(toOffset: start)) != nil,
-              let data = try? file.read(upToCount: count), data.count == count,
-              data.last == UInt8(ascii: "\n") else { return nil }
+            let data = try? file.read(upToCount: count), data.count == count,
+            data.last == UInt8(ascii: "\n")
+        else { return nil }
         if start > 0 {
             guard let newline = data.firstIndex(of: UInt8(ascii: "\n")) else { return nil }
             return String(data: data[data.index(after: newline)...], encoding: .utf8)

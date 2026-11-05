@@ -42,23 +42,26 @@ nonisolated struct NetworkInfo: Sendable, Equatable {
 
     private static func wifi(of interface: CWInterface) -> WiFi? {
         guard interface.powerOn() else { return nil }
-        let band: String? = switch interface.wlanChannel()?.channelBand {
-        case .band2GHz: "2.4 GHz"
-        case .band5GHz: "5 GHz"
-        case .band6GHz: "6 GHz"
-        default: nil
-        }
-        let phy: String? = switch interface.activePHYMode() {
-        case .mode11a: "802.11a"
-        case .mode11b: "802.11b"
-        case .mode11g: "802.11g"
-        case .mode11n: "802.11n"
-        case .mode11ac: "802.11ac"
-        case .mode11ax: "802.11ax"
-        default: nil
-        }
-        return WiFi(rssi: interface.rssiValue(), transmitRate: interface.transmitRate(),
-                    channel: interface.wlanChannel()?.channelNumber, band: band, phyMode: phy)
+        let band: String? =
+            switch interface.wlanChannel()?.channelBand {
+            case .band2GHz: "2.4 GHz"
+            case .band5GHz: "5 GHz"
+            case .band6GHz: "6 GHz"
+            default: nil
+            }
+        let phy: String? =
+            switch interface.activePHYMode() {
+            case .mode11a: "802.11a"
+            case .mode11b: "802.11b"
+            case .mode11g: "802.11g"
+            case .mode11n: "802.11n"
+            case .mode11ac: "802.11ac"
+            case .mode11ax: "802.11ax"
+            default: nil
+            }
+        return WiFi(
+            rssi: interface.rssiValue(), transmitRate: interface.transmitRate(),
+            channel: interface.wlanChannel()?.channelNumber, band: band, phyMode: phy)
     }
 
     /// The first IPv4 address of `interface`.
@@ -69,7 +72,8 @@ nonisolated struct NetworkInfo: Sendable, Equatable {
         for entry in sequence(first: first, next: { $0.pointee.ifa_next }) {
             let item = entry.pointee
             guard String(cString: item.ifa_name) == interface, let address = item.ifa_addr,
-                  address.pointee.sa_family == UInt8(AF_INET) else { continue }
+                address.pointee.sa_family == UInt8(AF_INET)
+            else { continue }
             var host = [CChar](repeating: 0, count: Int(NI_MAXHOST))
             guard getnameinfo(address, socklen_t(address.pointee.sa_len), &host, socklen_t(host.count), nil, 0, NI_NUMERICHOST) == 0
             else { continue }

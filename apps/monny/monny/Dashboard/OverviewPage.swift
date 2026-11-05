@@ -15,23 +15,28 @@ struct OverviewPage: View {
         let tier = sampler.history.tier(range)
         VStack(spacing: Theme.spaceL) {
             HStack(spacing: Theme.spaceL) {
-                KPICard(title: "CPU", symbol: "cpu", color: Theme.metricCPU, value: snapshot?.cpu?.total.percentText,
-                        detail: Text("\(SystemInfo.performanceCores + SystemInfo.efficiencyCores) cores"),
-                        points: tier.series(.cpu), domain: 0...1)
-                KPICard(title: "Memory", symbol: "memorychip", color: Theme.metricMemory, value: snapshot?.memory?.used.memoryText,
-                        detail: snapshot?.memory.map { memory in
-                            memory.swapUsed > 0 ? Text("of \(memory.total.memoryText) · swap \(memory.swapUsed.memoryText)")
-                                : Text("of \(memory.total.memoryText)")
-                        },
-                        points: tier.series(.memory), domain: 0...1)
-                KPICard(title: "Temperature", symbol: "thermometer.medium", color: Theme.metricHeat,
-                        value: snapshot?.sensors?.cpu?.temperatureText(temperatureUnit),
-                        detail: temperatureDetail(tier), points: tier.series(.cpuTemperature), domain: nil)
+                KPICard(
+                    title: "CPU", symbol: "cpu", color: Theme.metricCPU, value: snapshot?.cpu?.total.percentText,
+                    detail: Text("\(SystemInfo.performanceCores + SystemInfo.efficiencyCores) cores"),
+                    points: tier.series(.cpu), domain: 0...1)
+                KPICard(
+                    title: "Memory", symbol: "memorychip", color: Theme.metricMemory, value: snapshot?.memory?.used.memoryText,
+                    detail: snapshot?.memory.map { memory in
+                        memory.swapUsed > 0
+                            ? Text("of \(memory.total.memoryText) · swap \(memory.swapUsed.memoryText)")
+                            : Text("of \(memory.total.memoryText)")
+                    },
+                    points: tier.series(.memory), domain: 0...1)
+                KPICard(
+                    title: "Temperature", symbol: "thermometer.medium", color: Theme.metricHeat,
+                    value: snapshot?.sensors?.cpu?.temperatureText(temperatureUnit),
+                    detail: temperatureDetail(tier), points: tier.series(.cpuTemperature), domain: nil)
                 if SystemInfo.hasBattery {
-                    KPICard(title: "Battery", symbol: "battery.100percent", color: Theme.metricBattery,
-                            value: snapshot?.battery?.level.percentText,
-                            detail: snapshot?.battery.map(BatteryStatusText.text(for:)),
-                            points: tier.series(.battery), domain: 0...1)
+                    KPICard(
+                        title: "Battery", symbol: "battery.100percent", color: Theme.metricBattery,
+                        value: snapshot?.battery?.level.percentText,
+                        detail: snapshot?.battery.map(BatteryStatusText.text(for:)),
+                        points: tier.series(.battery), domain: 0...1)
                 }
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
@@ -42,8 +47,9 @@ struct OverviewPage: View {
                 }
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
-                ProcessListCard("Top processes", columns: ("CPU", "Memory"), processes: snapshot?.processes ?? [],
-                                color: Theme.metricCPU, value: \.cpu, primary: { $0.cpu.cpuShareText }, secondary: { $0.memory.memoryText })
+                ProcessListCard(
+                    "Top processes", columns: ("CPU", "Memory"), processes: snapshot?.processes ?? [],
+                    color: Theme.metricCPU, value: \.cpu, primary: { $0.cpu.cpuShareText }, secondary: { $0.memory.memoryText })
                 SensorsCard(sensors: snapshot?.sensors)
                     .frame(width: 244)
             }
@@ -86,9 +92,11 @@ struct KPICard: View {
             footnote?.font(Theme.footnote).foregroundStyle(Theme.textSecondary).lineLimit(1)
             Spacer(minLength: 0)
             if let points, points.count > 1 {
-                Sparkline(series: [SparklineSeries(id: "value", points: points, color: color, filled: true)],
-                          domain: domain ?? fittedDomain, showsLiveDot: false)
-                    .frame(height: 24)
+                Sparkline(
+                    series: [SparklineSeries(id: "value", points: points, color: color, filled: true)],
+                    domain: domain ?? fittedDomain, showsLiveDot: false
+                )
+                .frame(height: 24)
             } else if points != nil {
                 Text("Collecting history…").font(Theme.footnote).foregroundStyle(Theme.textTertiary)
                 Capsule().fill(Theme.fillTrack).frame(height: 4)
@@ -103,7 +111,8 @@ struct KPICard: View {
 
     private var fittedDomain: ClosedRange<Double> {
         let values = (points ?? []).map(\.value)
-        let low = values.min() ?? 0, high = values.max() ?? 1
+        let low = values.min() ?? 0
+        let high = values.max() ?? 1
         let room = max((high - low) * 0.25, 1)
         return (low - room)...(high + room)
     }
@@ -150,9 +159,12 @@ private struct BatteryDayCard: View {
                     Chart(hours) { hour in
                         BarMark(x: .value("Hour", hour.date, unit: .hour), y: .value("Level", hour.level), width: 6)
                             .clipShape(.capsule)
-                            .foregroundStyle(LinearGradient(colors: hour.charged ? [Theme.metricDisk, Theme.metricDiskLight]
-                                                                : [Theme.metricBattery, Theme.metricBattery.opacity(0.7)],
-                                                            startPoint: .bottom, endPoint: .top))
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: hour.charged
+                                        ? [Theme.metricDisk, Theme.metricDiskLight]
+                                        : [Theme.metricBattery, Theme.metricBattery.opacity(0.7)],
+                                    startPoint: .bottom, endPoint: .top))
                     }
                     .chartXScale(domain: Date.now.addingTimeInterval(-86_400)...Date.now)
                     .chartYScale(domain: 0...1)

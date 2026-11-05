@@ -64,10 +64,12 @@ nonisolated struct CPUReader {
         var info: processor_info_array_t?
         var infoCount: mach_msg_type_number_t = 0
         guard host_processor_info(host, PROCESSOR_CPU_LOAD_INFO, &cpuCount, &info, &infoCount) == KERN_SUCCESS,
-              let info else { return nil }
+            let info
+        else { return nil }
         defer {
-            vm_deallocate(mach_task_self_, vm_address_t(UInt(bitPattern: info)),
-                          vm_size_t(Int(infoCount) * MemoryLayout<integer_t>.stride))
+            vm_deallocate(
+                mach_task_self_, vm_address_t(UInt(bitPattern: info)),
+                vm_size_t(Int(infoCount) * MemoryLayout<integer_t>.stride))
         }
         let ticks = (0..<Int(infoCount)).map { UInt32(bitPattern: info[$0]) }
         defer { previous = ticks }

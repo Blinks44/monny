@@ -26,9 +26,12 @@ nonisolated struct ProcessTerminationRequest: Sendable {
 
     init?(row: ProcessUsage, processes: [ProcessUsage], currentPID: pid_t = getpid()) {
         guard let target = ProcessTarget(row), target.isAllowed(currentPID: currentPID) else { return nil }
-        let members = row.app == nil ? [] : processes.filter {
-            $0.app?.pid == row.id && $0.app?.startTime == row.app?.startTime && $0.id != row.id
-        }
+        let members =
+            row.app == nil
+            ? []
+            : processes.filter {
+                $0.app?.pid == row.id && $0.app?.startTime == row.app?.startTime && $0.id != row.id
+            }
         // An app responsible for Monny must not indirectly terminate the monitor either.
         guard members.allSatisfy({ $0.id != currentPID }) else { return nil }
         self.target = target

@@ -9,7 +9,7 @@ struct ProcessList: View {
     var networkAvailable: Bool? = nil
     @Binding var sort: ProcessSort
     @Binding var query: String
-    var refresh: () -> Void = { }
+    var refresh: () -> Void = {}
     @State private var confirmation: ProcessTerminationRequest?
     @State private var failure: ProcessActionFailure?
     @State private var isEnding = false
@@ -21,18 +21,21 @@ struct ProcessList: View {
             HStack(spacing: Theme.spaceM) {
                 ProcessSearchField(query: $query)
                 if case .name = lookup {
-                    PopupPicker(title: "Sort by", selection: $sort, options: [
-                        (.cpu, Text("CPU")), (.memory, Text("Memory")), (.energy, Text("Energy")), (.network, Text("Network")),
-                    ])
+                    PopupPicker(
+                        title: "Sort by", selection: $sort,
+                        options: [
+                            (.cpu, Text("CPU")), (.memory, Text("Memory")), (.energy, Text("Energy")), (.network, Text("Network")),
+                        ])
                 }
             }
             if case .name(let name) = lookup {
                 let attention = name.isEmpty ? busy.attention(in: processes, now: .now) : []
                 if !attention.isEmpty {
-                    NeedsAttentionCard(items: attention, isEnding: isEnding,
-                                       quit: { request(for: $0).map { end($0, force: false) } },
-                                       forceQuit: { confirmation = request(for: $0) },
-                                       show: { query = String($0) })
+                    NeedsAttentionCard(
+                        items: attention, isEnding: isEnding,
+                        quit: { request(for: $0).map { end($0, force: false) } },
+                        forceQuit: { confirmation = request(for: $0) },
+                        show: { query = String($0) })
                 }
                 if sort == .network, networkAvailable == false {
                     Text("Process network usage is unavailable.")
@@ -44,13 +47,13 @@ struct ProcessList: View {
             }
         }
         .alert(LocalizedStringResource("Force quit “\(confirmation?.target.name ?? "")”?"), item: $confirmation) { request in
-            Button("Cancel", role: .cancel) { }
+            Button("Cancel", role: .cancel) {}
             Button("Force Quit", role: .destructive) { end(request, force: true) }
         } message: { _ in
             Text("Unsaved changes will be lost.")
         }
         .alert(LocalizedStringResource("Couldn’t quit “\(failure?.name ?? "")”"), item: $failure) { _ in
-            Button("OK", role: .cancel) { }
+            Button("OK", role: .cancel) {}
         } message: { failure in
             Text(failure.reason.message)
         }
@@ -88,20 +91,22 @@ struct ProcessList: View {
                 } else {
                     ForEach(Array(rows.enumerated()), id: \.element.id) { index, process in
                         if index > 0 { Theme.fillSeparator.frame(height: 1).padding(.leading, 42) }
-                        ProcessRow(process: process, value: valueText(of: process), detail: detail(of: process),
-                                   share: top > 0 ? value(of: process) / top : nil, color: color,
-                                   secondaryValue: sort == .network ? process.network?.upload.rateText ?? "—" : nil)
-                            .contentShape(.rect)
-                            .contextMenu {
-                                if let request = ProcessTerminationRequest(row: process, processes: processes) {
-                                    Button("Quit") { end(request, force: false) }
+                        ProcessRow(
+                            process: process, value: valueText(of: process), detail: detail(of: process),
+                            share: top > 0 ? value(of: process) / top : nil, color: color,
+                            secondaryValue: sort == .network ? process.network?.upload.rateText ?? "—" : nil
+                        )
+                        .contentShape(.rect)
+                        .contextMenu {
+                            if let request = ProcessTerminationRequest(row: process, processes: processes) {
+                                Button("Quit") { end(request, force: false) }
                                     .disabled(isEnding)
-                                    Button(LocalizedStringResource("process.forceQuit.menu", defaultValue: "Force Quit…")) {
-                                        confirmation = request
-                                    }
-                                        .disabled(isEnding)
+                                Button(LocalizedStringResource("process.forceQuit.menu", defaultValue: "Force Quit…")) {
+                                    confirmation = request
                                 }
+                                .disabled(isEnding)
                             }
+                        }
                     }
                     Spacer(minLength: 0)
                 }
@@ -120,8 +125,9 @@ struct ProcessList: View {
             do {
                 try await terminator.terminate(request, force: force)
             } catch {
-                failure = ProcessActionFailure(name: request.target.name,
-                                               reason: error as? ProcessTerminationFailure ?? .denied)
+                failure = ProcessActionFailure(
+                    name: request.target.name,
+                    reason: error as? ProcessTerminationFailure ?? .denied)
             }
             refresh()
             isEnding = false
@@ -152,8 +158,10 @@ struct ProcessList: View {
         case .memory: process.memory.memoryText
         case .network: process.network?.download.rateText ?? "—"
         // Energy is the kernel's estimate, so it is marked as approximate.
-        case .energy: "≈ " + Measurement(value: process.power, unit: UnitPower.watts)
-            .formatted(.measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(1))))
+        case .energy:
+            "≈ "
+                + Measurement(value: process.power, unit: UnitPower.watts)
+                .formatted(.measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(1))))
         }
     }
 

@@ -26,17 +26,20 @@ nonisolated struct KimiSession {
     /// Metadata only. Multiple/custom slots need explicit source selection, not fallback.
     static func locate(in home: URL) -> KimiSession? {
         let directory = home.appending(path: "credentials")
-        guard let files = try? FileManager.default.contentsOfDirectory(
-            at: directory, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey]),
-              files.count <= 128 else { return nil }
+        guard
+            let files = try? FileManager.default.contentsOfDirectory(
+                at: directory, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey]),
+            files.count <= 128
+        else { return nil }
         let slots = files.filter {
             let name = $0.lastPathComponent
             return name == "kimi-code.json" || (name.hasPrefix("kimi-code-env-") && name.hasSuffix(".json"))
         }
         guard slots.count == 1, let file = slots.first,
-              let metadata = try? file.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey]),
-              metadata.isRegularFile == true, metadata.isSymbolicLink != true,
-              let region = Region.allCases.first(where: { $0.credentialName == file.lastPathComponent }) else { return nil }
+            let metadata = try? file.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey]),
+            metadata.isRegularFile == true, metadata.isSymbolicLink != true,
+            let region = Region.allCases.first(where: { $0.credentialName == file.lastPathComponent })
+        else { return nil }
         return KimiSession(region: region, file: file)
     }
 }

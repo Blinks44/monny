@@ -13,18 +13,22 @@ struct NetworkPage: View {
         let today = transferredToday
         VStack(spacing: Theme.spaceL) {
             HStack(spacing: Theme.spaceL) {
-                KPICard(title: "Download", symbol: "arrow.down", color: Theme.metricNetwork, value: network?.download.rateText,
-                        detail: peak(tier.series(.download)), points: tier.series(.download))
-                KPICard(title: "Upload", symbol: "arrow.up", color: Theme.metricUpload, value: network?.upload.rateText,
-                        detail: peak(tier.series(.upload)), points: tier.series(.upload))
-                KPICard(title: "Today", symbol: "calendar", color: Theme.metricMemory,
-                        value: today.map { Int64($0.down + $0.up).storageText },
-                        detail: today.map { Text(verbatim: "↓ \(Int64($0.down).storageText) · ↑ \(Int64($0.up).storageText)") },
-                        points: nil)
-                KPICard(title: "Signal", symbol: "wifi", color: Theme.metricCPU,
-                        value: info?.wifi.map { "\($0.rssi) dBm" },
-                        detail: info.map { $0.wifi.map { SignalQuality(rssi: $0.rssi).text } ?? Text("Not on Wi-Fi") },
-                        points: nil)
+                KPICard(
+                    title: "Download", symbol: "arrow.down", color: Theme.metricNetwork, value: network?.download.rateText,
+                    detail: peak(tier.series(.download)), points: tier.series(.download))
+                KPICard(
+                    title: "Upload", symbol: "arrow.up", color: Theme.metricUpload, value: network?.upload.rateText,
+                    detail: peak(tier.series(.upload)), points: tier.series(.upload))
+                KPICard(
+                    title: "Today", symbol: "calendar", color: Theme.metricMemory,
+                    value: today.map { Int64($0.down + $0.up).storageText },
+                    detail: today.map { Text(verbatim: "↓ \(Int64($0.down).storageText) · ↑ \(Int64($0.up).storageText)") },
+                    points: nil)
+                KPICard(
+                    title: "Signal", symbol: "wifi", color: Theme.metricCPU,
+                    value: info?.wifi.map { "\($0.rssi) dBm" },
+                    detail: info.map { $0.wifi.map { SignalQuality(rssi: $0.rssi).text } ?? Text("Not on Wi-Fi") },
+                    points: nil)
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
                 ThroughputCard(tier: tier, range: range)
@@ -35,11 +39,12 @@ struct NetworkPage: View {
                     .font(Theme.body).foregroundStyle(Theme.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-            ProcessListCard("Top processes by network", columns: ("Download", "Upload"),
-                            processes: ProcessSort.network.rows(in: sampler.snapshot?.processes ?? [], matching: "", limit: 4),
-                            color: Theme.metricNetwork, value: { $0.network.map { $0.download + $0.upload } ?? -1 },
-                            primary: { $0.network?.download.rateText ?? "—" },
-                            secondary: { $0.network?.upload.rateText ?? "—" })
+            ProcessListCard(
+                "Top processes by network", columns: ("Download", "Upload"),
+                processes: ProcessSort.network.rows(in: sampler.snapshot?.processes ?? [], matching: "", limit: 4),
+                color: Theme.metricNetwork, value: { $0.network.map { $0.download + $0.upload } ?? -1 },
+                primary: { $0.network?.download.rateText ?? "—" },
+                secondary: { $0.network?.upload.rateText ?? "—" })
             WeekCard(week: sampler.history.week)
         }
         .onAppear {
@@ -80,7 +85,15 @@ struct SignalQuality {
 
     var text: Text {
         // "signal.fair": the thermal state's "Fair" is a different word in other languages.
-        if rssi >= -55 { Text("Excellent") } else if rssi >= -67 { Text("Good") } else if rssi >= -75 { Text("signal.fair") } else { Text("Weak") }
+        if rssi >= -55 {
+            Text("Excellent")
+        } else if rssi >= -67 {
+            Text("Good")
+        } else if rssi >= -75 {
+            Text("signal.fair")
+        } else {
+            Text("Weak")
+        }
     }
 
     var color: Color {
@@ -93,7 +106,8 @@ private struct ThroughputCard: View {
     let range: HistoryRange
 
     var body: some View {
-        let down = tier.series(.download), up = tier.series(.upload)
+        let down = tier.series(.download)
+        let up = tier.series(.upload)
         let top = max((down + up).map(\.value).max() ?? 1, 1)
         VStack(alignment: .leading, spacing: 12) {
             CardHeader("Throughput", subtitle: summary(down: down, up: up)) {
@@ -103,10 +117,13 @@ private struct ThroughputCard: View {
                 }
             }
             if down.count > 1 {
-                HistoryChart(series: [.init(id: "down", points: down, color: Theme.metricNetwork, filled: true),
-                                      .init(id: "up", points: up, color: Theme.metricUpload)],
-                             tier: tier, range: range, yDomain: 0...top * 1.1,
-                             yTicks: [0, top / 3, top * 2 / 3, top], format: { $0.rateText })
+                HistoryChart(
+                    series: [
+                        .init(id: "down", points: down, color: Theme.metricNetwork, filled: true),
+                        .init(id: "up", points: up, color: Theme.metricUpload),
+                    ],
+                    tier: tier, range: range, yDomain: 0...top * 1.1,
+                    yTicks: [0, top / 3, top * 2 / 3, top], format: { $0.rateText })
             } else {
                 CollectingHistoryContent().frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -132,8 +149,9 @@ private struct ConnectionCard: View {
             CardHeader(info?.isWiFi == false ? "Connection" : "Wi-Fi", subtitle: subtitle)
                 .padding(.bottom, 6)
             if let wifi = info?.wifi {
-                FactRow(title: "Signal", value: Text("\(wifi.rssi) dBm · \(SignalQuality(rssi: wifi.rssi).text)"),
-                        valueColor: SignalQuality(rssi: wifi.rssi).color)
+                FactRow(
+                    title: "Signal", value: Text("\(wifi.rssi) dBm · \(SignalQuality(rssi: wifi.rssi).text)"),
+                    valueColor: SignalQuality(rssi: wifi.rssi).color)
                 FactRow(title: "Link rate", value: Text("\(Int(wifi.transmitRate.rounded())) Mb/s"))
             }
             FactRow(title: "Local IP", value: info?.localAddress.map { Text(verbatim: $0) })
@@ -193,7 +211,10 @@ struct WeekCard: View {
                     .padding(.vertical, 8)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(Text(day.date, format: .dateTime.weekday(.wide).day().month(.wide).locale(locale)))
-                    .accessibilityValue(Text("Download: \(day.download.map { Int64($0).storageText } ?? "—"); upload: \(day.upload.map { Int64($0).storageText } ?? "—"); total: \(day.total.map { Int64($0).storageText } ?? "—")"))
+                    .accessibilityValue(
+                        Text(
+                            "Download: \(day.download.map { Int64($0).storageText } ?? "—"); upload: \(day.upload.map { Int64($0).storageText } ?? "—"); total: \(day.total.map { Int64($0).storageText } ?? "—")"
+                        ))
                 }
             }
         }

@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import monny
 
 struct JetBrainsUsageTests {
@@ -8,24 +9,35 @@ struct JetBrainsUsageTests {
     private let monthly = "QuotaDetails(current=250000, maximum=1000000, available=750000)"
 
     private func xml(current: Any = "250000", maximum: Any = "1000000", refill: Bool = true) throws -> Data {
-        let quota: [String: Any] = ["type": "Available", "current": "250000", "maximum": "1500000",
-                                  "until": "2030-01-01T00:00:00Z",
-                                  "tariffQuota": ["current": current, "maximum": maximum, "available": "750000"],
-                                  "topUpQuota": ["current": "0", "maximum": "500000", "available": "375000"]]
+        let quota: [String: Any] = [
+            "type": "Available", "current": "250000", "maximum": "1500000",
+            "until": "2030-01-01T00:00:00Z",
+            "tariffQuota": ["current": current, "maximum": maximum, "available": "750000"],
+            "topUpQuota": ["current": "0", "maximum": "500000", "available": "375000"],
+        ]
         func escaped(_ value: [String: Any]) throws -> String {
             String(decoding: try JSONSerialization.data(withJSONObject: value), as: UTF8.self)
                 .replacingOccurrences(of: "&", with: "&amp;").replacingOccurrences(of: "\"", with: "&quot;")
         }
-        let reset = refill ? try "<option name=\"nextRefill\" value=\"\(escaped(["type": "Known", "next": "2026-11-20T10:00:00Z", "tariff": ["duration": "PT720H"]]))\"/>" : ""
-        return Data(try "<application><component name=\"AIAssistantQuotaManager2\"><option name=\"quotaInfo\" value=\"\(escaped(quota))\"/>\(reset)</component></application>".utf8)
+        let reset =
+            refill
+            ? try
+                "<option name=\"nextRefill\" value=\"\(escaped(["type": "Known", "next": "2026-11-20T10:00:00Z", "tariff": ["duration": "PT720H"]]))\"/>"
+            : ""
+        return Data(
+            try
+                "<application><component name=\"AIAssistantQuotaManager2\"><option name=\"quotaInfo\" value=\"\(escaped(quota))\"/>\(reset)</component></application>"
+                .utf8)
     }
 
     private var flat: String {
-        prefix + JetBrainsQuotaLog.quotaMarker + "Available(current=250000, maximum=1500000, until=2030-01-01T00:00:00Z, tariffQuota=\(monthly), topUpQuota=QuotaDetails(current=0, maximum=500000, available=375000))"
+        prefix + JetBrainsQuotaLog.quotaMarker
+            + "Available(current=250000, maximum=1500000, until=2030-01-01T00:00:00Z, tariffQuota=\(monthly), topUpQuota=QuotaDetails(current=0, maximum=500000, available=375000))"
     }
 
     private var refill: String {
-        prefix + JetBrainsQuotaLog.refillMarker + "Known(next=2026-11-20T10:00:00Z, tariff=QuotaRefillInfoTariff(amount=1000000, duration=30d))"
+        prefix + JetBrainsQuotaLog.refillMarker
+            + "Known(next=2026-11-20T10:00:00Z, tariff=QuotaRefillInfoTariff(amount=1000000, duration=30d))"
     }
 
     @Test func xmlKeepsMonthlyAndTopUpsSeparateAndUsesRefillRatherThanExpiry() throws {
@@ -78,8 +90,12 @@ struct JetBrainsUsageTests {
         #expect(flatQuota.used == 0.25)
         #expect(flatQuota.topUpCredits == 3.75)
         #expect(flatQuota.duration == 30 * 86_400.0)
-        let wrapped = prefix + JetBrainsQuotaLog.quotaMarker + "Available(quota=JbaiQuota(license=TEST, quotaID=JbaiQuotaId(quotaId=TEST, userId=null), tariffQuota=Details(current=250000, maximum=1000000, available=750000)))"
-        let wrappedRefill = prefix + JetBrainsQuotaLog.refillMarker + "Known(refill=JbaiQuotaRefill(tariff=JbaiQuotaTariff(amount=1000000, period=30d), next=2026-11-20T10:00:00Z, last=2026-10-21T10:00:00Z))"
+        let wrapped =
+            prefix + JetBrainsQuotaLog.quotaMarker
+            + "Available(quota=JbaiQuota(license=TEST, quotaID=JbaiQuotaId(quotaId=TEST, userId=null), tariffQuota=Details(current=250000, maximum=1000000, available=750000)))"
+        let wrappedRefill =
+            prefix + JetBrainsQuotaLog.refillMarker
+            + "Known(refill=JbaiQuotaRefill(tariff=JbaiQuotaTariff(amount=1000000, period=30d), next=2026-11-20T10:00:00Z, last=2026-10-21T10:00:00Z))"
         let quota = try #require(JetBrainsQuotaLog.latest(in: wrapped + "\n" + wrappedRefill))
         #expect(quota.used == flatQuota.used)
         #expect(quota.reset == flatQuota.reset)
@@ -87,7 +103,8 @@ struct JetBrainsUsageTests {
     }
 
     @Test func junieHasNoInventedResetAndDisabledAssistantErrorsAreIgnored() throws {
-        let json = #"{"license":"TEST","until":1893456000000,"tariffQuota":{"current":{"amount":"500000"},"maximum":{"amount":1000000},"available":{"amount":"500000"}}}"#
+        let json =
+            #"{"license":"TEST","until":1893456000000,"tariffQuota":{"current":{"amount":"500000"},"maximum":{"amount":1000000},"available":{"amount":"500000"}}}"#
         let junie = prefix + JetBrainsQuotaLog.junieMarker + json
         let disabled = prefix + JetBrainsQuotaLog.quotaMarker + JetBrainsQuotaLog.disabledState + ": AirMigration)"
         let quota = try #require(JetBrainsQuotaLog.latest(in: flat + "\n" + junie + "\n" + disabled))
@@ -133,8 +150,9 @@ struct JetBrainsUsageTests {
         try Data((flat + "\n").utf8).write(to: fixture.log)
         try Data((flat.replacingOccurrences(of: "current=250000", with: "current=500000") + "\n").utf8).write(to: otherFixture.log)
         let selected = fixture.source(xmlDate: xmlDate, logDate: logDate)
-        let other = JetBrainsUsageReader.Source(name: "Other IDE", xml: otherFixture.xml,
-                                               log: otherFixture.log, xmlDate: nil, logDate: now)
+        let other = JetBrainsUsageReader.Source(
+            name: "Other IDE", xml: otherFixture.xml,
+            log: otherFixture.log, xmlDate: nil, logDate: now)
         let usage = try JetBrainsUsageReader.read(sources: [selected, other], now: now).get()
         #expect(usage.date == logDate)
         #expect(usage.source == selected.name)
@@ -156,15 +174,17 @@ struct JetBrainsUsageTests {
     @Test func aLogWithoutQuotaIsSetupNeededRatherThanSignedOut() throws {
         let fixture = try SourceFixture()
         try Data((refill + "\n").utf8).write(to: fixture.log)
-        #expect(JetBrainsUsageReader.read(sources: [fixture.source(xmlDate: nil, logDate: now)], now: now)
-            == .failure(.localDataMissing))
+        #expect(
+            JetBrainsUsageReader.read(sources: [fixture.source(xmlDate: nil, logDate: now)], now: now)
+                == .failure(.localDataMissing))
     }
 
     @Test func aFutureDatedCacheCannotStayFreshForever() throws {
         let fixture = try SourceFixture()
         try xml().write(to: fixture.xml)
-        #expect(JetBrainsUsageReader.read(sources: [fixture.source(xmlDate: now.addingTimeInterval(3_600), logDate: nil)], now: now)
-            == .failure(.unavailable(retryAfter: nil)))
+        #expect(
+            JetBrainsUsageReader.read(sources: [fixture.source(xmlDate: now.addingTimeInterval(3_600), logDate: nil)], now: now)
+                == .failure(.unavailable(retryAfter: nil)))
     }
 
     @Test func readFallsBackToXMLForMalformedOrIncompleteLatestLog() throws {
@@ -203,7 +223,8 @@ struct JetBrainsUsageTests {
 
     @Test func aNewMonthlyResetStartsANewLowQuotaEpisode() {
         var alerts = AILowWindows()
-        let first = AIUsage(windows: [AIQuotaWindow(kind: .monthly, used: 0.95, resetsAt: now.addingTimeInterval(60), duration: 2_592_000)], date: now)
+        let first = AIUsage(
+            windows: [AIQuotaWindow(kind: .monthly, used: 0.95, resetsAt: now.addingTimeInterval(60), duration: 2_592_000)], date: now)
         var next = first
         next.windows[0].resetsAt = now.addingTimeInterval(2_592_060)
         #expect(alerts.update(.jetBrains, usage: first, now: now).count == 1)

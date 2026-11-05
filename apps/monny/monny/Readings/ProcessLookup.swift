@@ -42,14 +42,15 @@ nonisolated enum ProcessQuery: Equatable {
     private static func loopbackPort(_ text: String) -> UInt16? {
         let link = text.contains("://") ? text : "http://" + text
         guard let components = URLComponents(string: link), ["http", "https"].contains(components.scheme?.lowercased()),
-              let host = components.host?.lowercased(), let port = components.port, (1...65_535).contains(port),
-              ["localhost", "127.0.0.1", "::1", "[::1]", "0.0.0.0"].contains(host) else { return nil }
+            let host = components.host?.lowercased(), let port = components.port, (1...65_535).contains(port),
+            ["localhost", "127.0.0.1", "::1", "[::1]", "0.0.0.0"].contains(host)
+        else { return nil }
         return UInt16(port)
     }
 }
 
-nonisolated private extension Character {
-    var isASCIIDigit: Bool { isASCII && isWholeNumber }
+nonisolated extension Character {
+    fileprivate var isASCIIDigit: Bool { isASCII && isWholeNumber }
 }
 
 /// One listening TCP socket of a process; `address` is `*` for all interfaces.
@@ -86,7 +87,8 @@ nonisolated enum PortListenerReader {
         var info = socket_fdinfo()
         let size = Int32(MemoryLayout<socket_fdinfo>.size)
         guard proc_pidfdinfo(pid, descriptor, PROC_PIDFDSOCKETINFO, &info, size) == size,
-              info.psi.soi_kind == SOCKINFO_TCP else { return nil }
+            info.psi.soi_kind == SOCKINFO_TCP
+        else { return nil }
         let tcp = info.psi.soi_proto.pri_tcp
         guard tcp.tcpsi_state == TSI_S_LISTEN else { return nil }
         let internet = tcp.tcpsi_ini
@@ -171,9 +173,10 @@ nonisolated enum ProcessLookup {
         let size = Int32(MemoryLayout<proc_bsdinfo>.size)
         let parentID = proc_pidinfo(pid, PROC_PIDTBSDINFO, 0, &info, size) == size ? pid_t(info.pbi_ppid) : 0
         let parent = parentID > 1 ? (try? ProcessIdentity.read(parentID)).map { ProcessMatch.Parent(id: parentID, name: $0.name) } : nil
-        return ProcessMatch(id: pid, name: identity.name, startTime: identity.startTime,
-                            executable: executable(of: pid), folder: folder(of: pid), parent: parent,
-                            ports: sockets.filter { $0.pid == pid }.sorted { ($0.port, $0.address) < ($1.port, $1.address) })
+        return ProcessMatch(
+            id: pid, name: identity.name, startTime: identity.startTime,
+            executable: executable(of: pid), folder: folder(of: pid), parent: parent,
+            ports: sockets.filter { $0.pid == pid }.sorted { ($0.port, $0.address) < ($1.port, $1.address) })
     }
 
     private static func executable(of pid: pid_t) -> String? {

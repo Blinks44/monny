@@ -1,9 +1,12 @@
 import Testing
+
 @testable import monny
 
 /// How the NVMe SMART log maps to SSD health.
 struct SSDHealthTests {
-    private func smart(used: UInt8 = 3, spare: UInt8 = 100, threshold: UInt8 = 10, warning: UInt8 = 0, unitsWritten: UInt64 = 0) -> NVMeSMARTData {
+    private func smart(used: UInt8 = 3, spare: UInt8 = 100, threshold: UInt8 = 10, warning: UInt8 = 0, unitsWritten: UInt64 = 0)
+        -> NVMeSMARTData
+    {
         var data = NVMeSMARTData()
         data.PERCENTAGE_USED = used
         data.AVAILABLE_SPARE = spare

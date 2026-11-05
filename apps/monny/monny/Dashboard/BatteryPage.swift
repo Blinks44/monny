@@ -15,16 +15,20 @@ struct BatteryPage: View {
         let tier = sampler.history.tier(range)
         VStack(spacing: Theme.spaceL) {
             HStack(spacing: Theme.spaceL) {
-                KPICard(title: "Level", symbol: "battery.100percent", color: Theme.metricBattery,
-                        value: battery?.level.percentText, detail: powerSource,
-                        points: tier.series(.battery), domain: 0...1)
-                KPICard(title: "Health", symbol: "checkmark.shield.fill", color: Theme.metricMemory,
-                        value: sampler.batteryHealth?.maximumCapacity.percentText,
-                        detail: capacity, points: nil)
-                KPICard(title: "Cycles", symbol: "arrow.clockwise", color: Theme.metricCPU,
-                        value: battery?.cycleCount?.formatted(), detail: nil, points: nil)
-                KPICard(title: "Power", symbol: "bolt.fill", color: Theme.metricDisk,
-                        value: battery?.systemLoad?.wattsText, detail: powerFlow, footnote: powerSupply, points: nil)
+                KPICard(
+                    title: "Level", symbol: "battery.100percent", color: Theme.metricBattery,
+                    value: battery?.level.percentText, detail: powerSource,
+                    points: tier.series(.battery), domain: 0...1)
+                KPICard(
+                    title: "Health", symbol: "checkmark.shield.fill", color: Theme.metricMemory,
+                    value: sampler.batteryHealth?.maximumCapacity.percentText,
+                    detail: capacity, points: nil)
+                KPICard(
+                    title: "Cycles", symbol: "arrow.clockwise", color: Theme.metricCPU,
+                    value: battery?.cycleCount?.formatted(), detail: nil, points: nil)
+                KPICard(
+                    title: "Power", symbol: "bolt.fill", color: Theme.metricDisk,
+                    value: battery?.systemLoad?.wattsText, detail: powerFlow, footnote: powerSupply, points: nil)
             }
             // Both cards take the taller one's height, which grows with translated text.
             HStack(alignment: .top, spacing: Theme.spaceL) {
@@ -78,14 +82,17 @@ struct BatteryPage: View {
     private func chargeHistory(_ tier: HistoryTier) -> some View {
         let levels = tier.series(.battery)
         return VStack(alignment: .leading, spacing: Theme.spaceL) {
-            CardHeader(title: Text("Charge level") + Text(verbatim: " · ") + Text(range.batteryChartTitle),
-                       subtitle: Text("Recorded battery level"))
+            CardHeader(
+                title: Text("Charge level") + Text(verbatim: " · ") + Text(range.batteryChartTitle),
+                subtitle: Text("Recorded battery level"))
             if levels.count > 1 {
-                HistoryChart(series: [.init(id: "battery", points: levels, color: Theme.metricBattery, filled: true)],
-                             tier: tier, range: range, yDomain: 0...1,
-                             yTicks: [0, 0.2, 0.5, 0.8, 1], format: { $0.percentText })
-                    .accessibilityLabel(Text("Charge level"))
-                    .accessibilityValue(Text(battery?.level.percentText ?? String(localized: "Unavailable")))
+                HistoryChart(
+                    series: [.init(id: "battery", points: levels, color: Theme.metricBattery, filled: true)],
+                    tier: tier, range: range, yDomain: 0...1,
+                    yTicks: [0, 0.2, 0.5, 0.8, 1], format: { $0.percentText }
+                )
+                .accessibilityLabel(Text("Charge level"))
+                .accessibilityValue(Text(battery?.level.percentText ?? String(localized: "Unavailable")))
             } else {
                 CollectingHistoryContent().frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -96,7 +103,9 @@ struct BatteryPage: View {
     private var chargingControls: some View {
         VStack(alignment: .leading, spacing: Theme.spaceL) {
             CardHeader("battery.charging.title") {
-                Button { showsChargingGuidance = true } label: {
+                Button {
+                    showsChargingGuidance = true
+                } label: {
                     Image(systemName: "info.circle").foregroundStyle(Theme.textSecondary)
                 }
                 .buttonStyle(StaticButtonStyle())
@@ -124,8 +133,8 @@ struct BatteryPage: View {
     }
 }
 
-private extension HistoryRange {
-    var batteryChartTitle: LocalizedStringKey {
+extension HistoryRange {
+    fileprivate var batteryChartTitle: LocalizedStringKey {
         switch self {
         case .minute: "1m"
         case .hour: "1h"
@@ -135,9 +144,9 @@ private extension HistoryRange {
     }
 }
 
-private extension View {
+extension View {
     /// Sketch's 284 pt card that grows with localized content.
-    func batteryCard(minHeight: CGFloat) -> some View {
+    fileprivate func batteryCard(minHeight: CGFloat) -> some View {
         padding(.horizontal, 18)
             .padding(.top, 16)
             .padding(.bottom, 10)

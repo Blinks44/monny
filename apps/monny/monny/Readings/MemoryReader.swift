@@ -44,9 +44,10 @@ nonisolated struct MemoryReader {
             $0.withMemoryRebound(to: integer_t.self, capacity: Int(count)) { host_statistics64(host, HOST_VM_INFO64, $0, &count) }
         }
         guard result == KERN_SUCCESS else { return nil }
-        let used = MemoryUsage.used(internalPages: UInt64(stats.internal_page_count), purgeable: UInt64(stats.purgeable_count),
-                                    wired: UInt64(stats.wire_count), compressed: UInt64(stats.compressor_page_count),
-                                    pageSize: pageSize)
+        let used = MemoryUsage.used(
+            internalPages: UInt64(stats.internal_page_count), purgeable: UInt64(stats.purgeable_count),
+            wired: UInt64(stats.wire_count), compressed: UInt64(stats.compressor_page_count),
+            pageSize: pageSize)
         let page = Int64(pageSize)
         let rates = counter.rates(for: [UInt64(stats.pageins), UInt64(stats.swapins)])
         let compressor = UInt64(stats.compressor_page_count)

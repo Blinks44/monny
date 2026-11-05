@@ -100,7 +100,8 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     /// Quits and opens Monny again once this process has exited, so the new instance loads the
     /// saved history and never runs beside this one.
     static func relaunch() {
-        let script = "while /bin/kill -0 \(ProcessInfo.processInfo.processIdentifier) 2>/dev/null; do /bin/sleep 0.2; done; /usr/bin/open \"$0\""
+        let script =
+            "while /bin/kill -0 \(ProcessInfo.processInfo.processIdentifier) 2>/dev/null; do /bin/sleep 0.2; done; /usr/bin/open \"$0\""
         let process = Process()
         process.executableURL = URL(filePath: "/bin/sh")
         process.arguments = ["-c", script, Bundle.main.bundlePath]

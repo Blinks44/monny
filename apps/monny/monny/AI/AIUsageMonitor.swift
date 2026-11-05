@@ -45,12 +45,16 @@ final class AIUsageMonitor {
 
     init() {
         if let data = UserDefaults.standard.data(forKey: Self.savedKey),
-           let saved = try? JSONDecoder().decode([AITool: AIUsage].self, from: data) {
+            let saved = try? JSONDecoder().decode([AITool: AIUsage].self, from: data)
+        {
             states = saved.mapValues { ToolState(usage: $0) }
             // A window that was already low before quitting does not alert again at launch.
             for (tool, usage) in saved {
-                _ = lowWindows.update(tool, usage: AIUsage(plan: usage.plan, windows: usage.windows.filter { !$0.hasReset() },
-                                                           date: usage.date))
+                _ = lowWindows.update(
+                    tool,
+                    usage: AIUsage(
+                        plan: usage.plan, windows: usage.windows.filter { !$0.hasReset() },
+                        date: usage.date))
             }
         }
     }
@@ -58,7 +62,8 @@ final class AIUsageMonitor {
     /// Follows the Settings switch from now on; called once at launch.
     func start() {
         defaultsObservation = NotificationCenter.default.addObserver(
-            forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            forName: UserDefaults.didChangeNotification, object: nil, queue: .main
+        ) { [weak self] _ in
             Task { @MainActor [weak self] in await self?.applyPreference() }
         }
         Task { await applyPreference() }
@@ -87,7 +92,8 @@ final class AIUsageMonitor {
         var values: [HistoryMetric: Double] = [:]
         for (tool, state) in states where installed.contains(tool) {
             guard isEnabled, state.problem?.hidesReading != true,
-                  let usage = state.usage, !usage.isStale(at: now) else { continue }
+                let usage = state.usage, !usage.isStale(at: now)
+            else { continue }
             // Model limits stay out of history: the chart draws each tool's plan windows.
             for window in usage.windows where window.isPlanLimit && !window.hasReset(at: now) {
                 values[HistoryMetric.aiQuota(tool, window.kind)] = window.left
@@ -181,11 +187,14 @@ nonisolated struct AILowWindows {
                 let previousReset = low[key]
                 // A reset timestamp can be refined between checks. It is not an episode ID:
                 // re-arm only after the old reset or when the new period starts beyond it.
-                let newPeriod = previousReset.map { previous in
-                    previous <= now || (window.duration > 0 && window.resetsAt.map {
-                        $0.addingTimeInterval(-window.duration) >= previous
-                    } == true)
-                } ?? true
+                let newPeriod =
+                    previousReset.map { previous in
+                        previous <= now
+                            || (window.duration > 0
+                                && window.resetsAt.map {
+                                    $0.addingTimeInterval(-window.duration) >= previous
+                                } == true)
+                    } ?? true
                 low[key] = window.resetsAt ?? previousReset ?? .distantFuture
                 if newPeriod { alerts.append(.aiLimitLow(tool, window)) }
             } else {

@@ -2,17 +2,22 @@ import Darwin
 import Foundation
 import Synchronization
 import Testing
+
 @testable import monny
 
 struct ProcessTerminationTests {
-    private func process(_ pid: Int32 = 10, name: String = "Editor", app: AppOwner? = nil,
-                         start: UInt64? = 100) -> ProcessUsage {
+    private func process(
+        _ pid: Int32 = 10, name: String = "Editor", app: AppOwner? = nil,
+        start: UInt64? = 100
+    ) -> ProcessUsage {
         ProcessUsage(id: pid, name: name, app: app, cpu: 0, memory: 0, power: 0, startTime: start)
     }
 
     @Test func protectedAndUnknownTargetsHaveNoActions() {
-        for row in [process(0), process(-1), process(1), process(99), process(name: "loginwindow"),
-                    process(name: "Monny"), process(start: nil)] {
+        for row in [
+            process(0), process(-1), process(1), process(99), process(name: "loginwindow"),
+            process(name: "Monny"), process(start: nil),
+        ] {
             #expect(ProcessTerminationRequest(row: row, processes: [], currentPID: 99) == nil)
         }
         let child = process(99, app: AppOwner(pid: 10, name: "Editor"))
@@ -37,8 +42,10 @@ struct ProcessTerminationTests {
     @Test func forceQuitEndsTheSampledGroupAndSkipsExitedHelpers() async throws {
         let fixture = Fixture()
         let owner = AppOwner(pid: 10, name: "Editor", startTime: 100)
-        let request = try #require(ProcessTerminationRequest(row: process(app: owner),
-                                      processes: [process(11, app: owner), process(12, app: owner)]))
+        let request = try #require(
+            ProcessTerminationRequest(
+                row: process(app: owner),
+                processes: [process(11, app: owner), process(12, app: owner)]))
         try await fixture.terminator().terminate(request, force: true)
         #expect(fixture.events.withLock { $0 } == ["app:10:true", "signal:11:\(SIGKILL)"])
     }
@@ -68,8 +75,10 @@ struct ProcessTerminationTests {
     @Test func staleHelperIsNotSignalledAndReportsPartialFailure() async throws {
         let fixture = Fixture()
         let owner = AppOwner(pid: 10, name: "Editor", startTime: 100)
-        let request = try #require(ProcessTerminationRequest(row: process(app: owner),
-                                                            processes: [process(11, app: owner, start: 99)]))
+        let request = try #require(
+            ProcessTerminationRequest(
+                row: process(app: owner),
+                processes: [process(11, app: owner, start: 99)]))
         await #expect(throws: ProcessTerminationFailure.partial) {
             try await fixture.terminator().terminate(request, force: true)
         }
@@ -86,8 +95,10 @@ struct ProcessTerminationTests {
     @Test func membersOfAnOlderOwnerWithARecycledPIDAreExcluded() throws {
         let owner = AppOwner(pid: 10, name: "Editor", startTime: 100)
         let olderOwner = AppOwner(pid: 10, name: "Editor", startTime: 50)
-        let request = try #require(ProcessTerminationRequest(row: process(app: owner),
-                                                            processes: [process(11, app: olderOwner)]))
+        let request = try #require(
+            ProcessTerminationRequest(
+                row: process(app: owner),
+                processes: [process(11, app: olderOwner)]))
         #expect(request.helpers.isEmpty)
     }
 
@@ -119,14 +130,18 @@ private final class Fixture: Sendable {
     }
 
     func terminator() -> ProcessTerminator {
-        ProcessTerminator(client: ProcessTerminationClient(identity: { pid in
-            if pid == 12 { throw ProcessTerminationFailure.gone }
-            return ProcessIdentity(startTime: 100, userID: pid == 13 ? 501 : 500, name: "Editor")
-        }, quitApplication: { [self] pid, force in
-            events.withLock { $0.append("app:\(pid):\(force)") }
-            return isApp ? accepts : nil
-        }, signal: { [self] pid, signal in
-            events.withLock { $0.append("signal:\(pid):\(signal)") }
-        }), currentPID: 99, userID: 500)
+        ProcessTerminator(
+            client: ProcessTerminationClient(
+                identity: { pid in
+                    if pid == 12 { throw ProcessTerminationFailure.gone }
+                    return ProcessIdentity(startTime: 100, userID: pid == 13 ? 501 : 500, name: "Editor")
+                },
+                quitApplication: { [self] pid, force in
+                    events.withLock { $0.append("app:\(pid):\(force)") }
+                    return isApp ? accepts : nil
+                },
+                signal: { [self] pid, signal in
+                    events.withLock { $0.append("signal:\(pid):\(signal)") }
+                }), currentPID: 99, userID: 500)
     }
 }

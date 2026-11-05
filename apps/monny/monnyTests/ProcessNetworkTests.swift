@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import monny
 
 struct ProcessNetworkTests {
@@ -14,20 +15,23 @@ struct ProcessNetworkTests {
     }
 
     @Test func usesDeltaSampleAndLastDotForPID() throws {
-        let values = try #require(ProcessNetworkReader.parse("""
-        ,bytes_in,bytes_out,
-        app.helper.42,999999,888888,
-        kernel_task.0,10,20,
-        ,bytes_in,bytes_out,
-        app.helper.42,5000000,100000,
-        kernel_task.0,0,0,
-        """))
+        let values = try #require(
+            ProcessNetworkReader.parse(
+                """
+                ,bytes_in,bytes_out,
+                app.helper.42,999999,888888,
+                kernel_task.0,10,20,
+                ,bytes_in,bytes_out,
+                app.helper.42,5000000,100000,
+                kernel_task.0,0,0,
+                """))
         #expect(values[42] == NetworkRates(download: 5_000_000, upload: 100_000))
         #expect(values[0] == nil)
     }
 
     @Test func columnsCanMoveAndFirstSampleIsNeverARate() {
-        #expect(ProcessNetworkReader.parse(",bytes_out,bytes_in,\napp.42,12,30,\n,bytes_out,bytes_in,\napp.42,2,5,\n")?[42]
+        #expect(
+            ProcessNetworkReader.parse(",bytes_out,bytes_in,\napp.42,12,30,\n,bytes_out,bytes_in,\napp.42,2,5,\n")?[42]
                 == NetworkRates(download: 5, upload: 2))
         #expect(ProcessNetworkReader.parse(",bytes_in,bytes_out,\napp.42,123,456,\n") == nil)
         #expect(ProcessNetworkReader.parse("nettop: NStatManagerCreate failed") == nil)
@@ -35,7 +39,8 @@ struct ProcessNetworkTests {
     }
 
     @Test func commasInProcessNamesKeepTheirColumns() {
-        #expect(ProcessNetworkReader.parse(",bytes_in,bytes_out,\n,bytes_in,bytes_out,\nFoo, Inc.42,7,3,\n")?[42]
+        #expect(
+            ProcessNetworkReader.parse(",bytes_in,bytes_out,\n,bytes_in,bytes_out,\nFoo, Inc.42,7,3,\n")?[42]
                 == NetworkRates(download: 7, upload: 3))
     }
 
@@ -46,13 +51,18 @@ struct ProcessNetworkTests {
 
     @Test func groupsHelpersAndSortsByBothDirections() throws {
         let owner = AppOwner(pid: 10, name: "Browser")
-        let rows = [ProcessUsage(id: 10, name: "Browser", app: owner, cpu: 0, memory: 1, power: 0,
-                                 network: NetworkRates(download: 100, upload: 200)),
-                    ProcessUsage(id: 11, name: "Worker", app: owner, cpu: 0, memory: 1, power: 0,
-                                 network: NetworkRates(download: 500, upload: 0)),
-                    ProcessUsage(id: 20, name: "Uploader", app: nil, cpu: 0, memory: 1, power: 0,
-                                 network: NetworkRates(download: 0, upload: 900)),
-                    ProcessUsage(id: 30, name: "Unknown", app: nil, cpu: 0, memory: 1, power: 0)]
+        let rows = [
+            ProcessUsage(
+                id: 10, name: "Browser", app: owner, cpu: 0, memory: 1, power: 0,
+                network: NetworkRates(download: 100, upload: 200)),
+            ProcessUsage(
+                id: 11, name: "Worker", app: owner, cpu: 0, memory: 1, power: 0,
+                network: NetworkRates(download: 500, upload: 0)),
+            ProcessUsage(
+                id: 20, name: "Uploader", app: nil, cpu: 0, memory: 1, power: 0,
+                network: NetworkRates(download: 0, upload: 900)),
+            ProcessUsage(id: 30, name: "Unknown", app: nil, cpu: 0, memory: 1, power: 0),
+        ]
         #expect(ProcessSort.network.rows(in: rows, matching: "", limit: 9).map(\.id) == [20, 10, 30])
         let grouped = try #require(ProcessSort.network.rows(in: rows, matching: "Worker", limit: 9).first)
         #expect(grouped.count == 2)

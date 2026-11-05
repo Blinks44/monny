@@ -108,16 +108,19 @@ nonisolated struct ProcessReader {
             let owner = isSameProcess ? owners[pid] ?? nil : Self.owner(of: pid)
             currentOwners[pid] = owner
             guard seconds > 0, isSameProcess, let old = previous[pid],
-                  cpu >= old.cpu, info.ri_energy_nj >= old.energy,
-                  info.ri_diskio_bytesread >= old.read, info.ri_diskio_byteswritten >= old.written else { continue }
+                cpu >= old.cpu, info.ri_energy_nj >= old.energy,
+                info.ri_diskio_bytesread >= old.read, info.ri_diskio_byteswritten >= old.written
+            else { continue }
             // A recycled PID/reset counter establishes a new baseline rather than a huge wrapped rate.
             let cpuShare = Double(cpu - old.cpu) / 1e9 / seconds
             let power = Double(info.ri_energy_nj - old.energy) / 1e9 / seconds
-            usages.append(ProcessUsage(id: pid, name: Self.name(of: pid), app: owner, cpu: max(cpuShare, 0),
-                                       memory: Int64(clamping: info.ri_phys_footprint), power: max(power, 0),
-                                       diskRead: Double(info.ri_diskio_bytesread - old.read) / seconds,
-                                       diskWrite: Double(info.ri_diskio_byteswritten - old.written) / seconds,
-                                       startTime: info.ri_proc_start_abstime))
+            usages.append(
+                ProcessUsage(
+                    id: pid, name: Self.name(of: pid), app: owner, cpu: max(cpuShare, 0),
+                    memory: Int64(clamping: info.ri_phys_footprint), power: max(power, 0),
+                    diskRead: Double(info.ri_diskio_bytesread - old.read) / seconds,
+                    diskWrite: Double(info.ri_diskio_byteswritten - old.written) / seconds,
+                    startTime: info.ri_proc_start_abstime))
         }
         previous = current
         owners = currentOwners
@@ -144,8 +147,9 @@ nonisolated struct ProcessReader {
     private static func owner(of pid: pid_t) -> AppOwner? {
         let responsible = responsiblePID.map { $0(pid) }.flatMap { $0 > 0 ? $0 : nil } ?? pid
         guard let bundle = path(of: responsible).flatMap(appBundle(in:)) else { return nil }
-        return AppOwner(pid: responsible, name: FileManager.default.displayName(atPath: bundle),
-                        startTime: ProcessIdentity.readStartTime(of: responsible))
+        return AppOwner(
+            pid: responsible, name: FileManager.default.displayName(atPath: bundle),
+            startTime: ProcessIdentity.readStartTime(of: responsible))
     }
 
     /// The outermost `.app` in an executable path: an app's helper apps live inside its bundle.

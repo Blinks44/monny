@@ -13,26 +13,31 @@ struct CPUPage: View {
         let tier = sampler.history.tier(range)
         VStack(spacing: Theme.spaceL) {
             HStack(spacing: Theme.spaceL) {
-                KPICard(title: "Load", symbol: "cpu", color: Theme.metricCPU, value: snapshot?.cpu?.total.percentText,
-                        detail: snapshot?.cpu.map { Text("user \($0.user.percentText) · system \($0.system.percentText)") },
-                        points: tier.series(.cpu), domain: 0...1)
-                KPICard(title: "Die temperature", symbol: "thermometer.medium", color: Theme.metricHeat,
-                        value: snapshot?.sensors?.cpu?.temperatureText(temperatureUnit),
-                        detail: temperatureDetail(tier), points: tier.series(.cpuTemperature))
-                KPICard(title: "Frequency", symbol: "gauge.with.dots.needle.50percent", color: Theme.metricNetwork, value: nil,
-                        detail: Text("Not available"), points: nil)
-                KPICard(title: "Load average", symbol: "waveform.path.ecg", color: Theme.metricMemory,
-                        value: snapshot?.loadAverage?.first?.formatted(.number.precision(.fractionLength(2))),
-                        detail: snapshot?.loadAverage.map { Text("1 min · 5 min \($0[1].formatted(.number.precision(.fractionLength(2))))") },
-                        points: tier.series(.loadAverage))
+                KPICard(
+                    title: "Load", symbol: "cpu", color: Theme.metricCPU, value: snapshot?.cpu?.total.percentText,
+                    detail: snapshot?.cpu.map { Text("user \($0.user.percentText) · system \($0.system.percentText)") },
+                    points: tier.series(.cpu), domain: 0...1)
+                KPICard(
+                    title: "Die temperature", symbol: "thermometer.medium", color: Theme.metricHeat,
+                    value: snapshot?.sensors?.cpu?.temperatureText(temperatureUnit),
+                    detail: temperatureDetail(tier), points: tier.series(.cpuTemperature))
+                KPICard(
+                    title: "Frequency", symbol: "gauge.with.dots.needle.50percent", color: Theme.metricNetwork, value: nil,
+                    detail: Text("Not available"), points: nil)
+                KPICard(
+                    title: "Load average", symbol: "waveform.path.ecg", color: Theme.metricMemory,
+                    value: snapshot?.loadAverage?.first?.formatted(.number.precision(.fractionLength(2))),
+                    detail: snapshot?.loadAverage.map { Text("1 min · 5 min \($0[1].formatted(.number.precision(.fractionLength(2))))") },
+                    points: tier.series(.loadAverage))
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
                 CPUHistoryCard(tier: tier, range: range)
                 PerCoreCard(cpu: snapshot?.cpu).frame(width: 244)
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
-                ProcessListCard("Top processes by CPU", columns: ("CPU", "Memory"), processes: snapshot?.processes ?? [],
-                                color: Theme.metricCPU, value: \.cpu, primary: { $0.cpu.cpuShareText }, secondary: { $0.memory.memoryText })
+                ProcessListCard(
+                    "Top processes by CPU", columns: ("CPU", "Memory"), processes: snapshot?.processes ?? [],
+                    color: Theme.metricCPU, value: \.cpu, primary: { $0.cpu.cpuShareText }, secondary: { $0.memory.memoryText })
                 CPUDetailsCard(snapshot: snapshot).frame(width: 244)
             }
         }
@@ -63,8 +68,9 @@ struct PerCoreCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            CardHeader("Per-core load",
-                       subtitle: Text("\(cores(.performance).count) P-cores · \(cores(.efficiency).count) E-cores"))
+            CardHeader(
+                "Per-core load",
+                subtitle: Text("\(cores(.performance).count) P-cores · \(cores(.efficiency).count) E-cores"))
             HStack(alignment: .top, spacing: 12) {
                 column(prefix: "P", loads: cores(.performance), color: Theme.metricCPU)
                 column(prefix: "E", loads: cores(.efficiency), color: Theme.metricCPUEfficiency)
@@ -103,11 +109,13 @@ private struct CPUDetailsCard: View {
             CardHeader("Details").padding(.bottom, 6)
             FactRow(title: "Chip", value: Text(verbatim: SystemInfo.chipName), height: 30)
             FactRow(title: "GPU", value: gpu, height: 30)
-            FactRow(title: "Thermal state", value: snapshot.map { ThermalStateText.text(for: $0.thermalState) },
-                    valueColor: thermalColor, height: 30)
+            FactRow(
+                title: "Thermal state", value: snapshot.map { ThermalStateText.text(for: $0.thermalState) },
+                valueColor: thermalColor, height: 30)
             TimelineView(.periodic(from: .now, by: 60)) { _ in
-                FactRow(title: "Uptime", value: Text(verbatim: SystemInfo.uptimeText(ProcessInfo.processInfo.systemUptime)),
-                        isLast: true, height: 30)
+                FactRow(
+                    title: "Uptime", value: Text(verbatim: SystemInfo.uptimeText(ProcessInfo.processInfo.systemUptime)),
+                    isLast: true, height: 30)
             }
         }
         .dashboardCard(height: 176)
@@ -117,9 +125,9 @@ private struct CPUDetailsCard: View {
     private var gpu: Text? {
         guard let gpu = snapshot?.gpu else { return nil }
         switch (gpu.cores, gpu.utilization) {
-        case let (cores?, load?): return Text("\(cores) cores · \(load.percentText)")
-        case let (cores?, nil): return Text("\(cores) cores")
-        case let (nil, load?): return Text(load.percentText)
+        case (let cores?, let load?): return Text("\(cores) cores · \(load.percentText)")
+        case (let cores?, nil): return Text("\(cores) cores")
+        case (nil, let load?): return Text(load.percentText)
         default: return nil
         }
     }

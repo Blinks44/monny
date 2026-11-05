@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import monny
 
 struct BusyProcessesTests {
@@ -33,11 +34,17 @@ struct BusyProcessesTests {
     @Test func aRecycledPIDStartsAgainAndProtectedProcessesNeverShow() {
         var busy = BusyProcesses()
         busy.update([process(10, cpu: 0.9), process(99, cpu: 0.9), process(20, cpu: 0.9, name: "loginwindow")], now: start)
-        busy.update([process(10, cpu: 0.9, launch: 200), process(99, cpu: 0.9), process(20, cpu: 0.9, name: "loginwindow")],
-                    now: start.addingTimeInterval(120))
+        busy.update(
+            [process(10, cpu: 0.9, launch: 200), process(99, cpu: 0.9), process(20, cpu: 0.9, name: "loginwindow")],
+            now: start.addingTimeInterval(120))
         let now = start.addingTimeInterval(170)
-        #expect(busy.attention(in: [process(10, cpu: 0.9, launch: 200), process(99, cpu: 0.9),
-                                    process(20, cpu: 0.9, name: "loginwindow")], now: now, currentPID: 99).isEmpty)
+        #expect(
+            busy.attention(
+                in: [
+                    process(10, cpu: 0.9, launch: 200), process(99, cpu: 0.9),
+                    process(20, cpu: 0.9, name: "loginwindow"),
+                ], now: now, currentPID: 99
+            ).isEmpty)
     }
 
     @Test func atMostThreeLongestBusyProcessesAreShown() {

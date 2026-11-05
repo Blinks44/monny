@@ -28,10 +28,14 @@ struct MetricLabel: View {
     let color: Color
 
     var body: some View {
-        Label { Text(title) } icon: { Image(systemName: symbol) }
-            .labelStyle(SpacedLabelStyle())
-            .font(Theme.label)
-            .foregroundStyle(color)
+        Label {
+            Text(title)
+        } icon: {
+            Image(systemName: symbol)
+        }
+        .labelStyle(SpacedLabelStyle())
+        .font(Theme.label)
+        .foregroundStyle(color)
     }
 }
 
@@ -304,8 +308,10 @@ struct SwitchStyle: ToggleStyle {
             withAnimation(reduceMotion ? nil : .snappy(duration: 0.2)) { configuration.isOn.toggle() }
         } label: {
             Capsule()
-                .fill(track(isOn: configuration.isOn)
-                    .shadow(.inner(color: .black.opacity(configuration.isOn ? 0.15 : 0.1), radius: 1, y: 1)))
+                .fill(
+                    track(isOn: configuration.isOn)
+                        .shadow(.inner(color: .black.opacity(configuration.isOn ? 0.15 : 0.1), radius: 1, y: 1))
+                )
                 .overlay(alignment: configuration.isOn ? .trailing : .leading) {
                     Circle()
                         .fill(.white)
@@ -321,7 +327,8 @@ struct SwitchStyle: ToggleStyle {
     }
 
     private func track(isOn: Bool) -> AnyShapeStyle {
-        isOn ? AnyShapeStyle(LinearGradient(colors: [Theme.controlOnTop, Theme.controlOnBottom], startPoint: .top, endPoint: .bottom))
+        isOn
+            ? AnyShapeStyle(LinearGradient(colors: [Theme.controlOnTop, Theme.controlOnBottom], startPoint: .top, endPoint: .bottom))
             : AnyShapeStyle(Theme.toggleOffTrack)
     }
 }
@@ -332,23 +339,31 @@ struct CheckboxStyle: ToggleStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         let box = RoundedRectangle(cornerRadius: 5, style: .continuous)
-        Button { configuration.isOn.toggle() } label: {
+        Button {
+            configuration.isOn.toggle()
+        } label: {
             HStack(spacing: 10) {
                 Group {
                     if configuration.isOn {
-                        box.fill(LinearGradient(colors: [Theme.controlOnBottom, Theme.controlOnTop],
-                                                startPoint: .top, endPoint: .bottom))
-                            .overlay {
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 10, weight: .bold))
-                                    .foregroundStyle(.white)
-                            }
-                            .shadow(color: .black.opacity(0.15), radius: 1, y: 1)
+                        box.fill(
+                            LinearGradient(
+                                colors: [Theme.controlOnBottom, Theme.controlOnTop],
+                                startPoint: .top, endPoint: .bottom)
+                        )
+                        .overlay {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(.white)
+                        }
+                        .shadow(color: .black.opacity(0.15), radius: 1, y: 1)
                     } else {
-                        box.fill(LinearGradient(colors: [Theme.controlRaisedTop, Theme.controlRaisedBottom],
-                                                startPoint: .top, endPoint: .bottom))
-                            .shadow(color: .black.opacity(0.1), radius: 0.5, y: 1)
-                            .overlay { box.strokeBorder(Theme.checkboxStroke, lineWidth: 1) }
+                        box.fill(
+                            LinearGradient(
+                                colors: [Theme.controlRaisedTop, Theme.controlRaisedBottom],
+                                startPoint: .top, endPoint: .bottom)
+                        )
+                        .shadow(color: .black.opacity(0.1), radius: 0.5, y: 1)
+                        .overlay { box.strokeBorder(Theme.checkboxStroke, lineWidth: 1) }
                     }
                 }
                 .frame(width: 18, height: 18)
@@ -407,10 +422,14 @@ private struct PopupButtonStyle: ButtonStyle {
         .padding(.trailing, 8)
         .frame(height: 28)
         .background {
-            shape.fill(LinearGradient(colors: [Theme.controlRaisedTop, Theme.controlRaisedBottom],
-                                      startPoint: .top, endPoint: .bottom)
-                .shadow(.inner(color: Theme.controlRaisedHighlight, radius: 0, y: 1)))
-                .shadow(color: .black.opacity(0.12), radius: 1, y: 1)
+            shape.fill(
+                LinearGradient(
+                    colors: [Theme.controlRaisedTop, Theme.controlRaisedBottom],
+                    startPoint: .top, endPoint: .bottom
+                )
+                .shadow(.inner(color: Theme.controlRaisedHighlight, radius: 0, y: 1))
+            )
+            .shadow(color: .black.opacity(0.12), radius: 1, y: 1)
         }
         .overlay { shape.strokeBorder(Theme.controlRaisedStroke, lineWidth: 1) }
         .overlay { shape.fill(configuration.isPressed ? Theme.statePressed : .clear) }
@@ -535,7 +554,8 @@ struct FittedSegmentsLayout: Layout {
         var x = bounds.minX
         for (subview, ideal) in zip(subviews, ideals) {
             let width = extra >= 0 ? ideal + extra / CGFloat(subviews.count) : ideal * bounds.width / total
-            subview.place(at: CGPoint(x: x, y: bounds.midY), anchor: .leading, proposal: ProposedViewSize(width: width, height: bounds.height))
+            subview.place(
+                at: CGPoint(x: x, y: bounds.midY), anchor: .leading, proposal: ProposedViewSize(width: width, height: bounds.height))
             x += width
         }
     }
@@ -554,8 +574,10 @@ struct PanelChrome<Content: View>: View {
         let shape = RoundedRectangle(cornerRadius: Theme.radiusPanel, style: .continuous)
         content
             .background {
-                shape.fill(LinearGradient(colors: [Theme.surfacePanelTop, Theme.surfacePanelBottom],
-                                          startPoint: .top, endPoint: .bottom))
+                shape.fill(
+                    LinearGradient(
+                        colors: [Theme.surfacePanelTop, Theme.surfacePanelBottom],
+                        startPoint: .top, endPoint: .bottom))
             }
             .background { BehindWindowBlur(cornerRadius: Theme.radiusPanel) }
             .clipShape(shape)
@@ -606,7 +628,7 @@ struct BehindWindowBlur: NSViewRepresentable {
         return view
     }
 
-    func updateNSView(_ view: NSVisualEffectView, context: Context) { }
+    func updateNSView(_ view: NSVisualEffectView, context: Context) {}
 
     /// A stretchable rounded rectangle; continuous corners reach about 1.53 × the radius.
     private static func mask(cornerRadius: CGFloat) -> NSImage {
@@ -662,8 +684,11 @@ struct Sparkline: View {
                 let points = PlotPoint.series(series.id, series.points)
                 if series.filled {
                     AreaPlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
-                        .foregroundStyle(LinearGradient(colors: [series.color.opacity(0.3), series.color.opacity(0)],
-                                                        startPoint: .top, endPoint: .bottom))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [series.color.opacity(0.3), series.color.opacity(0)],
+                                startPoint: .top, endPoint: .bottom)
+                        )
                         .interpolationMethod(.monotone)
                 }
                 LinePlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))

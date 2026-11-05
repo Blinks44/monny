@@ -13,8 +13,9 @@ import Sparkle
 
     /// Tests create the controller without starting scheduled checks.
     init(startsUpdater: Bool) {
-        controller = SPUStandardUpdaterController(startingUpdater: startsUpdater, updaterDelegate: nil,
-                                                  userDriverDelegate: presentation)
+        controller = SPUStandardUpdaterController(
+            startingUpdater: startsUpdater, updaterDelegate: nil,
+            userDriverDelegate: presentation)
         observation = controller.updater.observe(\.canCheckForUpdates, options: [.initial, .new]) { [weak self] updater, _ in
             MainActor.assumeIsolated { self?.canCheckForUpdates = updater.canCheckForUpdates }
         }
@@ -40,11 +41,15 @@ import Sparkle
 private final class UpdatePresentation: NSObject, SPUStandardUserDriverDelegate {
     var supportsGentleScheduledUpdateReminders: Bool { true }
 
-    func standardUserDriverShouldHandleShowingScheduledUpdate(_ update: SUAppcastItem,
-                                                              andInImmediateFocus immediateFocus: Bool) -> Bool { true }
+    func standardUserDriverShouldHandleShowingScheduledUpdate(
+        _ update: SUAppcastItem,
+        andInImmediateFocus immediateFocus: Bool
+    ) -> Bool { true }
 
-    func standardUserDriverWillHandleShowingUpdate(_ handleShowingUpdate: Bool, forUpdate update: SUAppcastItem,
-                                                   state: SPUUserUpdateState) {
+    func standardUserDriverWillHandleShowingUpdate(
+        _ handleShowingUpdate: Bool, forUpdate update: SUAppcastItem,
+        state: SPUUserUpdateState
+    ) {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate()
     }

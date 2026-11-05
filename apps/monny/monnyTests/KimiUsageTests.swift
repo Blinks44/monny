@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import monny
 
 struct KimiUsageTests {
@@ -17,7 +18,8 @@ struct KimiUsageTests {
     }
 
     @Test func legacyCountsAndRatioConflictsKeepTheMoreExhaustedSamePeriod() throws {
-        let json = #"{"usage":{"limit":"100","remaining":"40","resetTime":"2027-02-01T00:00:00Z"},"limits":[{"window":{"duration":5,"timeUnit":"TIME_UNIT_HOUR"},"detail":{"limit":200,"used":190,"resetTime":"2027-01-15T13:00:01Z"}}],"usages":{"limit_5h":{"used_ratio":0.2,"reset_time":"2027-01-15T13:00:00Z"}}}"#
+        let json =
+            #"{"usage":{"limit":"100","remaining":"40","resetTime":"2027-02-01T00:00:00Z"},"limits":[{"window":{"duration":5,"timeUnit":"TIME_UNIT_HOUR"},"detail":{"limit":200,"used":190,"resetTime":"2027-01-15T13:00:01Z"}}],"usages":{"limit_5h":{"used_ratio":0.2,"reset_time":"2027-01-15T13:00:00Z"}}}"#
         let usage = try KimiUsage.usage(Data(json.utf8), now: now)
         #expect(usage.windows.map(\.kind) == [.session, .weekly])
         #expect(usage.windows[0].used == 0.95)
@@ -26,15 +28,17 @@ struct KimiUsageTests {
         #expect(try KimiUsage.usage(Data(differentPeriod.utf8), now: now).windows[0].used == 0.2)
     }
 
-    @Test(arguments: [#"{}"#, #"{"usages":{"limit_month_code":{"used_ratio":0.2}}}"#,
-                     #"{"usages":{"limit_5h":{"used_ratio":0.2},"limit_month_total":false}}"#,
-                     #"{"usage":{"limit":100,"used":50},"usages":[]}"#,
-                     #"{"usages":{"limit_5h":{"used_ratio":true}}}"#,
-                     #"{"usages":{"limit_month_total":{"used_ratio":-1}}}"#,
-                     #"{"usages":{"limit_month_total":{"used_ratio":"NaN"}}}"#,
-                     #"{"usages":{"limit_5h":{"used_ratio":0.5,"reset_time":"invalid"}}}"#,
-                     #"{"usage":{"limit":100}}"#, #"{"usage":{"limit":0,"used":0}}"#,
-                     #"{"usage":{"limit":100,"used":false,"remaining":40}}"#])
+    @Test(arguments: [
+        #"{}"#, #"{"usages":{"limit_month_code":{"used_ratio":0.2}}}"#,
+        #"{"usages":{"limit_5h":{"used_ratio":0.2},"limit_month_total":false}}"#,
+        #"{"usage":{"limit":100,"used":50},"usages":[]}"#,
+        #"{"usages":{"limit_5h":{"used_ratio":true}}}"#,
+        #"{"usages":{"limit_month_total":{"used_ratio":-1}}}"#,
+        #"{"usages":{"limit_month_total":{"used_ratio":"NaN"}}}"#,
+        #"{"usages":{"limit_5h":{"used_ratio":0.5,"reset_time":"invalid"}}}"#,
+        #"{"usage":{"limit":100}}"#, #"{"usage":{"limit":0,"used":0}}"#,
+        #"{"usage":{"limit":100,"used":false,"remaining":40}}"#,
+    ])
     func malformedQuotaNeverBecomesZeroUsage(json: String) {
         #expect(throws: (any Error).self) { try KimiUsage.usage(Data(json.utf8), now: now) }
     }
@@ -47,10 +51,15 @@ struct KimiUsageTests {
     }
 
     @Test func credentialsRequireFreshAccessAndIgnoreRefreshAndAPIKeys() throws {
-        #expect(try KimiUsage.credential(Data(#"{"access_token":"saved-session","expires_at":"1800000900","refresh_token":"unused"}"#.utf8), now: now) == "saved-session")
-        for json in [#"{"refresh_token":"unused","expires_at":1800000900}"#,
-                     #"{"api_key":"not-a-session","expires_at":1800000900}"#,
-                     #"{"access_token":"bad\r\nHeader: value","expires_at":1800000900}"#] {
+        #expect(
+            try KimiUsage.credential(
+                Data(#"{"access_token":"saved-session","expires_at":"1800000900","refresh_token":"unused"}"#.utf8), now: now)
+                == "saved-session")
+        for json in [
+            #"{"refresh_token":"unused","expires_at":1800000900}"#,
+            #"{"api_key":"not-a-session","expires_at":1800000900}"#,
+            #"{"access_token":"bad\r\nHeader: value","expires_at":1800000900}"#,
+        ] {
             #expect(throws: AIUsageProblem.signedOut) { try KimiUsage.credential(Data(json.utf8), now: now) }
         }
         for expiry in ["1800000060", "1800000000", "true", "null", "\"NaN\""] {
@@ -58,7 +67,9 @@ struct KimiUsageTests {
             #expect(throws: AIUsageProblem.expired) { try KimiUsage.credential(Data(json.utf8), now: now) }
         }
         let claims = Data(#"{"iss":"https://auth.kimi.ai","exp":1800000900}"#.utf8).base64EncodedString()
-        let otherRegion = try JSONSerialization.data(withJSONObject: ["access_token": "header.\(claims).signature", "expires_at": 1_800_000_900])
+        let otherRegion = try JSONSerialization.data(withJSONObject: [
+            "access_token": "header.\(claims).signature", "expires_at": 1_800_000_900,
+        ])
         #expect(throws: AIUsageProblem.signedOut) { try KimiUsage.credential(otherRegion, now: now) }
     }
 
@@ -108,9 +119,11 @@ struct KimiUsageTests {
         #expect(try await reader.readKimi(homes: [modern, legacy], now: now).get().windows.count == 2)
         #expect(try Data(contentsOf: file) == original)
         #expect(FileManager.default.fileExists(atPath: modern.appending(path: "device_id").path) == false)
-        for (token, problem) in [("rejected", AIUsageProblem.signedOut),
-                                 ("rate-limit", .unavailable(retryAfter: now.addingTimeInterval(300))),
-                                 ("malformed", .unavailable(retryAfter: nil))] {
+        for (token, problem) in [
+            ("rejected", AIUsageProblem.signedOut),
+            ("rate-limit", .unavailable(retryAfter: now.addingTimeInterval(300))),
+            ("malformed", .unavailable(retryAfter: nil)),
+        ] {
             try JSONSerialization.data(withJSONObject: ["access_token": token, "expires_at": 1_800_000_900]).write(to: file)
             #expect(await reader.readKimi(homes: [modern, legacy], now: now) == .failure(problem))
         }
@@ -166,7 +179,7 @@ struct KimiUsageTests {
         #expect(await reader.readKimi(homes: [root], now: now) == .failure(.signedOut))
     }
 
-    @Test func URLIssuerMustMatchTheSelectedRegionalSlot() throws {
+    @Test func urlIssuerMustMatchTheSelectedRegionalSlot() throws {
         let claims = Data(#"{"iss":"https://auth.kimi.ai","exp":1800000900}"#.utf8).base64EncodedString()
         let token = "header.\(claims).signature"
         let data = try JSONSerialization.data(withJSONObject: ["access_token": token, "expires_at": 1_800_000_900])
@@ -174,7 +187,8 @@ struct KimiUsageTests {
         #expect(throws: AIUsageProblem.signedOut) { try KimiUsage.credential(data, now: now, region: .china) }
     }
 
-    nonisolated static let newPlan = #"{"user":{"membership":{"level":"LEVEL_BASIC"}},"usages":{"limit_5h":{"used_ratio":0.25,"reset_time":"2027-01-15T13:00:00Z"},"limit_month_total":{"used_ratio":1,"reset_time":"2027-02-01T00:00:00Z"},"limit_month_code":{"used_ratio":0.8}}}"#
+    nonisolated static let newPlan =
+        #"{"user":{"membership":{"level":"LEVEL_BASIC"}},"usages":{"limit_5h":{"used_ratio":0.25,"reset_time":"2027-01-15T13:00:00Z"},"limit_month_total":{"used_ratio":1,"reset_time":"2027-02-01T00:00:00Z"},"limit_month_code":{"used_ratio":0.8}}}"#
 }
 
 /// Stateless fixture transport; request/client state is owned by URLProtocol.
@@ -184,7 +198,9 @@ nonisolated private final class KimiFixtureProtocol: URLProtocol, @unchecked Sen
     override func startLoading() {
         let auth = request.value(forHTTPHeaderField: "Authorization")
         let international = auth?.hasPrefix("Bearer international-") == true
-        #expect(request.url?.absoluteString == (international ? "https://api.kimi.ai/coding/v1/usages" : "https://api.kimi.com/coding/v1/usages"))
+        #expect(
+            request.url?.absoluteString
+                == (international ? "https://api.kimi.ai/coding/v1/usages" : "https://api.kimi.com/coding/v1/usages"))
         #expect(request.httpMethod == "GET")
         #expect(request.value(forHTTPHeaderField: "Accept") == "application/json")
         #expect(request.value(forHTTPHeaderField: "User-Agent") == "Monny")
@@ -193,8 +209,11 @@ nonisolated private final class KimiFixtureProtocol: URLProtocol, @unchecked Sen
         #expect(auth != "Bearer never-send-expired")
         let status = auth == "Bearer rejected" || auth == "Bearer international-rejected" ? 401 : auth == "Bearer rate-limit" ? 429 : 200
         let body = auth == "Bearer malformed" ? "{}" : KimiUsageTests.newPlan
-        guard let url = request.url, let response = HTTPURLResponse(url: url, statusCode: status,
-            httpVersion: nil, headerFields: ["Retry-After": "0"]) else { return }
+        guard let url = request.url,
+            let response = HTTPURLResponse(
+                url: url, statusCode: status,
+                httpVersion: nil, headerFields: ["Retry-After": "0"])
+        else { return }
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: Data(body.utf8))
         client?.urlProtocolDidFinishLoading(self)

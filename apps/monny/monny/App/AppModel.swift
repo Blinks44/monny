@@ -18,8 +18,8 @@ final class AppModel {
 
     /// Window actions, set by the app delegate, which owns the status item and the scenes.
     @ObservationIgnored var openDashboard: (DashboardPage?) -> Void = { _ in }
-    @ObservationIgnored var showPopover: () -> Void = { }
-    @ObservationIgnored var closePopover: () -> Void = { }
+    @ObservationIgnored var showPopover: () -> Void = {}
+    @ObservationIgnored var closePopover: () -> Void = {}
 
     /// Starts sampling and routes every snapshot through the alerts.
     func start() {

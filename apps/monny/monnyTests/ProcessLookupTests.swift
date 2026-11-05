@@ -1,6 +1,7 @@
 import Darwin
 import Foundation
 import Testing
+
 @testable import monny
 
 struct ProcessLookupTests {
@@ -14,8 +15,10 @@ struct ProcessLookupTests {
         #expect(ProcessQuery(text) == expected)
     }
 
-    @Test(arguments: ["", "node", "0", ":0", ":70000", "localhost", "example.com:3002",
-                      "http://example.com:3002", "ftp://localhost:21", "3002a", "١٢٣"])
+    @Test(arguments: [
+        "", "node", "0", ":0", ":70000", "localhost", "example.com:3002",
+        "http://example.com:3002", "ftp://localhost:21", "3002a", "١٢٣",
+    ])
     func everythingElseIsANameSearch(text: String) {
         #expect(ProcessQuery(text) == .name(text.trimmingCharacters(in: .whitespacesAndNewlines)))
     }

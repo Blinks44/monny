@@ -35,7 +35,8 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         observeReadings()
         // The badge and readings preferences live in UserDefaults; Settings changes them while the app runs.
         defaultsObservation = NotificationCenter.default.addObserver(
-            forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            forName: UserDefaults.didChangeNotification, object: nil, queue: .main
+        ) { [weak self] _ in
             MainActor.assumeIsolated {
                 self?.updateBadge()
                 self?.showReadings()
@@ -146,7 +147,8 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         for (index, reading) in readings.enumerated() {
             title.append(NSAttributedString(string: index == 0 ? " " : "  "))
             if let image = NSImage(systemSymbolName: reading.symbol, accessibilityDescription: nil)?
-                .withSymbolConfiguration(symbolConfiguration) {
+                .withSymbolConfiguration(symbolConfiguration)
+            {
                 let attachment = NSTextAttachment()
                 attachment.image = image
                 title.append(NSAttributedString(attachment: attachment))
@@ -187,13 +189,17 @@ final class MenuBarController: NSObject, NSMenuDelegate {
             let chargeLimit = model.chargeLimit
             let setting = chargeLimit.isBusy ? nil : chargeLimit.setting
             menu.addItem(.separator())
-            menu.addItem(item(String(localized: "Turn Off Charge Limit"), #selector(disableLimit),
-                              enabled: setting?.isEnabled == true))
+            menu.addItem(
+                item(
+                    String(localized: "Turn Off Charge Limit"), #selector(disableLimit),
+                    enabled: setting?.isEnabled == true))
         }
 
         menu.addItem(.separator())
-        menu.addItem(item(String(localized: "Check for Updates"), #selector(checkForUpdates),
-                          enabled: model.updater.canCheckForUpdates))
+        menu.addItem(
+            item(
+                String(localized: "Check for Updates"), #selector(checkForUpdates),
+                enabled: model.updater.canCheckForUpdates))
         let quit = NSMenuItem(title: String(localized: "Quit Monny"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         quit.target = NSApp
         menu.addItem(quit)

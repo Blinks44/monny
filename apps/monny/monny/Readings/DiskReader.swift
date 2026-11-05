@@ -49,24 +49,28 @@ nonisolated struct DiskReader {
     private static func volumeSpace() -> (free: Int64, total: Int64)? {
         let keys: Set<URLResourceKey> = [.volumeAvailableCapacityForImportantUsageKey, .volumeTotalCapacityKey]
         guard let values = try? URL(fileURLWithPath: "/").resourceValues(forKeys: keys),
-              let free = values.volumeAvailableCapacityForImportantUsage,
-              let total = values.volumeTotalCapacity else { return nil }
+            let free = values.volumeAvailableCapacityForImportantUsage,
+            let total = values.volumeTotalCapacity
+        else { return nil }
         return (free, Int64(total))
     }
 
     /// Volumes Finder shows; the startup volume uses the "important usage" free space read above.
     private static func volumes(rootFree: Int64) -> [DiskUsage.Volume] {
-        let keys: [URLResourceKey] = [.volumeLocalizedNameKey, .volumeLocalizedFormatDescriptionKey, .volumeIsInternalKey,
-                                      .volumeIsLocalKey, .volumeAvailableCapacityKey, .volumeTotalCapacityKey, .volumeIsRootFileSystemKey]
+        let keys: [URLResourceKey] = [
+            .volumeLocalizedNameKey, .volumeLocalizedFormatDescriptionKey, .volumeIsInternalKey,
+            .volumeIsLocalKey, .volumeAvailableCapacityKey, .volumeTotalCapacityKey, .volumeIsRootFileSystemKey,
+        ]
         let urls = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: keys, options: [.skipHiddenVolumes]) ?? []
         let volumes = urls.compactMap { url -> DiskUsage.Volume? in
             guard let values = try? url.resourceValues(forKeys: Set(keys)), let total = values.volumeTotalCapacity, total > 0
             else { return nil }
             let isRoot = values.volumeIsRootFileSystem ?? false
-            return DiskUsage.Volume(url: url, name: values.volumeLocalizedName ?? url.lastPathComponent,
-                                    format: values.volumeLocalizedFormatDescription, isInternal: values.volumeIsInternal ?? false,
-                                    isNetwork: !(values.volumeIsLocal ?? true),
-                                    free: isRoot ? rootFree : Int64(values.volumeAvailableCapacity ?? 0), total: Int64(total))
+            return DiskUsage.Volume(
+                url: url, name: values.volumeLocalizedName ?? url.lastPathComponent,
+                format: values.volumeLocalizedFormatDescription, isInternal: values.volumeIsInternal ?? false,
+                isNetwork: !(values.volumeIsLocal ?? true),
+                free: isRoot ? rootFree : Int64(values.volumeAvailableCapacity ?? 0), total: Int64(total))
         }
         return volumes.sorted { ($0.url.path == "/" ? 0 : 1, $0.name) < ($1.url.path == "/" ? 0 : 1, $1.name) }
     }
@@ -80,8 +84,10 @@ nonisolated struct DiskReader {
         var written: UInt64 = 0
         while case let entry = IOIteratorNext(iterator), entry != 0 {
             defer { IOObjectRelease(entry) }
-            guard let stats = IORegistryEntryCreateCFProperty(entry, "Statistics" as CFString, kCFAllocatorDefault, 0)?
-                .takeRetainedValue() as? [String: Any] else { continue }
+            guard
+                let stats = IORegistryEntryCreateCFProperty(entry, "Statistics" as CFString, kCFAllocatorDefault, 0)?
+                    .takeRetainedValue() as? [String: Any]
+            else { continue }
             read += (stats["Bytes (Read)"] as? NSNumber)?.uint64Value ?? 0
             written += (stats["Bytes (Write)"] as? NSNumber)?.uint64Value ?? 0
         }

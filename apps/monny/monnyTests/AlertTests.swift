@@ -1,15 +1,19 @@
 import Foundation
 import Testing
+
 @testable import monny
 
 /// When alerts fire and re-arm.
 struct AlertTests {
-    private func snapshot(thermal: ProcessInfo.ThermalState = .nominal, cpu: Double? = nil,
-                          battery: BatteryReading? = nil, pressure: MemoryUsage.Pressure? = nil) -> Snapshot {
-        Snapshot(memory: pressure.map { MemoryUsage(used: 0, total: 1, swapUsed: 0, pressure: $0) },
-                 battery: battery,
-                 sensors: cpu.map { SensorReading(cpu: $0, fanRPM: []) },
-                 thermalState: thermal, processes: [])
+    private func snapshot(
+        thermal: ProcessInfo.ThermalState = .nominal, cpu: Double? = nil,
+        battery: BatteryReading? = nil, pressure: MemoryUsage.Pressure? = nil
+    ) -> Snapshot {
+        Snapshot(
+            memory: pressure.map { MemoryUsage(used: 0, total: 1, swapUsed: 0, pressure: $0) },
+            battery: battery,
+            sensors: cpu.map { SensorReading(cpu: $0, fanRPM: []) },
+            thermalState: thermal, processes: [])
     }
 
     private func battery(_ level: Double, _ state: BatteryReading.State) -> BatteryReading {
@@ -34,8 +38,10 @@ struct AlertTests {
         func pass(_ cpu: Double, at minute: Double) -> [AlertMonitor.Alert] {
             var reading = snapshot()
             // Helpers count toward their app: 0.5 + 0.4 is over the 0.8 threshold.
-            reading.processes = [ProcessUsage(id: 7, name: "Xcode", app: xcode, cpu: cpu / 2, memory: 0, power: 0),
-                                 ProcessUsage(id: 8, name: "SourceKitService", app: xcode, cpu: cpu / 2, memory: 0, power: 0)]
+            reading.processes = [
+                ProcessUsage(id: 7, name: "Xcode", app: xcode, cpu: cpu / 2, memory: 0, power: 0),
+                ProcessUsage(id: 8, name: "SourceKitService", app: xcode, cpu: cpu / 2, memory: 0, power: 0),
+            ]
             return monitor.update(with: reading, now: Date(timeIntervalSinceReferenceDate: minute * 60))
         }
         #expect(pass(0.9, at: 0).isEmpty)

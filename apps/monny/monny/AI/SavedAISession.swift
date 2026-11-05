@@ -4,8 +4,9 @@ import Foundation
 nonisolated enum SavedAISession {
     static func data(at file: URL) -> Data? {
         guard let size = try? file.resourceValues(forKeys: [.fileSizeKey]).fileSize,
-              size > 0, size <= 256 * 1_024,
-              let data = try? Data(contentsOf: file), data.count <= 256 * 1_024 else { return nil }
+            size > 0, size <= 256 * 1_024,
+            let data = try? Data(contentsOf: file), data.count <= 256 * 1_024
+        else { return nil }
         return data
     }
 
@@ -13,17 +14,19 @@ nonisolated enum SavedAISession {
         guard let value = value as? String else { return nil }
         let token = value.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !token.isEmpty, token.utf8.count <= 64 * 1_024,
-              token.utf8.allSatisfy({ $0 > 32 && $0 < 127 }) else { return nil }
+            token.utf8.allSatisfy({ $0 > 32 && $0 < 127 })
+        else { return nil }
         return token
     }
 
     static func cline(_ data: Data) -> String? {
         guard let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let providers = root["providers"] as? [String: Any],
-              let cline = providers["cline"] as? [String: Any],
-              let settings = cline["settings"] as? [String: Any],
-              let auth = settings["auth"] as? [String: Any],
-              let access = token(auth["accessToken"]), access != "workos:" else { return nil }
+            let providers = root["providers"] as? [String: Any],
+            let cline = providers["cline"] as? [String: Any],
+            let settings = cline["settings"] as? [String: Any],
+            let auth = settings["auth"] as? [String: Any],
+            let access = token(auth["accessToken"]), access != "workos:"
+        else { return nil }
         return access.hasPrefix("workos:") ? access : "workos:" + access
     }
 

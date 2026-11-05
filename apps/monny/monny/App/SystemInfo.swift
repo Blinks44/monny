@@ -21,7 +21,8 @@ nonisolated enum SystemInfo {
     /// Whether the Mac has an internal battery. Desktop Macs report only AC power sources.
     static let hasBattery: Bool = {
         guard let info = IOPSCopyPowerSourcesInfo()?.takeRetainedValue(),
-              let sources = IOPSCopyPowerSourcesList(info)?.takeRetainedValue() as? [CFTypeRef] else { return false }
+            let sources = IOPSCopyPowerSourcesList(info)?.takeRetainedValue() as? [CFTypeRef]
+        else { return false }
         return sources.contains { source in
             let description = IOPSGetPowerSourceDescription(info, source)?.takeUnretainedValue() as? [String: Any]
             return description?[kIOPSTypeKey] as? String == kIOPSInternalBatteryType

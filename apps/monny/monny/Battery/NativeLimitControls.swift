@@ -16,8 +16,9 @@ struct NativeLimitControls: View {
         if ChargeLimit.isSupportedOS {
             controls
         } else {
-            Banner(symbol: "info.circle", title: "Charge limit requires macOS 26.4",
-                   message: "Update macOS to use this feature. Battery monitoring remains available.")
+            Banner(
+                symbol: "info.circle", title: "Charge limit requires macOS 26.4",
+                message: "Update macOS to use this feature. Battery monitoring remains available.")
         }
     }
 
@@ -53,10 +54,15 @@ struct NativeLimitControls: View {
                 HStack {
                     Text("Optimized Battery Charging").font(Theme.body)
                     Spacer()
-                    Toggle("Optimized Battery Charging", isOn: Binding(get: { optimizedChoice ?? isOptimized }, set: { isOn in
-                        optimizedChoice = isOn
-                        apply { await controller.setOptimized(isOn) }
-                    }))
+                    Toggle(
+                        "Optimized Battery Charging",
+                        isOn: Binding(
+                            get: { optimizedChoice ?? isOptimized },
+                            set: { isOn in
+                                optimizedChoice = isOn
+                                apply { await controller.setOptimized(isOn) }
+                            })
+                    )
                     .labelsHidden().toggleStyle(SwitchStyle())
                 }
                 .padding(.top, 4)

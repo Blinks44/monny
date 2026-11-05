@@ -3,7 +3,7 @@ import KeyboardShortcuts
 import SwiftUI
 
 @main
-struct monnyApp: App {
+struct MonnyApp: App {
     @NSApplicationDelegateAdaptor(MonnyAppDelegate.self) private var delegate
 
     var body: some Scene {
@@ -63,8 +63,9 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
         center.addObserver(self, selector: #selector(windowDidOpen), name: NSWindow.didBecomeMainNotification, object: nil)
         center.addObserver(self, selector: #selector(windowWillClose), name: NSWindow.willCloseNotification, object: nil)
         center.addObserver(self, selector: #selector(applyAppearance), name: UserDefaults.didChangeNotification, object: nil)
-        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(systemDidWake),
-                                                         name: NSWorkspace.didWakeNotification, object: nil)
+        NSWorkspace.shared.notificationCenter.addObserver(
+            self, selector: #selector(systemDidWake),
+            name: NSWorkspace.didWakeNotification, object: nil)
     }
 
     func applicationWillTerminate(_ notification: Notification) {

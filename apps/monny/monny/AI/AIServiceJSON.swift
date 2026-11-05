@@ -1,11 +1,12 @@
-import Foundation
 import CoreFoundation
+import Foundation
 
 /// Strict numeric parsing shared by the two additional subscription sources.
 nonisolated enum AIServiceJSON {
     static func object(_ data: Data) throws -> [String: Any] {
         guard data.count <= 2 * 1_024 * 1_024,
-              let value = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            let value = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        else {
             throw AIUsageProblem.unavailable(retryAfter: nil)
         }
         return value
@@ -17,7 +18,9 @@ nonisolated enum AIServiceJSON {
             result = number.doubleValue
         } else if let string = value as? String {
             result = Double(string.trimmingCharacters(in: .whitespacesAndNewlines))
-        } else { result = nil }
+        } else {
+            result = nil
+        }
         return result.flatMap { $0.isFinite ? $0 : nil }
     }
 

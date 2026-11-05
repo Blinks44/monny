@@ -15,27 +15,32 @@ struct DiskPage: View {
         let tier = sampler.history.tier(range)
         VStack(spacing: Theme.spaceL) {
             HStack(spacing: Theme.spaceL) {
-                KPICard(title: "Free", symbol: "internaldrive", color: Theme.metricDisk, value: disk?.free.storageText,
-                        detail: disk.map { Text("of \($0.total.storageText) · \($0.usedFraction.percentText) used") }, points: nil)
-                KPICard(title: "Read", symbol: "arrow.down", color: Theme.metricNetwork, value: disk?.readRate?.rateText,
-                        detail: peak(tier.series(.diskRead)), points: tier.series(.diskRead))
-                KPICard(title: "Write", symbol: "arrow.up", color: Theme.metricUpload, value: disk?.writeRate?.rateText,
-                        detail: peak(tier.series(.diskWrite)), points: tier.series(.diskWrite))
-                KPICard(title: "SSD health", symbol: ssd?.isVerified == false ? "exclamationmark.triangle.fill" : "checkmark.circle.fill",
-                        color: ssd?.isVerified == false ? Theme.statusDanger : Theme.metricBattery,
-                        value: ssd?.health.percentText,
-                        detail: ssd.map { Text("wear \($0.wear.percentText) · \($0.isVerified ? Text("verified") : Text("failing"))") },
-                        points: nil)
+                KPICard(
+                    title: "Free", symbol: "internaldrive", color: Theme.metricDisk, value: disk?.free.storageText,
+                    detail: disk.map { Text("of \($0.total.storageText) · \($0.usedFraction.percentText) used") }, points: nil)
+                KPICard(
+                    title: "Read", symbol: "arrow.down", color: Theme.metricNetwork, value: disk?.readRate?.rateText,
+                    detail: peak(tier.series(.diskRead)), points: tier.series(.diskRead))
+                KPICard(
+                    title: "Write", symbol: "arrow.up", color: Theme.metricUpload, value: disk?.writeRate?.rateText,
+                    detail: peak(tier.series(.diskWrite)), points: tier.series(.diskWrite))
+                KPICard(
+                    title: "SSD health", symbol: ssd?.isVerified == false ? "exclamationmark.triangle.fill" : "checkmark.circle.fill",
+                    color: ssd?.isVerified == false ? Theme.statusDanger : Theme.metricBattery,
+                    value: ssd?.health.percentText,
+                    detail: ssd.map { Text("wear \($0.wear.percentText) · \($0.isVerified ? Text("verified") : Text("failing"))") },
+                    points: nil)
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
                 VolumesCard(volumes: disk?.volumes ?? [])
                 StartupVolumeCard(volume: disk?.volumes.first { $0.url.path == "/" }).frame(width: 244)
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
-                ProcessListCard("Top processes by disk activity", columns: ("Read", "Written"),
-                                processes: sampler.snapshot?.processes ?? [], color: Theme.metricDisk,
-                                value: { $0.diskRead + $0.diskWrite },
-                                primary: { $0.diskRead.rateText }, secondary: { $0.diskWrite.rateText })
+                ProcessListCard(
+                    "Top processes by disk activity", columns: ("Read", "Written"),
+                    processes: sampler.snapshot?.processes ?? [], color: Theme.metricDisk,
+                    value: { $0.diskRead + $0.diskWrite },
+                    primary: { $0.diskRead.rateText }, secondary: { $0.diskWrite.rateText })
                 SSDHealthCard(health: ssd, temperature: sampler.snapshot?.sensors?.ssd, unit: temperatureUnit)
                     .frame(width: 244)
             }
@@ -71,7 +76,9 @@ private struct VolumesCard: View {
             ScrollView {
                 VStack(spacing: 14) {
                     ForEach(volumes) { volume in
-                        Button { NSWorkspace.shared.activateFileViewerSelecting([volume.url]) } label: {
+                        Button {
+                            NSWorkspace.shared.activateFileViewerSelecting([volume.url])
+                        } label: {
                             VolumeRow(volume: volume)
                         }
                         .buttonStyle(StaticButtonStyle())
@@ -118,8 +125,9 @@ private struct StartupVolumeCard: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            CardHeader(title: volume.map { Text(verbatim: $0.name) } ?? Text("Startup disk"),
-                       subtitle: volume.map { Text("\(($0.total - $0.free).storageText) used") })
+            CardHeader(
+                title: volume.map { Text(verbatim: $0.name) } ?? Text("Startup disk"),
+                subtitle: volume.map { Text("\(($0.total - $0.free).storageText) used") })
             Spacer(minLength: 8)
             RingGauge(fraction: volume?.usedFraction, color: Theme.metricDisk, diameter: 108, lineWidth: 14)
                 .overlay {
@@ -163,8 +171,9 @@ private struct SSDHealthCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             CardHeader("SSD health").padding(.bottom, 6)
-            FactRow(title: "S.M.A.R.T.", value: health.map { $0.isVerified ? Text("Verified") : Text("Failing") },
-                    valueColor: health?.isVerified == false ? Theme.statusDangerText : Theme.statusSuccessText, height: 30)
+            FactRow(
+                title: "S.M.A.R.T.", value: health.map { $0.isVerified ? Text("Verified") : Text("Failing") },
+                valueColor: health?.isVerified == false ? Theme.statusDangerText : Theme.statusSuccessText, height: 30)
             FactRow(title: "Wear level", value: health.map { Text($0.wear.percentText) }, height: 30)
             FactRow(title: "Data written", value: health.map { Text($0.bytesWritten.storageText) }, height: 30)
             FactRow(title: "Temperature", value: temperature.map { Text($0.temperatureText(unit)) }, isLast: true, height: 30)

@@ -1,4 +1,5 @@
 import Testing
+
 @testable import monny
 
 /// Helpers and web content roll up into their app; system processes stay single rows.
@@ -37,7 +38,8 @@ struct ProcessGroupingTests {
     }
 
     @Test func appBundleIsTheOutermostApp() {
-        let helper = "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper"
+        let helper =
+            "/Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper"
         #expect(ProcessReader.appBundle(in: helper) == "/Applications/Google Chrome.app")
         #expect(ProcessReader.appBundle(in: "/usr/libexec/trustd") == nil)
     }

@@ -7,12 +7,15 @@ nonisolated enum AugmentUsage {
         let amount = AICommandText.amount
         var used: Double?
         let total: Double?
-        if let legacy = AICommandText.groups(amount + #"\s+remaining\s*·\s*"# + amount + #"\s*/\s*"# + amount + #"\s+credits used\b"#, in: text) {
+        if let legacy = AICommandText.groups(
+            amount + #"\s+remaining\s*·\s*"# + amount + #"\s*/\s*"# + amount + #"\s+credits used\b"#, in: text)
+        {
             used = AICommandText.number(legacy[1])
             total = AICommandText.number(legacy[2])
         } else if let current = AICommandText.groups(amount + #"\s+credits remaining\b"#, in: text),
-                  let grant = AICommandText.groups(amount + #"\s+credits\s*/\s*month\b"#, in: text),
-                  let remaining = AICommandText.number(current[0]), let limit = AICommandText.number(grant[0]) {
+            let grant = AICommandText.groups(amount + #"\s+credits\s*/\s*month\b"#, in: text),
+            let remaining = AICommandText.number(current[0]), let limit = AICommandText.number(grant[0])
+        {
             used = max(limit - remaining, 0)
             total = limit
         } else {

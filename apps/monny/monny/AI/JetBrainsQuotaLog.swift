@@ -15,7 +15,8 @@ nonisolated enum JetBrainsQuotaLog {
                 if state.hasPrefix(disabledState) { continue }
                 guard quota == nil else { break }
                 guard let date = timestamp(String(line.prefix(23))),
-                      let fields = fields(String(state), type: "Available") else { return nil }
+                    let fields = fields(String(state), type: "Available")
+                else { return nil }
                 let values = fields["quota"].flatMap { self.fields($0, type: "JbaiQuota") } ?? fields
                 guard let monthly = values["tariffQuota"].flatMap(details) else { return nil }
                 var amounts: [String: Any] = ["tariffQuota": monthly]
@@ -27,8 +28,9 @@ nonisolated enum JetBrainsQuotaLog {
             } else if let state = state(line, marker: junieMarker) {
                 guard quota == nil else { break }
                 guard let date = timestamp(String(line.prefix(23))),
-                      let json = try? JSONSerialization.jsonObject(with: Data(state.utf8)) as? [String: Any],
-                      let parsed = JetBrainsQuota.decode(json, date: date) else { return nil }
+                    let json = try? JSONSerialization.jsonObject(with: Data(state.utf8)) as? [String: Any],
+                    let parsed = JetBrainsQuota.decode(json, date: date)
+                else { return nil }
                 // Junie does not report a refill. Its `until` is subscription expiry, never a reset.
                 return parsed
             } else if refill == nil, let state = state(line, marker: refillMarker) {
@@ -37,8 +39,10 @@ nonisolated enum JetBrainsQuotaLog {
                 let tariff = values?["tariff"].flatMap {
                     fields($0, type: "JbaiQuotaTariff") ?? fields($0, type: "QuotaRefillInfoTariff")
                 }
-                refill = ((values?["next"]).flatMap(ClaudeUsageResponse.date(from:)),
-                          JetBrainsQuota.seconds(tariff?["period"] ?? tariff?["duration"]) ?? 0)
+                refill = (
+                    (values?["next"]).flatMap(ClaudeUsageResponse.date(from:)),
+                    JetBrainsQuota.seconds(tariff?["period"] ?? tariff?["duration"]) ?? 0
+                )
             }
             if quota != nil, let refill {
                 quota?.reset = refill.reset
@@ -89,7 +93,8 @@ nonisolated enum JetBrainsQuotaLog {
 
     static func timestamp(_ text: String, timeZone: TimeZone = .current) -> Date? {
         let strategy = Date.ParseStrategy(
-            format: "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits),\(secondFraction: .fractional(3))",
+            format:
+                "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits),\(secondFraction: .fractional(3))",
             locale: Locale(identifier: "en_US_POSIX"), timeZone: timeZone, isLenient: false)
         return try? Date(text, strategy: strategy)
     }

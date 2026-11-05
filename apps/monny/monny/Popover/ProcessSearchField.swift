@@ -29,8 +29,10 @@ struct ProcessSearchField: View {
         .background(Theme.fillTrack, in: .rect(cornerRadius: 8))
         .overlay {
             RoundedRectangle(cornerRadius: 8)
-                .strokeBorder(isFocused ? Theme.accentBrand : contrast == .increased ? Theme.textTertiary : .clear,
-                              lineWidth: isFocused ? 2 : 1)
+                .strokeBorder(
+                    isFocused ? Theme.accentBrand : contrast == .increased ? Theme.textTertiary : .clear,
+                    lineWidth: isFocused ? 2 : 1
+                )
                 .allowsHitTesting(false)
         }
     }

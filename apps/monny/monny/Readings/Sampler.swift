@@ -33,7 +33,9 @@ actor ReadingSource {
     /// Process enumeration is most of a pass's cost, so it runs only while a process list is shown,
     /// or for the busy app alert while the whole CPU does at least the work of its threshold;
     /// free disk space is refreshed only while something is visible.
-    func sample(isVisible: Bool, includeProcesses: Bool, watchesBusyApps: Bool = false, includeNetworkProcesses: Bool = false) async -> Snapshot {
+    func sample(isVisible: Bool, includeProcesses: Bool, watchesBusyApps: Bool = false, includeNetworkProcesses: Bool = false) async
+        -> Snapshot
+    {
         let state = signposter.beginInterval("Sample")
         defer { signposter.endInterval("Sample", state) }
         // The bounded child waits off the main actor only while a network list is visible.
@@ -53,11 +55,12 @@ actor ReadingSource {
         }
         let load = cpu.read()
         let mayHaveBusyApp = load.map { $0.total * Double($0.cores.count) >= AlertMonitor.busyAppCPU } ?? false
-        return Snapshot(cpu: load, memory: memory.read(), disk: disk.read(includeSpace: isVisible), network: network.read(),
-                        battery: power.read(), sensors: sensors.read(), thermalState: ProcessInfo.processInfo.thermalState,
-                        processes: includeProcesses || includeNetworkProcesses ? rows : (watchesBusyApps && mayHaveBusyApp ? readProcesses() : []),
-                        loadAverage: LoadAverage.read(), gpu: GPUReading.read(),
-                        processNetworkAvailable: includeNetworkProcesses ? rates != nil : nil)
+        return Snapshot(
+            cpu: load, memory: memory.read(), disk: disk.read(includeSpace: isVisible), network: network.read(),
+            battery: power.read(), sensors: sensors.read(), thermalState: ProcessInfo.processInfo.thermalState,
+            processes: includeProcesses || includeNetworkProcesses ? rows : (watchesBusyApps && mayHaveBusyApp ? readProcesses() : []),
+            loadAverage: LoadAverage.read(), gpu: GPUReading.read(),
+            processNetworkAvailable: includeNetworkProcesses ? rates != nil : nil)
     }
 
     private func readProcesses() -> [ProcessUsage] {
@@ -140,9 +143,10 @@ final class Sampler {
             while !Task.isCancelled {
                 guard let isVisible = self.map({ !$0.visible.isEmpty }) else { return }
                 let passStarted = ContinuousClock.now
-                let snapshot = await source.sample(isVisible: isVisible, includeProcesses: isVisible && self?.showsProcesses == true,
-                                                   watchesBusyApps: UserDefaults.standard.bool(forKey: PreferenceKey.notifyBusyApp),
-                                                   includeNetworkProcesses: isVisible && self?.showsNetworkProcesses == true)
+                let snapshot = await source.sample(
+                    isVisible: isVisible, includeProcesses: isVisible && self?.showsProcesses == true,
+                    watchesBusyApps: UserDefaults.standard.bool(forKey: PreferenceKey.notifyBusyApp),
+                    includeNetworkProcesses: isVisible && self?.showsNetworkProcesses == true)
                 guard let self, !Task.isCancelled else { return }
                 self.snapshot = snapshot
                 busyProcesses.update(snapshot.processes, now: .now)

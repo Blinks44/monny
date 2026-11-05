@@ -1,10 +1,12 @@
 import Foundation
 import Testing
+
 @testable import monny
 
 struct AdditionalAIUsageTests {
     private let now = Date(timeIntervalSince1970: 1_800_000_000)
-    private let cline = #"{"success":true,"data":{"limits":[{"type":"monthly","percentUsed":25,"resetsAt":"2027-02-01T00:00:00Z"},{"type":"five_hour","percentUsed":95},{"type":"weekly","percentUsed":50}]}}"#
+    private let cline =
+        #"{"success":true,"data":{"limits":[{"type":"monthly","percentUsed":25,"resetsAt":"2027-02-01T00:00:00Z"},{"type":"five_hour","percentUsed":95},{"type":"weekly","percentUsed":50}]}}"#
 
     @Test func clineWindowsKeepKindsAndDoNotInventMonthlyPace() throws {
         let reading = try ClineUsage.usage(Data(cline.utf8), now: now)
@@ -19,19 +21,22 @@ struct AdditionalAIUsageTests {
         #expect(reading.credits == nil)
     }
 
-    @Test(arguments: [#"{"success":1,"data":{"limits":[{"type":"weekly","percentUsed":1}]}}"#, #"{}"#, #"{"success":false,"data":{"limits":[]}}"#,
-                     #"{"success":true,"data":{"limits":[{"type":"unknown","percentUsed":10}]}}"#,
-                     #"{"success":true,"data":{"limits":[{"type":"weekly","percentUsed":true}]}}"#,
-                     #"{"success":true,"data":{"limits":[{"type":"weekly"}]}}"#,
-                     #"{"success":true,"data":{"limits":[{"type":"weekly","percentUsed":-1}]}}"#,
-                     #"{"success":true,"data":{"limits":[{"type":"weekly","percentUsed":10,"resetsAt":"bad"}]}}"#,
-                     #"{"success":true,"data":{"limits":[{"type":"weekly","percentUsed":10},{"type":"weekly","percentUsed":20}]}}"#])
+    @Test(arguments: [
+        #"{"success":1,"data":{"limits":[{"type":"weekly","percentUsed":1}]}}"#, #"{}"#, #"{"success":false,"data":{"limits":[]}}"#,
+        #"{"success":true,"data":{"limits":[{"type":"unknown","percentUsed":10}]}}"#,
+        #"{"success":true,"data":{"limits":[{"type":"weekly","percentUsed":true}]}}"#,
+        #"{"success":true,"data":{"limits":[{"type":"weekly"}]}}"#,
+        #"{"success":true,"data":{"limits":[{"type":"weekly","percentUsed":-1}]}}"#,
+        #"{"success":true,"data":{"limits":[{"type":"weekly","percentUsed":10,"resetsAt":"bad"}]}}"#,
+        #"{"success":true,"data":{"limits":[{"type":"weekly","percentUsed":10},{"type":"weekly","percentUsed":20}]}}"#,
+    ])
     func invalidClineDoesNotInventQuota(json: String) {
         #expect(throws: (any Error).self) { try ClineUsage.usage(Data(json.utf8), now: now) }
     }
 
     @Test func clineUnknownWindowsAndOverage() throws {
-        let json = #"{"success":true,"data":{"limits":[{"type":"weekly","percentUsed":110,"resetsAt":null},{"type":"future","percentUsed":80}]}}"#
+        let json =
+            #"{"success":true,"data":{"limits":[{"type":"weekly","percentUsed":110,"resetsAt":null},{"type":"future","percentUsed":80}]}}"#
         let reading = try ClineUsage.usage(Data(json.utf8), now: now)
         #expect(reading.windows.count == 1)
         #expect(reading.windows[0].isExhausted)
@@ -39,9 +44,13 @@ struct AdditionalAIUsageTests {
     }
 
     @Test func savedSessionsIgnoreAPIKeysAndOtherProfiles() {
-        let data = Data(#"{"providers":{"cline":{"settings":{"auth":{"accessToken":"session","apiKey":"ignored"},"apiKey":"ignored"}},"other":{"settings":{"auth":{"accessToken":"other"}}}}}"#.utf8)
+        let data = Data(
+            #"{"providers":{"cline":{"settings":{"auth":{"accessToken":"session","apiKey":"ignored"},"apiKey":"ignored"}},"other":{"settings":{"auth":{"accessToken":"other"}}}}}"#
+                .utf8)
         #expect(SavedAISession.cline(data) == "workos:session")
-        #expect(SavedAISession.cline(Data(#"{"providers":{"cline":{"settings":{"auth":{"accessToken":"workos:session"}}}}}"#.utf8)) == "workos:session")
+        #expect(
+            SavedAISession.cline(Data(#"{"providers":{"cline":{"settings":{"auth":{"accessToken":"workos:session"}}}}}"#.utf8))
+                == "workos:session")
         #expect(SavedAISession.cline(Data(#"{"providers":{"cline":{"settings":{"apiKey":"ignored"}}}}"#.utf8)) == nil)
         #expect(SavedAISession.codebuff(Data(#"{"default":{"authToken":"selected"},"authToken":"legacy"}"#.utf8)) == "selected")
         #expect(SavedAISession.codebuff(Data(#"{"default":{},"authToken":"legacy"}"#.utf8)) == nil)
@@ -51,8 +60,11 @@ struct AdditionalAIUsageTests {
     }
 
     @Test func codebuffKeepsWeeklySubscriptionSeparateFromCredits() throws {
-        let reading = try CodebuffUsage.usage(Data(#"{"usage":100,"quota":1000,"remainingBalance":"25.5"}"#.utf8),
-            subscription: Data(#"{"subscription":{"displayName":"Pro"},"rateLimit":{"weeklyUsed":"25","weeklyLimit":100,"weeklyResetsAt":1800500000000}}"#.utf8), now: now)
+        let reading = try CodebuffUsage.usage(
+            Data(#"{"usage":100,"quota":1000,"remainingBalance":"25.5"}"#.utf8),
+            subscription: Data(
+                #"{"subscription":{"displayName":"Pro"},"rateLimit":{"weeklyUsed":"25","weeklyLimit":100,"weeklyResetsAt":1800500000000}}"#
+                    .utf8), now: now)
         #expect(reading.plan == "Pro")
         #expect(reading.credits == 25.5)
         #expect(reading.windows.count == 1)
@@ -67,7 +79,8 @@ struct AdditionalAIUsageTests {
         #expect(reading.windows.isEmpty)
         var episodes = AILowWindows()
         #expect(episodes.update(.codebuff, usage: reading, now: now).isEmpty)
-        let noUsage = try CodebuffUsage.usage(Data(#"{"remainingBalance":10}"#.utf8),
+        let noUsage = try CodebuffUsage.usage(
+            Data(#"{"remainingBalance":10}"#.utf8),
             subscription: Data(#"{"rateLimit":{"weeklyLimit":100}}"#.utf8), now: now)
         #expect(noUsage.windows.isEmpty)
     }
@@ -176,15 +189,21 @@ nonisolated private final class AdditionalAIUsageProtocol: URLProtocol, @uncheck
                 if count > 0 { data = Data(buffer.prefix(count)) }
             }
             if data == Data(#"{"fingerprintId":"monny-usage"}"#.utf8),
-               ["Bearer session", "Bearer rate-limit"].contains(auth) { status = 200 }
+                ["Bearer session", "Bearer rate-limit"].contains(auth)
+            {
+                status = 200
+            }
             body = #"{"remainingBalance":25}"#
         case ("www.codebuff.com", "/api/user/subscription", "GET"):
             status = auth == "Bearer rate-limit" ? 429 : auth == "Bearer session" ? 200 : 401
             body = #"{"rateLimit":{"weeklyUsed":50,"weeklyLimit":100}}"#
         default: break
         }
-        guard let url = request.url, let response = HTTPURLResponse(url: url, statusCode: status,
-            httpVersion: nil, headerFields: ["Retry-After": "0"]) else { return }
+        guard let url = request.url,
+            let response = HTTPURLResponse(
+                url: url, statusCode: status,
+                httpVersion: nil, headerFields: ["Retry-After": "0"])
+        else { return }
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: Data(body.utf8))
         client?.urlProtocolDidFinishLoading(self)

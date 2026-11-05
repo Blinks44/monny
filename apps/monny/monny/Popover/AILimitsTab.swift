@@ -107,11 +107,12 @@ private struct AIToolCard: View {
     /// "Last reading Sat 14:02 · use Codex to refresh".
     private func staleNote(_ usage: AIUsage) -> some View {
         let date = usage.date.formatted(.dateTime.weekday(.abbreviated).hour().minute())
-        let note = tool == .jetBrains
+        let note =
+            tool == .jetBrains
             ? Text("Open your JetBrains IDE to refresh its quota.")
             : state.problem == .expired
-            ? Text("Last reading \(date) · use \(tool.appName) to refresh")
-            : Text("Last reading \(date) · Monny keeps trying")
+                ? Text("Last reading \(date) · use \(tool.appName) to refresh")
+                : Text("Last reading \(date) · Monny keeps trying")
         return note.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary)
     }
 

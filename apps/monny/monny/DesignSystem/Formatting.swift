@@ -21,8 +21,10 @@ extension Double {
     /// Watts without decimals, as in “18 W”.
     var wattsText: String {
         Measurement(value: self, unit: UnitPower.watts)
-            .formatted(.measurement(width: .abbreviated, usage: .asProvided,
-                                    numberFormatStyle: .number.precision(.fractionLength(0))))
+            .formatted(
+                .measurement(
+                    width: .abbreviated, usage: .asProvided,
+                    numberFormatStyle: .number.precision(.fractionLength(0))))
     }
 
     /// °C → "54°" in the chosen unit, for the menu bar where the unit would only take room.

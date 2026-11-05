@@ -31,13 +31,15 @@ nonisolated struct PowerReader {
 
     mutating func read() -> BatteryReading? {
         guard let info = IOPSCopyPowerSourcesInfo()?.takeRetainedValue(),
-              let sources = IOPSCopyPowerSourcesList(info)?.takeRetainedValue() as? [CFTypeRef] else { return nil }
+            let sources = IOPSCopyPowerSourcesList(info)?.takeRetainedValue() as? [CFTypeRef]
+        else { return nil }
         let battery = sources.lazy
             .compactMap { IOPSGetPowerSourceDescription(info, $0)?.takeUnretainedValue() as? [String: Any] }
             .first { $0[kIOPSTypeKey] as? String == kIOPSInternalBatteryType }
         guard let battery,
-              let current = battery[kIOPSCurrentCapacityKey] as? Int,
-              let maximum = battery[kIOPSMaxCapacityKey] as? Int, maximum > 0 else { return nil }
+            let current = battery[kIOPSCurrentCapacityKey] as? Int,
+            let maximum = battery[kIOPSMaxCapacityKey] as? Int, maximum > 0
+        else { return nil }
 
         let onAC = battery[kIOPSPowerSourceStateKey] as? String == kIOPSACPowerValue
         let charging = battery[kIOPSIsChargingKey] as? Bool ?? false
@@ -118,10 +120,11 @@ nonisolated enum BatteryHealthReader {
 
     static func parse(_ data: Data) -> BatteryHealth? {
         guard let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let items = root["SPPowerDataType"] as? [[String: Any]],
-              let health = items.lazy.compactMap({ $0["sppower_battery_health_info"] as? [String: Any] }).first,
-              let capacity = health["sppower_battery_health_maximum_capacity"] as? String,
-              let percent = Double(capacity.filter(\.isNumber)) else { return nil }
+            let items = root["SPPowerDataType"] as? [[String: Any]],
+            let health = items.lazy.compactMap({ $0["sppower_battery_health_info"] as? [String: Any] }).first,
+            let capacity = health["sppower_battery_health_maximum_capacity"] as? String,
+            let percent = Double(capacity.filter(\.isNumber))
+        else { return nil }
         return BatteryHealth(maximumCapacity: percent / 100, condition: health["sppower_battery_health"] as? String)
     }
 }

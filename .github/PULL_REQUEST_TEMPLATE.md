@@ -2,7 +2,7 @@
 
 
 **How it was checked**
-- [ ] `apps/monny/scripts/dev.sh test` passes
+- [ ] `apps/monny/scripts/dev.sh lint` and `apps/monny/scripts/dev.sh test` pass
 - [ ] Tried in the running app (say on which Mac model and macOS version)
 
 **Not tested**

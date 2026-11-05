@@ -110,12 +110,19 @@ case "$command_name" in
     resolve)
         exec xcodebuild -resolvePackageDependencies "${common_args[@]}" "$@"
         ;;
+    # swift-format ships with the Xcode toolchain; .swift-format holds the rules.
+    format)
+        exec xcrun swift format format --in-place --recursive --parallel monny monnyTests "$@"
+        ;;
+    lint)
+        exec xcrun swift format lint --strict --recursive --parallel monny monnyTests "$@"
+        ;;
     run)
         xcodebuild build "${common_args[@]}" -configuration Debug "$@"
         exec open "$derived_data/Build/Products/Debug/Monny.app"
         ;;
     *)
-        echo "Usage: $0 {doctor|build|release|build-for-testing|test|resolve|run|clean} [xcodebuild arguments]" >&2
+        echo "Usage: $0 {doctor|build|release|build-for-testing|test|resolve|run|clean|format|lint} [xcodebuild arguments]" >&2
         exit 2
         ;;
 esac

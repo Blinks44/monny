@@ -1,14 +1,10 @@
 # Monny: roadmap
 
-Updated 2026-11-04. [STATE](STATE.md) indexes implementation and open work; [SPEC](SPEC.md) owns behavior. Builds and fixture tests do not establish hardware acceptance.
+Updated 2026-11-05. [STATE](STATE.md) indexes implementation and open work; [SPEC](SPEC.md) owns behavior. Builds and fixture tests do not establish hardware acceptance.
 
 ## Current slice
 
-Kimi availability was accepted on build 86; verify detailed 5-hour/monthly quota agreement and short-lived session recovery in the 1.5.0 release ([APP-015](tasks/APP-015-ai-usage-limits.md#kimi-code-implementation--2026-11-04)).
-
-Verify the reported temperature/core-layout regressions on the affected Mac using the local build-83 candidate ([APP-018](tasks/APP-018-sensor-and-layout-regressions.md)). The combined 1.5.0 release is published; affected-device verification remains open.
-
-Process network rates and daily traffic ship in 1.4.0; only macOS 15/26 checks remain ([APP-017](tasks/APP-017-process-network.md)). Complete the native monitor's remaining compatibility/release checks and AI-limit account/history verification. Website design transfer/style corrections and the reviewed Monny/Rebind Sketch export handoff are ready; deployed desktop/phone review and the in-app update to 1.1.1 were accepted by the user on 2026-10-26. Specific accessibility/translation and remaining compatibility/account checks continue independently. Select a bounded slice from STATE; do not reimplement accepted features.
+1.5.0 is published. Verify Kimi's detailed 5-hour/monthly quota agreement and session recovery ([APP-015](tasks/APP-015-ai-usage-limits.md#kimi-code-implementation--2026-11-04)) and the temperature/core-layout fixes on the affected Mac ([APP-018](tasks/APP-018-sensor-and-layout-regressions.md)). Process network rates need only macOS 15/26 checks ([APP-017](tasks/APP-017-process-network.md)). Fan control awaits a product decision ([APP-019](tasks/APP-019-fan-control-feasibility.md)). Select a bounded slice from STATE; do not reimplement accepted features.
 
 ## App phases
 

@@ -16,7 +16,11 @@ apps/monny/scripts/dev.sh test
 apps/monny/scripts/dev.sh release
 apps/monny/scripts/dev.sh run
 apps/monny/scripts/dev.sh resolve
+apps/monny/scripts/dev.sh format
+apps/monny/scripts/dev.sh lint
 ```
+
+`format` rewrites Swift sources in `monny/` and `monnyTests/` with the `swift format` bundled in the Xcode toolchain (no install); `lint` checks them in strict mode and fails on any finding. Rules live in `apps/monny/.swift-format` (4-space indentation, 140-column lines, otherwise upstream defaults).
 
 The script respects `DEVELOPER_DIR` or a valid `xcode-select` selection, then falls back to `/Applications/Xcode.app/Contents/Developer`. It never modifies the system selection. For another Xcode installation:
 

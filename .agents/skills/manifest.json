@@ -142,5 +142,15 @@
     { "name": "macos-menubar-tuist-app", "repository": "https://github.com/Dimillian/Skills", "revision": "05ba982bfeb0d77d3c97d4542b0ee15034d05f84", "license": "MIT", "reason": "Tuist-first workflow; Monny uses a plain Xcode project and dev.sh." },
     { "name": "swiftui-view-refactor / swift-concurrency-expert", "repository": "https://github.com/Dimillian/Skills", "revision": "05ba982bfeb0d77d3c97d4542b0ee15034d05f84", "license": "MIT", "reason": "Overlap with swiftui-pro and swift-concurrency-pro." }
   ],
+  "dependency_shipped": [
+    {
+      "name": "react-start",
+      "package": "@tanstack/react-start",
+      "path": "apps/website/node_modules/@tanstack/react-start/skills/react-start",
+      "license": "MIT",
+      "reviewed_on": "2026-11-05",
+      "note": "Ships inside the npm package and updates with it; referenced from AGENTS rather than vendored. Related start-core/router-core skills are not shipped in installed packages; the site uses no server functions or auth."
+    }
+  ],
   "design_source": "Monny.sketch via Sketch MCP; see docs/DESIGN.md"
 }

@@ -1,0 +1,7 @@
+# Shell scripts must keep LF endings to run on macOS.
+*.sh text eol=lf
+
+# Generated files: collapsed in GitHub diffs and excluded from language stats.
+apps/website/src/routeTree.gen.ts linguist-generated=true
+apps/website/pnpm-lock.yaml linguist-generated=true
+apps/monny/monny.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved linguist-generated=true

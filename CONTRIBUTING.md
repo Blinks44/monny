@@ -24,6 +24,7 @@ You need full Xcode with a Swift 6.2+ compiler and a macOS 26+ SDK.
 ```sh
 apps/monny/scripts/dev.sh build
 apps/monny/scripts/dev.sh test
+apps/monny/scripts/dev.sh lint
 ```
 
 See the [development guide](docs/DEVELOPMENT.md) for details.

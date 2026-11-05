@@ -64,6 +64,8 @@ In-memory ring buffers per metric, one per range: 1m = raw samples (60 × 2 s), 
 
 ## Other dependencies
 
+Fan-control feasibility (2026-11-04): [quieter fan curves and write/service implications](fan-control.md). Proposal only; main remains read-only and SPEC excludes fan control until a scoped product decision.
+
 Explicit process Quit/Force Quit uses native AppKit and Darwin APIs, with sampled launch identities and per-target validation: [process actions decision](process-actions.md) (2026-10-25).
 
 | Need | Candidates to evaluate | Decision |

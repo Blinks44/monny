@@ -38,6 +38,9 @@ xcuserdata/
 **/.swiftpm/security/
 # Package.swift and Package.resolved remain versioned; never ignore .swiftpm wholesale.
 
+# Personal working files for people and agents (notes, logs, captures); never committed.
+/.local/
+
 # Claude Code per-user settings; shared .claude/skills (symlink) stays versioned.
 /.claude/settings.local.json
 

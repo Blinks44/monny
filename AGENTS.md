@@ -15,7 +15,7 @@ The repository is a monorepo: the app lives in `apps/monny/` (Xcode project, sou
 
 Missing Sketch access blocks design-dependent work, not independent engineering (sampling, helper, storage, tests). Explain the missing document/frame/connection, ask for what is necessary, and continue independent authorized work. Do not invent the current design or silently use an old PNG.
 
-Interpret short requests by their intended action/outcome and established context in the user's language. Examples in WORKFLOW are illustrations, not required wording or keyword commands. Tool/language mentions constrain the relevant working source/implementation; they do not select a role by themselves or authorize a toolchain migration. Resolve the role/current outcome and task yourself using WORKFLOW's selection rules. Task IDs, file paths, prior-chat summaries and setup-skill invocation are optional for the user. A fresh unqualified Monny development request defaults to app implementation; preserve an established design role or explicit design request. Website work follows [WEB-001](docs/tasks/WEB-001-landing-page.md) and the website README. Explain the selected user-visible outcome briefly and proceed.
+Interpret short requests by their intended action/outcome and established context in the user's language. Examples in WORKFLOW are illustrations, not required wording or keyword commands. Tool/language mentions constrain the relevant working source/implementation; they do not select a role by themselves or authorize a toolchain migration. Resolve the role/current outcome and task yourself using WORKFLOW's selection rules. Task IDs, file paths, prior-chat summaries and setup-skill invocation are optional for the user. A fresh unqualified Monny development request defaults to app implementation; preserve an established design role or explicit design request. Website work follows [WEB-001](docs/tasks/WEB-001-landing-page.md) and the website README. Promotion and outreach requests: read `.local/promotion.md` first if it exists (personal, not in Git), do not re-suggest what it lists as done, and record each new action there. Explain the selected user-visible outcome briefly and proceed.
 
 ## 2. Sources of truth
 
@@ -37,7 +37,7 @@ When sources disagree, inspect the implementation/artifact and evidence, state t
 ## 3. Non-negotiable boundaries
 
 - macOS **15+** (charge limit 26.4+), native SwiftUI with AppKit only where SwiftUI is insufficient (status item, right-click menu), Swift 6 language mode with complete strict concurrency and main-actor default isolation. Preserve target/scheme/module `monny`, product `Monny.app`, bundle ID `blinks44.monny` and existing project settings unless a justified change is required.
-- Use `apps/monny/scripts/dev.sh doctor|build|release|build-for-testing|test|resolve|run`; see [DEVELOPMENT](docs/DEVELOPMENT.md). Do not change system-wide `xcode-select`. Xcode MCP build/documentation/preview tools are preferred when suitable and available.
+- Use `apps/monny/scripts/dev.sh doctor|build|release|build-for-testing|test|resolve|run|format|lint`; see [DEVELOPMENT](docs/DEVELOPMENT.md). Run `dev.sh format` after Swift edits; `dev.sh lint` must pass before a commit. Do not change system-wide `xcode-select`. Xcode MCP build/documentation/preview tools are preferred when suitable and available.
 - Distribution is a signed DMG on GitHub Releases outside the Mac App Store (user decision 2026-10-17). App Sandbox stays **off** for native system monitoring; Hardened Runtime stays on. Main uses direct ordinary-user access to the native macOS charge-limit preference where available, with no privileged helper or SMC writes. Discharge/helper experiments remain on experiments/discharge. No root shortcuts, SIP changes or kernel extensions.
 - Monitoring is read-only and local: no analytics, telemetry, accounts or network access other than Sparkle update checks/downloads and the opt-in AI limit checks with the tools' own sign-in (SPEC §7–8, user decision 2026-10-22). No process termination or system tuning unless SPEC adds it.
 - Sampling must stay cheap: one shared sampler, the user-chosen refresh rate while a view is visible and only what history, charge control and notifications need otherwise. Measure before optimizing; never block the main actor with I/O, IOKit/SMC calls or process enumeration.
@@ -58,7 +58,7 @@ An explicit request to continue/create design authorizes scoped edits to the est
 
 ## 4. Finish or hand off
 
-After any app code change (fix, refinement or feature), finish with a ready DMG for the user: increment `CURRENT_PROJECT_VERSION` (Debug and Release), run `apps/monny/scripts/dev.sh test`, then `apps/monny/scripts/release.sh`, and report the DMG path and SHA-256. Documentation-only work does not need a build. If the release fails (for example a missing signing identity), report it instead of skipping silently.
+After any app code change (fix, refinement or feature), finish with a ready DMG for the user: increment `CURRENT_PROJECT_VERSION` (Debug and Release), run `apps/monny/scripts/dev.sh lint` and `apps/monny/scripts/dev.sh test`, then `apps/monny/scripts/release.sh`, and report the DMG path and SHA-256. Documentation-only work does not need a build. If the release fails (for example a missing signing identity), report it instead of skipping silently.
 
 Follow WORKFLOW's completion contract **before the final response**. Update the affected task/evidence, STATE, and any changed SPEC/DESIGN/PLAN/research record. Record tests/builds actually run, exact evidence, unresolved checks and one actionable next step. Use `awaiting_verification` when implementation exists but required runtime/hardware acceptance (real sensors, charging on a named Mac) is open; never mark a feature done just because the build passes.
 
@@ -81,6 +81,7 @@ Read only relevant `.agents/skills/<name>/SKILL.md` and its required references.
 - New Swift contracts: `swift-api-design-guidelines-skill` locally, without mass renaming.
 - Product copy: `writing-for-interfaces`, preserving behavior and all six languages.
 - Accessibility: `swiftui-accessibility-auditor` for SwiftUI views, `appkit-accessibility-auditor` for the status item and menus.
+- Website (TanStack Start/Router): the skills shipped with the installed package under `apps/website/node_modules/@tanstack/react-start/skills/` (start with `react-start/SKILL.md`; available after `pnpm install`, versioned with the dependency).
 - Workflow setup/review: `agent-workflow-setup`; it configures project context rather than activating on ordinary feature implementation.
 
 Monny's SPEC, DESIGN, actual toolchain and the macOS platform take precedence over upstream iOS examples in these skills.

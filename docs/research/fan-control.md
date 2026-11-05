@@ -1,0 +1,17 @@
+# Fan control: feasibility review
+
+Reviewed 2026-11-04 at main `05b9323` (Monny 1.5.0/build 87). Research only for the requested quieter-fans scenario. Main remains read-only for fans; SPEC §1 excludes fan control and AGENTS/ENGINEERING prohibit an SMC writer/helper on main. This review does not change those contracts or authorize installation, writes or a prototype on the user's Mac.
+
+## Evidence and limits
+
+- [Macs Fan Control](https://crystalidea.com/macs-fan-control) documents custom RPM and sensor-based modes on Apple silicon, plus return to Auto on normal quit. Its [FAQ](https://crystalidea.com/macs-fan-control/faq) documents administrator authorization and warns that unsuitable custom cooling can cause thermal throttling/high kernel_task load. This establishes product feasibility, not a ready Monny library or evidence for a particular Mac/OS. No source or binary adopted.
+- MIT [Stats README](https://github.com/exelban/stats/blob/master/README.md) explicitly describes fan control as legacy/not maintained. Its [fan CLI](https://github.com/exelban/stats/blob/master/SMC/main.swift) exposes mode/target operations, not just sensor reads. [Apple silicon issue 2928](https://github.com/exelban/stats/issues/2928) and [wake regression 2977](https://github.com/exelban/stats/issues/2977) illustrate model-dependent system modes and restoration problems; use these as research leads, not validated Monny behavior. Sources were reviewed through dated web results/current branches, not pinned for implementation. Pin and inspect the final upstream mechanism before any prototype. No code copied/dependency installed.
+- The current `SensorReader`/`SMCConnection` reads fan count/speed/maxima only. Changing mode/target needs a separate write path. A production approach should evaluate a narrowly scoped privileged service with explicit administrator approval, authenticated clients and only validated fan operations. The retired battery/discharge helper on `experiments/discharge` does not prove fan-write compatibility and is not a drop-in solution. No SIP changes, kernel extensions, passwordless sudo or arbitrary-key writer.
+
+## Proposed behavior, not accepted requirements
+
+The noise-reduction goal is a temperature-dependent ramp that can delay/inhibit unnecessary fan acceleration within a validated model-specific envelope. A hard RPM ceiling cannot promise both silence and adequate cooling at every workload. Propose System (default), an optional quieter temperature curve and immediate Return to System. Returning to system control under excessive thermal pressure, unavailable/stale sensors or failed writes must override the quiet policy. It is a proposal, not an assertion that Monny can enforce or verify those protections today.
+
+Before shipping: establish supported model/OS pairs, which sensors and firmware states are trustworthy, read-back of actual mode/speed, and independent automatic restoration on app/helper loss, sleep/wake, logout/restart and uninstall. Never rely on a normal-quit callback or chip throttling alone. Coexistence with other fan controllers, invalid RPM bounds and firmware reclaiming control need explicit tests. No universal temperature thresholds are chosen here.
+
+Next: decide whether Monny should expand into fan control and accept the privileged-service scope. If authorized, perform an isolated mechanism/safety prototype on an identified Mac/OS, then define SPEC/design and implementation acceptance. No app build or runtime test was performed for this review.

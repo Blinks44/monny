@@ -4,7 +4,7 @@
 - Stage: awaiting_verification
 - Owner: unassigned for real-account verification (provider implementation through local build 86)
 - Owned surfaces: `apps/monny/monny/AI/`, AI popover/dashboard, Settings/onboarding, alerts and quota history
-- Requirements: [SPEC](../SPEC.md) §§3–4, 6–8; [design](DES-003-ai-usage-limits.md); [mechanisms and licensing](../research/ai-usage-limits.md)
+- Requirements: [SPEC](../SPEC.md) §§3–4, 6–8; [design](../DESIGN.md#readiness); [mechanisms and licensing](../research/ai-usage-limits.md)
 - Implementation: builds 43–49, baseline main `713defe` (build 50); repeated-alert fix in build 60, based on `e7db28d` (see the commit history for monitor/tests/project changes).
 
 ## Kimi Code implementation — 2026-11-04

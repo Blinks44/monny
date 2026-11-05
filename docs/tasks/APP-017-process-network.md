@@ -47,7 +47,7 @@ Final code/project/test sources matched the temporary verification copy before i
 
 The user checked build 81 on 2026-11-04 (network rates, VPN-backed browser traffic and the rest of the 1.4.0 work) and approved the release. macOS 15/26 source compatibility remains unverified on hardware. No per-process history or network destinations are collected.
 
-Build-tooling follow-up: [DEV-001](DEV-001-build-cache-lifecycle.md) owns the temporary-build policy and successful repackaging. The app source and build number did not change; the package checksum above identifies the regenerated local DMG.
+Build-tooling follow-up: The temporary-build policy is in [DEVELOPMENT](../DEVELOPMENT.md#build-and-test). The app source and build number did not change; the package checksum above identifies the regenerated local DMG.
 
 Release preparation 2026-11-04: source build raised to 80 so a later published release can update local build 79. All 154 tests pass on build 80. Release notes are prepared; packaging of build 80 and GitHub publication were stopped at the user’s request. Build 80 was not packaged; the later build-81 fix supersedes that candidate.
 

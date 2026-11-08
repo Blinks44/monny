@@ -4,7 +4,7 @@ Updated 2026-11-08. [STATE](STATE.md) indexes implementation and open work; [SPE
 
 ## Current slice
 
-1.6.0/build 90 is published; the user owns website deployment. Verify Kimi's detailed 5-hour/monthly quota agreement and session recovery ([APP-015](tasks/APP-015-ai-usage-limits.md#kimi-code-implementation--2026-11-04)) and the temperature/core-layout fixes on the affected Mac ([APP-018](tasks/APP-018-sensor-and-layout-regressions.md)). Process network rates need only macOS 15/26 checks ([APP-017](tasks/APP-017-process-network.md)). Fan control awaits a product decision ([APP-019](tasks/APP-019-fan-control-feasibility.md)). Select a bounded slice from STATE; do not reimplement accepted features.
+1.6.0/build 90 is published; the user owns website deployment. Retry public appcast delivery and installed updates after the observed HTTP 504 failure (APP-015). Verify Kimi's detailed 5-hour/monthly quota agreement and session recovery ([APP-015](tasks/APP-015-ai-usage-limits.md#kimi-code-implementation--2026-11-04)) and the temperature/core-layout fixes on the affected Mac ([APP-018](tasks/APP-018-sensor-and-layout-regressions.md)). Process network rates need only macOS 15/26 checks ([APP-017](tasks/APP-017-process-network.md)). Fan control awaits a product decision ([APP-019](tasks/APP-019-fan-control-feasibility.md)). Select a bounded slice from STATE; do not reimplement accepted features.
 
 ## App phases
 
@@ -30,5 +30,5 @@ After release, Discharge may be researched again. Helper/SMC-write work is prese
 
 - Accepted 2026-10-21: installed charge-limit change on M1 Max/macOS 27.0.1; informal reading comparisons; six languages; build-37 keyboard/VoiceOver/contrast/motion, notifications and pre-release additions. macOS 26 was reported working, minor version unknown; this does not close 26.4–26.x charging acceptance.
 - Measured: background 0.0%, dashboard 2.9% (build 29); popover about 2% (user, build 37). Conditions and limits: [idle cost](verification/idle-cost.md).
-- Published 2026-11-04: 1.5.0/build 87, Kimi Code and sensor/layout fixes; public DMG/appcast checks pass. Earlier releases and installed update/website acceptance are recorded in [STATE](STATE.md) and [history](history/2026-10.md).
+- Published 2026-11-08: 1.6.0/build 90, nine additional AI sources; DMG checksums and signed appcast asset verified. Public appcast HTTP delivery and installed update remain open after HTTP 504. [APP-015](tasks/APP-015-ai-usage-limits.md#160-publication--2026-11-08) owns current evidence; earlier release acceptance remains in [history](history/README.md).
 - Open: clean-Mac DMG installation, signing-identity recovery and off-device backup (update-key backup reported 2026-10-24); later feature-specific checks indexed in STATE. Apple Development candidates are signed but not notarized. Developer ID/notarization is not implemented.

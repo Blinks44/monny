@@ -31,7 +31,7 @@ Browser-free AI expansion is published ([source decision](research/ai-usage-cand
 | [Onboarding and Settings design](tasks/DES-002-native-onboarding-next-features.md) | awaiting_verification | Long-language check of the Settings frame revision. |
 | [Signing/install](tasks/REL-001-signing-workflow.md) | awaiting_verification | Clean second-Mac installation; identity recovery and off-device signing-identity backup. |
 
-Also open: installed Sparkle update into 1.5.0 is unconfirmed; native-speaker and deployed-site review of the 2026-10-28 copy revision.
+Also open: the 2026-11-08 installed-update failure coincides with HTTP 504 from public appcast delivery; [release evidence](tasks/APP-015-ai-usage-limits.md#160-publication--2026-11-08) owns the incident and retry check. Earlier update acceptance into 1.5.0 is also unconfirmed; native-speaker and deployed-site review of the 2026-10-28 copy revision.
 
 Known coverage limits: fanless/later-chip Macs, no-battery or below-26.4 onboarding, macOS 26 icon/special states, tinted-wallpaper menu bar, and sensors/charge banner on real macOS 15 hardware (only a VM was checked). Revisit with an actual issue or suitable device. Users of helper builds (≤23) must remove the helper in the old app before replacement.
 

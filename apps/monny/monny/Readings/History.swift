@@ -16,6 +16,10 @@ nonisolated enum HistoryMetric: String, CaseIterable, Codable, CodingKeyRepresen
     case clineSession, clineWeekly, clineMonthly, codebuffWeekly
     case ampFree, ampMonthly, augmentMonthly, nousMonthly
     case kimiSession, kimiWeekly, kimiMonthly
+    case openCodeSession, openCodeWeekly, openCodeMonthly, kiloMonthly, kiroMonthly
+    case alibabaTokenSession, alibabaTokenWeekly, alibabaTokenMonthly
+    case alibabaCodingSession, alibabaCodingWeekly, alibabaCodingMonthly
+    case windsurfWeekly, codeRabbitUsage, geminiPro, huggingFaceGPU
 
     /// The values of one snapshot; unavailable readings are left out, never stored as zero.
     static func values(of snapshot: Snapshot) -> [HistoryMetric: Double] {

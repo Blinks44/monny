@@ -236,5 +236,6 @@
   "destMac": "This Mac only",
   "destGithub": "GitHub Releases, signed",
   "destTools": "Only the tools you pick",
-  "destMacOS": "macOS setting on this Mac"
+  "destMacOS": "macOS setting on this Mac",
+  "aiSourceLimits": "New integrations need real-account verification. Windsurf shows cached data of unknown age; CodeRabbit shows review counts; Hugging Face shows ZeroGPU quota. Gemini CLI supports eligible work accounts only."
 }

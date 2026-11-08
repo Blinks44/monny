@@ -174,3 +174,9 @@
     gap: 10px;
   }
 }
+
+.toolLogo > span {
+  color: #000;
+  font-size: 13px;
+  font-weight: 600;
+}

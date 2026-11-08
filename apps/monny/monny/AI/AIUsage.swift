@@ -3,6 +3,7 @@ import Foundation
 /// A coding assistant whose plan limits Monny can show (Settings › AI limits).
 nonisolated enum AITool: String, CaseIterable, Codable, CodingKeyRepresentable, Sendable {
     case claude, codex, cursor, grok, jetBrains, copilot, cline, codebuff, amp, augment, nous, kimi
+    case openCodeGo, kilo, kiro, alibabaToken, alibabaCoding, windsurf, codeRabbit, gemini, huggingFace
 }
 
 /// One rolling limit of a plan, as the service reports it.
@@ -22,15 +23,19 @@ nonisolated struct AIQuotaWindow: Codable, Equatable, Sendable {
     var model: String?
     var copilotQuota: CopilotQuota? = nil
     var ampQuota: AmpQuota? = nil
+    var label: AIQuotaLabel? = nil
 
     var id: String {
         "\(kind.rawValue).\(model ?? "")" + (copilotQuota.map { ".\($0.rawValue)" } ?? "")
-            + (ampQuota.map { ".amp.\($0.rawValue)" } ?? "")
+            + (ampQuota.map { ".amp.\($0.rawValue)" } ?? "") + (label.map { ".label.\($0.rawValue)" } ?? "")
     }
 
     /// The plan's own limit, as history and Next resets draw it: not a model's limit or
     /// Copilot's chat and completions allowances.
-    var isPlanLimit: Bool { model == nil && (copilotQuota ?? .premium) == .premium && ampQuota != .orb }
+    var isPlanLimit: Bool {
+        model == nil && (copilotQuota ?? .premium) == .premium && ampQuota != .orb && label != .overage && label != .flash
+            && label != .flashLite
+    }
 
     /// "Running low" below this share of the quota left, whatever the pace (user decision 2026-10-22).
     static let lowThreshold = 0.1
@@ -78,11 +83,14 @@ nonisolated struct AIUsage: Codable, Equatable, Sendable {
     /// Reported USD balances; never combined with percentage quota or generic credits.
     var balanceUSD: Decimal? = nil
     var topUpUSD: Decimal? = nil
+    /// No reliable reading time is exposed by the local source. Never used for history/alerts.
+    var sourceDateUnknown: Bool? = nil
+    var reviewCount: Double? = nil
 
     /// Older readings are drawn as stale.
     static let freshness: TimeInterval = 15 * 60
 
-    func isStale(at now: Date = .now) -> Bool { now.timeIntervalSince(date) > Self.freshness }
+    func isStale(at now: Date = .now) -> Bool { sourceDateUnknown == true || now.timeIntervalSince(date) > Self.freshness }
 
     func window(_ kind: AIQuotaWindow.Kind) -> AIQuotaWindow? { windows.first { $0.kind == kind && $0.model == nil } }
 }

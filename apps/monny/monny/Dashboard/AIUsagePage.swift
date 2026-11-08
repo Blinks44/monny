@@ -70,6 +70,7 @@ private struct AIToolTile: View {
                         QuotaRow(window: window, tool: tool, isStale: usage.isStale(at: now), isCompact: true)
                     }
                     if tool == .copilot { CopilotDetails(usage: usage) }
+                    AIReviewDetails(usage: usage)
                     AIDollarBalances(usage: usage)
                     if tool == .codebuff, let credits = usage.credits {
                         CreditsRow(credits: credits, isStale: usage.isStale(at: now))
@@ -118,6 +119,9 @@ private struct QuotaHistoryCard: View {
                     !tier.series(.kimiMonthly).isEmpty
                     ? .kimiMonthly
                     : !tier.series(.kimiWeekly).isEmpty ? .kimiWeekly : .kimiSession
+            } else if tool == .openCodeGo || tool == .alibabaToken || tool == .alibabaCoding {
+                let candidates = [AIQuotaWindow.Kind.monthly, .weekly, .session].map { HistoryMetric.aiQuota(tool, $0) }
+                metric = candidates.first { !tier.series($0).isEmpty } ?? tool.historyMetric
             } else if tool == .amp {
                 metric = !tier.series(.ampMonthly).isEmpty ? .ampMonthly : .ampFree
             } else {

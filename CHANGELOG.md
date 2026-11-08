@@ -2,6 +2,13 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.6.0: 2026-11-08
+
+- Added AI limits for OpenCode Go, Kilo, Kiro, Alibaba Token Plan and Coding Plan.
+- Added Windsurf cached quotas, CodeRabbit review counts, Gemini CLI work accounts and Hugging Face ZeroGPU.
+
+New integrations still need real-account verification.
+
 ## 1.5.0: 2026-11-04
 
 - Added Kimi Code limits, including international accounts, using the existing sign-in.

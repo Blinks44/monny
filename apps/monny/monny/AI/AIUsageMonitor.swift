@@ -227,6 +227,21 @@ extension HistoryMetric {
         case (.kimi, .session): .kimiSession
         case (.kimi, .weekly): .kimiWeekly
         case (.kimi, .monthly): .kimiMonthly
+        case (.openCodeGo, .session): .openCodeSession
+        case (.openCodeGo, .weekly): .openCodeWeekly
+        case (.openCodeGo, .monthly): .openCodeMonthly
+        case (.alibabaToken, .session): .alibabaTokenSession
+        case (.alibabaToken, .weekly): .alibabaTokenWeekly
+        case (.alibabaToken, .monthly): .alibabaTokenMonthly
+        case (.alibabaCoding, .session): .alibabaCodingSession
+        case (.alibabaCoding, .weekly): .alibabaCodingWeekly
+        case (.alibabaCoding, .monthly): .alibabaCodingMonthly
+        case (.kilo, _): .kiloMonthly
+        case (.kiro, _): .kiroMonthly
+        case (.windsurf, _): .windsurfWeekly
+        case (.codeRabbit, _): .codeRabbitUsage
+        case (.gemini, _): .geminiPro
+        case (.huggingFace, _): .huggingFaceGPU
         }
     }
 }

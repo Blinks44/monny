@@ -236,5 +236,6 @@
   "destMac": "Nur dieser Mac",
   "destGithub": "GitHub Releases, signiert",
   "destTools": "Nur die gewählten Tools",
-  "destMacOS": "macOS-Einstellung auf diesem Mac"
+  "destMacOS": "macOS-Einstellung auf diesem Mac",
+  "aiSourceLimits": "Neue Integrationen müssen noch mit echten Konten geprüft werden. Windsurf zeigt Cache-Daten unbekannten Alters, CodeRabbit Review-Zahlen und Hugging Face das ZeroGPU-Kontingent. Gemini CLI unterstützt nur berechtigte Arbeitskonten."
 }

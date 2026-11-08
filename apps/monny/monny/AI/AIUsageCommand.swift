@@ -37,6 +37,7 @@ nonisolated enum AIUsageCommand {
         values["TERM"] = "dumb"
         values["NO_COLOR"] = "1"
         values["CI"] = "1"
+        if executable.lastPathComponent == "coderabbit" { values["CODERABBIT_CLI_DISABLE_AUTO_UPDATE"] = "true" }
         return values
     }
 

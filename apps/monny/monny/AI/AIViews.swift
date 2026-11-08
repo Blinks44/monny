@@ -18,6 +18,15 @@ extension AITool {
         case .augment: "Augment"
         case .nous: "Nous Portal"
         case .kimi: "Kimi Code"
+        case .openCodeGo: "OpenCode Go"
+        case .kilo: "Kilo"
+        case .kiro: "Kiro"
+        case .alibabaToken: "Alibaba Token Plan"
+        case .alibabaCoding: "Alibaba Coding Plan"
+        case .windsurf: "Windsurf"
+        case .codeRabbit: "CodeRabbit"
+        case .gemini: "Gemini CLI"
+        case .huggingFace: "Hugging Face"
         }
     }
 
@@ -36,6 +45,15 @@ extension AITool {
         case .augment: "Auggie"
         case .nous: "Hermes Agent"
         case .kimi: "Kimi Code CLI"
+        case .openCodeGo: "OpenCode"
+        case .kilo: "Kilo CLI"
+        case .kiro: "Kiro CLI"
+        case .alibabaToken: "Bailian CLI"
+        case .alibabaCoding: "Bailian CLI"
+        case .windsurf: "Windsurf"
+        case .codeRabbit: "CodeRabbit CLI"
+        case .gemini: "Gemini CLI"
+        case .huggingFace: "Hugging Face CLI"
         }
     }
 
@@ -47,7 +65,9 @@ extension AITool {
         case .grok: Theme.aiGrok
         case .jetBrains: Theme.aiJetBrains
         case .amp: Theme.aiAmp
-        case .copilot, .cline, .codebuff, .augment, .nous, .kimi: Theme.aiCodex
+        case .copilot, .cline, .codebuff, .augment, .nous, .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf,
+            .codeRabbit, .gemini, .huggingFace:
+            Theme.aiCodex
         }
     }
 
@@ -58,7 +78,9 @@ extension AITool {
         case .codex, .grok: Theme.aiIconWhite
         case .cursor: Theme.aiIconBlack
         case .jetBrains, .copilot, .codebuff: Theme.aiIconBlack
-        case .amp, .cline, .augment, .nous, .kimi: Theme.aiIconWhite
+        case .amp, .cline, .augment, .nous, .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit,
+            .gemini, .huggingFace:
+            Theme.aiIconWhite
         }
     }
 
@@ -76,7 +98,7 @@ extension AITool {
         case .amp: .aiAmp
         case .augment: .aiAugment
         case .nous: .aiNous
-        case .kimi: nil
+        case .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace: nil
         }
     }
 
@@ -95,6 +117,15 @@ extension AITool {
         case .augment: .augmentMonthly
         case .nous: .nousMonthly
         case .kimi: .kimiMonthly
+        case .openCodeGo: .openCodeMonthly
+        case .kilo: .kiloMonthly
+        case .kiro: .kiroMonthly
+        case .alibabaToken: .alibabaTokenMonthly
+        case .alibabaCoding: .alibabaCodingMonthly
+        case .windsurf: .windsurfWeekly
+        case .codeRabbit: .codeRabbitUsage
+        case .gemini: .geminiPro
+        case .huggingFace: .huggingFaceGPU
         }
     }
 
@@ -108,6 +139,16 @@ extension AITool {
         case .jetBrains: "Open a JetBrains IDE and use AI Assistant to make its quota available here."
         case .amp: "Sign in to the Amp CLI to see your allowances and individual balance here."
         case .augment: "Sign in with auggie login to see your monthly credits here."
+        case .openCodeGo: "Sign in to OpenCode Go in OpenCode to see your subscription limits here."
+        case .kilo: "Sign in with kilo auth login to see your Kilo Pass allowance and balance here."
+        case .kiro: "Sign in to the Kiro CLI to see your monthly credits here. Unsupported regions and bonus quotas stay unavailable."
+        case .alibabaToken: "Sign in to the Bailian CLI console to see Token Plan limits. Monny uses the CLI’s saved region and profile."
+        case .alibabaCoding: "Sign in to the Bailian CLI console to see Coding Plan limits. Monny uses the CLI’s saved region and profile."
+        case .windsurf: "Open Windsurf to update its cached quota. The age of this local reading is unknown."
+        case .codeRabbit: "Sign in to the CodeRabbit CLI to see your review count. A remaining quota is not reported by this source."
+        case .gemini:
+            "Sign in to Gemini CLI with a supported work account. Personal Gemini subscriptions are not supported. Open the CLI again if the session expires."
+        case .huggingFace: "Sign in with hf auth login to see your ZeroGPU quota. Your saved token needs permission to read billing usage."
         case .kimi: "Sign in to the Kimi Code CLI to see your limits here. Open Kimi again if your sign-in expires."
         case .nous: "Sign in to Nous Portal in Hermes Agent to see your monthly allowance and balances here."
         case .cline: "Sign in with cline auth to see your ClinePass subscription limits here."
@@ -141,6 +182,7 @@ extension AIQuotaWindow.Kind {
 extension AIQuotaWindow {
     /// "Claude", or "Claude Opus" for a model's own limit, in notification titles.
     func serviceName(_ tool: AITool) -> String {
+        if let label { return "\(tool.name) · \(String(localized: label.title))" }
         if let ampQuota { return "\(tool.name) · \(String(localized: ampQuota.label))" }
         if let copilotQuota { return "\(tool.name) · \(copilotQuota.name)" }
         return model.map { "\(tool.name) \($0)" } ?? tool.name
@@ -148,13 +190,16 @@ extension AIQuotaWindow {
 
     /// "5-hour window", or "Opus only · weekly" for a model's own limit.
     var title: Text {
-        ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text("\(Text($0.label)) · monthly") } ?? model.map { modelTitle($0) }
+        label.map { Text($0.title) } ?? ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text("\(Text($0.label)) · monthly") }
+            ?? model.map { modelTitle($0) }
             ?? Text(kind.title)
     }
 
     /// "5 hours" in the window's tiles and reset list.
     var shortTitle: Text {
-        ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text($0.label) } ?? model.map { modelTitle($0) } ?? Text(kind.shortTitle)
+        label.map { Text($0.title) } ?? ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text($0.label) } ?? model.map {
+            modelTitle($0)
+        } ?? Text(kind.shortTitle)
     }
 
     private func modelTitle(_ model: String) -> Text {
@@ -178,6 +223,7 @@ extension AIUsage {
 
     /// "1 min ago", or "Just now" within the first minute.
     func ageText(at now: Date = .now) -> Text {
+        if sourceDateUnknown == true { return Text("Cached · age unknown") }
         if now.timeIntervalSince(date) < 60 { return Text("Just now") }
         return Text(date.formatted(.relative(presentation: .numeric, unitsStyle: .abbreviated)))
     }
@@ -518,5 +564,40 @@ struct AIDollarBalances: View {
         .font(Theme.footnote.weight(.medium))
         .foregroundStyle(usage.isStale() ? Theme.textTertiary : Theme.textPrimary)
         .accessibilityElement(children: .combine)
+    }
+}
+
+extension AIQuotaLabel {
+    var title: LocalizedStringResource {
+        switch self {
+        case .daily: "Daily"
+        case .messages: "Messages"
+        case .flowActions: "Flow actions"
+        case .overage: "Overage credits"
+        case .pro: "Pro models"
+        case .flash: "Flash models"
+        case .flashLite: "Flash Lite models"
+        case .zeroGPU: "ZeroGPU time"
+        }
+    }
+}
+
+/// Count-only sources never acquire an inferred subscription quota bar.
+struct AIReviewDetails: View {
+    let usage: AIUsage
+    var body: some View {
+        if let count = usage.reviewCount {
+            HStack {
+                Text("Reviews this period")
+                Spacer(minLength: Theme.spaceM)
+                Text(count, format: .number.precision(.fractionLength(0))).monospacedDigit()
+            }
+            .font(Theme.footnote.weight(.medium))
+            .foregroundStyle(usage.isStale() ? Theme.textTertiary : Theme.textPrimary)
+            .accessibilityElement(children: .combine)
+            Text("This source reports review counts, not a remaining quota.")
+                .font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 }

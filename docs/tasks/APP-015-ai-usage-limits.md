@@ -1,8 +1,8 @@
 # APP-015: AI usage limits
 
-- Updated: 2026-11-04
+- Updated: 2026-11-08
 - Stage: awaiting_verification
-- Owner: unassigned for real-account verification (provider implementation through local build 86)
+- Owner: unassigned for real-account verification (provider implementation through local 1.6.0/build 89)
 - Owned surfaces: `apps/monny/monny/AI/`, AI popover/dashboard, Settings/onboarding, alerts and quota history
 - Requirements: [SPEC](../SPEC.md) §§3–4, 6–8; [design](../DESIGN.md#readiness); [mechanisms and licensing](../research/ai-usage-limits.md)
 - Implementation: builds 43–49, baseline main `713defe` (build 50); repeated-alert fix in build 60, based on `e7db28d` (see the commit history for monitor/tests/project changes).
@@ -163,3 +163,27 @@ Assets: `Monny.dmg`, `SHA256SUMS.txt`, `appcast.xml`. Local DMG: `apps/monny/bui
 User acceptance 2026-10-26: the in-app update to 1.1.1 worked. The five new providers will be compared gradually; this confirms the update flow, not account readings.
 
 Next: compare each new tool against its own usage screen/command when a signed-in account is available. Existing account/reset/history, other hardware and owner-brand-guideline limitations remain.
+
+## Browser-free provider screening — 2026-11-08
+
+Research-only scope over main `061e4c4`; implementation ownership unchanged. [Candidate report](../research/ai-usage-candidates-2026-11.md) compares OpenCode Go, Kilo, API-only Kiro, Alibaba Token Plan, Windsurf cache and CodeRabbit structured usage; records conditional candidates and exclusions. Official docs plus MIT CodexBar `7447bc77c2497323d9c41e40164ce705533493c8`, selected fetchers and source notes inspected. No credential access, authenticated request, install, app change or test/build rerun. Existing acceptance gates remain open. Documentation links/facts and `git diff --check` reviewed. The subsequent authorized implementation and its verification are recorded below; remaining next action is real-account comparison.
+
+## Browser-free provider expansion — 2026-11-08
+
+Owner: unassigned for real-account verification; implementation ownership released, stage awaiting_verification. Authorized: add every qualifying source from the screening and update website tool listings; no publication/deployment requested. Baseline main `061e4c4` plus the preceding research-only documentation. Own new provider readers/parsers/tests, shared AI registration/metadata/history/UI/catalog, build number, website AI section/messages and affected docs. Target sources: OpenCode Go, Kilo, API-only Kiro, Alibaba Token Plan and Coding Plan via saved Bailian console login, local-only Windsurf, CodeRabbit CLI usage, supported work-account Gemini CLI OAuth, Hugging Face saved CLI token/ZeroGPU. Excluded sources in the report (including Muse key-mint/browser fallback) are not newly authorized mechanisms. No new login, browser import, token refresh or arbitrary host selection. Keep all unavailable or unverified fields explicit.
+
+Checks: source contracts before code, fixture/transport/credential tests, six-language UI, live Sketch reuse when accessible, Swift format/lint/full tests, build increment and signed DMG; website format/check/build and production smoke tests. No real-account acceptance claimed; issue-based follow-up accepted by the user. Stage remains awaiting_verification after software completion.
+
+Implementation complete: nine readers/parsers, metadata-only discovery, shared cards/labels/history and setup strings in all six languages, plus website source tags and limitations text. Exact source selections and bounded exclusions: [decision](../research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08). Public source review only; no provider account/credential reads, login, authenticated probe, app installation, publication, deployment or commit.
+
+Final verification on macOS 27.2/Xcode 27.2: `dev.sh format`, `dev.sh lint`, and full `dev.sh test` pass **186 tests in 22 suites**. Fixtures cover units/missing fields, expiry, account/region selection, v2 logout, credential preservation, fixed-host requests, 403/429, ambiguous bonuses and unknown-age history exclusion. Initial test compilation caught an actor annotation missing on a test; corrected before the passing run. Production website format/check (12 tests), build and seven HTTP smoke checks pass; Chrome at 1440/390 px covers six locales without horizontal overflow. Existing upstream website CSS/sourcemap/bundle warnings remain.
+
+Live Sketch native frame 23 and website AI section inspected, no edits/save. A temporary NSHostingView fixture harness exported six-language cards to /tmp: Light labels, values and wrapping reviewed. ImageRenderer initially returned blank TimelineView content; NSHostingView produced text, but mixed appearance/background and occasional capture clipping mean those captures do not establish Dark/installed-app acceptance. Temporary rendering test removed. No production rendering/theme change was made to compensate for the harness. Real-account polling/reset/expiry, installed Dark/Increase Contrast/VoiceOver and fluent translations remain open.
+
+`release.sh` passed: **Monny 1.6.0/build 89**, Apple Development signed, Hardened Runtime, not notarized. DMG `apps/monny/build/release/Monny.dmg`, SHA-256 `9f19f4ab341c41b1804decd6040b46b9dd046d7e2241b0c818e6fd2b4da5578f`. App/nested-code/DMG signature checks, disk image verification and signed appcast pass. Existing build/ ignore covers output; new source/tests/docs remain visible. The candidate is local and unpublished.
+
+Next: share the local review DMG or publish it when authorized, collect real-account issues with CLI version/region and quota agreement (never credentials), and verify installed appearance/accessibility. Deploy the prepared website only after the matching app release is available and deployment is authorized. Existing older-provider and hardware gates remain unchanged.
+
+## 1.6.0 publication — 2026-11-08
+
+The user authorized Git commit/push and GitHub publication; website deployment is handled by the user. Public build 90 supersedes review build 89 so Sparkle can offer the update. Release notes reduced to two feature bullets and the real-account verification limit. Final build-90 lint and full test run pass (186 tests in 22 suites); no implementation changes beyond the build number. Build-90 packaging passed app/nested-code/DMG signature, image-integrity and signed-appcast checks. DMG SHA-256 `96e272ae4eaf89b9a626831c94fa678ba49b0477214f115fd26d2aad0110b52d`. Publication checks pending. No broad real-account or installed appearance acceptance inferred.

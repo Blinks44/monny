@@ -236,5 +236,6 @@
   "destMac": "Solo este Mac",
   "destGithub": "GitHub Releases, firmadas",
   "destTools": "Solo las herramientas que elijas",
-  "destMacOS": "Ajuste de macOS en este Mac"
+  "destMacOS": "Ajuste de macOS en este Mac",
+  "aiSourceLimits": "Las nuevas integraciones necesitan verificación con cuentas reales. Windsurf muestra datos guardados de fecha desconocida; CodeRabbit, el número de revisiones; Hugging Face, la cuota ZeroGPU. Gemini CLI solo admite cuentas de trabajo compatibles."
 }

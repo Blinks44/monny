@@ -90,6 +90,7 @@ private struct AIToolCard: View {
                     QuotaRow(window: window, tool: tool, isStale: isStale)
                 }
                 if tool == .copilot { CopilotDetails(usage: usage) }
+                AIReviewDetails(usage: usage)
                 AIDollarBalances(usage: usage)
                 if let credits = usage.credits { CreditsRow(credits: credits, isStale: isStale) }
                 if let credits = usage.topUpCredits { CreditsRow(credits: credits, title: "Top-up credits", isStale: isStale) }
@@ -108,11 +109,13 @@ private struct AIToolCard: View {
     private func staleNote(_ usage: AIUsage) -> some View {
         let date = usage.date.formatted(.dateTime.weekday(.abbreviated).hour().minute())
         let note =
-            tool == .jetBrains
-            ? Text("Open your JetBrains IDE to refresh its quota.")
-            : state.problem == .expired
-                ? Text("Last reading \(date) · use \(tool.appName) to refresh")
-                : Text("Last reading \(date) · Monny keeps trying")
+            usage.sourceDateUnknown == true
+            ? Text("Open Windsurf to update its cached quota. The age of this local reading is unknown.")
+            : tool == .jetBrains
+                ? Text("Open your JetBrains IDE to refresh its quota.")
+                : state.problem == .expired
+                    ? Text("Last reading \(date) · use \(tool.appName) to refresh")
+                    : Text("Last reading \(date) · Monny keeps trying")
         return note.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary)
     }
 

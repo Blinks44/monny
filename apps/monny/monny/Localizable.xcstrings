@@ -18490,6 +18490,826 @@
           }
         }
       }
+    },
+    "Daily": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daily"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За день"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Täglich"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Par jour"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diario"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每日"
+          }
+        }
+      }
+    },
+    "Messages": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сообщения"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nachrichten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mensajes"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "消息"
+          }
+        }
+      }
+    },
+    "Flow actions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flow actions"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Действия Flow"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flow-Aktionen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actions Flow"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acciones Flow"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flow 操作"
+          }
+        }
+      }
+    },
+    "Overage credits": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overage credits"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дополнительные кредиты"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zusätzliche Credits"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crédits supplémentaires"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Créditos adicionales"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "超额积分"
+          }
+        }
+      }
+    },
+    "Pro models": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro models"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Модели Pro"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro-Modelle"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modèles Pro"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modelos Pro"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro 模型"
+          }
+        }
+      }
+    },
+    "Flash models": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flash models"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Модели Flash"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flash-Modelle"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modèles Flash"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modelos Flash"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flash 模型"
+          }
+        }
+      }
+    },
+    "Flash Lite models": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flash Lite models"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Модели Flash Lite"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flash-Lite-Modelle"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modèles Flash Lite"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modelos Flash Lite"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flash Lite 模型"
+          }
+        }
+      }
+    },
+    "ZeroGPU time": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZeroGPU time"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Время ZeroGPU"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZeroGPU-Zeit"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temps ZeroGPU"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiempo ZeroGPU"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZeroGPU 时长"
+          }
+        }
+      }
+    },
+    "Cached · age unknown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cached · age unknown"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Из кэша · время неизвестно"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cache · Alter unbekannt"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cache · date inconnue"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caché · fecha desconocida"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "缓存 · 时间未知"
+          }
+        }
+      }
+    },
+    "Reviews this period": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reviews this period"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ревью за период"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reviews in diesem Zeitraum"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revues sur la période"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revisiones de este período"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本周期审查次数"
+          }
+        }
+      }
+    },
+    "This source reports review counts, not a remaining quota.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This source reports review counts, not a remaining quota."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Этот источник сообщает число ревью, но не остаток квоты."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Quelle meldet die Anzahl der Reviews, aber kein verbleibendes Kontingent."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cette source fournit le nombre de revues, mais pas le quota restant."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta fuente indica el número de revisiones, pero no la cuota restante."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此来源仅提供审查次数，不提供剩余额度。"
+          }
+        }
+      }
+    },
+    "Sign in to OpenCode Go in OpenCode to see your subscription limits here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to OpenCode Go in OpenCode to see your subscription limits here."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите в OpenCode Go в OpenCode, чтобы видеть лимиты подписки."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich in OpenCode bei OpenCode Go an, um deine Abolimits zu sehen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez-vous à OpenCode Go dans OpenCode pour afficher les limites de votre abonnement."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia sesión en OpenCode Go desde OpenCode para ver los límites de tu suscripción."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 OpenCode 中登录 OpenCode Go，以查看订阅额度。"
+          }
+        }
+      }
+    },
+    "Sign in with kilo auth login to see your Kilo Pass allowance and balance here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in with kilo auth login to see your Kilo Pass allowance and balance here."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите через kilo auth login, чтобы видеть лимит Kilo Pass и баланс."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich mit kilo auth login an, um dein Kilo-Pass-Kontingent und Guthaben zu sehen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez-vous avec kilo auth login pour afficher votre quota Kilo Pass et votre solde."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia sesión con kilo auth login para ver tu cupo de Kilo Pass y tu saldo."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 kilo auth login 登录，以查看 Kilo Pass 额度和余额。"
+          }
+        }
+      }
+    },
+    "Sign in to the Kiro CLI to see your monthly credits here. Unsupported regions and bonus quotas stay unavailable.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to the Kiro CLI to see your monthly credits here. Unsupported regions and bonus quotas stay unavailable."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите в Kiro CLI, чтобы видеть месячные кредиты. Неподдерживаемые регионы и бонусные квоты недоступны."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich bei der Kiro CLI an, um deine monatlichen Credits zu sehen. Nicht unterstützte Regionen und Bonuskontingente bleiben nicht verfügbar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez-vous à Kiro CLI pour afficher vos crédits mensuels. Les régions et quotas bonus non pris en charge restent indisponibles."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia sesión en Kiro CLI para ver tus créditos mensuales. Las regiones y cuotas de bonificación no compatibles no estarán disponibles."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登录 Kiro CLI，以查看每月积分。不支持的地区和奖励额度将显示为不可用。"
+          }
+        }
+      }
+    },
+    "Sign in to the Bailian CLI console to see Token Plan limits. Monny uses the CLI’s saved region and profile.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to the Bailian CLI console to see Token Plan limits. Monny uses the CLI’s saved region and profile."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите в консоль через Bailian CLI, чтобы видеть лимиты Token Plan. Monny использует сохранённые в CLI регион и профиль."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich über die Bailian CLI bei der Konsole an, um Token-Plan-Limits zu sehen. Monny nutzt die dort gespeicherte Region und das Profil."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez-vous à la console via Bailian CLI pour afficher les limites Token Plan. Monny utilise la région et le profil enregistrés dans le CLI."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia sesión en la consola desde Bailian CLI para ver los límites de Token Plan. Monny usa la región y el perfil guardados en el CLI."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通过 Bailian CLI 登录控制台，以查看 Token Plan 额度。Monny 使用 CLI 已保存的地区和配置。"
+          }
+        }
+      }
+    },
+    "Sign in to the Bailian CLI console to see Coding Plan limits. Monny uses the CLI’s saved region and profile.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to the Bailian CLI console to see Coding Plan limits. Monny uses the CLI’s saved region and profile."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите в консоль через Bailian CLI, чтобы видеть лимиты Coding Plan. Monny использует сохранённые в CLI регион и профиль."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich über die Bailian CLI bei der Konsole an, um Coding-Plan-Limits zu sehen. Monny nutzt die dort gespeicherte Region und das Profil."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez-vous à la console via Bailian CLI pour afficher les limites Coding Plan. Monny utilise la région et le profil enregistrés dans le CLI."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia sesión en la consola desde Bailian CLI para ver los límites de Coding Plan. Monny usa la región y el perfil guardados en el CLI."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通过 Bailian CLI 登录控制台，以查看 Coding Plan 额度。Monny 使用 CLI 已保存的地区和配置。"
+          }
+        }
+      }
+    },
+    "Open Windsurf to update its cached quota. The age of this local reading is unknown.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Windsurf to update its cached quota. The age of this local reading is unknown."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Откройте Windsurf, чтобы обновить сохранённую квоту. Возраст этих локальных данных неизвестен."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffne Windsurf, um das gespeicherte Kontingent zu aktualisieren. Das Alter dieser lokalen Daten ist unbekannt."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrez Windsurf pour actualiser son quota en cache. L’ancienneté de ces données locales est inconnue."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Windsurf para actualizar la cuota guardada. Se desconoce la antigüedad de estos datos locales."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 Windsurf 以更新缓存额度。这份本地数据的时间未知。"
+          }
+        }
+      }
+    },
+    "Sign in to the CodeRabbit CLI to see your review count. A remaining quota is not reported by this source.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to the CodeRabbit CLI to see your review count. A remaining quota is not reported by this source."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите в CodeRabbit CLI, чтобы видеть число ревью. Этот источник не сообщает остаток квоты."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich bei der CodeRabbit CLI an, um die Anzahl deiner Reviews zu sehen. Diese Quelle meldet kein verbleibendes Kontingent."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez-vous à CodeRabbit CLI pour afficher le nombre de revues. Cette source ne fournit pas le quota restant."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia sesión en CodeRabbit CLI para ver el número de revisiones. Esta fuente no indica la cuota restante."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登录 CodeRabbit CLI，以查看审查次数。此来源不提供剩余额度。"
+          }
+        }
+      }
+    },
+    "Sign in to Gemini CLI with a supported work account. Personal Gemini subscriptions are not supported. Open the CLI again if the session expires.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to Gemini CLI with a supported work account. Personal Gemini subscriptions are not supported. Open the CLI again if the session expires."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите в Gemini CLI с поддерживаемым рабочим аккаунтом. Личные подписки Gemini не поддерживаются. Если сеанс истёк, снова откройте CLI."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich mit einem unterstützten Arbeitskonto bei Gemini CLI an. Private Gemini-Abos werden nicht unterstützt. Öffne die CLI erneut, wenn die Sitzung abläuft."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez-vous à Gemini CLI avec un compte professionnel pris en charge. Les abonnements Gemini personnels ne sont pas pris en charge. Rouvrez le CLI si la session expire."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia sesión en Gemini CLI con una cuenta de trabajo compatible. Las suscripciones personales de Gemini no son compatibles. Si la sesión caduca, vuelve a abrir el CLI."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用受支持的工作账号登录 Gemini CLI。不支持个人 Gemini 订阅。会话过期后，请重新打开 CLI。"
+          }
+        }
+      }
+    },
+    "Sign in with hf auth login to see your ZeroGPU quota. Your saved token needs permission to read billing usage.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in with hf auth login to see your ZeroGPU quota. Your saved token needs permission to read billing usage."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите через hf auth login, чтобы видеть квоту ZeroGPU. Сохранённому токену нужно разрешение на чтение данных использования для оплаты."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich mit hf auth login an, um dein ZeroGPU-Kontingent zu sehen. Dein gespeichertes Token braucht die Berechtigung zum Lesen der Abrechnungsnutzung."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez-vous avec hf auth login pour afficher votre quota ZeroGPU. Le jeton enregistré doit autoriser la lecture des données d’utilisation pour la facturation."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia sesión con hf auth login para ver tu cuota ZeroGPU. El token guardado necesita permiso para leer el uso de facturación."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 hf auth login 登录，以查看 ZeroGPU 额度。已保存的令牌需要读取计费用量的权限。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

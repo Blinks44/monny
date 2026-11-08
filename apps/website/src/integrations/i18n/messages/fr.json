@@ -236,5 +236,6 @@
   "destMac": "Ce Mac uniquement",
   "destGithub": "GitHub Releases, signé",
   "destTools": "Uniquement les outils choisis",
-  "destMacOS": "Réglage macOS sur ce Mac"
+  "destMacOS": "Réglage macOS sur ce Mac",
+  "aiSourceLimits": "Les nouvelles intégrations restent à vérifier avec de vrais comptes. Windsurf affiche un cache de date inconnue, CodeRabbit le nombre de revues et Hugging Face le quota ZeroGPU. Gemini CLI prend uniquement en charge les comptes professionnels éligibles."
 }

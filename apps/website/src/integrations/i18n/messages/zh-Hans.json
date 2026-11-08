@@ -236,5 +236,6 @@
   "destMac": "仅限这台 Mac",
   "destGithub": "GitHub Releases，已签名",
   "destTools": "仅限你选择的工具",
-  "destMacOS": "这台 Mac 上的 macOS 设置"
+  "destMacOS": "这台 Mac 上的 macOS 设置",
+  "aiSourceLimits": "新集成尚需使用真实账号验证。Windsurf 显示时间未知的缓存数据；CodeRabbit 显示审查次数；Hugging Face 显示 ZeroGPU 额度。Gemini CLI 仅支持符合条件的工作账号。"
 }

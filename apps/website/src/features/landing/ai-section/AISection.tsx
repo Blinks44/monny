@@ -16,7 +16,7 @@ import { getLocale } from '@/integrations/i18n/paraglide/runtime'
 import { CardLabel, FeatureCard, FeatureSection, Note } from '../feature-section'
 import styles from './AISection.module.css'
 
-type Tool = readonly [name: string, logo: string, brand: string]
+type Tool = readonly [name: string, logo: string | null, brand: string]
 
 const sources: readonly (readonly [() => string, readonly Tool[]])[] = [
   [
@@ -30,6 +30,12 @@ const sources: readonly (readonly [() => string, readonly Tool[]])[] = [
       ['ClinePass', clineLogo, 'cline'],
       ['Codebuff', codebuffLogo, 'codebuff'],
       ['Nous Portal', nousLogo, 'nous'],
+      ['Kimi Code', null, 'kimi'],
+      ['OpenCode Go', null, 'opencode'],
+      ['Kilo', null, 'kilo'],
+      ['Kiro', null, 'kiro'],
+      ['Gemini CLI', null, 'gemini'],
+      ['Hugging Face', null, 'huggingface'],
     ],
   ],
   [
@@ -37,9 +43,18 @@ const sources: readonly (readonly [() => string, readonly Tool[]])[] = [
     [
       ['Amp', ampLogo, 'amp'],
       ['Augment', augmentLogo, 'augment'],
+      ['Alibaba Token Plan', null, 'alibaba-token'],
+      ['Alibaba Coding Plan', null, 'alibaba-coding'],
+      ['CodeRabbit', null, 'coderabbit'],
     ],
   ],
-  [m.sourceLocal, [['JetBrains AI', jetbrainsLogo, 'jetbrains']]],
+  [
+    m.sourceLocal,
+    [
+      ['JetBrains AI', jetbrainsLogo, 'jetbrains'],
+      ['Windsurf', null, 'windsurf'],
+    ],
+  ],
 ]
 
 /** Example window: quota left and time left in the window, both 0–1. */
@@ -90,7 +105,11 @@ export function AISection() {
                 {tools.map(([name, logo, brand]) => (
                   <Tag variant="secondary" key={name}>
                     <span className={styles.toolLogo} data-brand={brand}>
-                      <img src={logo} width="16" height="16" alt="" loading="lazy" />
+                      {logo ? (
+                        <img src={logo} width="16" height="16" alt="" loading="lazy" />
+                      ) : (
+                        <span aria-hidden="true">{name.slice(0, 1)}</span>
+                      )}
                     </span>
                     {name}
                   </Tag>
@@ -99,6 +118,7 @@ export function AISection() {
             </div>
           ))}
           <p className={styles.note}>{m.aiNote()}</p>
+          <p className={styles.note}>{m.aiSourceLimits()}</p>
         </div>
       }
     >

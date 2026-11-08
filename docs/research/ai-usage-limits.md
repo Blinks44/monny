@@ -120,18 +120,11 @@ The official [Kimi Code Desktop settings/data locations](https://www.kimi.com/co
 
 The ordinary Kimi Desktop chat app (`kimi-desktop`) is a different source. [CodexBar's provider notes](https://github.com/steipete/CodexBar/blob/main/docs/kimi.md) describe its China access token in app-owned LevelDB Local Storage and a separate International cookie source. Monny imports neither. An ordinary Desktop-only installation without a supported shared credential file is not supported by the current reader. No Desktop credentials or personal files were inspected and no app code/build changed for this clarification. Next: identify which Desktop product the tester uses and, for Code Desktop, verify account quota/expiry agreement through the existing build; ordinary chat Desktop needs a separate source/contract decision.
 
-## Planned tools (candidates, not implemented)
+## Additional tools and source decisions
 
 Screened 2026-10-24 against CodexBar's [providers.md](https://github.com/steipete/CodexBar/blob/main/docs/providers.md) at d34fbb4 (110 provider IDs). Rule (user decision 2026-10-24): Monny reuses the tool's own sign-in on this Mac; no browser cookies, pasted API keys, separate Monny login or Keychain prompt. Most CodexBar providers fail this rule. JetBrains AI, Copilot, ClinePass, Codebuff, Amp, Augment and Nous now have implemented decisions above; the remaining candidates are unimplemented and unverified. Each needs its file/command shape, fields and failure modes written here before code, and fixtures where no account is available.
 
-| Tool | Source in CodexBar | Open question |
-| --- | --- | --- |
-| Windsurf | `~/Library/Application Support/Windsurf/User/globalStorage/state.vscdb` (SQLite cache) | Key names and how stale the cache gets; web session source not used |
-| Kiro | CLI `/usage`; read-only CLI SQLite plus regional `GetUsageLimits` API in newer CodexBar notes | Chat probe is costly; investigate whether direct API alone reliably supplies plan quota/reset without token renewal |
-| Kilo | `~/.local/share/kilo/auth.json` (`kilo.access`), `app.kilo.ai/api/trpc` | tRPC request shape |
-| Alibaba Token Plan | Signed-in Bailian `bl` CLI, JSON usage/console commands | Region/Team/Personal selection, process bounds and CLI credential behavior; no browser fallback |
-
-Excluded: Zed and Muse Code (Keychain items of another app, prompt likely), Antigravity (local server probe), Gemini (below), and every cookie-, API-key- or WebView-based provider.
+Browser-free additions are implemented in local 1.6.0/build 89: OpenCode Go, Kilo, API-only Kiro, Alibaba Token Plan/Coding Plan, Windsurf cache, CodeRabbit review counts, eligible work-account Gemini CLI and Hugging Face ZeroGPU. Exact sources, scope differences from the initial screening and remaining account checks: [2026-11-08 decision](ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08). No browser import, pasted key or separate Monny login. Muse key minting, Keychain/browser-only paths and speculative quotas remain excluded.
 
 ### Additional screening — 2026-10-26
 
@@ -145,9 +138,9 @@ The initial read-only screening informed the build-65 decision above; no live si
 
 Potential separate product feature: [credential-expiry notifications](https://github.com/steipete/CodexBar/blob/main/docs/credential-notifications.md), opt-in and once per authentication-failure episode. Distinguish expiry from quota exhaustion, network errors and 429. This is a suggestion only, not an authorized SPEC addition. Local token/cost-history dashboards in CodexBar are a larger optional project with scan/privacy/performance work, not a free addition to quota polling.
 
-## Gemini (not implemented)
+## Gemini consumer restriction and work-account source
 
-Checked 2026-10-22. Google stopped Gemini CLI OAuth for individual, AI Pro and Ultra accounts on 2026-06-18; only Code Assist Standard/Enterprise accounts still have it, and its quota is per model (Pro/Flash), not 5-hour/weekly. Renewing its token needs the OAuth client secret scraped from the installed CLI. The consumer limits at gemini.google.com/usage are reachable only with browser cookies (a Keychain prompt per browser for Chrome's Safe Storage, Full Disk Access for Safari), and the Antigravity replacement needs a local `agy` server with CSRF and process cleanup. Each conflicts with Monny's no-hacks, no-cookies rule; revisit if Google publishes a usage API.
+The consumer restriction remains confirmed on 2026-11-08; eligible work-account CLI access is now implemented without token renewal (see the additional-source decision above). Original research, checked 2026-10-22: Google stopped Gemini CLI OAuth for individual, AI Pro and Ultra accounts on 2026-06-18; only Code Assist Standard/Enterprise accounts still have it, and its quota is per model (Pro/Flash), not 5-hour/weekly. Renewing its token needs the OAuth client secret scraped from the installed CLI. The consumer limits at gemini.google.com/usage are reachable only with browser cookies (a Keychain prompt per browser for Chrome's Safe Storage, Full Disk Access for Safari), and the Antigravity replacement needs a local `agy` server with CSRF and process cleanup. Each conflicts with Monny's no-hacks, no-cookies rule; revisit if Google publishes a usage API.
 
 ## Service marks
 

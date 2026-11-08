@@ -236,5 +236,6 @@
   "destMac": "Только этот Mac",
   "destGithub": "GitHub Releases, с подписью",
   "destTools": "Только выбранные инструменты",
-  "destMacOS": "Настройка macOS на этом Mac"
+  "destMacOS": "Настройка macOS на этом Mac",
+  "aiSourceLimits": "Новым интеграциям нужна проверка на реальных аккаунтах. Windsurf показывает кэш неизвестного возраста, CodeRabbit — число ревью, Hugging Face — квоту ZeroGPU. Gemini CLI доступен только для поддерживаемых рабочих аккаунтов."
 }

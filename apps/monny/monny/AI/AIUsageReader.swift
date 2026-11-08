@@ -34,6 +34,7 @@ actor AIUsageReader {
     func installedTools() -> [AITool] {
         let fileManager = FileManager.default
         return AITool.allCases.filter { tool in
+            if let found = AdditionalAISources.isInstalled(tool) { return found }
             if tool == .copilot {
                 return Self.githubCLI != nil
                     && fileManager.fileExists(atPath: Self.home.appending(path: ".config/gh/hosts.yml").path)
@@ -52,6 +53,7 @@ actor AIUsageReader {
                 case .codebuff: Self.codebuffCredentials
                 case .kimi: Self.kimiHomes.first(where: { fileManager.fileExists(atPath: $0.path) }) ?? Self.kimiHomes[0]
                 case .jetBrains, .copilot, .amp, .augment, .nous: Self.home
+                case .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace: Self.home
                 }
             return fileManager.fileExists(atPath: url.path(percentEncoded: false))
         }
@@ -70,6 +72,8 @@ actor AIUsageReader {
         case .amp, .augment: await readCommand(tool, now: now)
         case .nous: await readNous(now: now)
         case .kimi: await readKimi(now: now)
+        case .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace:
+            await readAdditional(tool, now: now)
         }
     }
 
@@ -350,7 +354,7 @@ actor AIUsageReader {
 
     // MARK: Shared
 
-    private func fetch(
+    func fetch(
         _ request: URLRequest, now: Date, allowsUnmetered: Bool = false,
         decode: (Data) throws -> AIUsage
     ) async -> Result<AIUsage, AIUsageProblem> {
@@ -364,7 +368,7 @@ actor AIUsageReader {
         }
     }
 
-    private func fetchData(_ request: URLRequest, now: Date) async -> Result<Data, AIUsageProblem> {
+    func fetchData(_ request: URLRequest, now: Date) async -> Result<Data, AIUsageProblem> {
         var request = request
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         if request.value(forHTTPHeaderField: "User-Agent") == nil { request.setValue("Monny", forHTTPHeaderField: "User-Agent") }

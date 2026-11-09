@@ -4,9 +4,9 @@ Updated 2026-11-09. [STATE](STATE.md) indexes implementation and open work; [SPE
 
 ## Current slice
 
-The selected feature slice is [AI recovery alerts, charging diagnosis and sleep battery reports](tasks/DES-007-recovery-charging-sleep.md), designed first in Monny.sketch and now implemented for verification. Other brainstorming proposals are deferred.
+The selected feature slice is [AI recovery alerts, charging diagnosis and sleep battery reports](tasks/DES-007-recovery-charging-sleep.md), designed first in Monny.sketch and published in 1.7.0/build 94; installed account/hardware verification remains open. Other brainstorming proposals are deferred.
 
-1.6.0/build 90 is published; the user owns website deployment. Retry public appcast delivery and installed updates after the observed HTTP 504 failure (APP-015). Verify Kimi's detailed 5-hour/monthly quota agreement and session recovery ([APP-015](tasks/APP-015-ai-usage-limits.md#kimi-code-implementation--2026-11-04)) and the temperature/core-layout fixes on the affected Mac ([APP-018](tasks/APP-018-sensor-and-layout-regressions.md)). Process network rates need only macOS 15/26 checks ([APP-017](tasks/APP-017-process-network.md)). Fan control awaits a product decision ([APP-019](tasks/APP-019-fan-control-feasibility.md)). Select a bounded slice from STATE; do not reimplement accepted features.
+1.7.0/build 94 is published; the user owns website deployment. Public latest appcast/DMG delivery is verified; check installed updating after the earlier HTTP 504 failure (APP-015). Verify Kimi's detailed 5-hour/monthly quota agreement and session recovery ([APP-015](tasks/APP-015-ai-usage-limits.md#kimi-code-implementation--2026-11-04)) and the temperature/core-layout fixes on the affected Mac ([APP-018](tasks/APP-018-sensor-and-layout-regressions.md)). Process network rates need only macOS 15/26 checks ([APP-017](tasks/APP-017-process-network.md)). Fan control awaits a product decision ([APP-019](tasks/APP-019-fan-control-feasibility.md)). Select a bounded slice from STATE; do not reimplement accepted features.
 
 ## App phases
 

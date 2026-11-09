@@ -2,14 +2,14 @@
 
 - Updated: 2026-11-09
 - Stage: awaiting_verification
-- Owner: current Codex chat; implementation complete, installed acceptance open
-- Ownership checked: main `c0e3f29`; scoped uncommitted app/docs changes
+- Owner: implementation/publication released; installed acceptance open
+- Ownership checked: release source `a5bad05`, published; ownership released
 - Requirements: SPEC §4, §7; design source in DESIGN
-- Code baseline: main `c0e3f29` plus this task's uncommitted changes, build 93
+- Code baseline: release source `a5bad05` (tag `v1.7.0`), build 94; build-93 review evidence retained below
 
 ## Outcome and scope
 
-Designed first in Monny.sketch, then implemented the three selected features. Other brainstorming proposals remain deferred. No installation, publication, charging setting change or new dependency.
+Designed first in Monny.sketch, then implemented the three selected features. Other brainstorming proposals remain deferred. No installation, charging setting change or new dependency. Publication is recorded below.
 
 - AI limit restored: separate off-by-default checkbox in Notifications. An exhausted quota must be observed while enabled, followed by a newer fresh available reading from the same authenticated HTTP session. One alert per episode, grouped by tool; periods and remaining quotas are named and clicking opens AI usage. Initial/stale readings, timers, opt-out, hidden source, sign-out/expired session, changed session or plan do not trigger recovery. An in-memory SHA-256 context is excluded from persisted AIUsage. Polling remains unchanged.
 - Charging diagnosis: Battery dashboard guidance distinguishes charging, measured discharge on adapter, reached native limit, unknown not-charging cause, waiting for fresh power, and unavailable. Reuses measured battery flow and native limit readback. Popover report link is independent of native-limit support. No invented cable fault, wall-power measurement or system pause reason.
@@ -35,8 +35,14 @@ Recovery is currently available through the shared authenticated HTTP usage deco
 
 Sleep reports measure net endpoint change, not continuous sleep, wake reasons or a responsible process. Intermediate charging cannot be ruled out from two battery endpoints. Verify one real unplugged sleep/wake interval and missing/plugged endpoints; compare against system battery readings. No real sleep was forced for this task.
 
-Next: install build 93, enable AI limit restored, confirm a real exhausted-to-available event, then check Battery after an unplugged overnight sleep and an adapter reconnect. Check both appearances, keyboard/VoiceOver and all six app languages. Runtime acceptance remains open until those observations are supplied.
+Next: install 1.7.0/build 94, enable AI limit restored, confirm a real exhausted-to-available event, then check Battery after an unplugged overnight sleep and an adapter reconnect. Check both appearances, keyboard/VoiceOver and all six app languages. Runtime acceptance remains open until those observations are supplied.
 
 ## 1.7.0 publication preparation — 2026-11-09
 
 Publication authorized. Source/package version advances to 1.7.0/build 94, above the shared build-93 review DMG. Release includes the previously unpushed AI-history hover and forecast fixes. Short release notes are in releases/1.7.0.md; real account/hardware acceptance remains open. Release candidate lint and all 201 tests in 25 suites pass on macOS 27.2/Xcode 27.2. Packaging and publication evidence follow here.
+
+## 1.7.0 publication — 2026-11-09
+
+Published [Monny 1.7.0/build 94](https://github.com/Blinks44/monny/releases/tag/v1.7.0) from `a5bad05`, superseding shared build 93. Source and annotated tag pushed to origin; short notes embedded in the signed appcast. `dev.sh lint`, all 201 permanent tests in 25 suites and `release.sh` pass. App/nested-code/DMG signatures and image integrity verified by packaging. Apple Development signed, not notarized.
+
+DMG: `apps/monny/build/release/Monny.dmg`; SHA-256 `6f6868b0b99b55ed79b0b16cd0e6823f1116e2cd4135cac1ccb7f8bb490cea1f`. GitHub asset digest and downloaded release DMG agree with SHA256SUMS.txt. Downloaded release appcast matches the local signed file and identifies version 1.7.0/build 94, arm64/macOS 15+, and the immutable versioned DMG URL. The public latest appcast and latest DMG links both download successfully and match the versioned release assets byte-for-byte. No install, real sleep/adapter test or account reset was performed during publication; those acceptance gates remain open.

@@ -1,6 +1,6 @@
 # Monny: current state
 
-Updated **2026-11-09**. **1.6.0/build 90 is published** as the latest [GitHub release](https://github.com/Blinks44/monny/releases/tag/v1.6.0) (nine browser-free AI sources): 186 tests and lint pass; signed DMG and appcast uploaded ([evidence](tasks/APP-015-ai-usage-limits.md#160-publication--2026-11-08)). Apple Development signed, not notarized, minimum macOS 15. Main uses the native macOS charge limit without a helper or SMC writes; retired Discharge work remains on **experiments/discharge** at `09595b5`.
+Updated **2026-11-09**. **1.7.0/build 94 is published** as the latest [GitHub release](https://github.com/Blinks44/monny/releases/tag/v1.7.0): AI recovery notifications, charging guidance, sleep battery reports and AI-history improvements. All 201 tests and lint pass; signed DMG/appcast uploaded ([evidence](tasks/DES-007-recovery-charging-sleep.md#170-publication--2026-11-09)). Apple Development signed, not notarized, minimum macOS 15. Main uses the native charge limit without a helper or SMC writes; Discharge remains on **experiments/discharge** at `09595b5`.
 
 Tooling: tests and packaging use temporary Library/Caches directories removed afterwards; `dev.sh clean` clears persistent build products ([DEVELOPMENT](DEVELOPMENT.md#build-and-test)). Since 2026-11-05 `dev.sh format`/`lint` run the Xcode-bundled swift-format; the formatting-only build 88 is local and unpublished ([history](history/2026-11.md#2026-11-05-swift-formatting-agent-permissions-and-website-skill-pointer)).
 
@@ -14,9 +14,7 @@ Tooling: tests and packaging use temporary Library/Caches directories removed af
 - Optional AI limits for Claude Code, Codex, Cursor, Grok, JetBrains AI, GitHub Copilot, ClinePass, Codebuff, Amp, Augment, Nous Portal and Kimi Code; off by default, 2-minute visible/5-minute background checks, history and low-limit alerts. Tools reuse their own saved sign-in (JetBrains reads local IDE quota; Amp/Augment use bounded usage-only CLI commands). 1.6.0/build 90 adds OpenCode Go, Kilo, Kiro, Alibaba Token Plan/Coding Plan, cached Windsurf, CodeRabbit counts, work-account Gemini CLI and Hugging Face ZeroGPU; real-account verification is open. [APP-015](tasks/APP-015-ai-usage-limits.md) owns sources/evidence.
 - Website: landing/404, gallery, product demo sections, installation/FAQ, six-language Paraglide SSR/SEO, live at monny.moduix.dev with indexing and link preview. Download buttons use the permanent `releases/latest/download/Monny.dmg` link ([WEB-001](tasks/WEB-001-landing-page.md), [WEB-002](tasks/WEB-002-website-refresh.md)).
 
-Local build **92** adds the [AI history hover interaction](tasks/DES-006-ai-history-hover.md) and retains the [Next resets inset fix](tasks/APP-015-ai-usage-limits.md#next-resets-forecast-layout--2026-11-09). Six-language Light/Dark native fixtures, lint, 192 tests and signed DMG packaging pass. Installed hover/keyboard/VoiceOver and real warning appearance remain open.
-
-Local build **93** adds the saved [AI recovery notifications, charging diagnosis and sleep reports](tasks/DES-007-recovery-charging-sleep.md). Lint, 201 permanent tests and signed DMG packaging pass; real account/sleep/adapter acceptance remains open. Recovery requires session continuity from the shared authenticated HTTP reader; local/CLI-only sources do not notify recovery.
+The release includes [AI-history hover and keyboard details](tasks/DES-006-ai-history-hover.md) and the forecast layout fix from builds 91–92. [Recovery alerts and battery insights](tasks/DES-007-recovery-charging-sleep.md) were reviewed locally in build 93 and published in build 94. Recovery requires session continuity from the shared authenticated HTTP reader; local/CLI-only sources do not notify recovery. Installed interaction, account/sleep/adapter acceptance remains open.
 
 Browser-free AI expansion is published ([source decision](research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08)). Website source changes are committed; the user owns deployment, whose completion is not confirmed.
 
@@ -24,8 +22,8 @@ Browser-free AI expansion is published ([source decision](research/ai-usage-cand
 
 | Outcome | Stage | Next step |
 | --- | --- | --- |
-| [AI recovery alerts, charging diagnosis and sleep reports](tasks/DES-007-recovery-charging-sleep.md) | awaiting_verification | Build 93 implements the saved design; verify a real quota recovery, unplugged sleep/wake and adapter reconnect. |
-| [Readable AI quota history](tasks/DES-006-ai-history-hover.md) | awaiting_verification | Implemented in local build 92; check installed hover, Tab/arrow/Escape and VoiceOver with real history. |
+| [AI recovery alerts, charging diagnosis and sleep reports](tasks/DES-007-recovery-charging-sleep.md) | awaiting_verification | Published in 1.7.0/build 94; verify a real quota recovery, unplugged sleep/wake and adapter reconnect. |
+| [Readable AI quota history](tasks/DES-006-ai-history-hover.md) | awaiting_verification | Published in 1.7.0/build 94; check installed hover, Tab/arrow/Escape and VoiceOver with real history. |
 | [AI limits](tasks/APP-015-ai-usage-limits.md) | awaiting_verification | Nine new browser-free sources need real-account agreement; Kimi availability accepted on build 86; detailed quota/reset/expiry open. ClinePass/Codebuff and Amp/Augment/Nous need real-account comparison; multi-poll/new-period, other accounts/history/expiry/429 and service-mark gates remain. |
 | [Sensor and layout regressions](tasks/APP-018-sensor-and-layout-regressions.md) | awaiting_verification | Fixes shipped in 1.5.0; compare temperatures/core layout on the reporter's Mac. |
 | [Process network rates and daily traffic](tasks/APP-017-process-network.md) | awaiting_verification | Checked on macOS 27.2 including VPN; check macOS 15/26 when hardware is available. |
@@ -37,7 +35,7 @@ Browser-free AI expansion is published ([source decision](research/ai-usage-cand
 | [Onboarding and Settings design](tasks/DES-002-native-onboarding-next-features.md) | awaiting_verification | Long-language check of the Settings frame revision. |
 | [Signing/install](tasks/REL-001-signing-workflow.md) | awaiting_verification | Clean second-Mac installation; identity recovery and off-device signing-identity backup. |
 
-Also open: the 2026-11-08 installed-update failure coincides with HTTP 504 from public appcast delivery; [release evidence](tasks/APP-015-ai-usage-limits.md#160-publication--2026-11-08) owns the incident and retry check. Earlier update acceptance into 1.5.0 is also unconfirmed; native-speaker and deployed-site review of the 2026-10-28 copy revision.
+Public latest appcast and DMG delivery verified for 1.7.0 on 2026-11-09 ([evidence](tasks/DES-007-recovery-charging-sleep.md#170-publication--2026-11-09)). Installed updating remains open after the earlier [appcast HTTP 504 incident](tasks/APP-015-ai-usage-limits.md#160-publication--2026-11-08). Earlier update acceptance into 1.5.0 is also unconfirmed; native-speaker and deployed-site review of the 2026-10-28 copy revision.
 
 Known coverage limits: fanless/later-chip Macs, no-battery or below-26.4 onboarding, macOS 26 icon/special states, tinted-wallpaper menu bar, and sensors/charge banner on real macOS 15 hardware (only a VM was checked). Revisit with an actual issue or suitable device. Users of helper builds (≤23) must remove the helper in the old app before replacement.
 

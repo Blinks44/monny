@@ -66,6 +66,8 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
         NSWorkspace.shared.notificationCenter.addObserver(
             self, selector: #selector(systemDidWake),
             name: NSWorkspace.didWakeNotification, object: nil)
+        NSWorkspace.shared.notificationCenter.addObserver(
+            self, selector: #selector(systemWillSleep), name: NSWorkspace.willSleepNotification, object: nil)
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -80,8 +82,13 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
         Task { await model.chargeLimit.refresh() }
     }
 
+    @objc private func systemWillSleep() {
+        model.sleepBattery.sleep(battery: model.sampler.snapshot?.battery)
+    }
+
     @objc private func systemDidWake() {
         guard !Self.runningTests else { return }
+        model.sleepBattery.woke()
         Task { await model.chargeLimit.refresh() }
     }
 

@@ -78,6 +78,12 @@ Before history exists, current values show immediately and charts/process lists 
 
 History must survive the window closing and an app restart for the 24 h and 7 d ranges. Storage mechanism is an open engineering decision (research).
 
+### Charging diagnosis and sleep battery reports (2026-11-09)
+
+Battery adds evidence-based charging guidance below history, hidden on battery; the popover provides a Battery dashboard link independently of native charge-limit availability. Measured discharge while plugged in takes priority over a reached limit; otherwise distinguish charging, a reached native target, connected without confirmed cause, updating and unavailable power. Adapter wattage is a reported rating, not measured wall input. No automatic setting change or diagnosis of a faulty cable/thermal policy.
+
+Last sleep compares valid gauge levels around paired workspace sleep/wake events. Wait for a post-wake gauge timestamp (at least 60 seconds, at most 120 seconds); missing endpoints are unavailable. Record elapsed wall time and battery percentage-point change, never proof of continuous sleep or process attribution. Charging endpoints or rising charge are inconclusive for drain; intermediate unobserved charging cannot be ruled out. Recent intervals expand inline; retain at most 100 reports for seven days locally. Pending events do not survive restart. No new wake requests or sampling during sleep. Existing no-battery state remains.
+
 ## 5. Battery control
 
 Main implements the **native macOS charge-limit preference only**, without a privileged helper. Requires an internal battery, macOS 26.4+ and a compatible native runtime. On macOS below 26.4, replace the charge-limit controls with an informational message explaining the minimum version and that battery monitoring still works. The runtime returns supported targets (currently 80/85/90/95/100). Only explicit user actions set the target/enable state; startup, activation and wake read back settings without replaying a target.
@@ -102,6 +108,12 @@ Three steps from Sketch page `03`: Welcome, Charge limit and Ready; no helper st
 - **Battery:** the same supported native limit/enable setting as the Battery page. Advanced automation preferences are deferred.
 - **Notifications:** charge limit reached, Mac is running hot, an app keeps the Mac busy (one app, helpers included, above 80 % of one core for 5 minutes; off by default), battery below 20 %, memory pressure is high, AI limit is running low (off by default, only while AI limits are on; once per window episode, also when a window is used up) (each toggle; battery ones only on a Mac with a battery). Each alert fires once per episode; charge limit reached fires once per plug-in, because macOS lets the level drift slightly below the limit. Calibration finished comes with calibration.
 - **About:** version and build, Check for Updates, Check for updates automatically (toggle), privacy note (no analytics; network only for updates, and for AI limits when they are on). Updates use Sparkle (user decision 2026-10-21): Sparkle's standard window shows release notes and Install Update / Skip This Version / Remind Me Later; Monny installs and relaunches only after the user confirms. Automatic checks run in the background (daily) only while the toggle is on; no silent installs and no system profile is sent. Updates are verified with an EdDSA signature. Up to date and check failed use Sparkle's standard alerts.
+
+### AI recovery notifications (2026-11-09)
+
+A separate “AI limit restored” preference is off by default and appears only with AI limits enabled. Observe an exhausted quota while enabled, then require a newer, fresh successful reading with available quota from the same session context. A reset timer, cache, initial available reading, balance or account/session switch never triggers recovery. Group recovered windows per tool; name their actual periods and remaining quota, since other limits can still apply. Click opens AI usage. Preserve existing polling and macOS notification permissions/Focus.
+
+Implementation currently supports authenticated HTTP readers using the shared usage decoder. Session fingerprints are kept in memory only and excluded from persisted AI readings. Credential rotation cancels an episode conservatively. Sources without this continuity evidence (local cache/IDE and CLI-only quota readers) do not notify recovery; current quota/history behavior remains unchanged. Opt-out, hidden tool, sign-out/expired sign-in or changed plan clears pending recovery episodes. Pending episodes do not survive restart.
 
 ## 8. Cross-cutting requirements
 

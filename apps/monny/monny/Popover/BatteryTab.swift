@@ -6,7 +6,7 @@ struct BatteryTab: View {
     let temperature: Double?
     let controller: ChargeLimitController
     let openSensors: () -> Void
-    @State private var showsGuidance = false
+    let openBattery: () -> Void
 
     var body: some View {
         if SystemInfo.hasBattery {
@@ -18,9 +18,8 @@ struct BatteryTab: View {
                             limit: controller.activeLimit)
                         VStack(alignment: .leading, spacing: 12) {
                             NativeLimitControls(controller: controller)
-                            Button("macOS charging settings") { showsGuidance = true }
+                            Button("Charging details and sleep report", action: openBattery)
                                 .buttonStyle(PlainLinkButtonStyle())
-                                .popover(isPresented: $showsGuidance) { MacOSChargingGuidance() }
                         }
                         .padding(16).card()
                     }

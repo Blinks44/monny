@@ -86,6 +86,13 @@ nonisolated struct AIUsage: Codable, Equatable, Sendable {
     /// No reliable reading time is exposed by the local source. Never used for history/alerts.
     var sourceDateUnknown: Bool? = nil
     var reviewCount: Double? = nil
+    /// In-memory only; never encoded in saved readings. A session change cancels recovery alerts.
+    var recoveryContext: String? = nil
+
+    enum CodingKeys: String, CodingKey {
+        case plan, windows, date, credits, topUpCredits, source, creditsUsed, unlimitedCopilotQuotas
+        case balanceUSD, topUpUSD, sourceDateUnknown, reviewCount
+    }
 
     /// Older readings are drawn as stale.
     static let freshness: TimeInterval = 15 * 60

@@ -6,6 +6,8 @@ Updated 2026-10-25. Readings and history storage are decided; battery control on
 
 ## Readings
 
+2026-11-09: [Charging guidance and sleep battery reports](battery-insights.md) reuse the shared battery gauge and workspace sleep/wake events, without new dependencies, privileged access or wake requests. Runtime acceptance remains open.
+
 Researched 2026-10-18 on a MacBook Pro M1 Max (2 E + 8 P cores) running macOS 27.0.1 with Xcode 27.1. "Public" means a documented API or a documented IOKit registry class that any unprivileged process can read.
 
 | Metric | Source (public/private) | Units and semantics | Model/OS limits | Evidence |

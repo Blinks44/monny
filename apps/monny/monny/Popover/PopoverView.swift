@@ -28,7 +28,8 @@ struct PopoverView: View {
                         battery: model.sampler.snapshot?.battery, health: model.sampler.batteryHealth,
                         temperature: model.sampler.snapshot?.sensors?.battery,
                         controller: model.chargeLimit,
-                        openSensors: { model.openDashboard(.sensors) })
+                        openSensors: { model.openDashboard(.sensors) },
+                        openBattery: { model.openDashboard(.battery) })
                 case .processes: ProcessesTab(sampler: model.sampler)
                 case .ai: AILimitsTab(monitor: model.aiUsage)
                 }

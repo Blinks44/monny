@@ -5,6 +5,7 @@ import SwiftUI
 struct BatteryPage: View {
     let sampler: Sampler
     let controller: ChargeLimitController
+    let sleepHistory: SleepBatteryHistory
     @AppStorage(PreferenceKey.historyRange) private var range = HistoryRange.hour
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
     @State private var showsChargingGuidance = false
@@ -36,6 +37,8 @@ struct BatteryPage: View {
                 chargingControls.frame(width: 244)
             }
             .fixedSize(horizontal: false, vertical: true)
+            if let battery, battery.state != .onBattery { ChargingDiagnosisCard(battery: battery, limit: controller.activeLimit) }
+            SleepBatteryCard(history: sleepHistory)
             batteryDetails
         }
         .task { await controller.refresh() }

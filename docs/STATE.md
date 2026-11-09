@@ -16,12 +16,15 @@ Tooling: tests and packaging use temporary Library/Caches directories removed af
 
 Local build **92** adds the [AI history hover interaction](tasks/DES-006-ai-history-hover.md) and retains the [Next resets inset fix](tasks/APP-015-ai-usage-limits.md#next-resets-forecast-layout--2026-11-09). Six-language Light/Dark native fixtures, lint, 192 tests and signed DMG packaging pass. Installed hover/keyboard/VoiceOver and real warning appearance remain open.
 
+Local build **93** adds the saved [AI recovery notifications, charging diagnosis and sleep reports](tasks/DES-007-recovery-charging-sleep.md). Lint, 201 permanent tests and signed DMG packaging pass; real account/sleep/adapter acceptance remains open. Recovery requires session continuity from the shared authenticated HTTP reader; local/CLI-only sources do not notify recovery.
+
 Browser-free AI expansion is published ([source decision](research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08)). Website source changes are committed; the user owns deployment, whose completion is not confirmed.
 
 ## Work and open checks
 
 | Outcome | Stage | Next step |
 | --- | --- | --- |
+| [AI recovery alerts, charging diagnosis and sleep reports](tasks/DES-007-recovery-charging-sleep.md) | awaiting_verification | Build 93 implements the saved design; verify a real quota recovery, unplugged sleep/wake and adapter reconnect. |
 | [Readable AI quota history](tasks/DES-006-ai-history-hover.md) | awaiting_verification | Implemented in local build 92; check installed hover, Tab/arrow/Escape and VoiceOver with real history. |
 | [AI limits](tasks/APP-015-ai-usage-limits.md) | awaiting_verification | Nine new browser-free sources need real-account agreement; Kimi availability accepted on build 86; detailed quota/reset/expiry open. ClinePass/Codebuff and Amp/Augment/Nous need real-account comparison; multi-poll/new-period, other accounts/history/expiry/429 and service-mark gates remain. |
 | [Sensor and layout regressions](tasks/APP-018-sensor-and-layout-regressions.md) | awaiting_verification | Fixes shipped in 1.5.0; compare temperatures/core layout on the reporter's Mac. |

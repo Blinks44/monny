@@ -21,6 +21,9 @@ nonisolated struct BatteryReading: Sendable, Equatable {
     var systemLoad: Double?
     /// Watts flowing into the battery (positive while charging) or out of it (negative).
     var batteryPower: Double?
+    /// Gauge update time; sleep reports require a post-wake update.
+    var updatedAt: Date? = nil
+    var isUpdatingPower = false
 }
 
 /// Level, state and estimates from IOPowerSources; cycles, capacities and power from `AppleSmartBattery`.
@@ -61,7 +64,8 @@ nonisolated struct PowerReader {
             designCapacity: batteryData?["DesignCapacity"] as? Int,
             fullChargeCapacity: (registry?["NominalChargeCapacity"] ?? batteryData?["NominalChargeCapacity"]) as? Int,
             systemLoad: hasFreshPower ? (telemetry?["SystemLoad"] as? NSNumber).map { $0.doubleValue / 1000 } : nil,
-            batteryPower: hasFreshPower ? Self.batteryPower(voltage: registry?["Voltage"], amperage: registry?["Amperage"]) : nil)
+            batteryPower: hasFreshPower ? Self.batteryPower(voltage: registry?["Voltage"], amperage: registry?["Amperage"]) : nil,
+            updatedAt: (registry?["UpdateTime"] as? Int).map { Date(timeIntervalSince1970: Double($0)) }, isUpdatingPower: !hasFreshPower)
     }
 
     /// The battery's gauge reports power once a minute (`UpdateTime`, seconds since 1970), so after

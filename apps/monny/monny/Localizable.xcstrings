@@ -1,6 +1,1154 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+"AI limit restored" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "AI limit restored"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "AI-лимит восстановлен"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "KI-Limit wieder verfügbar"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Quota IA rétabli"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Límite de IA restablecido"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "AI 额度已恢复"
+      }
+    }
+  }
+},
+"%@ limit restored" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "%1$@ limit restored"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Лимит %1$@ восстановлен"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Limit für %1$@ wieder verfügbar"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Quota %1$@ rétabli"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Límite de %1$@ restablecido"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "%1$@ 额度已恢复"
+      }
+    }
+  }
+},
+"Available again: %@. Other limits may still apply." : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Available again: %1$@. Other limits may still apply."
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Снова доступно: %1$@. Другие лимиты могут оставаться в силе."
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Wieder verfügbar: %1$@. Andere Limits können weiterhin gelten."
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "À nouveau disponible : %1$@. D’autres limites peuvent encore s’appliquer."
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Disponible de nuevo: %1$@. Otros límites pueden seguir vigentes."
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "已恢复可用：%1$@。其他限制可能仍然适用。"
+      }
+    }
+  }
+},
+"Battery is draining on power" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Battery is draining on power"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Батарея разряжается при подключённом питании"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Batterie entlädt sich trotz Netzanschluss"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "La batterie se décharge sur secteur"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "La batería se descarga estando conectada"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "接通电源时电池仍在放电"
+      }
+    }
+  }
+},
+"Battery is charging" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Battery is charging"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Батарея заряжается"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Batterie wird geladen"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "La batterie se recharge"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "La batería se está cargando"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "电池正在充电"
+      }
+    }
+  }
+},
+"Connected, not charging" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Connected, not charging"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Питание подключено, зарядка не идёт"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Angeschlossen, lädt nicht"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Branché, sans recharge"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Conectado, sin cargar"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "已连接，未充电"
+      }
+    }
+  }
+},
+"Power readings unavailable" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Power readings unavailable"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Данные о мощности недоступны"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Leistungswerte nicht verfügbar"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Mesures de puissance indisponibles"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Datos de potencia no disponibles"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "功率读数不可用"
+      }
+    }
+  }
+},
+"Your Mac is using battery power while connected. Try connecting the charger directly." : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Your Mac is using battery power while connected. Try connecting the charger directly."
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Mac расходует батарею при подключённом питании. Попробуйте подключить зарядное устройство напрямую."
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Dein Mac nutzt trotz Netzanschluss die Batterie. Schließe das Ladegerät direkt an."
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Votre Mac utilise la batterie malgré le branchement. Essayez de brancher le chargeur directement."
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "El Mac usa la batería estando conectado. Prueba a conectar el cargador directamente."
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Mac 在连接电源时仍使用电池。请尝试直接连接充电器。"
+      }
+    }
+  }
+},
+"Power is flowing into the battery. Charging speed can change as the battery fills." : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Power is flowing into the battery. Charging speed can change as the battery fills."
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Батарея получает питание. Скорость зарядки может меняться по мере заполнения."
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Die Batterie wird geladen. Die Ladegeschwindigkeit kann sich mit dem Ladestand ändern."
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "La batterie reçoit du courant. La vitesse de charge peut varier selon son niveau."
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "La batería recibe energía. La velocidad de carga puede variar según su nivel."
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "电池正在充电。充电速度可能随电量变化。"
+      }
+    }
+  }
+},
+"Your battery is at the set limit. macOS manages when charging resumes." : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Your battery is at the set limit. macOS manages when charging resumes."
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Заряд батареи достиг заданного лимита. macOS решает, когда возобновить зарядку."
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Die Batterie hat das eingestellte Limit erreicht. macOS steuert, wann der Ladevorgang fortgesetzt wird."
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "La batterie a atteint la limite définie. macOS décide quand reprendre la recharge."
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "La batería ha alcanzado el límite establecido. macOS decide cuándo reanudar la carga."
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "电池已达到设定上限。macOS 决定何时恢复充电。"
+      }
+    }
+  }
+},
+"macOS is not charging the battery. Monny cannot confirm why. Check the power connection." : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "macOS is not charging the battery. Monny cannot confirm why. Check the power connection."
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "macOS не заряжает батарею. Monny не может подтвердить причину. Проверьте подключение питания."
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "macOS lädt die Batterie nicht. Monny kann den Grund nicht bestätigen. Prüfe den Stromanschluss."
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "macOS ne recharge pas la batterie. Monny ne peut pas confirmer pourquoi. Vérifiez le branchement."
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "macOS no carga la batería. Monny no puede confirmar el motivo. Comprueba la conexión eléctrica."
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "macOS 未给电池充电。Monny 无法确认原因。请检查电源连接。"
+      }
+    }
+  }
+},
+"Monny cannot read battery power. Check Battery Settings for the system charging status." : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Monny cannot read battery power. Check Battery Settings for the system charging status."
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Monny не может прочитать мощность батареи. Проверьте состояние зарядки в настройках аккумулятора."
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Monny kann die Batterieleistung nicht lesen. Prüfe den Ladestatus in den Batterieeinstellungen."
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Monny ne peut pas lire la puissance de la batterie. Vérifiez l’état de charge dans les réglages Batterie."
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Monny no puede leer la potencia de la batería. Consulta el estado de carga en los ajustes de Batería."
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Monny 无法读取电池功率。请在电池设置中查看充电状态。"
+      }
+    }
+  }
+},
+"Battery %@ W" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Battery %@ W"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Батарея %@ Вт"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Batterie %@ W"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Batterie %@ W"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Batería %@ W"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "电池 %@ W"
+      }
+    }
+  }
+},
+"Last sleep" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Last sleep"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Последний сон"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Letzter Ruhezustand"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Dernière veille"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Último reposo"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "上次睡眠"
+      }
+    }
+  }
+},
+"Updating sleep report…" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Updating sleep report…"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Обновление отчёта о сне…"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Ruhezustandsbericht wird aktualisiert…"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Actualisation du rapport de veille…"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Actualizando informe de reposo…"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "正在更新睡眠报告…"
+      }
+    }
+  }
+},
+"Waiting for the battery level to update before comparing readings." : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Waiting for the battery level to update before comparing readings."
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Ожидаем обновления уровня заряда для сравнения показаний."
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Vor dem Vergleich wird auf einen aktuellen Batteriestand gewartet."
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "En attente du niveau de batterie actualisé pour comparer les mesures."
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Esperando a que se actualice el nivel de batería para comparar las lecturas."
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "正在等待电量更新，以比较读数。"
+      }
+    }
+  }
+},
+"No sleep report yet" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "No sleep report yet"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Отчёта о сне пока нет"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Noch kein Ruhezustandsbericht"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Aucun rapport de veille pour le moment"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Aún no hay informe de reposo"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "暂无睡眠报告"
+      }
+    }
+  }
+},
+"Keep Monny running. A report appears after the next recorded sleep and wake." : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Keep Monny running. A report appears after the next recorded sleep and wake."
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Оставьте Monny запущенным. Отчёт появится после следующего записанного сна и пробуждения."
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Lass Monny laufen. Nach dem nächsten erfassten Ruhezustand und Aufwachen erscheint ein Bericht."
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Laissez Monny ouvert. Un rapport apparaîtra après la prochaine veille et le prochain réveil enregistrés."
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Mantén Monny abierto. Aparecerá un informe tras el próximo reposo y despertar registrados."
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "请保持 Monny 运行。记录下次睡眠和唤醒后将显示报告。"
+      }
+    }
+  }
+},
+"Recent sleep intervals" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Recent sleep intervals"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Недавние периоды сна"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Letzte Ruheintervalle"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Périodes de veille récentes"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Periodos de reposo recientes"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "最近的睡眠时段"
+      }
+    }
+  }
+},
+"No charge change" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "No charge change"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Заряд не изменился"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Ladestand unverändert"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Charge inchangée"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Sin cambios de carga"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "电量未变化"
+      }
+    }
+  }
+},
+"%lld percentage points used" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "%lld percentage points used"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Расход: %lld п. п."
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "%lld Prozentpunkte verbraucht"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "%lld points de pourcentage utilisés"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "%lld puntos porcentuales consumidos"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "消耗了 %lld 个百分点"
+      }
+    }
+  }
+},
+"May include charging" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "May include charging"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Возможна зарядка в этот период"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Kann Ladevorgänge enthalten"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Peut inclure une recharge"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Puede incluir carga"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "可能包含充电"
+      }
+    }
+  }
+},
+"Sleep report unavailable" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Sleep report unavailable"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Отчёт о сне недоступен"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Ruhezustandsbericht nicht verfügbar"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Rapport de veille indisponible"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Informe de reposo no disponible"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "睡眠报告不可用"
+      }
+    }
+  }
+},
+"Battery %@ → %@" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Battery %1$@ → %2$@"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Батарея %1$@ → %2$@"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Batterie %1$@ → %2$@"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Batterie %1$@ → %2$@"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Batería %1$@ → %2$@"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "电池 %1$@ → %2$@"
+      }
+    }
+  }
+},
+"Battery change between recorded sleep and wake. The cause is unknown." : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Battery change between recorded sleep and wake. The cause is unknown."
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Изменение заряда между записанными сном и пробуждением. Причина неизвестна."
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Änderung des Batteriestands zwischen erfasstem Ruhezustand und Aufwachen. Die Ursache ist unbekannt."
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Variation de charge entre la veille et le réveil enregistrés. La cause est inconnue."
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Cambio de batería entre el reposo y el despertar registrados. Se desconoce la causa."
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "记录的睡眠与唤醒之间的电量变化。原因未知。"
+      }
+    }
+  }
+},
+"Charging details and sleep report" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Charging details and sleep report"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Сведения о зарядке и отчёт о сне"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Ladedetails und Ruhezustandsbericht"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Détails de recharge et rapport de veille"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Detalles de carga e informe de reposo"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "充电详情与睡眠报告"
+      }
+    }
+  }
+},
+"Updating power readings…" : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Updating power readings…"
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Обновление данных о мощности…"
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Leistungswerte werden aktualisiert…"
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Actualisation des mesures de puissance…"
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Actualizando lecturas de potencia…"
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "正在更新功率读数…"
+      }
+    }
+  }
+},
+"Waiting for fresh battery power data after the connection changed." : {
+  "extractionState": "manual",
+  "localizations": {
+    "en": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Waiting for fresh battery power data after the connection changed."
+      }
+    },
+    "ru": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Ожидаем свежих данных о мощности после изменения подключения."
+      }
+    },
+    "de": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Nach dem Anschlusswechsel wird auf aktuelle Batterieleistungswerte gewartet."
+      }
+    },
+    "fr": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "En attente de nouvelles mesures après le changement de branchement."
+      }
+    },
+    "es": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "Esperando nuevos datos de potencia tras el cambio de conexión."
+      }
+    },
+    "zh-Hans": {
+      "stringUnit": {
+        "state": "translated",
+        "value": "连接变化后，正在等待新的电池功率数据。"
+      }
+    }
+  }
+},
       "Sign in to the Kimi Code CLI to see your limits here. Open Kimi again if your sign-in expires.": {
         "comment": "Kimi Code CLI setup and short-lived session recovery. Keep the product name unchanged.",
         "extractionState": "manual",

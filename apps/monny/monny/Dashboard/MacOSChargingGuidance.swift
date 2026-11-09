@@ -24,7 +24,7 @@ struct MacOSChargingGuidance: View {
         .frame(width: 360, alignment: .leading)
     }
 
-    private static let settingsURL =
+    static let settingsURL =
         URL(string: "x-apple.systempreferences:com.apple.Battery-Settings.extension")
         ?? URL(filePath: "/System/Applications/System Settings.app")
 }

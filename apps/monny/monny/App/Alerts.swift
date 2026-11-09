@@ -15,6 +15,7 @@ nonisolated struct AlertMonitor {
         case busyApp(pid: pid_t, name: String)
         /// An AI plan window is running low or used up (`AILowWindows` decides).
         case aiLimitLow(AITool, AIQuotaWindow)
+        case aiLimitRecovered(AITool, [AIQuotaWindow])
     }
 
     /// The level below which "Battery below 20%" fires.
@@ -91,6 +92,7 @@ extension AlertMonitor.Alert {
         case .memoryPressure: PreferenceKey.notifyMemoryPressure
         case .busyApp: PreferenceKey.notifyBusyApp
         case .aiLimitLow: PreferenceKey.notifyAILimit
+        case .aiLimitRecovered: PreferenceKey.notifyAIRecovery
         }
     }
 
@@ -98,6 +100,7 @@ extension AlertMonitor.Alert {
     var identifier: String {
         switch self {
         case .busyApp(let pid, _): "\(preferenceKey).\(pid)"
+        case .aiLimitRecovered(let tool, _): "\(preferenceKey).\(tool.rawValue)"
         case .aiLimitLow(let tool, let window): "\(preferenceKey).\(tool.rawValue).\(window.id)"
         default: preferenceKey
         }
@@ -105,6 +108,7 @@ extension AlertMonitor.Alert {
 
     var title: String {
         switch self {
+        case .aiLimitRecovered(let tool, _): String(localized: "\(tool.name) limit restored")
         case .chargeLimitReached: String(localized: "Charge limit reached")
         case .hot: String(localized: "Mac is running hot")
         case .lowBattery: String(localized: "Battery below 20%")
@@ -115,8 +119,23 @@ extension AlertMonitor.Alert {
         }
     }
 
+    private static func recoveryBody(_ tool: AITool, _ windows: [AIQuotaWindow]) -> String {
+        let labels = windows.map { window in
+            let period: String =
+                switch window.kind {
+                case .session: String(localized: "5 hours")
+                case .weekly: String(localized: "Weekly")
+                case .monthly: String(localized: "Monthly")
+                }
+            return window.serviceName(tool) + " · " + period + " · " + window.left.percentText
+        }.formatted(.list(type: .and))
+        return String(localized: "Available again: \(labels). Other limits may still apply.")
+    }
+
     func body(unit: TemperatureUnit) -> String {
         switch self {
+        case .aiLimitRecovered(let tool, let windows):
+            Self.recoveryBody(tool, windows)
         case .chargeLimitReached(let limit):
             String(localized: "Battery is at \((Double(limit) / 100).percentText). macOS has stopped charging.")
         case .hot(let celsius?):
@@ -160,6 +179,7 @@ extension AlertMonitor.Alert {
 /// first time a notification is due, not at launch.
 final class Notifier: NSObject, UNUserNotificationCenterDelegate {
     private let center = UNUserNotificationCenter.current()
+    var openAIUsage: () -> Void = {}
 
     override init() {
         super.init()
@@ -175,12 +195,29 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
             let content = UNMutableNotificationContent()
             content.title = alert.title
             content.body = alert.body(unit: unit)
+            if case .aiLimitRecovered(let tool, _) = alert {
+                content.userInfo = ["destination": "aiUsage", "tool": tool.rawValue]
+            }
             return UNNotificationRequest(identifier: alert.identifier, content: content, trigger: nil)
         }
         Task { [center] in
             guard (try? await center.requestAuthorization(options: [.alert, .sound])) == true else { return }
-            for request in requests { try? await center.add(request) }
+            for request in requests {
+                if let tool = request.content.userInfo["tool"] as? String {
+                    guard defaults.bool(forKey: PreferenceKey.showsAILimits), defaults.bool(forKey: PreferenceKey.notifyAIRecovery),
+                        !(defaults.stringArray(forKey: PreferenceKey.aiHiddenTools) ?? []).contains(tool)
+                    else { continue }
+                }
+                try? await center.add(request)
+            }
         }
+    }
+
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+            response.notification.request.content.userInfo["destination"] as? String == "aiUsage"
+        else { return }
+        await MainActor.run { openAIUsage() }
     }
 
     /// Monny is often frontmost while its dashboard is open; show banners then too.
@@ -196,7 +233,7 @@ extension AlertMonitor.Alert {
     fileprivate var isOnByDefault: Bool {
         switch self {
         case .hot, .chargeLimitReached: true
-        case .lowBattery, .memoryPressure, .busyApp, .aiLimitLow: false
+        case .lowBattery, .memoryPressure, .busyApp, .aiLimitLow, .aiLimitRecovered: false
         }
     }
 }

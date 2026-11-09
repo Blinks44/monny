@@ -27,6 +27,8 @@ final class AIUsageMonitor {
     @ObservationIgnored private var visible: Set<Surface> = []
     @ObservationIgnored private var lastCheck: Date?
     @ObservationIgnored private var lowWindows = AILowWindows()
+    @ObservationIgnored private var recoveredWindows = AIRecoveredWindows()
+    @ObservationIgnored private var recoveryEnabled = false
     @ObservationIgnored private var defaultsObservation: NSObjectProtocol?
 
     /// Anthropic's usage endpoint rate-limits a token after a few requests a minute (HTTP 429,
@@ -84,6 +86,7 @@ final class AIUsageMonitor {
         let hidden = Set(UserDefaults.standard.stringArray(forKey: PreferenceKey.aiHiddenTools) ?? [])
         if detected != tools { detected = tools }
         let shown = tools.filter { !hidden.contains($0.rawValue) }
+        recoveredWindows.retain(shown)
         if installed != shown { installed = shown }
     }
 
@@ -104,6 +107,11 @@ final class AIUsageMonitor {
 
     private func applyPreference() async {
         let enabled = UserDefaults.standard.bool(forKey: PreferenceKey.showsAILimits)
+        let recovery = enabled && UserDefaults.standard.bool(forKey: PreferenceKey.notifyAIRecovery)
+        if recovery != recoveryEnabled {
+            recoveredWindows = AIRecoveredWindows()
+            recoveryEnabled = recovery
+        }
         guard enabled != isEnabled else {
             // A tool shown again in Settings is read right away.
             if enabled {
@@ -155,8 +163,13 @@ final class AIUsageMonitor {
             case .success(let usage):
                 state = ToolState(usage: usage)
                 if !usage.isStale(at: now) { alerts += lowWindows.update(tool, usage: usage, now: now) }
+                if recoveryEnabled && UserDefaults.standard.bool(forKey: PreferenceKey.notifyAIRecovery) {
+                    let windows = recoveredWindows.update(tool, usage: usage, now: now)
+                    if !windows.isEmpty { alerts.append(.aiLimitRecovered(tool, windows)) }
+                }
             case .failure(let problem):
                 state.problem = problem
+                if problem.hidesReading || problem == .expired { recoveredWindows.remove(tool) }
             }
             if states[tool] != state { states[tool] = state }
         }

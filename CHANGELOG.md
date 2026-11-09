@@ -2,6 +2,14 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.7.0: 2026-11-09
+
+- Added optional notifications when an exhausted AI limit becomes available again.
+- Added charging guidance and battery reports across sleep.
+- Added hover and keyboard details to AI quota history; fixed crowded reset forecasts.
+
+Recovery alerts require supported account sources. Real-account and sleep/wake checks remain open.
+
 ## 1.6.0: 2026-11-08
 
 - Added AI limits for OpenCode Go, Kilo, Kiro, Alibaba Token Plan and Coding Plan.

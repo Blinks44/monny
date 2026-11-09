@@ -51,7 +51,7 @@ struct DashboardView: View {
         case .memory: MemoryPage(sampler: model.sampler)
         case .disk: DiskPage(sampler: model.sampler)
         case .network: NetworkPage(sampler: model.sampler)
-        case .battery: BatteryPage(sampler: model.sampler, controller: model.chargeLimit)
+        case .battery: BatteryPage(sampler: model.sampler, controller: model.chargeLimit, sleepHistory: model.sleepBattery)
         case .sensors: SensorsPage(sampler: model.sampler)
         case .aiUsage: AIUsagePage(monitor: model.aiUsage, history: model.sampler.history)
         case .settings: SettingsPage(controller: model.chargeLimit, updater: model.updater, aiUsage: model.aiUsage)

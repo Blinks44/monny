@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import OSLog
 import SQLite3
@@ -362,7 +363,15 @@ actor AIUsageReader {
         case .failure(let error): return .failure(error)
         case .success(let data):
             do {
-                let usage = try decode(data)
+                var usage = try decode(data)
+                let auth = request.value(forHTTPHeaderField: "Authorization") ?? request.value(forHTTPHeaderField: "Cookie")
+                if let auth {
+                    let context =
+                        (request.url?.host() ?? "") + auth
+                        + (request.value(forHTTPHeaderField: "ChatGPT-Account-Id") ?? "")
+                        + (request.httpBody.map { String(decoding: $0, as: UTF8.self) } ?? "")
+                    usage.recoveryContext = SHA256.hash(data: Data(context.utf8)).map { String($0, radix: 16) }.joined(separator: ":")
+                }
                 return usage.windows.isEmpty && !allowsUnmetered ? .failure(.unavailable(retryAfter: nil)) : .success(usage)
             } catch { return .failure(.unavailable(retryAfter: nil)) }
         }

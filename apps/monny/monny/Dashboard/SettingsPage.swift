@@ -19,6 +19,7 @@ struct SettingsPage: View {
     @AppStorage(PreferenceKey.notifyMemoryPressure) private var notifyMemoryPressure = false
     @AppStorage(PreferenceKey.notifyBusyApp) private var notifyBusyApp = false
     @AppStorage(PreferenceKey.showsAILimits) private var showsAILimits = false
+    @AppStorage(PreferenceKey.notifyAIRecovery) private var notifyAIRecovery = false
     @AppStorage(PreferenceKey.notifyAILimit) private var notifyAILimit = false
     @State private var hiddenAITools = UserDefaults.standard.stringArray(forKey: PreferenceKey.aiHiddenTools) ?? []
     @State private var loginItem = LoginItem()
@@ -160,7 +161,10 @@ struct SettingsPage: View {
             CheckboxRow("An app keeps the Mac busy", isOn: $notifyBusyApp)
             if SystemInfo.hasBattery { CheckboxRow("Battery below 20%", isOn: $notifyLowBattery) }
             CheckboxRow("Memory pressure is high", isOn: $notifyMemoryPressure, isLast: !showsAILimits)
-            if showsAILimits { CheckboxRow("AI limit is running low", isOn: $notifyAILimit, isLast: true) }
+            if showsAILimits {
+                CheckboxRow("AI limit is running low", isOn: $notifyAILimit)
+                CheckboxRow("AI limit restored", isOn: $notifyAIRecovery, isLast: true)
+            }
         }
     }
 

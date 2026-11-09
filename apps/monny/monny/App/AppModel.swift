@@ -10,6 +10,7 @@ final class AppModel {
     /// Set when heat or a danger state needs the user; drives the menu bar badge.
     var needsAttention = false
     let sampler = Sampler()
+    let sleepBattery = SleepBatteryHistory()
     let chargeLimit = ChargeLimitController()
     let updater = AppUpdater(startsUpdater: !MonnyAppDelegate.runningTests)
     let aiUsage = AIUsageMonitor()
@@ -26,12 +27,14 @@ final class AppModel {
         sampler.onSample = { [weak self] snapshot in self?.handle(snapshot) }
         sampler.extraHistoryValues = { [aiUsage] in aiUsage.historyValues() }
         sampler.start()
+        notifier.openAIUsage = { [weak self] in self?.openDashboard(.aiUsage) }
         aiUsage.onAlerts = { [weak self] alerts in self?.notifier.post(alerts) }
         aiUsage.start()
         Task { await chargeLimit.refresh() }
     }
 
     private func handle(_ snapshot: Snapshot) {
+        sleepBattery.sample(snapshot.battery)
         notifier.post(alerts.update(with: snapshot, chargeLimit: chargeLimit.activeLimit))
         if needsAttention != alerts.needsAttention { needsAttention = alerts.needsAttention }
     }

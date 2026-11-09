@@ -1,6 +1,6 @@
 # Monny: design direction and live source index
 
-Updated 2026-10-28 (DES-005 process search proposal). [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
+Updated 2026-11-09 (AI quota history hover design). [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
 
 ## Direction
 
@@ -44,7 +44,11 @@ Saved 2026-10-28: process search ([DES-005](tasks/DES-005-process-port-search.md
 
 Saved and reviewed 2026-11-04: popover frame `29 · Processes · Network` (Light/Dark) adds the Network sort and download/upload rate pairs. Window frame `23 · Network · Recorded daily traffic` (Light/Dark) replaces the small weekly bars with dated download/upload/total rows and comparison bars; `APP-017 · Network behavior and placement` beside it specifies placement below the existing process ranking, unavailable states and sampling/history semantics. Existing window Network frame `05` still owns the process-table layout; its small weekly specimen is superseded by frame 23. Native implementation and verification: [APP-017](tasks/APP-017-process-network.md).
 
+Saved and reviewed live 2026-11-09: window `24 · AI history · Hover details · Light/Dark` owns quiet history, nearest-sample hover and edge-placement states plus interaction/accessibility/data notes. Window frames 19/21 now omit permanent reset annotations. Implemented in local build 92 with six-language Light/Dark native fixtures. The history card uses 284 pt as a minimum and grows for adaptive legends; [DES-006](tasks/DES-006-ai-history-hover.md) owns evidence and installed hover/keyboard/VoiceOver acceptance.
+
 ## Rules that apply to every screen
+
+- Next resets sizing refinement (2026-11-09): retain the 244 pt width and existing insets; use the 284 pt height as a minimum so localized pace warnings can grow. Live window frame 21 inspected, no Sketch edits/save. [APP-015](tasks/APP-015-ai-usage-limits.md#next-resets-forecast-layout--2026-11-09) owns native layout evidence and installed acceptance.
 
 - Hardware-dependent sizing refinement (2026-11-04): the native CPU per-core card uses the Sketch 284 pt height as a minimum and grows with its longest column; following rows remain below it in the dashboard scroll view. Sensors history places wrapping legends below its header to accommodate narrow windows and translations. CPU/Sensors frames inspected live in Monny.sketch 2026-11-04; no Sketch edits or save. [APP-018](tasks/APP-018-sensor-and-layout-regressions.md) owns native evidence and affected-device verification.
 - Popover footer spacing refinement requested 2026-11-04: follow SPEC §3's symmetric separator gaps. Live Overview power/Battery power frames reviewed; native spacing supersedes their unequal gaps. Sketch was inspected only, without edits or save.

@@ -26,6 +26,8 @@ Opt-in AI limits are implemented for Claude Code, Codex, Cursor, Grok, local-onl
 
 After release, Discharge may be researched again. Helper/SMC-write work is preserved on **experiments/discharge** at `09595b5`; main excludes it. A mechanism, safety and distribution decision is required before code on main. Sailing, heat-driven charging, calibration and trips are deferred; GPU load, battery health trends and widgets are not planned.
 
+The saved [AI history hover design](tasks/DES-006-ai-history-hover.md) is implemented in local build 92: permanent reset annotations are removed and one sample tooltip supports keyboard traversal. Installed hover/keyboard/VoiceOver acceptance remains open.
+
 ## Release gates
 
 - Accepted 2026-10-21: installed charge-limit change on M1 Max/macOS 27.0.1; informal reading comparisons; six languages; build-37 keyboard/VoiceOver/contrast/motion, notifications and pre-release additions. macOS 26 was reported working, minor version unknown; this does not close 26.4–26.x charging acceptance.

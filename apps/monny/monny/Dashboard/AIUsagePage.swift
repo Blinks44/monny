@@ -1,4 +1,3 @@
-import Charts
 import SwiftUI
 
 /// Window AI usage (Sketch `19 · Window · AI limits`): a tile per tool, the weekly quota left
@@ -106,7 +105,7 @@ private struct QuotaHistoryCard: View {
     let tier: HistoryTier
     let range: HistoryRange
 
-    private var series: [(tool: AITool, points: [(date: Date, value: Double)])] {
+    private var series: [AIQuotaHistory.Series] {
         tools.map { tool in
             let metric: HistoryMetric
             if tool == .cline {
@@ -127,7 +126,7 @@ private struct QuotaHistoryCard: View {
             } else {
                 metric = tool.historyMetric
             }
-            return (tool, tier.series(metric))
+            return AIQuotaHistory.Series(tool: tool, metric: metric, points: tier.series(metric))
         }
     }
 
@@ -138,78 +137,34 @@ private struct QuotaHistoryCard: View {
                 range == .day ? "Quota left over 24 hours" : "Quota left over 7 days",
                 subtitle: Text("Weekly or monthly limits · refills at each reset")
             ) {
-                if series.filter({ $0.points.count > 1 }).count <= 4 {
+                if series.filter({ !$0.points.isEmpty }).count <= 4 {
                     HStack(spacing: Theme.spaceL) {
-                        ForEach(series.filter { $0.points.count > 1 }, id: \.tool) { item in
+                        ForEach(series.filter { !$0.points.isEmpty }, id: \.tool) { item in
                             ChartLegend(title: LocalizedStringKey(item.tool.name), color: item.tool.color)
                         }
                     }
                 }
             }
-            if series.filter({ $0.points.count > 1 }).count > 4 {
+            if series.filter({ !$0.points.isEmpty }).count > 4 {
                 // More tools use ordinary adaptive columns instead of widening the history card.
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 100), alignment: .leading)], alignment: .leading, spacing: 6) {
-                    ForEach(series.filter { $0.points.count > 1 }, id: \.tool) { item in
+                    ForEach(series.filter { !$0.points.isEmpty }, id: \.tool) { item in
                         ChartLegend(title: LocalizedStringKey(item.tool.name), color: item.tool.color)
                     }
                 }
             }
-            if series.contains(where: { $0.points.count > 1 }) {
-                chart(series)
+            if series.contains(where: { !$0.points.isEmpty }) {
+                let end = Date.now
+                AIQuotaHistoryChart(series: series, range: range, domain: end.addingTimeInterval(-tier.span)...end)
+                    .frame(minHeight: 180)
+                    .padding(.top, Theme.spaceL)
             } else {
                 CollectingHistoryContent().frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .dashboardCard(height: 284)
+        .dashboardCard(minHeight: 284)
     }
 
-    private func chart(_ series: [(tool: AITool, points: [(date: Date, value: Double)])]) -> some View {
-        Chart {
-            ForEach(series, id: \.tool) { item in
-                LinePlot(
-                    PlotPoint.series(item.tool.rawValue, item.points), x: .value("Time", \.date), y: .value("Left", \.value),
-                    series: .value("Series", \.series)
-                )
-                .foregroundStyle(item.tool.color)
-                .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                ForEach(Self.resets(in: item.points), id: \.self) { date in
-                    RuleMark(x: .value("Reset", date), yStart: .value("Left", 0), yEnd: .value("Left", 1))
-                        .foregroundStyle(item.tool.color.opacity(0.3))
-                        .annotation(position: .top, spacing: 2, overflowResolution: .init(x: .fit(to: .chart), y: .fit(to: .chart))) {
-                            Text("\(item.tool.name) reset").font(Theme.caption.weight(.regular)).foregroundStyle(item.tool.color)
-                        }
-                }
-            }
-        }
-        .chartPlotStyle { $0.clipped() }
-        .chartXScale(domain: Date.now.addingTimeInterval(-tier.span)...Date.now)
-        // Room above 100 % for the reset labels.
-        .chartYScale(domain: 0...1.12)
-        .chartXAxis {
-            AxisMarks(values: .automatic(desiredCount: 5)) { _ in
-                AxisValueLabel(format: range == .day ? .dateTime.hour().minute() : .dateTime.weekday(.abbreviated)).font(
-                    Theme.caption.weight(.regular)
-                ).foregroundStyle(Theme.textTertiary)
-            }
-        }
-        .chartYAxis {
-            AxisMarks(position: .leading, values: [0, 0.33, 0.66, 1]) { value in
-                AxisGridLine(stroke: StrokeStyle(lineWidth: 1, dash: [2, 3])).foregroundStyle(Theme.fillSeparator)
-                AxisValueLabel {
-                    if let fraction = value.as(Double.self) { Text(fraction == 0 ? "0" : fraction.percentText) }
-                }
-                .font(Theme.caption.weight(.regular))
-                .foregroundStyle(Theme.textTertiary)
-            }
-        }
-        .padding(.top, Theme.spaceL)
-        .accessibilityLabel(Text(range == .day ? "Quota left over 24 hours" : "Quota left over 7 days"))
-    }
-
-    /// Where the quota left jumps up: the window reset there.
-    static func resets(in points: [(date: Date, value: Double)]) -> [Date] {
-        zip(points, points.dropFirst()).compactMap { previous, point in point.value - previous.value > 0.25 ? point.date : nil }
-    }
 }
 
 /// "Next resets" in local time, then a pace forecast when a window would run out first.
@@ -258,7 +213,8 @@ private struct NextResetsCard: View {
         .padding(.top, 16)
         .padding(.bottom, 12)
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .frame(height: 284, alignment: .top)
+        // Forecasts grow with localized text instead of overflowing the card's insets.
+        .frame(minHeight: 284, alignment: .top)
         .card()
     }
 
@@ -281,6 +237,7 @@ private struct NextResetsCard: View {
                 body.font(Theme.caption.weight(.regular)).foregroundStyle(Theme.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            .fixedSize(horizontal: false, vertical: true)
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Theme.statusWarningBg, in: .rect(cornerRadius: Theme.radiusControl, style: .continuous))

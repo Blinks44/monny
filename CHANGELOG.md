@@ -2,6 +2,11 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.8.0: 2026-11-21
+
+- Added Antigravity limits using your Antigravity CLI sign-in, with separate Gemini and Claude/GPT 5-hour and weekly quotas, history, and alerts.
+- Automatically renews expired Antigravity CLI sessions when needed, so limits keep updating while you work in an IDE.
+
 ## 1.7.0: 2026-11-09
 
 - Added optional notifications when an exhausted AI limit becomes available again.

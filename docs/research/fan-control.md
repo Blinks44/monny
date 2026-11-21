@@ -1,6 +1,6 @@
 # Fan control: feasibility review
 
-Reviewed 2026-11-04 at main `05b9323` (Monny 1.5.0/build 87). Research only for the requested quieter-fans scenario. Main remains read-only for fans; SPEC §1 excludes fan control and AGENTS/ENGINEERING prohibit an SMC writer/helper on main. This review does not change those contracts or authorize installation, writes or a prototype on the user's Mac.
+Initial review 2026-11-04 at main `05b9323` (Monny 1.5.0/build 87); refreshed 2026-11-16 at main `c25bea9` (1.7.0/build 94). Research only for the requested quieter-fans scenario. Main remains read-only for fans; SPEC §1 excludes fan control and AGENTS/ENGINEERING prohibit an SMC writer/helper on main. This review does not change those contracts or authorize installation, writes or a prototype on the user's Mac.
 
 ## Evidence and limits
 
@@ -15,3 +15,31 @@ The noise-reduction goal is a temperature-dependent ramp that can delay/inhibit 
 Before shipping: establish supported model/OS pairs, which sensors and firmware states are trustworthy, read-back of actual mode/speed, and independent automatic restoration on app/helper loss, sleep/wake, logout/restart and uninstall. Never rely on a normal-quit callback or chip throttling alone. Coexistence with other fan controllers, invalid RPM bounds and firmware reclaiming control need explicit tests. No universal temperature thresholds are chosen here.
 
 Next: decide whether Monny should expand into fan control and accept the privileged-service scope. If authorized, perform an isolated mechanism/safety prototype on an identified Mac/OS, then define SPEC/design and implementation acceptance. No app build or runtime test was performed for this review.
+
+## 2026-11-16: Dependency and product proposal refresh
+
+The user requested a concrete product/interaction and mechanism proposal before drawing or implementing. This is a recommendation for review, not accepted production requirements. No app code, package installation, Sketch edit, helper registration or hardware write.
+
+### Current evidence
+
+- [Apple fan-noise guidance](https://support.apple.com/en-us/101576) explains that internal sensors and ambient conditions affect cooling. Low CPU utilization or a single cool CPU reading does not establish that fan acceleration is unnecessary. Unexpected noise can require diagnosis rather than an override.
+- [kinginu/FanControl](https://github.com/kinginu/FanControl) is an actual Swift package candidate, advertised as MIT, version 1.0.1 at review. Its README reports verification only on M2 Pro/macOS 26.5, requires macOS 26+, and lists unverified production SMAppService approval. It documents helper-loss limitations, automatic target replay after wake, provisional thermal thresholds, and its own polling loop. These need investigation/adaptation for Monny: keep macOS 15 monitoring, one shared sampling owner, no stale target replay on wake, and independent stale-data/liveness recovery. The README's safety claims are upstream claims, not an audit or Monny hardware evidence. Package.swift, standalone license and verification-page fetches failed; dependency approval therefore requires a pinned checkout/source/license review. Do not add it yet.
+- [agoodkind/macos-smc-fan](https://github.com/agoodkind/macos-smc-fan/blob/main/README.md) is MIT research with explicit non-production warnings. Its [hardware observations](https://github.com/agoodkind/macos-smc-fan/blob/main/docs/testing.md) describe diagnostic-mode transitions, several-second initial acquisition, cross-fan side effects and model-dependent bounds/zero-RPM behavior. It is a mechanism reference, not a shipping dependency recommendation. M4/M5 observations do not establish Monny compatibility.
+- Stats remains an MIT reference with explicitly unmaintained fan control. Macs Fan Control establishes commercial feasibility but is not an embeddable SDK.
+- Apple's [SMAppService](https://developer.apple.com/documentation/servicemanagement/smappservice) is a supported service-registration mechanism (macOS 13+), not a public fan-control API. No supported public API for asking macOS to run fans more quietly was identified in this review. Swift Package Index search was inaccessible; no exhaustive package-catalog claim.
+
+### Recommended first version
+
+One cooling policy for all detected fans: **System** (default) and a temporary **Quieter** session, proposed default 30 minutes. Do not expose individual RPM setters, editable curves, a permanent RPM ceiling or a stop-fans action. A **Cooler** profile is a possible later addition, not first-version scope; System is adaptive and cannot honestly be called a medium-speed preset.
+
+Quieter means an attempted reduction under validated thermal conditions, not guaranteed silence or proof that macOS was wrong. Use model-validated temperature-dependent targets and gradual changes with hysteresis (different entry/exit conditions to avoid oscillation). Validate CPU/GPU and other relevant thermal zones, freshness, thermal pressure, mode and actual RPM. The current display averages alone are insufficient for control. Do not take manual ownership unnecessarily when the system has already stopped the fans: manual minimums can make an idle Mac louder. Unknown sensors, elevated unsafe thermal conditions, controller conflicts, partial writes or expiry end the session and request/verify System. Do not auto-resume after a thermal refusal, sleep/wake, restart or a fault.
+
+A dedicated, opt-in privileged launch daemon with authenticated XPC and narrowly validated operations is the proposed write boundary. It must enforce session expiry and sample/liveness timeouts independently of UI visibility or a hung app, restore on startup/disconnect/sleep/normal termination, and verify the actual return to automatic mode. App-side timers or normal-quit callbacks alone are insufficient. launchd restart and a lease do not prove safety if the writer is killed, unavailable or unable to restore. Prove recovery experimentally before shipping; unresolved helper-loss behavior blocks production approval. No SIP changes, kernel extensions or arbitrary SMC writer.
+
+Before selecting a dependency, pin and review the package's source, license, maintenance and macOS 15 integration options. Prefer a suitable existing core over implementing an SMC stack from scratch, but do not silently raise Monny's deployment target or import a second sampler. A restricted 26+ fan-control capability may be considered separately while the main app stays 15+.
+
+### Acceptance gates before shipping
+
+Confirm named model/OS support; transitions with one/two fans; mode and RPM read-back with settling time; real noise reduction relative to System under repeatable workloads; thermal behavior and performance cost; stale/invalid sensor handling; a hung/killed client and killed/restarted helper; partial writes; sleep/wake, logout/restart/update/uninstall; competing fan controllers; and actual production signing/SMAppService approval. Never infer safety from staying within reported RPM bounds or from CPU throttling. A failed/unknown restoration remains visibly unconfirmed. Unsupported hardware retains monitoring only.
+
+Next: review the product proposal in APP-019, then create scoped Light/Dark Sketch states; authorize and define a named-hardware mechanism prototype separately before any write experiment.

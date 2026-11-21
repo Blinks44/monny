@@ -123,6 +123,8 @@ private struct QuotaHistoryCard: View {
                 metric = candidates.first { !tier.series($0).isEmpty } ?? tool.historyMetric
             } else if tool == .amp {
                 metric = !tier.series(.ampMonthly).isEmpty ? .ampMonthly : .ampFree
+            } else if tool == .antigravity {
+                metric = !tier.series(.antigravityWeekly).isEmpty ? .antigravityWeekly : .antigravitySession
             } else {
                 metric = tool.historyMetric
             }
@@ -174,7 +176,7 @@ private struct NextResetsCard: View {
 
     private var rows: [(tool: AITool, window: AIQuotaWindow)] {
         states.flatMap { tool, state -> [(tool: AITool, window: AIQuotaWindow)] in
-            guard let usage = state.usage, !usage.isStale(at: now) else { return [] }
+            guard state.problem?.hidesReading != true, let usage = state.usage, !usage.isStale(at: now) else { return [] }
             return usage.windows.filter { $0.isPlanLimit && !$0.hasReset(at: now) && $0.resetsAt != nil }.map { (tool, $0) }
         }
         .sorted { ($0.window.resetsAt ?? .distantFuture) < ($1.window.resetsAt ?? .distantFuture) }
@@ -194,7 +196,12 @@ private struct NextResetsCard: View {
             }
             ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
                 HStack {
-                    Text("\(row.tool.name) · \(Text(row.window.kind.shortTitle))").foregroundStyle(Theme.textSecondary)
+                    if row.tool == .antigravity {
+                        row.window.shortTitle.foregroundStyle(Theme.textSecondary).lineLimit(1)
+                            .accessibilityLabel(Text("\(row.tool.name) · \(row.window.shortTitle)"))
+                    } else {
+                        Text("\(row.tool.name) · \(Text(row.window.kind.shortTitle))").foregroundStyle(Theme.textSecondary)
+                    }
                     Spacer(minLength: Theme.spaceM)
                     Text(verbatim: row.window.resetsAt?.resetClockText ?? "").font(Theme.body.weight(.semibold))
                         .foregroundStyle(Theme.textPrimary).monospacedDigit()
@@ -230,9 +237,10 @@ private struct NextResetsCard: View {
             window.kind == .session
             ? Text("At this pace the 5-hour limit runs out around \(time), about \(margin) before it resets. Estimate.")
             : Text("At this pace the weekly limit runs out around \(time), about \(margin) before it resets. Estimate.")
+        let name = tool == .antigravity ? window.serviceName(tool) : tool.name
         return AnyView(
             VStack(alignment: .leading, spacing: 4) {
-                Text("\(tool.name) is ahead of pace").font(Theme.footnote.weight(.semibold)).foregroundStyle(Theme.statusWarningText)
+                Text("\(name) is ahead of pace").font(Theme.footnote.weight(.semibold)).foregroundStyle(Theme.statusWarningText)
                     .fixedSize(horizontal: false, vertical: true)
                 body.font(Theme.caption.weight(.regular)).foregroundStyle(Theme.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)

@@ -119,7 +119,9 @@ struct CopilotUsageTests {
         #expect(reading.unlimitedCopilotQuotas == nil)
     }
 
-    @Test(arguments: ["api.github.com", "api.cline.bot", "www.codebuff.com", "portal.nousresearch.com"])
+    @Test(arguments: [
+        "api.github.com", "api.cline.bot", "www.codebuff.com", "portal.nousresearch.com", "daily-cloudcode-pa.googleapis.com",
+    ])
     func refusesTokenBearingRedirects(host: String) async throws {
         let source = try #require(URL(string: "https://\(host)/usage"))
         let target = try #require(URL(string: "https://example.com/redirect"))

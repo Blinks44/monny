@@ -27,6 +27,7 @@ extension AITool {
         case .codeRabbit: "CodeRabbit"
         case .gemini: "Gemini CLI"
         case .huggingFace: "Hugging Face"
+        case .antigravity: "Antigravity"
         }
     }
 
@@ -54,6 +55,7 @@ extension AITool {
         case .codeRabbit: "CodeRabbit CLI"
         case .gemini: "Gemini CLI"
         case .huggingFace: "Hugging Face CLI"
+        case .antigravity: "Antigravity CLI"
         }
     }
 
@@ -66,7 +68,7 @@ extension AITool {
         case .jetBrains: Theme.aiJetBrains
         case .amp: Theme.aiAmp
         case .copilot, .cline, .codebuff, .augment, .nous, .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf,
-            .codeRabbit, .gemini, .huggingFace:
+            .codeRabbit, .gemini, .huggingFace, .antigravity:
             Theme.aiCodex
         }
     }
@@ -79,7 +81,7 @@ extension AITool {
         case .cursor: Theme.aiIconBlack
         case .jetBrains, .copilot, .codebuff: Theme.aiIconBlack
         case .amp, .cline, .augment, .nous, .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit,
-            .gemini, .huggingFace:
+            .gemini, .huggingFace, .antigravity:
             Theme.aiIconWhite
         }
     }
@@ -98,7 +100,8 @@ extension AITool {
         case .amp: .aiAmp
         case .augment: .aiAugment
         case .nous: .aiNous
-        case .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace: nil
+        case .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace, .antigravity:
+            nil
         }
     }
 
@@ -126,6 +129,7 @@ extension AITool {
         case .codeRabbit: .codeRabbitUsage
         case .gemini: .geminiPro
         case .huggingFace: .huggingFaceGPU
+        case .antigravity: .antigravityWeekly
         }
     }
 
@@ -149,6 +153,8 @@ extension AITool {
         case .gemini:
             "Sign in to Gemini CLI with a supported work account. Personal Gemini subscriptions are not supported. Open the CLI again if the session expires."
         case .huggingFace: "Sign in with hf auth login to see your ZeroGPU quota. Your saved token needs permission to read billing usage."
+        case .antigravity:
+            "Sign in to Antigravity CLI with your Google AI account. Open Antigravity CLI again if your sign-in expires."
         case .kimi: "Sign in to the Kimi Code CLI to see your limits here. Open Kimi again if your sign-in expires."
         case .nous: "Sign in to Nous Portal in Hermes Agent to see your monthly allowance and balances here."
         case .cline: "Sign in with cline auth to see your ClinePass subscription limits here."
@@ -190,16 +196,26 @@ extension AIQuotaWindow {
 
     /// "5-hour window", or "Opus only · weekly" for a model's own limit.
     var title: Text {
-        label.map { Text($0.title) } ?? ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text("\(Text($0.label)) · monthly") }
+        quotaLabel ?? ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text("\(Text($0.label)) · monthly") }
             ?? model.map { modelTitle($0) }
             ?? Text(kind.title)
     }
 
     /// "5 hours" in the window's tiles and reset list.
     var shortTitle: Text {
-        label.map { Text($0.title) } ?? ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text($0.label) } ?? model.map {
+        quotaLabel ?? ampQuota.map { Text($0.label) } ?? copilotQuota.map { Text($0.label) } ?? model.map {
             modelTitle($0)
         } ?? Text(kind.shortTitle)
+    }
+
+    private var quotaLabel: Text? {
+        guard let label else { return nil }
+        switch label {
+        case .antigravityGemini, .antigravityClaudeGPT, .antigravityArgon:
+            return Text("\(Text(label.title)) · \(Text(kind.shortTitle))")
+        default:
+            return Text(label.title)
+        }
     }
 
     private func modelTitle(_ model: String) -> Text {
@@ -321,30 +337,32 @@ struct QuotaRow: View {
     /// The window tiles put the reset time into the label line and drop the line below.
     var isCompact = false
 
+    private var chipBelowBar: Bool { tool == .copilot || tool == .amp || tool == .antigravity }
+    private var resetBelowBar: Bool { !isCompact || tool == .antigravity }
+
     var body: some View {
         let hasReset = window.hasReset()
         VStack(alignment: .leading, spacing: isCompact ? 5 : 6) {
             HStack(spacing: Theme.spaceM) {
                 label
                 // The window tiles show the state by the value's color alone, as drawn.
-                if tool != .copilot, tool != .amp, !isStale, !isCompact, !hasReset { stateChip }
+                if !chipBelowBar, !isStale, !isCompact, !hasReset { stateChip }
                 Spacer(minLength: Theme.spaceM)
                 value(hasReset: hasReset)
             }
             // One height with or without the 18 pt chip, so rows keep their rhythm; the window tiles
             // have no chip and use the 14 pt line drawn there.
-            .frame(height: isCompact ? 14 : 18)
+            .frame(height: isCompact && tool == .antigravity ? nil : isCompact ? 14 : 18)
             if hasReset {
                 Capsule().fill(Theme.fillTrack).frame(height: 6)
             } else {
                 QuotaBar(window: window, color: tool.color, isStale: isStale)
             }
-            // Copilot's longer labels leave no room for the chip beside them.
-            if tool == .copilot || tool == .amp, !isStale, !isCompact, !hasReset { stateChip }
+            if chipBelowBar, !isStale, !isCompact, !hasReset { stateChip }
             if !isCompact, tool == .amp, !hasReset, let dollars = dollarsText {
                 dollars.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(1)
             }
-            if !isCompact, let line = footer(hasReset: hasReset) {
+            if resetBelowBar, let line = footer(hasReset: hasReset) {
                 line.font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(1)
             } else if isCompact, !hasReset, let dollars = dollarsText {
                 // Cursor's tile adds the amounts under its one bar (`KPI · Cursor`).
@@ -372,7 +390,7 @@ struct QuotaRow: View {
                 Text(quota.label).fixedSize()
             }
             .font(Theme.footnote.weight(.medium)).foregroundStyle(Theme.textPrimary)
-        } else if isCompact, let resetsAt = window.resetsAt, !window.hasReset() {
+        } else if !resetBelowBar, let resetsAt = window.resetsAt, !window.hasReset() {
             Text("\(window.shortTitle) · resets \(resetsAt.resetClockText)")
                 .font(Theme.footnote.weight(.regular)).foregroundStyle(Theme.textSecondary).lineLimit(1)
         } else if !isCompact, tool != .amp, let dollars = dollarsText {
@@ -382,7 +400,7 @@ struct QuotaRow: View {
             (isCompact ? window.shortTitle : title)
                 .font(Theme.footnote.weight(isCompact ? .regular : .medium))
                 .foregroundStyle(isCompact ? Theme.textSecondary : Theme.textPrimary)
-                .lineLimit(1)
+                .lineLimit(isCompact && tool == .antigravity ? 2 : 1)
         }
     }
 
@@ -578,6 +596,9 @@ extension AIQuotaLabel {
         case .flash: "Flash models"
         case .flashLite: "Flash Lite models"
         case .zeroGPU: "ZeroGPU time"
+        case .antigravityGemini: "Gemini"
+        case .antigravityClaudeGPT: "Claude / GPT"
+        case .antigravityArgon: "Gemini 4 Argon"
         }
     }
 }

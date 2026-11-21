@@ -1,6 +1,6 @@
 # Monny: design direction and live source index
 
-Updated 2026-11-09 (AI quota history hover design). [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
+Updated 2026-11-21 (Antigravity card implementation; no Sketch changes). [SPEC](SPEC.md) owns required behavior. **Sketch owns the visual design, components, states, product copy and interaction annotations.** This file is a short locator and readiness index; implementation agents inspect the live source directly through Sketch MCP.
 
 ## Direction
 
@@ -29,6 +29,10 @@ The saved DMG frame/background was reviewed live on 2026-10-19. DMG background i
 The app implements the native charge limit only ([APP-007](tasks/APP-007-native-simplification-design-parity.md)): the popover Battery hero (72 pt gauge, dotted limit marker), the standalone `16 · Battery · Native limit control` reference (80/85/90/95/100 slider where 100% means no limit, then an Optimized Battery Charging switch; 2026-10-22) and the macOS charging guidance popover. Sketch shows the app as built (user decision 2026-10-24): helper, Charge/Discharge, sailing, heat protection, calibration and trip frames were removed on 2026-10-25 and are redrawn when that work is taken up ([DES-004](tasks/DES-004-power-search-quit-ai-tools.md)). Window content begins at x=248 with a 776 pt column in a 1040 pt window; the toolbar starts at y=20.
 
 ## Readiness
+
+2026-11-21: Antigravity uses the existing letter tile and quota rows. Popover frame 23 Light/Dark and window frames 21/22 Light checked live. Group names precede the cadence; Antigravity reset text and low-limit chips use separate lines where the shared layouts need room. Setup guidance is localized. [APP-015](tasks/APP-015-ai-usage-limits.md#antigravity-cli--2026-11-21) owns installed acceptance.
+
+2026-11-16: [Cooling controls proposal](tasks/APP-019-fan-control-feasibility.md) recommends a horizontal icon/label navigation study near 400 pt and a temporary System/Quieter session. Current Overview power Light/Dark inspected live, without Sketch changes/save. Direct fan control is now recommended for deferral after safety concerns; no new frame or implementation handoff is ready. [Plugged-in discharge assessment](tasks/APP-020-plugged-in-discharge-assessment.md) inspects current Battery frame 30, with no drawing or accepted design scope.
 
 The onboarding Ready step gained the automatic updates toggle on 2026-10-21 (Sparkle). Native onboarding, grouped processes, menu bar readings, the sustained-load notification, native Settings and the Power card were drawn on 2026-10-21 ([DES-002](tasks/DES-002-native-onboarding-next-features.md)). Settings is frame `17` (revised 2026-10-22: stacked menu bar checkboxes, About in the right column with the automatic updates row).
 

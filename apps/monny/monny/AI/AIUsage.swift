@@ -3,7 +3,7 @@ import Foundation
 /// A coding assistant whose plan limits Monny can show (Settings › AI limits).
 nonisolated enum AITool: String, CaseIterable, Codable, CodingKeyRepresentable, Sendable {
     case claude, codex, cursor, grok, jetBrains, copilot, cline, codebuff, amp, augment, nous, kimi
-    case openCodeGo, kilo, kiro, alibabaToken, alibabaCoding, windsurf, codeRabbit, gemini, huggingFace
+    case openCodeGo, kilo, kiro, alibabaToken, alibabaCoding, windsurf, codeRabbit, gemini, huggingFace, antigravity
 }
 
 /// One rolling limit of a plan, as the service reports it.

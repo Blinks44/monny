@@ -12,10 +12,10 @@ nonisolated enum AIQuotaHistory {
         var period: AIQuotaWindow.Kind? {
             switch metric {
             case .claudeSession, .codexSession, .clineSession, .kimiSession, .openCodeSession,
-                .alibabaTokenSession, .alibabaCodingSession:
+                .alibabaTokenSession, .alibabaCodingSession, .antigravitySession:
                 .session
             case .claudeWeekly, .codexWeekly, .clineWeekly, .codebuffWeekly, .kimiWeekly,
-                .openCodeWeekly, .alibabaTokenWeekly, .alibabaCodingWeekly, .windsurfWeekly:
+                .openCodeWeekly, .alibabaTokenWeekly, .alibabaCodingWeekly, .windsurfWeekly, .antigravityWeekly:
                 .weekly
             case .cursorMonthly, .jetBrainsMonthly, .copilotPremium, .clineMonthly, .ampMonthly,
                 .augmentMonthly, .nousMonthly, .kimiMonthly, .openCodeMonthly, .kiloMonthly,

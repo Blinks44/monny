@@ -1,17 +1,33 @@
 # APP-015: AI usage limits
 
-- Updated: 2026-11-09
+- Updated: 2026-11-21
 - Stage: awaiting_verification
-- Owner: unassigned for real-account verification (provider implementation through local 1.6.0/build 89)
+- Owner: unassigned for remaining real-account verification. Antigravity release ownership released after 1.8.0/build 98 packaging.
 - Owned surfaces: `apps/monny/monny/AI/`, AI popover/dashboard, Settings/onboarding, alerts and quota history
 - Requirements: [SPEC](../SPEC.md) §§3–4, 6–8; [design](../DESIGN.md#readiness); [mechanisms and licensing](../research/ai-usage-limits.md)
 - Implementation: builds 43–49, baseline main `713defe` (build 50); repeated-alert fix in build 60, based on `e7db28d` (see the commit history for monitor/tests/project changes).
 
 ## Current outcome
 
+**1.8.0/build 98** ships [Antigravity CLI](#antigravity-cli--2026-11-21) with direct Keychain OAuth quota polling and on-demand `agy models` renewal across hourly expiry.
+
 Published **1.6.0/build 90** supports 21 AI sources. [November source decision](../research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08) owns exact credential/field restrictions; [publication evidence](#160-publication--2026-11-08) owns the final package and delivery failure. Dated sections below retain earlier artifacts and checks, not current release instructions.
 
-Open: real-account quota/reset/expiry agreement for the nine new sources and earlier ClinePass/Codebuff/Amp/Augment/Nous; detailed Kimi quota/history checks; installed appearance/accessibility and fluent translations; public appcast recovery and installed update into 1.6.0; service-mark review. Next: retry the update feed, then collect reproducible account issues without credentials. Website deployment belongs to the user and remains unconfirmed.
+Open: real-account quota/reset/expiry agreement for the nine build-90 sources and earlier ClinePass/Codebuff/Amp/Augment/Nous; detailed Kimi quota/history checks; installed appearance/accessibility and fluent translations; installed update acceptance; service-mark review. Public appcast delivery was verified with [build 94](DES-007-recovery-charging-sleep.md#170-publication--2026-11-09). Website deployment belongs to the user and remains unconfirmed.
+
+## Antigravity CLI — 2026-11-21
+
+Real-account testing of build 95 against `agy 1.5.13` showed that `agy -p /usage --output-format json` exited with status 1 (`Eligibility check failed: ... not currently available in your location`) whenever `loadCodeAssist` flagged a location restriction, even though interactive `agy /usage` still refreshed and displayed quotas. Each subprocess poll also started an in-process language server and wrote a new log file under `~/.gemini/antigravity-cli/log/`.
+
+Monny 1.7.0/build 96 replaced the per-poll CLI subprocess with a direct authenticated HTTP reader matching Claude Code's Keychain pattern: it detects `agy` in standard CLI locations or `~/.gemini/antigravity-cli` metadata without reading credentials while disabled, reads only `service: "gemini", account: "antigravity"` via `/usr/bin/security` with a 3-second timeout (never `antigravity-acp`, whose ACL prompts), validates the `go-keyring-base64:`/JSON OAuth token and RFC 3339 expiry with a 60-second safety margin, and sends `POST https://daily-cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary` (`User-Agent: antigravity/hub/2.9.1 darwin/arm64`, redirects refused). Because Google OAuth access tokens expire after ~1 hour and IDE ACP harnesses renew the separate `antigravity-acp` item, **build 97** (released as **1.8.0/build 98**) adds bounded on-demand renewal: only when an existing `antigravity` Keychain credential is `.expired` (never when `.signedOut`), Monny runs headless `agy models` (`AGY_CLI_DISABLE_AUTO_UPDATE=true`, `AGY_CLI_NONINTERACTIVE_HEADLESS=1`, `BROWSER=/usr/bin/false`, 10-second timeout, 15-minute cooldown between attempts) so `agy` itself refreshes its own Keychain session via `keyringAuth` without hitting `agy -p`'s eligibility gate, then re-reads Keychain and fetches quotas. Monny never reads `refresh_token` or writes Keychain. [Source decision](../research/ai-usage-limits.md#antigravity-cli--2026-11-21).
+
+Separate Gemini and Claude/GPT five-hour and weekly buckets (`bucketId`), plus Gemini 4 Argon weekly when reported, use shared quota rows, resets and low-limit alerts. The chart uses ordinary Gemini weekly with a five-hour fallback. The shared HTTP reader supplies same-session `recoveryContext` (cleared conservatively on hourly token rotation); plan names and credit balances remain unreported and uninferred. Six-language setup copy guides signing in and reopening Antigravity CLI if renewal fails or the refresh token expires.
+
+Read-only live probes on 2026-11-21 confirmed zero Keychain dialog and HTTP 200 with the expected `groups[].buckets[]` schema on a signed-in account where `agy -p /usage` failed eligibility, plus headless `agy models` exiting 0 via `keyringAuth` without tripping location eligibility (account values were not retained). Final `dev.sh format`, `dev.sh lint` and `dev.sh test -quiet -jobs 4 -parallel-testing-enabled NO` passed: **209 passed, 0 failed, 0 skipped**. Fixtures cover split and weekly-only quotas, malformed/disabled/unknown buckets, `go-keyring-base64:` and plain JSON credentials, expiry/margin/zero-time rejection, exact endpoint/headers/body, `recoveryContext`, 403/429 handling, redirect refusal, on-demand refresh only on `.expired` (never on `.signedOut` or valid tokens), 15-minute cooldown throttling, headless `agy` environment flags, and history/low-alert isolation.
+
+`release.sh` passed app/DMG signature checks, image verification and signed appcast generation. The arm64 installer is `apps/monny/build/release/Monny.dmg` (1.8.0/build 98, Apple Development signed, not notarized). Verified SHA-256 `bba18f0f7426d0216010e65a3a6f6f33d672354075238a451ea9acba6719ef72` and matching app/appcast build numbers (`1.8.0` / `98`).
+
+Accepted 2026-11-21 (installed live availability & hourly renewal on builds 96–97): user confirmed live Gemini and Claude/GPT weekly and 5-hour quota bars, resets, exhausted-state chip, and automatic refresh past the hourly OAuth token expiry without a Keychain prompt or reopening `agy` (account values omitted; screenshots remain local). Open: side-by-side comparison against interactive `agy /usage`, Dark mode and VoiceOver.
 
 ## Kimi Code implementation — 2026-11-04
 

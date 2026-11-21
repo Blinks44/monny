@@ -99,6 +99,7 @@ final class AIUsageMonitor {
             else { continue }
             // Model limits stay out of history: the chart draws each tool's plan windows.
             for window in usage.windows where window.isPlanLimit && !window.hasReset(at: now) {
+                if tool == .antigravity && window.label != .antigravityGemini { continue }
                 values[HistoryMetric.aiQuota(tool, window.kind)] = window.left
             }
         }
@@ -255,6 +256,8 @@ extension HistoryMetric {
         case (.codeRabbit, _): .codeRabbitUsage
         case (.gemini, _): .geminiPro
         case (.huggingFace, _): .huggingFaceGPU
+        case (.antigravity, .session): .antigravitySession
+        case (.antigravity, _): .antigravityWeekly
         }
     }
 }

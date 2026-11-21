@@ -2,6 +2,8 @@
 
 Updated 2026-10-23. Main uses the persistent macOS 26.4+ charge-limit preference as an ordinary user. No helper, XPC, SMC writes or adapter isolation. Current behavior: [SPEC §5](../SPEC.md#5-battery-control); implementation/acceptance: [APP-007](../tasks/APP-007-native-simplification-design-parity.md).
 
+2026-11-16: [Plugged-in discharge assessment](plugged-in-discharge.md) compares the requested one-off 20% endpoint with fan control and native charge limiting; it records a new macOS 27 native-target research lead without changing support or authorizing writes.
+
 ## Native limit decision
 
 The runtime-checked `PowerUISmartChargeClient` bridge refuses unknown/mismatched signatures. Explicit changes validate target and matching read-back; enable only when needed because enabling can reset the target. 100% disables the limit. Optimized Battery Charging is independent and shown only when readable. Launch/wake only read; macOS owns enforcement and persistence, with no restoration on quit.

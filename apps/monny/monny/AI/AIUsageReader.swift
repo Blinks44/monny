@@ -7,9 +7,13 @@ nonisolated private let logger = Logger(subsystem: "blinks44.monny", category: "
 
 /// Reads each tool's own sign-in on this Mac and asks its service for the plan limits
 /// ([research](docs/research/ai-usage-limits.md)). Monny never stores, renews or sends the
-/// tokens anywhere else; an expired token waits until the tool itself renews it.
+/// tokens anywhere else; expired tokens wait for the tool itself (Antigravity CLI runs `agy models`
+/// on expiry so `agy` renews its own Keychain session).
 actor AIUsageReader {
     private let session: URLSession
+    /// Limits on-demand `agy models` refreshes so offline or revoked sessions never respawn on every poll.
+    private var lastAntigravityRefreshAttempt: Date?
+    static let antigravityRefreshCooldown: TimeInterval = 15 * 60
 
     init(session: URLSession? = nil) {
         self.session = session ?? Self.makeSession()
@@ -42,6 +46,10 @@ actor AIUsageReader {
             }
             if tool == .amp { return AIUsageCommand.executable("amp") != nil }
             if tool == .augment { return AIUsageCommand.executable("auggie") != nil }
+            if tool == .antigravity {
+                return AIUsageCommand.executable("agy") != nil
+                    || fileManager.fileExists(atPath: Self.home.appending(path: ".gemini/antigravity-cli").path)
+            }
             if tool == .nous { return Self.hermesCredentialFiles.contains { fileManager.fileExists(atPath: $0.path) } }
             if tool == .jetBrains { return !JetBrainsUsageReader.sources().isEmpty }
             let url =
@@ -53,7 +61,7 @@ actor AIUsageReader {
                 case .cline: Self.clineCredentials
                 case .codebuff: Self.codebuffCredentials
                 case .kimi: Self.kimiHomes.first(where: { fileManager.fileExists(atPath: $0.path) }) ?? Self.kimiHomes[0]
-                case .jetBrains, .copilot, .amp, .augment, .nous: Self.home
+                case .jetBrains, .copilot, .amp, .augment, .nous, .antigravity: Self.home
                 case .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace: Self.home
                 }
             return fileManager.fileExists(atPath: url.path(percentEncoded: false))
@@ -71,11 +79,58 @@ actor AIUsageReader {
         case .cline: await readCline(now: now)
         case .codebuff: await readCodebuff(now: now)
         case .amp, .augment: await readCommand(tool, now: now)
+        case .antigravity: await readAntigravity(now: now)
         case .nous: await readNous(now: now)
         case .kimi: await readKimi(now: now)
         case .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace:
             await readAdditional(tool, now: now)
         }
+    }
+
+    func readAntigravity(
+        readCredential: (@Sendable () async -> Data?)? = nil,
+        refreshCredential: (@Sendable () async -> Void)? = nil,
+        now: Date
+    ) async -> Result<AIUsage, AIUsageProblem> {
+        let load: @Sendable () async -> Data? = readCredential ?? { await Self.antigravityCredentialData() }
+        let refresh: @Sendable () async -> Void = refreshCredential ?? { await Self.refreshAntigravityCredential() }
+
+        guard let data = await load() else { return .failure(.signedOut) }
+        let token: String
+        do {
+            token = try AntigravityUsage.token(data, now: now)
+        } catch .expired {
+            guard canAttemptAntigravityRefresh(now: now) else { return .failure(.expired) }
+            lastAntigravityRefreshAttempt = now
+            await refresh()
+            guard !Task.isCancelled else { return .failure(.unavailable(retryAfter: nil)) }
+            guard let refreshedData = await load() else { return .failure(.signedOut) }
+            do { token = try AntigravityUsage.token(refreshedData, now: now) } catch { return .failure(error) }
+        } catch {
+            return .failure(error)
+        }
+        return await fetch(AntigravityUsage.request(token: token), now: now) {
+            try AntigravityUsage.usage($0, now: now)
+        }
+    }
+
+    private func canAttemptAntigravityRefresh(now: Date) -> Bool {
+        guard let last = lastAntigravityRefreshAttempt else { return true }
+        return now.timeIntervalSince(last) >= Self.antigravityRefreshCooldown || now < last
+    }
+
+    /// Antigravity CLI writes its login Keychain item with `/usr/bin/security`, so reading it the
+    /// same way asks the user nothing; `antigravity-acp` uses a different ACL and is not read.
+    private static func antigravityCredentialData() async -> Data? {
+        await Self.run("/usr/bin/security", ["find-generic-password", "-s", "gemini", "-a", "antigravity", "-w"])
+    }
+
+    /// Lets Antigravity CLI renew its own Keychain session when the ~1-hour OAuth access token
+    /// expires, without Monny reading the refresh token or writing Keychain. `agy models` uses the
+    /// same keyring refresh path as interactive sessions without hitting `agy -p`'s eligibility gate.
+    private static func refreshAntigravityCredential() async {
+        guard let executable = AIUsageCommand.executable("agy") else { return }
+        _ = await AIUsageCommand.run(executable, arguments: ["models"], timeout: .seconds(10))
     }
 
     // MARK: Claude Code

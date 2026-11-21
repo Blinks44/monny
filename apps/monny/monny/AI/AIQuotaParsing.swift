@@ -29,4 +29,5 @@ nonisolated enum AIQuotaParsing {
 /// Quota labels that differ from the standard five-hour/weekly/monthly plan windows.
 nonisolated enum AIQuotaLabel: String, Codable, Sendable {
     case daily, messages, flowActions, overage, pro, flash, flashLite, zeroGPU
+    case antigravityGemini, antigravityClaudeGPT, antigravityArgon
 }

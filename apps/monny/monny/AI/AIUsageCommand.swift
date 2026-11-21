@@ -38,6 +38,11 @@ nonisolated enum AIUsageCommand {
         values["NO_COLOR"] = "1"
         values["CI"] = "1"
         if executable.lastPathComponent == "coderabbit" { values["CODERABBIT_CLI_DISABLE_AUTO_UPDATE"] = "true" }
+        if executable.lastPathComponent == "agy" {
+            values["AGY_CLI_DISABLE_AUTO_UPDATE"] = "true"
+            values["AGY_CLI_NONINTERACTIVE_HEADLESS"] = "1"
+            values["BROWSER"] = "/usr/bin/false"
+        }
         return values
     }
 

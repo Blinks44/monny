@@ -135,10 +135,10 @@ struct AIQuotaHistoryChart: View {
 
     private func title(_ point: AIQuotaHistory.Selection) -> Text {
         if let period = series.first(where: { $0.tool == point.tool && $0.metric == point.metric })?.period {
-            Text("\(point.tool.name) · \(Text(period.shortTitle))")
-        } else {
-            Text(verbatim: point.tool.name)
+            let name = point.tool == .antigravity ? "Antigravity · Gemini" : point.tool.name
+            return Text("\(name) · \(Text(period.shortTitle))")
         }
+        return Text(verbatim: point.tool.name)
     }
 
     private func tooltip(_ point: AIQuotaHistory.Selection) -> some View {

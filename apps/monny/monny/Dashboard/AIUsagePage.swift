@@ -23,7 +23,7 @@ struct AIUsagePage: View {
     }
 
     private func content(now: Date) -> some View {
-        let tools = monitor.installed
+        let tools = monitor.displayedTools
         return VStack(spacing: Theme.spaceL) {
             // Up to three tiles share a row, as drawn; four make two rows so labels keep their room.
             // Tiles of a row share the tallest one's height.

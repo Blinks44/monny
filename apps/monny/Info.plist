@@ -8,5 +8,18 @@
 	<string>nrHEvSMnTYzPYumB6vR1nuBqqtDzopCbOeJIF1hyb2E=</string>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>blinks44.monny.ai-tool</string>
+			<key>UTTypeDescription</key>
+			<string>Monny AI tool</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

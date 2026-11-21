@@ -18,6 +18,8 @@ The 1.7.0 release includes [AI-history hover and keyboard details](tasks/DES-006
 
 1.8.0/build 98 publishes [Antigravity CLI quota](tasks/APP-015-ai-usage-limits.md#antigravity-cli--2026-11-21) (`retrieveUserQuotaSummary` via CLI Keychain token + bounded headless `agy models` refresh-on-expiry); live display and automatic hourly renewal were accepted on builds 96–97. Browser-free AI expansion is published ([source decision](research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08)). Website source changes are committed; the user owns deployment, whose completion is not confirmed.
 
+The user confirmed [AI card ordering](tasks/APP-015-ai-usage-limits.md#ai-card-order--2026-11-21) works in local build 99. The detailed keyboard and VoiceOver check remains open.
+
 ## Work and open checks
 
 | Outcome | Stage | Next step |

@@ -30,6 +30,8 @@ The app implements the native charge limit only ([APP-007](tasks/APP-007-native-
 
 ## Readiness
 
+2026-11-21: the app extends window frame `22 · Settings · AI tools` with a trailing drag handle and move menu per checkbox row. The drop target highlights the row. The popover and dashboard reuse their existing quota cards in the saved order. Settings frame 22 inspected live in Light and Dark. [APP-015](tasks/APP-015-ai-usage-limits.md#ai-card-order--2026-11-21) owns verification.
+
 2026-11-21: Antigravity uses the existing letter tile and quota rows. Popover frame 23 Light/Dark and window frames 21/22 Light checked live. Group names precede the cadence; Antigravity reset text and low-limit chips use separate lines where the shared layouts need room. Setup guidance is localized. [APP-015](tasks/APP-015-ai-usage-limits.md#antigravity-cli--2026-11-21) owns installed acceptance.
 
 2026-11-16: [Cooling controls proposal](tasks/APP-019-fan-control-feasibility.md) recommends a horizontal icon/label navigation study near 400 pt and a temporary System/Quieter session. Current Overview power Light/Dark inspected live, without Sketch changes/save. Direct fan control is now recommended for deferral after safety concerns; no new frame or implementation handoff is ready. [Plugged-in discharge assessment](tasks/APP-020-plugged-in-discharge-assessment.md) inspects current Battery frame 30, with no drawing or accepted design scope.

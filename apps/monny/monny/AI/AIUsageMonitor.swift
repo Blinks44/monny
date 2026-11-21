@@ -19,6 +19,11 @@ final class AIUsageMonitor {
     /// Every supported tool set up on this Mac, for Settings.
     private(set) var detected: [AITool] = []
     private(set) var states: [AITool: ToolState] = [:]
+    private var toolOrder = AIToolOrder(saved: [])
+
+    var displayedTools: [AITool] { toolOrder.tools.filter { installed.contains($0) } }
+    var detectedToolsInDisplayOrder: [AITool] { toolOrder.tools.filter { detected.contains($0) } }
+
     /// Called with the alerts that started with a reading.
     @ObservationIgnored var onAlerts: ([AlertMonitor.Alert]) -> Void = { _ in }
 
@@ -46,6 +51,7 @@ final class AIUsageMonitor {
     }
 
     init() {
+        toolOrder = AIToolOrder(saved: UserDefaults.standard.stringArray(forKey: PreferenceKey.aiToolOrder) ?? [])
         if let data = UserDefaults.standard.data(forKey: Self.savedKey),
             let saved = try? JSONDecoder().decode([AITool: AIUsage].self, from: data)
         {
@@ -59,6 +65,12 @@ final class AIUsageMonitor {
                         date: usage.date))
             }
         }
+    }
+
+    func moveDisplayedTool(_ tool: AITool, to target: AITool) {
+        guard tool != target, detected.contains(tool), detected.contains(target) else { return }
+        toolOrder.move(tool, to: target)
+        UserDefaults.standard.set(toolOrder.tools.map(\.rawValue), forKey: PreferenceKey.aiToolOrder)
     }
 
     /// Follows the Settings switch from now on; called once at launch.

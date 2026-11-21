@@ -8,6 +8,31 @@ import Testing
 struct AIUsageTests {
     private let now = Date(timeIntervalSince1970: 1_792_660_000)
 
+    @MainActor
+    @Test func aiCardOrderKeepsExistingDefaultsAndAddsNewTools() {
+        #expect(AIToolOrder(saved: []).tools == AITool.allCases)
+
+        let order = AIToolOrder(saved: ["antigravity", "copilot", "retired-tool", "antigravity"])
+        #expect(Array(order.tools.prefix(3)) == [.antigravity, .copilot, .claude])
+        #expect(order.tools.count == AITool.allCases.count)
+    }
+
+    @MainActor
+    @Test func aiCardOrderMovesToTheTargetSlotAndSurvivesReload() {
+        let detected: Set<AITool> = [.codex, .copilot, .antigravity]
+        var order = AIToolOrder(saved: [])
+        order.move(.antigravity, to: .copilot)
+        #expect(order.tools.filter { detected.contains($0) } == [.codex, .antigravity, .copilot])
+        order.move(.antigravity, to: .codex)
+        #expect(order.tools.filter { detected.contains($0) } == [.antigravity, .codex, .copilot])
+        order.move(.antigravity, to: .copilot)
+        order.move(.codex, to: .codex)
+
+        let reloaded = AIToolOrder(saved: order.tools.map(\.rawValue))
+        #expect(reloaded.tools == order.tools)
+        #expect(reloaded.tools.filter { detected.contains($0) } == [.codex, .copilot, .antigravity])
+    }
+
     @Test func decodesClaudeUsage() throws {
         let json = """
             {"five_hour": {"utilization": 34.0, "resets_at": "2026-10-22T14:30:00.274954+00:00", "used_dollars": null},

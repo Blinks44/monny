@@ -6,6 +6,23 @@ nonisolated enum AITool: String, CaseIterable, Codable, CodingKeyRepresentable, 
     case openCodeGo, kilo, kiro, alibabaToken, alibabaCoding, windsurf, codeRabbit, gemini, huggingFace, antigravity
 }
 
+/// The order of AI cards, including tools that are hidden or currently unavailable.
+struct AIToolOrder {
+    private(set) var tools: [AITool]
+
+    init(saved: [String]) {
+        var seen: Set<AITool> = []
+        tools = (saved.compactMap(AITool.init(rawValue:)) + AITool.allCases).filter { seen.insert($0).inserted }
+    }
+
+    mutating func move(_ tool: AITool, to target: AITool) {
+        guard tool != target, let source = tools.firstIndex(of: tool), let destination = tools.firstIndex(of: target)
+        else { return }
+        tools.remove(at: source)
+        tools.insert(tool, at: destination)
+    }
+}
+
 /// One rolling limit of a plan, as the service reports it.
 nonisolated struct AIQuotaWindow: Codable, Equatable, Sendable {
     enum Kind: String, Codable, Sendable { case session, weekly, monthly }

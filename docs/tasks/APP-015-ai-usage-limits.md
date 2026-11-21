@@ -2,7 +2,7 @@
 
 - Updated: 2026-11-21
 - Stage: awaiting_verification
-- Owner: unassigned for remaining real-account verification. Antigravity release ownership released after 1.8.0/build 98 packaging.
+- Owner: unassigned for remaining real-account and installed UI verification. Build 99 implementation scope covers AI card order in Settings, the popover and the dashboard.
 - Owned surfaces: `apps/monny/monny/AI/`, AI popover/dashboard, Settings/onboarding, alerts and quota history
 - Requirements: [SPEC](../SPEC.md) §§3–4, 6–8; [design](../DESIGN.md#readiness); [mechanisms and licensing](../research/ai-usage-limits.md)
 - Implementation: builds 43–49, baseline main `713defe` (build 50); repeated-alert fix in build 60, based on `e7db28d` (see the commit history for monitor/tests/project changes).
@@ -11,9 +11,23 @@
 
 **1.8.0/build 98** ships [Antigravity CLI](#antigravity-cli--2026-11-21) with direct Keychain OAuth quota polling and on-demand `agy models` renewal across hourly expiry.
 
+Local **1.8.0/build 99** adds [AI card ordering](#ai-card-order--2026-11-21). The settings order drives visible cards in both surfaces.
+
 Published **1.6.0/build 90** supports 21 AI sources. [November source decision](../research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08) owns exact credential/field restrictions; [publication evidence](#160-publication--2026-11-08) owns the final package and delivery failure. Dated sections below retain earlier artifacts and checks, not current release instructions.
 
 Open: real-account quota/reset/expiry agreement for the nine build-90 sources and earlier ClinePass/Codebuff/Amp/Augment/Nous; detailed Kimi quota/history checks; installed appearance/accessibility and fluent translations; installed update acceptance; service-mark review. Public appcast delivery was verified with [build 94](DES-007-recovery-charging-sleep.md#170-publication--2026-11-09). Website deployment belongs to the user and remains unconfirmed.
+
+## AI card order — 2026-11-21
+
+Implemented on main baseline `941e74e` with local app and documentation changes. In Settings › AI limits, drag an installed tool onto another row to move it into that slot or choose Move up or Move down from the row menu. The preference is stored locally by tool ID and survives hiding and restart. Existing installations start with the original order and newly supported tools follow saved entries. The popover and dashboard filter the same order to visible tools. Polling continues to use the existing installed-tool sequence.
+
+Live Monny.sketch window frame 22 Light/Dark verified the checkbox layout. The app adds the handle, highlighted drop target and keyboard-accessible native menu. Native Light/Dark fixture renders of the real row verified the checkbox, handle and menu placement at a 360 pt width. Six-language strings are in the existing catalog.
+
+Checks on macOS 27.2.1: `dev.sh format`, `dev.sh lint` and `dev.sh test -quiet` passed (211 passed, 0 failed, 0 skipped). Added cases for default order, unknown/duplicate IDs, target slot in both directions, and reloading saved order.
+
+`release.sh` packaged local `Monny.dmg` (1.8.0/build 99), verified app and DMG signatures and image integrity, and generated the signed appcast. SHA-256 `1c102f9cd906f2a58c5632635ccb236da8b4134eae8411654801eca5bcb36117`. Apple Development signed, not notarized.
+
+The user confirmed AI card ordering works in installed build 99 on 2026-11-21. The report did not identify individual restart or hide/show checks. Next installed check: exercise the move menu with keyboard and VoiceOver and verify that the saved order holds after restart and hide/show.
 
 ## Antigravity CLI — 2026-11-21
 

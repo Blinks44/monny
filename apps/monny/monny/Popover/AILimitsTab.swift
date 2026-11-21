@@ -12,7 +12,7 @@ struct AILimitsTab: View {
             } else {
                 ScrollView {
                     VStack(spacing: 10) {
-                        ForEach(monitor.installed, id: \.self) { tool in
+                        ForEach(monitor.displayedTools, id: \.self) { tool in
                             AIToolCard(tool: tool, state: monitor.states[tool] ?? .init())
                         }
                         Text("The mark shows how much time is left in each period. A bar shorter than its mark runs out before the reset.")

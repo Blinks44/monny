@@ -169,15 +169,21 @@ struct SettingsPage: View {
     }
 
     private var aiLimits: some View {
-        SettingsSection("AI limits") {
-            SettingsRow("Show AI limits", subtitle: foundTools, isLast: !showsAILimits || aiUsage.detected.count < 2) {
+        let tools = aiUsage.detectedToolsInDisplayOrder
+        return SettingsSection("AI limits") {
+            SettingsRow("Show AI limits", subtitle: foundTools, isLast: !showsAILimits || tools.count < 2) {
                 Toggle("Show AI limits", isOn: $showsAILimits)
             }
             // With more than one tool, each can be left out; unchecked tools are not read at all.
-            if showsAILimits, aiUsage.detected.count > 1 {
-                VStack(alignment: .leading, spacing: Theme.spaceM) {
-                    ForEach(aiUsage.detected, id: \.self) { tool in
-                        Toggle(isOn: shows(tool)) { Text(verbatim: tool.appName) }
+            if showsAILimits, tools.count > 1 {
+                VStack(spacing: Theme.spaceXS) {
+                    ForEach(Array(tools.enumerated()), id: \.element) { index, tool in
+                        AIToolSettingsRow(
+                            tool: tool,
+                            isShown: shows(tool),
+                            previousTool: index > 0 ? tools[index - 1] : nil,
+                            nextTool: index + 1 < tools.count ? tools[index + 1] : nil,
+                            move: aiUsage.moveDisplayedTool)
                     }
                 }
                 .font(Theme.body)
@@ -192,7 +198,7 @@ struct SettingsPage: View {
 
     /// "Found: Claude Code, Codex" from the tools' folders on this Mac.
     private var foundTools: LocalizedStringKey {
-        let names = aiUsage.detected.map(\.appName)
+        let names = aiUsage.detectedToolsInDisplayOrder.map(\.appName)
         return names.isEmpty
             ? "No supported AI tools are set up on this Mac"
             : "Found: \(names.formatted(.list(type: .and, width: .narrow)))"

@@ -24,6 +24,7 @@ enum PreferenceKey {
     static let aiHistoryRange = "aiHistoryRange"
     /// Tools found on this Mac but unchecked in Settings › AI limits (raw `AITool` values).
     static let aiHiddenTools = "aiHiddenTools"
+    static let aiToolOrder = "aiToolOrder"
 }
 
 enum TemperatureUnit: String, CaseIterable {

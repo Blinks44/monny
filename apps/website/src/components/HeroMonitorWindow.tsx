@@ -86,7 +86,7 @@ const SIDEBAR_SECTIONS: SidebarSection[] = [
         id: 'network',
         label: 'Network',
         keywords: 'network ports tcp bandwidth wifi ethernet ip',
-        badge: '12 ports',
+        badge: '18.4 MB/s',
         icon: <Network size={14} strokeWidth={1.9} />,
       },
       {
@@ -335,8 +335,8 @@ export function HeroMonitorWindow({ theme, onToggleTheme }: HeroMonitorWindowPro
             src={panelSrc(displayed, theme)}
             alt={`Monny ${activeItem.label} screen`}
             className="hm-stage-img"
-            width={1616}
-            height={1400}
+            width={1612}
+            height={1392}
             decoding="sync"
           />
         </div>
@@ -348,8 +348,8 @@ export function HeroMonitorWindow({ theme, onToggleTheme }: HeroMonitorWindowPro
           <img
             src={`/screenshots/popovers/popover-overview-${theme}.webp`}
             alt="Monny menu bar popover overview"
-            width={720}
-            height={1272}
+            width={712}
+            height={1264}
           />
         </div>
       </div>

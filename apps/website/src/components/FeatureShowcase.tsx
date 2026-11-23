@@ -177,8 +177,8 @@ export function FeatureShowcase({ theme, activeTab, onTabChange }: FeatureShowca
               <img
                 src={`/screenshots/popovers/popover-overview-${theme}.webp`}
                 alt={m.tabMenubarTitle()}
-                width={736}
-                height={1296}
+                width={712}
+                height={1264}
                 loading="lazy"
               />
             </button>
@@ -197,8 +197,8 @@ export function FeatureShowcase({ theme, activeTab, onTabChange }: FeatureShowca
               <img
                 src={`/screenshots/panels/cpu-${theme}.webp`}
                 alt={m.tabCpuTitle()}
-                width={1616}
-                height={1400}
+                width={1612}
+                height={1392}
                 loading="lazy"
               />
             </button>
@@ -314,8 +314,8 @@ export function FeatureShowcase({ theme, activeTab, onTabChange }: FeatureShowca
               <img
                 src={`/screenshots/panels/battery-${theme}.webp`}
                 alt={m.tabBatteryTitle()}
-                width={1616}
-                height={1400}
+                width={1612}
+                height={1392}
                 loading="lazy"
                 style={{ maxHeight: '215px', objectFit: 'cover', objectPosition: 'top left' }}
               />
@@ -428,8 +428,8 @@ export function FeatureShowcase({ theme, activeTab, onTabChange }: FeatureShowca
               <img
                 src={`/screenshots/panels/sensors-${theme}.webp`}
                 alt={m.tabSensorsTitle()}
-                width={1616}
-                height={1400}
+                width={1612}
+                height={1392}
                 loading="lazy"
               />
             </button>
@@ -516,7 +516,12 @@ export function FeatureShowcase({ theme, activeTab, onTabChange }: FeatureShowca
               className={`lightbox-body ${activeLightbox?.isPopover ? 'lightbox-body-popover' : ''}`}
             >
               {activeLightbox ? (
-                <img src={activeLightbox.shot(theme)} alt={activeLightbox.title} />
+                <img
+                  src={activeLightbox.shot(theme)}
+                  alt={activeLightbox.title}
+                  width={activeLightbox.isPopover ? 712 : 2072}
+                  height={activeLightbox.isPopover ? 1264 : 1392}
+                />
               ) : null}
             </DialogBody>
           </DialogContent>

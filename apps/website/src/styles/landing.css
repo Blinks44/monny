@@ -526,7 +526,7 @@
 
 .hero-window-wrap {
   margin-top: 2.75rem;
-  max-width: 1060px;
+  max-width: 1038px;
   margin-inline: auto;
 }
 
@@ -755,18 +755,18 @@
   margin-inline: auto;
   border: 0;
   background: transparent;
-  border-radius: 21px;
+  border-radius: 7.58% / 4.27%;
   overflow: visible;
   box-shadow: none;
 }
 
 .stage-shot-popover img {
-  border-radius: 21px;
-  filter: drop-shadow(0 18px 34px rgba(15, 23, 42, 0.18));
+  border-radius: 7.58% / 4.27%;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.18);
 }
 
 [data-theme='dark'] .stage-shot-popover img {
-  filter: drop-shadow(0 20px 42px rgba(0, 0, 0, 0.52));
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.52);
 }
 
 .stage-widget {
@@ -1117,7 +1117,7 @@
 }
 
 .privacy-popover-frame {
-  border-radius: 18px;
+  border-radius: 7.58% / 4.27%;
   overflow: visible;
   border: 0;
   background: transparent;
@@ -1127,14 +1127,11 @@
 }
 
 .privacy-popover-frame img {
-  border-radius: 18px;
-  filter: drop-shadow(0 22px 46px rgba(0, 0, 0, 0.56));
-}
-
-.privacy-popover-frame img {
   display: block;
   width: 100%;
   height: auto;
+  border-radius: 7.58% / 4.27%;
+  box-shadow: 0 22px 46px rgba(0, 0, 0, 0.56);
 }
 
 .privacy-popover-caption {
@@ -1608,7 +1605,7 @@
    Lightbox Dialog (@moduix/react/dialog)
    ============================================================================ */
 .lightbox-content {
-  --moduix-dialog-width: 1040px;
+  --moduix-dialog-width: 1070px;
   --moduix-dialog-max-width: calc(100vw - 2rem);
   --moduix-dialog-padding: 0;
   --moduix-dialog-radius: 18px;
@@ -1644,12 +1641,12 @@
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 14px;
-  filter: drop-shadow(0 18px 36px rgba(15, 23, 42, 0.14));
+  border-radius: 2.85% / 4.24%;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.14);
 }
 
 [data-theme='dark'] .lightbox-body img {
-  filter: drop-shadow(0 20px 44px rgba(0, 0, 0, 0.55));
+  box-shadow: 0 20px 46px rgba(0, 0, 0, 0.54);
 }
 
 .lightbox-body-popover {
@@ -1657,7 +1654,7 @@
 }
 
 .lightbox-body-popover img {
-  max-width: 390px;
+  max-width: 356px;
   margin-inline: auto;
-  border-radius: 22px;
+  border-radius: 7.58% / 4.27%;
 }

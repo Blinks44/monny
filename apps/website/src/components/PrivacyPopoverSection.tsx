@@ -84,7 +84,7 @@ export function PrivacyPopoverSection() {
                   }}
                   aria-label={item.caption}
                 >
-                  <img src={item.src} alt={item.caption} width={720} height={1272} loading="lazy" />
+                  <img src={item.src} alt={item.caption} width={712} height={1264} loading="lazy" />
                 </button>
                 <span className="privacy-popover-caption">{item.caption}</span>
               </div>
@@ -107,7 +107,9 @@ export function PrivacyPopoverSection() {
               <DialogCloseIcon />
             </DialogHeader>
             <DialogBody className="lightbox-body lightbox-body-popover">
-              {zoomed ? <img src={zoomed.src} alt={zoomed.caption} /> : null}
+              {zoomed ? (
+                <img src={zoomed.src} alt={zoomed.caption} width={712} height={1264} />
+              ) : null}
             </DialogBody>
           </DialogContent>
         </DialogPositioner>

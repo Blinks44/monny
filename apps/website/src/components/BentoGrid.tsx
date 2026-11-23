@@ -103,8 +103,8 @@ export function BentoGrid({ theme }: BentoGridProps) {
                 <img
                   src={`/screenshots/panels/${card.id}-${theme}.webp`}
                   alt={card.title}
-                  width={1616}
-                  height={1400}
+                  width={1612}
+                  height={1392}
                   loading="lazy"
                 />
                 <span className="bento-zoom-chip" aria-hidden="true">
@@ -134,7 +134,12 @@ export function BentoGrid({ theme }: BentoGridProps) {
             </DialogHeader>
             <DialogBody className="lightbox-body">
               {zoomed ? (
-                <img src={`/screenshots/${zoomed.id}-${theme}.webp`} alt={zoomed.title} />
+                <img
+                  src={`/screenshots/${zoomed.id}-${theme}.webp`}
+                  alt={zoomed.title}
+                  width={2072}
+                  height={1392}
+                />
               ) : null}
             </DialogBody>
           </DialogContent>

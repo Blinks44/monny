@@ -1347,6 +1347,15 @@
 }
 
 .faq-list {
+  --moduix-accordion-icon-size: 1rem;
+  --moduix-accordion-icon-open-transform: rotate(180deg);
+  --moduix-accordion-trigger-bg: transparent;
+  --moduix-accordion-trigger-bg-hover: color-mix(in srgb, var(--monny-surface) 70%, transparent);
+  --moduix-accordion-trigger-bg-active: var(--monny-surface);
+  --moduix-accordion-trigger-padding-y: 1.15rem;
+  --moduix-accordion-trigger-padding-x: 1.35rem;
+  --moduix-accordion-trigger-font-size: 0.98rem;
+  --moduix-accordion-item-body-padding: 0 1.35rem 1.2rem;
   max-width: 820px;
   margin-inline: auto;
   display: flex;
@@ -1355,29 +1364,19 @@
 }
 
 .faq-item {
-  border-radius: 14px !important;
+  border-radius: 14px;
   border: 1px solid var(--monny-border) !important;
-  background: var(--monny-card) !important;
+  background: var(--monny-card);
   overflow: hidden;
 }
 
 .faq-trigger {
-  width: 100%;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 1rem;
-  padding: 1.15rem 1.35rem !important;
-  font-size: 0.98rem !important;
-  font-weight: 660 !important;
-  color: var(--monny-text) !important;
-  text-align: left !important;
-  background: transparent !important;
-  cursor: pointer;
+  font-weight: 660;
+  color: var(--monny-text);
+  border-radius: 13px;
 }
 
 .faq-body {
-  padding: 0 1.35rem 1.2rem !important;
   font-size: 0.91rem;
   color: var(--monny-text-secondary);
   line-height: 1.65;

@@ -678,6 +678,10 @@ nonisolated struct PlotPoint {
             return connectsBefore || connectsAfter ? nil : point
         }
     }
+
+    static func hourlySeries(_ id: String, _ hours: [HistoryHour], scale: Double = 1) -> [PlotPoint] {
+        hours.map { PlotPoint(series: "\(id)/\($0.segment)", date: $0.date, value: $0.average * scale) }
+    }
 }
 
 struct SparklineSeries: Identifiable {

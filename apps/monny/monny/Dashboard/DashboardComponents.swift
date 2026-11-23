@@ -179,6 +179,24 @@ struct HistoryChart: View {
         let points: [(date: Date, value: Double)]
         let color: Color
         var filled = false
+        var label: LocalizedStringKey?
+        var hours: [HistoryHour]?
+
+        func averagingByHour(step: TimeInterval, in domain: ClosedRange<Date>) -> Self {
+            var series = self
+            series.hours = HistoryHour.summarize(points, step: step, in: domain)
+            return series
+        }
+
+        func plotPoints(step: TimeInterval, scale: Double = 1) -> [PlotPoint] {
+            if let hours { return PlotPoint.hourlySeries(id, hours, scale: scale) }
+            return PlotPoint.series(id, points, step: step, scale: scale)
+        }
+
+        func hourlyRow(at date: Date, format: (Double) -> String) -> HourlyHistoryTooltip.Row? {
+            guard let label, let hour = hours?.first(where: { $0.coverage.contains(date) }) else { return nil }
+            return .init(id: id, label: label, color: color, hour: hour, average: format(hour.average), peak: format(hour.peak))
+        }
     }
 
     let series: [Series]
@@ -190,6 +208,7 @@ struct HistoryChart: View {
     /// Colored horizontal zones behind the lines, such as pressure levels.
     var bands: [(range: ClosedRange<Double>, color: Color)] = []
     var showsAxes = true
+    var timeDomain: ClosedRange<Date>?
     @State private var hovered: Date?
 
     var body: some View {
@@ -199,7 +218,7 @@ struct HistoryChart: View {
                     .foregroundStyle(band.color)
             }
             ForEach(series) { series in
-                let points = PlotPoint.series(series.id, series.points, step: tier.step)
+                let points = series.plotPoints(step: tier.step)
                 if series.filled {
                     AreaPlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
                         .foregroundStyle(
@@ -218,15 +237,26 @@ struct HistoryChart: View {
                     .symbolSize(16)
             }
             if let hovered {
-                RuleMark(x: .value("Time", hovered))
-                    .foregroundStyle(Theme.textTertiary.opacity(0.6))
-                    .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit(to: .chart), y: .fit(to: .chart))) {
-                        tooltip(at: hovered)
+                if series.contains(where: { $0.hours != nil }) {
+                    let rows = series.compactMap { $0.hourlyRow(at: hovered, format: format) }
+                    if let first = rows.first {
+                        RuleMark(x: .value("Time", first.hour.date))
+                            .foregroundStyle(Theme.textTertiary.opacity(0.6))
+                            .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit(to: .plot), y: .fit(to: .plot))) {
+                                HourlyHistoryTooltip(rows: rows)
+                            }
                     }
+                } else {
+                    RuleMark(x: .value("Time", hovered))
+                        .foregroundStyle(Theme.textTertiary.opacity(0.6))
+                        .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit(to: .chart), y: .fit(to: .chart))) {
+                            tooltip(at: hovered)
+                        }
+                }
             }
         }
         .chartPlotStyle { $0.clipped() }
-        .chartXScale(domain: Date.now.addingTimeInterval(-tier.span)...Date.now)
+        .chartXScale(domain: timeDomain ?? (Date.now.addingTimeInterval(-tier.span)...Date.now))
         .chartYScale(domain: yDomain)
         .chartXAxis {
             if showsAxes {
@@ -252,13 +282,17 @@ struct HistoryChart: View {
                         // The pointer is in overlay coordinates; the plot starts after the y axis labels.
                         switch phase {
                         case .active(let location):
-                            let plotX = proxy.plotFrame.map { geometry[$0].minX } ?? 0
-                            hovered = proxy.value(atX: location.x - plotX, as: Date.self)
+                            guard let anchor = proxy.plotFrame, geometry[anchor].contains(location) else {
+                                hovered = nil
+                                return
+                            }
+                            hovered = proxy.value(atX: location.x - geometry[anchor].minX, as: Date.self)
                         case .ended: hovered = nil
                         }
                     }
             }
         }
+        .onChange(of: range) { hovered = nil }
     }
 
     private func tooltip(at date: Date) -> some View {
@@ -278,6 +312,60 @@ struct HistoryChart: View {
         .padding(.horizontal, 10)
         .padding(.vertical, 7)
         .background(Theme.fillTooltip, in: .rect(cornerRadius: Theme.radiusControl, style: .continuous))
+    }
+}
+
+/// An hourly tooltip names the time window and distinguishes the mean from the highest stored reading.
+struct HourlyHistoryTooltip: View {
+    struct Row: Identifiable {
+        let id: String
+        let label: LocalizedStringKey
+        let color: Color
+        let hour: HistoryHour
+        let average: String
+        let peak: String
+    }
+
+    let rows: [Row]
+    @Environment(\.locale) private var locale
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if let first = rows.first {
+                let interval = rows.allSatisfy { $0.hour.coverage == first.hour.coverage } ? first.hour.coverage : first.hour.hour
+                Text(interval, format: Date.IntervalFormatStyle().weekday(.abbreviated).hour().minute().locale(locale))
+                    .fontWeight(.semibold)
+            }
+            Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 3) {
+                GridRow {
+                    Color.clear.frame(width: 0, height: 0)
+                    Text("Average")
+                    Text("Peak")
+                }
+                .fontWeight(.semibold)
+                ForEach(rows) { row in
+                    GridRow {
+                        HStack(spacing: 5) {
+                            Circle().fill(row.color).frame(width: 6, height: 6)
+                            Text(row.label)
+                                .fixedSize(horizontal: true, vertical: false)
+                        }
+                        .gridColumnAlignment(.leading)
+                        Text(verbatim: row.average)
+                        Text(verbatim: row.peak)
+                    }
+                }
+            }
+            .lineLimit(1)
+            .monospacedDigit()
+        }
+        .font(Theme.footnote)
+        .foregroundStyle(Theme.surfaceOpaque)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(Theme.fillTooltip, in: .rect(cornerRadius: Theme.radiusControl, style: .continuous))
+        .fixedSize()
+        .allowsHitTesting(false)
     }
 }
 

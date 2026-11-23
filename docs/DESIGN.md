@@ -30,6 +30,8 @@ The app implements the native charge limit only ([APP-007](tasks/APP-007-native-
 
 ## Readiness
 
+2026-11-23: the large weekly CPU and Sensors charts reuse window frames `01`, `02` and `07` for card geometry. Hourly averages are identified in the subtitle, with a separate temperature scale on the combined CPU plot and a bounded average/peak tooltip. [APP-021](tasks/APP-021-history-chart-regressions.md#hourly-cpu-and-temperature-history) owns verification.
+
 2026-11-21: the app extends window frame `22 · Settings · AI tools` with a trailing drag handle and move menu per checkbox row. The drop target highlights the row. The popover and dashboard reuse their existing quota cards in the saved order. Settings frame 22 inspected live in Light and Dark. [APP-015](tasks/APP-015-ai-usage-limits.md#ai-card-order--2026-11-21) owns verification.
 
 2026-11-23: All supported AI tools have service marks and individual chart accents. Antigravity uses a blue vector mark (`#3186FF`). The app follows the tile pattern in live popover frame 23 and the chart/hover pattern in window frames 21/24. [APP-015](tasks/APP-015-ai-usage-limits.md#complete-ai-branding--2026-11-23) owns asset and installed verification. Group names precede the cadence; reset text and low-limit chips use separate lines where needed. Setup guidance is localized.

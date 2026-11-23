@@ -1,25 +1,36 @@
 import Charts
 import SwiftUI
 
-/// "CPU load & temperature" (Sketch `Card · CPU history`): Performance and Efficiency load as
-/// areas, CPU temperature as a dashed line, and a tooltip under the pointer. Temperature shares
-/// the load axis at 100 °C per unit; hotter readings expand the domain.
+/// The CPU history card shared by Overview and CPU.
 struct CPUHistoryCard: View {
     let tier: HistoryTier
     let range: HistoryRange
-    @State private var hovered: Date?
     @AppStorage(PreferenceKey.temperatureUnit) private var temperatureUnit = TemperatureUnit.celsius
-
-    private var performance: [(date: Date, value: Double)] { tier.series(.cpuPerformance) }
-    private var efficiency: [(date: Date, value: Double)] { tier.series(.cpuEfficiency) }
-    private var temperature: [(date: Date, value: Double)] { tier.series(.cpuTemperature) }
-    private var load: [(date: Date, value: Double)] { tier.series(.cpu) }
+    @Environment(\.locale) private var locale
 
     var body: some View {
+        let end = Date.now
+        let domain = end.addingTimeInterval(-tier.span)...end
+        let load = series(.cpu, label: "CPU", color: Theme.metricCPU, domain: domain)
+        let summary = summary(load.points)
         VStack(alignment: .leading, spacing: 0) {
-            header
-            if load.count > 1 {
-                chart.padding(.top, Theme.spaceL)
+            VStack(alignment: .leading, spacing: 6) {
+                CardHeader("CPU load & temperature", subtitle: summary)
+                HStack(spacing: Theme.spaceL) {
+                    ChartLegend(title: "Performance", color: Theme.metricCPU)
+                    ChartLegend(title: "Efficiency", color: Theme.metricCPUEfficiency)
+                    ChartLegend(title: "Temp", color: Theme.metricHeat)
+                }
+            }
+            if load.points.count > 1 {
+                CPUHistoryPlot(
+                    range: range, domain: domain, step: tier.step, summary: summary, temperatureUnit: temperatureUnit,
+                    load: load,
+                    performance: series(.cpuPerformance, label: "Performance", color: Theme.metricCPU, domain: domain),
+                    efficiency: series(.cpuEfficiency, label: "Efficiency", color: Theme.metricCPUEfficiency, domain: domain),
+                    temperature: series(.cpuTemperature, label: "Temp", color: Theme.metricHeat, domain: domain)
+                )
+                .padding(.top, Theme.spaceL)
             } else {
                 CollectingHistoryContent().frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -32,90 +43,84 @@ struct CPUHistoryCard: View {
         .card()
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            CardHeader("CPU load & temperature", subtitle: summary)
-            HStack(spacing: Theme.spaceL) {
-                ChartLegend(title: "Performance", color: Theme.metricCPU)
-                ChartLegend(title: "Efficiency", color: Theme.metricCPUEfficiency)
-                ChartLegend(title: "Temp", color: Theme.metricHeat)
-            }
-        }
+    private func series(
+        _ metric: HistoryMetric, label: LocalizedStringKey, color: Color, domain: ClosedRange<Date>
+    ) -> HistoryChart.Series {
+        let points = tier.series(metric)
+        let series = HistoryChart.Series(
+            id: metric.rawValue, points: range == .week ? points.filter { domain.contains($0.date) } : points,
+            color: color, label: label)
+        return range == .week ? series.averagingByHour(step: tier.step, in: domain) : series
     }
 
-    /// "Last hour · avg 27% · peak 88% at 10:29".
-    private var summary: Text {
-        let name = range.periodName
-        guard let peak = load.max(by: { $0.value < $1.value }) else { return name }
-        let average = load.map(\.value).reduce(0, +) / Double(load.count)
-        return Text("\(name) · avg \(average.percentText) · peak \(peak.value.percentText) at \(peak.date.formatted(range.timeFormat))")
+    /// Keep the summary peak at the stored bucket resolution, even when the plot is rolled up.
+    private func summary(_ points: [(date: Date, value: Double)]) -> Text {
+        let name = range.historyPlotPeriodName
+        guard let peak = points.max(by: { $0.value < $1.value }) else { return name }
+        let average = points.map(\.value).reduce(0, +) / Double(points.count)
+        return Text(
+            "\(name) · avg \(average.percentText) · peak \(peak.value.percentText) at \(peak.date.formatted(range.timeFormat.locale(locale)))"
+        )
     }
+}
 
-    // Vectorized plots: one mark per series instead of one per point, redrawn every sample.
-    @ChartContentBuilder private var loadPlots: some ChartContent {
-        AreaPlot(
-            PlotPoint.series("P", performance, step: tier.step), x: .value("Time", \.date), y: .value("Load", \.value),
-            series: .value("Series", \.series)
-        )
-        .foregroundStyle(
-            LinearGradient(
-                colors: [Theme.metricCPU.opacity(0.45), Theme.metricCPU.opacity(0.08)],
-                startPoint: .top, endPoint: .bottom)
-        )
-        .interpolationMethod(range.chartInterpolation)
-        LinePlot(
-            PlotPoint.series("P", performance, step: tier.step), x: .value("Time", \.date), y: .value("Load", \.value),
-            series: .value("Series", \.series)
-        )
-        .foregroundStyle(Theme.metricCPU)
-        .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
-        .interpolationMethod(range.chartInterpolation)
-        AreaPlot(
-            PlotPoint.series("E", efficiency, step: tier.step), x: .value("Time", \.date), y: .value("Load", \.value),
-            series: .value("Series", \.series)
-        )
-        .foregroundStyle(Theme.metricCPUEfficiency.opacity(0.2))
-        .interpolationMethod(range.chartInterpolation)
-        LinePlot(
-            PlotPoint.series("E", efficiency, step: tier.step), x: .value("Time", \.date), y: .value("Load", \.value),
-            series: .value("Series", \.series)
-        )
-        .foregroundStyle(Theme.metricCPUEfficiency)
-        .lineStyle(StrokeStyle(lineWidth: 1.5))
-        .interpolationMethod(range.chartInterpolation)
-    }
+/// Hover state stays in the plot, so changing it does not rebuild the hourly buckets.
+private struct CPUHistoryPlot: View {
+    let range: HistoryRange
+    let domain: ClosedRange<Date>
+    let step: TimeInterval
+    let summary: Text
+    let temperatureUnit: TemperatureUnit
+    let load: HistoryChart.Series
+    let performance: HistoryChart.Series
+    let efficiency: HistoryChart.Series
+    let temperature: HistoryChart.Series
+    @State private var hovered: Date?
 
-    /// Temperature shares the load scale: 100 °C aligns with 100% load.
-    private var temperaturePlot: some ChartContent {
-        LinePlot(
-            PlotPoint.series("T", temperature, step: tier.step, scale: 0.01), x: .value("Time", \.date), y: .value("Load", \.value),
-            series: .value("Series", \.series)
-        )
-        .foregroundStyle(LinearGradient(colors: [Theme.metricHeat, Theme.metricHeatHot], startPoint: .leading, endPoint: .trailing))
-        .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, dash: [4, 4]))
-        .interpolationMethod(range.chartInterpolation)
-    }
+    private var weekly: Bool { range == .week }
 
-    private var chart: some View {
+    var body: some View {
+        let temperaturePoints = temperature.plotPoints(step: step, scale: 0.01)
+        let upper = max(1, ((temperaturePoints.map(\.value).max() ?? 1) * 5).rounded(.up) / 5)
+        let loadTicks: [Double] = weekly ? [0, 0.25, 0.5, 0.75, 1] : [0, 0.33, 0.66, 1]
         Chart {
-            loadPlots
-            temperaturePlot
-            if let point = hoveredPoint {
-                RuleMark(x: .value("Time", point.date))
-                    .foregroundStyle(Theme.textTertiary.opacity(0.6))
-                    .lineStyle(StrokeStyle(lineWidth: 1))
-                PointMark(x: .value("Time", point.date), y: .value("Load", point.value))
-                    .symbolSize(70)
-                    .foregroundStyle(Theme.metricCPU)
-                    .annotation(position: .top, spacing: 8, overflowResolution: .init(x: .fit(to: .chart), y: .fit(to: .chart))) {
-                        tooltip(for: point.date, load: point.value)
-                    }
+            loadPlot(performance, width: weekly ? 1.65 : 2.5, fillOpacity: 0.45)
+            loadPlot(efficiency, width: 1.5, fillOpacity: 0.2)
+            LinePlot(
+                temperaturePoints, x: .value("Time", \.date), y: .value("Temperature", \.value),
+                series: .value("Series", \.series)
+            )
+            .foregroundStyle(
+                LinearGradient(
+                    colors: [Theme.metricHeat, weekly ? Theme.metricHeat : Theme.metricHeatHot], startPoint: .leading, endPoint: .trailing)
+            )
+            .lineStyle(StrokeStyle(lineWidth: weekly ? 1.5 : 2, lineCap: .round, dash: [4, 4]))
+            .interpolationMethod(range.chartInterpolation)
+            if weekly {
+                PointPlot(PlotPoint.isolated(in: temperaturePoints), x: .value("Time", \.date), y: .value("Temperature", \.value))
+                    .foregroundStyle(Theme.metricHeat)
+                    .symbolSize(16)
+            }
+            if let hovered {
+                if weekly {
+                    hourlySelection(at: hovered)
+                } else if let point = performance.points.min(by: {
+                    abs($0.date.timeIntervalSince(hovered)) < abs($1.date.timeIntervalSince(hovered))
+                }) {
+                    RuleMark(x: .value("Time", point.date))
+                        .foregroundStyle(Theme.textTertiary.opacity(0.6))
+                    PointMark(x: .value("Time", point.date), y: .value("Load", point.value))
+                        .symbolSize(70)
+                        .foregroundStyle(Theme.metricCPU)
+                        .annotation(position: .top, spacing: 8, overflowResolution: .init(x: .fit(to: .chart), y: .fit(to: .chart))) {
+                            sampleTooltip(at: point.date, performance: point.value)
+                        }
+                }
             }
         }
-        // Monotone curves do not overshoot the data, and the plot is clipped like the Sketch frame.
         .chartPlotStyle { $0.clipped() }
-        .chartXScale(domain: Date.now.addingTimeInterval(-tier.span)...Date.now)
-        .chartYScale(domain: 0...max(1, ((temperature.map(\.value).max() ?? 100) / 20).rounded(.up) / 5))
+        .chartXScale(domain: domain)
+        .chartYScale(domain: 0...upper)
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 5)) { _ in
                 AxisValueLabel(format: range.axisTimeFormat)
@@ -124,46 +129,96 @@ struct CPUHistoryCard: View {
             }
         }
         .chartYAxis {
-            AxisMarks(position: .leading, values: [0, 0.33, 0.66, 1]) { value in
+            AxisMarks(position: .leading, values: loadTicks) { value in
                 AxisGridLine(stroke: StrokeStyle(lineWidth: 1, dash: [2, 3])).foregroundStyle(Theme.fillSeparator)
                 AxisValueLabel {
                     if let fraction = value.as(Double.self) {
-                        Text(fraction == 0 ? "0" : fraction.percentText)
+                        Text(weekly || fraction > 0 ? fraction.percentText : "0")
                     }
                 }
                 .font(Theme.caption.weight(.regular))
                 .foregroundStyle(Theme.textTertiary)
+            }
+            if weekly, !temperaturePoints.isEmpty {
+                AxisMarks(position: .trailing, values: upper > 1 ? [0.25, 0.5, 0.75, 1, upper] : [0.25, 0.5, 0.75, 1]) { value in
+                    AxisValueLabel {
+                        if let fraction = value.as(Double.self) {
+                            Text(verbatim: (fraction * 100).temperatureText(temperatureUnit))
+                        }
+                    }
+                    .font(Theme.caption.weight(.regular))
+                    .foregroundStyle(Theme.textSecondary)
+                }
             }
         }
         .chartOverlay { proxy in
             GeometryReader { geometry in
                 Rectangle().fill(.clear).contentShape(.rect)
                     .onContinuousHover { phase in
-                        // The pointer is in overlay coordinates; the plot starts after the y axis labels.
                         switch phase {
                         case .active(let location):
-                            let plotX = proxy.plotFrame.map { geometry[$0].minX } ?? 0
-                            hovered = proxy.value(atX: location.x - plotX, as: Date.self)
+                            guard let anchor = proxy.plotFrame, geometry[anchor].contains(location) else {
+                                hovered = nil
+                                return
+                            }
+                            hovered = proxy.value(atX: location.x - geometry[anchor].minX, as: Date.self)
                         case .ended: hovered = nil
                         }
                     }
             }
         }
+        .onChange(of: range) { hovered = nil }
         .accessibilityLabel(Text("CPU load & temperature"))
         .accessibilityValue(summary)
     }
 
-    /// The P-core load nearest to the pointer.
-    private var hoveredPoint: (date: Date, value: Double)? {
-        guard let hovered else { return nil }
-        return performance.min { abs($0.date.timeIntervalSince(hovered)) < abs($1.date.timeIntervalSince(hovered)) }
+    @ChartContentBuilder
+    private func loadPlot(_ series: HistoryChart.Series, width: CGFloat, fillOpacity: Double) -> some ChartContent {
+        let points = series.plotPoints(step: step)
+        if !weekly {
+            AreaPlot(points, x: .value("Time", \.date), y: .value("Load", \.value), series: .value("Series", \.series))
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [series.color.opacity(fillOpacity), series.color.opacity(0.08)], startPoint: .top, endPoint: .bottom)
+                )
+                .interpolationMethod(range.chartInterpolation)
+        }
+        LinePlot(points, x: .value("Time", \.date), y: .value("Load", \.value), series: .value("Series", \.series))
+            .foregroundStyle(series.color)
+            .lineStyle(StrokeStyle(lineWidth: width, lineCap: .round, lineJoin: .round))
+            .interpolationMethod(range.chartInterpolation)
+        if weekly {
+            PointPlot(PlotPoint.isolated(in: points), x: .value("Time", \.date), y: .value("Load", \.value))
+                .foregroundStyle(series.color)
+                .symbolSize(16)
+        }
     }
 
-    private func tooltip(for date: Date, load: Double) -> some View {
-        let total = self.load.min { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }?.value
-        let celsius = temperature.min { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }?.value
+    @ChartContentBuilder
+    private func hourlySelection(at date: Date) -> some ChartContent {
+        let loads = [load, performance, efficiency].compactMap { $0.hourlyRow(at: date, format: { $0.percentText }) }
+        let heat = temperature.hourlyRow(at: date, format: { $0.temperatureText(temperatureUnit) })
+        let rows = loads + [heat].compactMap(\.self)
+        if let selected = rows.first(where: { $0.id != load.id }) ?? rows.first {
+            if selected.id != load.id {
+                let plotValue = selected.id == temperature.id ? selected.hour.average / 100 : selected.hour.average
+                PointMark(x: .value("Time", selected.hour.date), y: .value("Value", plotValue))
+                    .symbolSize(40)
+                    .foregroundStyle(selected.color)
+            }
+            RuleMark(x: .value("Time", selected.hour.date))
+                .foregroundStyle(Theme.textTertiary.opacity(0.6))
+                .annotation(position: .top, spacing: 8, overflowResolution: .init(x: .fit(to: .plot), y: .fit(to: .plot))) {
+                    HourlyHistoryTooltip(rows: rows)
+                }
+        }
+    }
+
+    private func sampleTooltip(at date: Date, performance: Double) -> some View {
+        let total = load.points.min { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }?.value
+        let celsius = temperature.points.min { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }?.value
         return VStack(alignment: .leading, spacing: 2) {
-            Text(verbatim: "\(date.formatted(range.timeFormat))  ·  \((total ?? load).percentText)")
+            Text(verbatim: "\(date.formatted(range.timeFormat))  ·  \((total ?? performance).percentText)")
             if let celsius { Text(verbatim: celsius.temperatureText(temperatureUnit)) }
         }
         .font(Theme.footnote.weight(.semibold))
@@ -191,6 +246,8 @@ struct ChartLegend: View {
 }
 
 extension HistoryRange {
+    var historyPlotPeriodName: Text { self == .week ? Text("Last 7 days · hourly averages") : periodName }
+
     /// "Last hour" for summaries.
     var periodName: Text {
         switch self {

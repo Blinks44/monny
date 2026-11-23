@@ -82,6 +82,8 @@ Before history exists, current values show immediately and charts/process lists 
 
 Weekly history axis ticks show localized weekdays. Sample tooltips retain their time of day. Charts leave unrecorded intervals blank and plot samples in chronological order. The AI history chart shows its focus outline while navigating by keyboard and retains arrow-key and VoiceOver inspection.
 
+The large CPU load and temperature charts on Overview, CPU and Sensors plot hourly averages in the 7-day range. The charts use recorded ten-minute buckets, retain gaps even within an hour, and show average and peak per recorded series in the hourly tooltip. The CPU header reports its peak from the original ten-minute buckets. The combined CPU chart has a separate weekly temperature axis in the selected temperature unit. Hourly aggregation is for display; history storage, shorter ranges, battery and quota charts keep their existing resolution.
+
 History must survive the window closing and an app restart for the 24 h and 7 d ranges. Storage mechanism is an open engineering decision (research).
 
 ### Charging diagnosis and sleep battery reports (2026-11-09)

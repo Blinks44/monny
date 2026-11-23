@@ -29,7 +29,7 @@ struct SensorsPage: View {
                         title: kind.title, symbol: "thermometer.medium", color: kind.color,
                         value: kind.value?.temperatureText(temperatureUnit),
                         detail: points.map(\.value).max().map { Text("peak \($0.temperatureText(temperatureUnit))") },
-                        points: kind.value == nil ? nil : points)
+                        points: kind.value == nil ? nil : points, historyStep: tier.step)
                 }
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
@@ -55,20 +55,26 @@ private struct TemperaturesCard: View {
     let unit: TemperatureUnit
 
     var body: some View {
-        let series = kinds.map { HistoryChart.Series(id: $0.metric.rawValue, points: tier.series($0.metric), color: $0.color) }
-        let values = series.flatMap { $0.points.map(\.value) }
+        let end = Date.now
+        let domain = end.addingTimeInterval(-tier.span)...end
+        let series = kinds.map { kind in
+            let series = HistoryChart.Series(
+                id: kind.metric.rawValue, points: tier.series(kind.metric), color: kind.color, label: kind.title)
+            return range == .week ? series.averagingByHour(step: tier.step, in: domain) : series
+        }
+        let values = series.flatMap { $0.hours?.map(\.average) ?? $0.points.map(\.value) }
         let lower = min(20, ((values.min() ?? 20) / 20).rounded(.down) * 20)
         let upper = max(100, ((values.max() ?? 100) / 20).rounded(.up) * 20)
         VStack(alignment: .leading, spacing: 12) {
-            CardHeader("Temperatures", subtitle: range.periodName)
+            CardHeader("Temperatures", subtitle: range.historyPlotPeriodName)
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), alignment: .leading)], alignment: .leading, spacing: 6) {
                 ForEach(kinds) { ChartLegend(title: $0.title, color: $0.color, wraps: true) }
             }
-            if series.contains(where: { $0.points.count > 1 }) {
+            if series.contains(where: { $0.hours.map { !$0.isEmpty } ?? ($0.points.count > 1) }) {
                 HistoryChart(
                     series: series, tier: tier, range: range, yDomain: lower...upper,
                     yTicks: Array(stride(from: lower, through: upper, by: 20)),
-                    format: { $0.temperatureText(unit) })
+                    format: { $0.temperatureText(unit) }, timeDomain: domain)
             } else {
                 CollectingHistoryContent().frame(maxWidth: .infinity, maxHeight: .infinity)
             }

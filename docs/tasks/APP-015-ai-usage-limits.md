@@ -11,11 +11,15 @@
 
 **1.8.0/build 98** ships [Antigravity CLI](#antigravity-cli--2026-11-21) with direct Keychain OAuth quota polling and on-demand `agy models` renewal across hourly expiry.
 
-**1.8.1/build 101** packages [Antigravity branding](#antigravity-branding--2026-11-23) and [AI card ordering](#ai-card-order--2026-11-21) from the local builds 100 and 99.
+Published **1.8.1/build 101** includes [Antigravity branding](#antigravity-branding--2026-11-23) and [AI card ordering](#ai-card-order--2026-11-21) from the local builds 100 and 99. [Publication evidence](#181-publication--2026-11-23).
 
 Published **1.6.0/build 90** supports 21 AI sources. [November source decision](../research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08) owns exact credential/field restrictions; [publication evidence](#160-publication--2026-11-08) owns the final package and delivery failure. Dated sections below retain earlier artifacts and checks, not current release instructions.
 
 Open: real-account quota/reset/expiry agreement for the nine build-90 sources and earlier ClinePass/Codebuff/Amp/Augment/Nous; detailed Kimi quota/history checks; installed appearance/accessibility and fluent translations; installed update acceptance; service-mark review. Public appcast delivery was verified with [build 94](DES-007-recovery-charging-sleep.md#170-publication--2026-11-09). Website deployment belongs to the user and remains unconfirmed.
+
+## 1.8.1 publication — 2026-11-23
+
+Published [v1.8.1](https://github.com/Blinks44/monny/releases/tag/v1.8.1) from `2d988a1`. GitHub's latest-release endpoint returned v1.8.1. The public `releases/latest/download` appcast, checksum and DMG matched the release artifacts byte for byte. The appcast names build 101 and targets the v1.8.1 DMG. The downloaded DMG passed SHA-256 verification (`6f06a01ce5c5d387475ca14fec5311483039147373cc924564125a5755242d42`). Next: verify Check for Updates from an installed earlier release and review the Antigravity card in Light and Dark.
 
 ## Antigravity branding — 2026-11-23
 

@@ -1,6 +1,6 @@
 import { defaultLocale, type Locale, localePath, locales, openGraphLocales } from '@/config/locales'
 import { site } from '@/config/site'
-import { m } from '@/integrations/i18n/paraglide/messages'
+import * as m from '@/integrations/i18n/paraglide/messages'
 
 export function pageHead(locale: Locale, notFound = false) {
   const title = notFound ? m.notFoundTitle({}, { locale }) : m.metaTitle({}, { locale })
@@ -25,14 +25,14 @@ export function pageHead(locale: Locale, notFound = false) {
       { property: 'og:image', content: `${site.origin}/og-image.jpg` },
       { property: 'og:image:width', content: '2400' },
       { property: 'og:image:height', content: '1260' },
-      { property: 'og:image:alt', content: 'Monny' },
+      { property: 'og:image:alt', content: 'Monny for macOS' },
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:site', content: site.author.xHandle },
       { name: 'twitter:creator', content: site.author.xHandle },
       { name: 'twitter:title', content: title },
       { name: 'twitter:description', content: description },
       { name: 'twitter:image', content: `${site.origin}/og-image.jpg` },
-      { name: 'twitter:image:alt', content: 'Monny' },
+      { name: 'twitter:image:alt', content: 'Monny for macOS' },
     ],
     links: notFound
       ? []
@@ -63,6 +63,7 @@ export function pageHead(locale: Locale, notFound = false) {
               inLanguage: locale,
               operatingSystem: 'macOS 15+',
               applicationCategory: 'UtilitiesApplication',
+              offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
               author: {
                 '@type': 'Person',
                 name: site.author.name,

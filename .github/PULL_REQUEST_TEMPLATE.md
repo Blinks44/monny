@@ -1,9 +1,11 @@
-**What this changes**
+## Summary
 
+<!-- Describe what this PR changes and why. Link related issues if any (e.g. Fixes #123). -->
 
-**How it was checked**
-- [ ] `apps/monny/scripts/dev.sh lint` and `apps/monny/scripts/dev.sh test` pass
-- [ ] Tried in the running app (say on which Mac model and macOS version)
+## Verification
 
-**Not tested**
-<!-- For example a Mac model or sensor you do not have, a macOS version without the charge limit, or languages you could not translate. -->
+- [ ] `apps/monny/scripts/dev.sh build`, `test`, and `lint` pass (for app changes)
+- [ ] New or updated tests cover the changed behavior
+- [ ] UI changes checked in light & dark mode and across localizations
+- [ ] Charging logic preserves fail-safe rules in `docs/ENGINEERING.md` (if touched)
+- [ ] If `apps/website/` changed: `pnpm --dir apps/website check` and `pnpm --dir apps/website build` pass

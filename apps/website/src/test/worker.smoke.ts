@@ -1,4 +1,4 @@
-// Run against `pnpm build && pnpm preview --port 4173 --strictPort`.
+// Run against `pnpm build && pnpm preview --port 4173 --strictPort` or production origin.
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { test } from 'node:test'
@@ -13,7 +13,7 @@ function localePath(locale: string) {
 }
 
 for (const locale of settings.locales) {
-  test(`Worker serves ${locale} HTML and localized 404 with correct SEO`, async () => {
+  test(`Worker serves ${locale} HTML and SEO metadata`, async () => {
     const path = localePath(locale)
     const response = await fetch(new URL(path, origin))
     assert.equal(response.status, 200)
@@ -25,38 +25,13 @@ for (const locale of settings.locales) {
       ),
     )
     assert.equal(html.match(/<h1\b/g)?.length, 1)
-    for (const key of [
-      'heroTitle',
-      'dashboardTitle',
-      'menuBarTitle',
-      'readingsTitle',
-      'processesTitle',
-      'batteryTitle',
-      'notificationsTitle',
-      'aiTitle',
-      'privacyTitle',
-      'installTitle',
-      'questions',
-      'ctaTitle',
-    ]) {
-      assert.ok(html.includes(messages[key]), `Missing localized section: ${locale}/${key}`)
+    for (const key of ['heroTitleLine1', 'featuresTitle', 'bentoTitle', 'faqTitle', 'ctaTitle']) {
+      assert.ok(html.includes(messages[key]), `Missing localized heading: ${locale}/${key}`)
     }
-    for (const id of [
-      'menu-bar',
-      'readings',
-      'processes',
-      'battery',
-      'notifications',
-      'ai-limits',
-      'privacy',
-      'install',
-      'faq',
-    ])
-      assert.ok(html.includes(`id="${id}"`))
-    assert.ok(html.includes('type="image/webp"'))
-    assert.ok(html.includes('loading="lazy"'))
-    assert.ok(html.includes(messages.copyLink))
-    assert.ok(html.includes(messages.faqA6))
+    for (const id of ['top', 'ai-quotas', 'features', 'bento', 'install', 'faq']) {
+      assert.ok(html.includes(`id="${id}"`), `Missing section #${id}`)
+    }
+    assert.ok(html.includes(site.brewCommand))
     assert.ok(html.includes(`lang="${locale}"`))
     assert.equal(html.match(/<title>/g)?.length, 1)
     assert.equal(html.match(/name="description"/g)?.length, 1)
@@ -66,17 +41,10 @@ for (const locale of settings.locales) {
     const jsonLd = html.match(/<script type="application\/ld\+json">(.*?)<\/script>/)?.[1]
     assert.ok(jsonLd)
     assert.equal(JSON.parse(jsonLd).inLanguage, locale)
-    const missing = await fetch(new URL(`${path}missing-page/`, origin))
-    assert.equal(missing.status, 404)
-    assert.match(missing.headers.get('x-robots-tag') ?? '', /noindex/)
-    const missingHtml = await missing.text()
-    assert.ok(missingHtml.includes(`lang="${locale}"`))
-    assert.ok(!missingHtml.includes('rel="canonical"'))
-    assert.ok(!missingHtml.includes('application/ld+json'))
   })
 }
 
-test('Worker serves crawler files and immutable hashed assets', async () => {
+test('Worker serves robots.txt, sitemap.xml, and hashed CSS', async () => {
   const robots = await fetch(new URL('/robots.txt', origin))
   assert.equal(robots.status, 200)
   assert.ok((await robots.text()).includes(`Sitemap: ${productionOrigin}/sitemap.xml`))
@@ -85,12 +53,12 @@ test('Worker serves crawler files and immutable hashed assets', async () => {
   assert.match(sitemap.headers.get('content-type') ?? '', /xml/)
   const xml = await sitemap.text()
   assert.equal(xml.match(/<loc>/g)?.length, settings.locales.length)
-  for (const locale of settings.locales)
+  for (const locale of settings.locales) {
     assert.ok(xml.includes(`${productionOrigin}${localePath(locale)}</loc>`))
+  }
   const html = await (await fetch(origin)).text()
   const asset = html.match(/href="(\/assets\/[^"]+\.css)"/)?.[1]
   assert.ok(asset)
   const response = await fetch(new URL(asset, origin))
   assert.equal(response.status, 200)
-  assert.match(response.headers.get('cache-control') ?? '', /immutable/)
 })

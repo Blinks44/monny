@@ -1,19 +1,21 @@
-# Security
+# Security Policy
 
-Monny reads system statistics and can change the macOS battery charge limit, the same setting as System Settings › Battery. It runs as an ordinary app without administrator rights or a background helper.
+Monny reads local macOS system statistics and can adjust the built-in macOS battery charge limit (the same setting as **System Settings → Battery**). It runs as an ordinary user-space app without administrator rights or a privileged helper daemon.
 
-## What Monny does and does not do
+## Privacy & Network Model
 
-- Readings come from your Mac and stay on it. There is no account, analytics or telemetry. Network requests: the update check (GitHub), and, only if you turn on AI limits, the limit checks with Anthropic, OpenAI, Cursor and xAI using each tool's own sign-in. Monny never stores or sends those tokens anywhere else.
-- Monny shows process names and resource use but does not read file contents, keystrokes or network traffic.
-- The charge limit changes only when you change it. macOS enforces it; if the setting cannot be read, Monny does not write it.
+- System metrics stay on your Mac. There is no account, analytics, or telemetry.
+- **Update checks:** Monny checks the public Sparkle `appcast.xml` on GitHub Releases and verifies downloaded updates with an Ed25519 signature (`SUPublicEDKey`).
+- **AI subscription quotas (optional, off by default):** When enabled, Monny queries only the providers you turn on using each tool's existing local sign-in on your Mac (JetBrains AI is read strictly from local IDE files). Monny never transmits credentials to any third-party backend.
+- Monny shows process names, ports, and resource usage, and never inspects file contents, keystrokes, or network payloads.
+- Battery charge limit writes are fail-safe: if the native setting cannot be verified, macOS keeps full control of charging.
 
-## Reporting a vulnerability
+## Reporting a Vulnerability
 
-Please do not open a public issue for a security problem. Use **Security → Report a vulnerability** on the repository's GitHub page (private vulnerability reporting). Include the affected version, your macOS version, your Mac model and the steps to reproduce.
+Please do **not** open a public GitHub issue for a security vulnerability. Use **Security → Report a vulnerability** on GitHub ([private advisory form](https://github.com/Blinks44/monny/security/advisories/new)).
 
-You can expect an acknowledgement within a week. This is a volunteer project, so fixes are made as time allows; you will be told what is planned and credited in the release notes unless you prefer otherwise.
+Include your Monny version, macOS version, Mac model, and reproduction steps. Expect an initial response within 7 days.
 
-## Supported versions
+## Supported Versions
 
-Only the latest release receives fixes.
+Security fixes are shipped on the latest release.

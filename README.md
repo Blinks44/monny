@@ -1,100 +1,161 @@
 <p align="center">
-  <img src="docs/images/app-icon.png" alt="Monny app icon" width="128" height="128">
+  <img src="docs/images/app-icon.png" alt="Monny app icon" width="84" height="84" />
 </p>
 
 <h1 align="center">Monny</h1>
 
 <p align="center">
-  See what your Mac is doing, and keep its battery healthy while it stays plugged in.<br>
-  Free, open source, native on macOS 15+.
+  <strong>See what your Mac is doing, protect your battery, and track AI subscription limits.</strong><br />
+  Free, open source, and native for Apple silicon on macOS 15+.
 </p>
 
-A native macOS menu bar utility for resource monitoring and battery charge control. A click on the menu bar icon shows CPU, memory, disk, network, cores and battery at a glance; a dashboard window adds history charts, top processes and temperature sensors. Battery controls use the built-in macOS charge limit where available; macOS manages charging.
+<p align="center">
+  <a href="https://github.com/Blinks44/monny/actions/workflows/website.yml"><img src="https://github.com/Blinks44/monny/actions/workflows/website.yml/badge.svg" alt="Website CI" /></a>
+  <a href="https://github.com/Blinks44/monny/releases/latest"><img src="https://img.shields.io/github/v/release/Blinks44/monny?color=7C5CFF" alt="Latest Release" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
+  <a href="https://monny.moduix.dev"><img src="https://img.shields.io/badge/website-monny.moduix.dev-12141A" alt="Website" /></a>
+</p>
 
-Download the latest version from [GitHub Releases](https://github.com/Blinks44/monny/releases/latest); what changed in each version is in the [changelog](CHANGELOG.md).
+<p align="center">
+  <a href="https://monny.moduix.dev">Website</a> ·
+  <a href="https://github.com/Blinks44/monny/releases/latest">Download</a> ·
+  <a href="#installation">Install</a> ·
+  <a href="#why-monny">Features</a> ·
+  <a href="docs/README.md">Docs</a> ·
+  <a href="SECURITY.md">Security</a>
+</p>
 
-Made by Sergey V. News and updates: [@TheBlinks182 on X](https://x.com/TheBlinks182).
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="apps/website/public/screenshots/overview-dark.webp" />
+    <source media="(prefers-color-scheme: light)" srcset="apps/website/public/screenshots/overview-light.webp" />
+    <img src="apps/website/public/screenshots/overview-light.webp" alt="Monny Dashboard overview on macOS" width="920" />
+  </picture>
+</p>
 
-## Repository layout
+---
+
+## Why Monny?
+
+Most Mac monitors either eat CPU themselves, require a privileged root helper just to cap battery charging, or miss the tools developers actually watch every day — like which process holds port `3002` or how much of your Claude Code, Codex, or Cursor limit is left.
+
+Monny brings all of it into one lightweight SwiftUI/AppKit app:
+
+- **Instant menu bar popover (`⌥⌘M`):** live CPU, memory, disk, network, per-core load, battery status, and top processes in one click.
+- **Full dashboard with 7-day history:** Overview, CPU, Memory, Disk, Network, Battery, and Apple silicon thermal/fan Sensors with `1m` to `7d` charts and preserved sleep gaps.
+- **Port & process finder:** search by port or PID (`3002`, `localhost:3002`), see the working directory where a process started, and quit runaway tasks directly.
+- **Native battery charge limit (80–100%):** adjusts the built-in macOS 26.4+ charge limit as an ordinary user — **no root helper**, and macOS keeps enforcing it even after Monny quits.
+- **AI subscription quotas (optional, off by default):** live remaining quota bars and reset timers for **22 AI coding tools** (Claude Code, Codex, Cursor, Antigravity, GitHub Copilot, JetBrains AI, Grok, Gemini, Windsurf, Cline, Kimi, Augment, and more) read locally via each tool's own sign-in.
+- **Smart notifications:** alerts for charge limit reached, high temperature, low battery, memory pressure, and runaway CPU processes.
+- **6 languages:** English, Русский, Deutsch, Français, Español, and 简体中文.
+
+Readings never leave your Mac: no account, no analytics, no telemetry.
+
+<details>
+<summary>More screenshots (Battery &amp; Charge Limit, 22 AI Quotas, CPU &amp; Thermal History, SMC Sensors)</summary>
+<br />
+
+| Battery &amp; Native Charge Limit | 22 AI Subscription Quotas |
+| --- | --- |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="apps/website/public/screenshots/battery-dark.webp" /><img src="apps/website/public/screenshots/battery-light.webp" alt="Monny Battery &amp; Native Charge Limit view" /></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="apps/website/public/screenshots/ai-usage-dark.webp" /><img src="apps/website/public/screenshots/ai-usage-light.webp" alt="Monny AI Usage Quotas view" /></picture> |
+
+| CPU P/E Cores &amp; History | Apple Silicon SMC Sensors |
+| --- | --- |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="apps/website/public/screenshots/cpu-dark.webp" /><img src="apps/website/public/screenshots/cpu-light.webp" alt="Monny CPU &amp; Per-Core History view" /></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="apps/website/public/screenshots/sensors-dark.webp" /><img src="apps/website/public/screenshots/sensors-light.webp" alt="Monny Apple Silicon SMC Sensors view" /></picture> |
+
+</details>
+
+---
+
+## Installation
+
+Requires **Apple silicon** and **macOS 15 or later** (native charge limit requires macOS 26.4+ on a Mac with a battery).
+
+### Homebrew (recommended)
+
+```sh
+brew install --cask blinks44/tap/monny
+```
+
+### Direct download
+
+1. Download [Monny.dmg](https://github.com/Blinks44/monny/releases/latest/download/Monny.dmg) from [GitHub Releases](https://github.com/Blinks44/monny/releases/latest).
+2. Open the DMG and drag **Monny** into **Applications**.
+3. Verify integrity (optional) with `SHA256SUMS.txt`:
+
+```sh
+shasum -a 256 -c SHA256SUMS.txt
+```
+
+### First launch note
+
+Monny is signed with a stable certificate (so macOS preserves permissions across updates), but is **not yet notarized by Apple**. On first launch, allow it once via either method:
+
+- **System Settings:** open Monny, dismiss the warning, then go to **System Settings → Privacy & Security → Open Anyway**.
+- **Terminal:** remove the download quarantine attribute:
+
+```sh
+xattr -dr com.apple.quarantine /Applications/Monny.app
+```
+
+Subsequent updates arrive automatically through [Sparkle](https://sparkle-project.org) with Ed25519 signature verification (**Check for Updates** in the menu bar right-click menu).
+
+---
+
+## Repository Layout
 
 | Path | Contents |
 | --- | --- |
-| `apps/monny/` | The macOS app: Xcode project, sources, tests and the `scripts/dev.sh` build script |
-| `apps/website/` | The public landing page: TanStack Start/React 19 on Vite with moduix, Paraglide in six languages, Cloudflare Workers ([README](apps/website/README.md)) |
-| `docs/` | Specification, design notes, roadmap, current state and verification records |
-| `AGENTS.md`, `.agents/`, `.claude/` | Instructions and skills for coding and design agents |
+| `apps/monny/` | Native macOS app (Xcode project, Swift 6 sources, Swift Testing suite, `scripts/dev.sh`, `scripts/release.sh`) |
+| `apps/website/` | Public landing page ([monny.moduix.dev](https://monny.moduix.dev)): TanStack Start, React 19, `@moduix/react`, Paraglide i18n, Cloudflare Workers |
+| `docs/` | Product spec, design guidelines, engineering invariants, build/release docs, and hardware research |
 
-## Features
+---
 
-- **Menu bar popover** with Overview, Battery and Processes tabs, refreshed every few seconds, and a global shortcut (⌥⌘M by default).
-- **Processes:** find what holds a port or PID (`3002`, `localhost:3002`), see where it was started from, and quit just that process. Processes that keep a core busy show at the top.
-- **Dashboard window** with Overview, CPU, Memory, Disk, Network, Battery and Sensors pages and 1 minute to 7 day history.
-- **Battery charge limit** from 80 to 100% on macOS 26.4 and later. Monny changes the same setting as System Settings, so macOS keeps enforcing it after Monny quits. No privileged helper.
-- **Notifications** for a reached charge limit, a hot Mac, low battery, high memory pressure and an app that keeps the CPU busy.
-- **AI limits (optional, off by default):** how much of your Claude Code, Codex, Cursor, Grok, JetBrains AI, GitHub Copilot, ClinePass, Codebuff, Amp, Augment, Nous Portal and Kimi Code subscription limits is left, read with each tool's own sign-in on this Mac.
-- English, Russian, German, French, Spanish and Simplified Chinese.
+## Build From Source
 
-Readings never leave the Mac: no account, analytics or telemetry. The only network requests are update checks and, when AI limits are turned on, the limit checks with Anthropic, OpenAI, Cursor, xAI, GitHub, Cline, Codebuff, Amp, Augment, Nous Portal and Kimi (JetBrains AI is read from local IDE files). The [specification](docs/SPEC.md) lists the full scope and acceptance.
-
-## Requirements
-
-- A Mac with **Apple silicon** running macOS **15 or later**. Intel Macs are not supported. Charge limits need a Mac with a battery, macOS 26.4+ and a compatible native runtime.
-- Full Xcode with a **Swift 6.2+ compiler** and a **macOS 26+ SDK** to build from source.
-
-## Build and run
-
-From the repository directory:
+Requires full Xcode with a **Swift 6.2+ compiler** and a **macOS 26+ SDK**.
 
 ```sh
-apps/monny/scripts/dev.sh doctor
-apps/monny/scripts/dev.sh run
+apps/monny/scripts/dev.sh doctor   # check Xcode toolchain & targets
+apps/monny/scripts/dev.sh run      # build Debug and launch Monny.app
+apps/monny/scripts/dev.sh test     # run Swift Testing suite
+apps/monny/scripts/dev.sh lint     # format & lint checks
 ```
 
-`doctor` reports the selected toolchain and project targets. `run` builds Debug and opens `Monny.app`. The script selects full Xcode per process without changing your system's `xcode-select` setting. Alternatively, open `apps/monny/monny.xcodeproj` in Xcode, select the **monny** scheme and run with **⌘R**. See the [development guide](docs/DEVELOPMENT.md) for tests, Release builds and signing.
+You can also open `apps/monny/monny.xcodeproj` in Xcode, select the **monny** scheme, and press **⌘R**. See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for Release packaging and signing details.
 
-## Install
-
-Monny is distributed as a DMG on [GitHub Releases](https://github.com/Blinks44/monny/releases), outside the Mac App Store: system monitoring needs App Sandbox off.
-
-1. Download [Monny.dmg](https://github.com/Blinks44/monny/releases/latest/download/Monny.dmg) from the latest release, open it and drag **Monny** to **Applications**.
-2. Open Monny from Applications.
-
-Monny is signed, but not yet notarized by Apple: that needs a paid Apple Developer ID, which the project does not have yet. So on first launch macOS says it cannot verify the app. Allow it once in either way:
-
-- **System Settings:** try to open Monny, close the message, then go to **System Settings → Privacy & Security**, scroll to Security and click **Open Anyway** next to Monny. Confirm with your password.
-- **Terminal:** remove the download quarantine flag, then open Monny as usual:
-
-  ```sh
-  xattr -dr com.apple.quarantine /Applications/Monny.app
-  ```
-
-This is needed once per downloaded version. Updates keep the same signature, so permissions such as notifications and launch at login stay granted. After the first install Monny checks for updates itself (Sparkle); you can also use **Check for Updates** in the menu bar icon's right-click menu.
+---
 
 ## Technology
 
 | Area | Stack |
 | --- | --- |
-| Language and UI | Swift 6 language mode, SwiftUI, Swift Charts, AppKit for the menu bar item |
-| Readings | Mach host statistics, IOKit, SMC sensors, `ProcessInfo` and power-source APIs ([research](docs/research/README.md)) |
-| Battery control | The macOS 26.4+ system charge limit, changed as the ordinary user |
-| Localization | String Catalogs |
-| Tests | Swift Testing with an Xcode-hosted test target |
-| Design | Sketch, SF Symbols |
+| Language & UI | Swift 6 strict concurrency, SwiftUI, Swift Charts, AppKit menu bar status item |
+| Telemetry | Mach host statistics, IOKit, Apple silicon SMC sensors, `ProcessInfo`, power-source APIs |
+| Battery control | Native macOS 26.4+ charge limit (no privileged helper) |
+| Updates & shortcuts | [Sparkle](https://sparkle-project.org) (Ed25519 signed), [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) |
+| Localization & tests | String Catalogs (6 languages), Swift Testing |
 
-## Documentation
-
-- [Development guide](docs/DEVELOPMENT.md): build, tests and signing. [Releasing](docs/RELEASING.md): versions and publishing on GitHub.
-- [Specification](docs/SPEC.md) and [roadmap](docs/PLAN.md): product requirements and remaining work.
-- [Documentation index](docs/README.md): design, engineering conventions, verification and contributor/agent workflow.
-- [Contributing](CONTRIBUTING.md), [security policy](SECURITY.md), [code of conduct](CODE_OF_CONDUCT.md) and [changelog](CHANGELOG.md).
+---
 
 ## Acknowledgements
 
-- [CodexBar](https://github.com/steipete/CodexBar) by Peter Steinberger and its contributors (MIT): its documentation showed where supported tools keep their sign-in or quota data and which endpoints report their plan limits, including Copilot through the existing GitHub CLI account. Monny copies no code from it ([research](docs/research/ai-usage-limits.md)).
-- Claude, OpenAI/Codex, Cursor and Grok marks are trademarks of their owners and only identify those services; SVGs from [thesvg.org](https://thesvg.org/) ([sources](docs/research/ai-usage-limits.md#service-marks)).
-- [Stats](https://github.com/exelban/stats) by Serhiy Mytrovtsiy (MIT): SMC key names for temperatures and fans ([research](docs/research/README.md#temperatures-and-fans-smc)).
-- [Sparkle](https://sparkle-project.org) (MIT) for updates and [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) by Sindre Sorhus (MIT) for the global shortcut; [create-dmg](https://github.com/create-dmg/create-dmg) (MIT) builds the installer.
+See [NOTICE.txt](NOTICE.txt) for full third-party attributions and licenses.
+
+- [Stats](https://github.com/exelban/stats) (MIT) — SMC temperature and fan sensor key references.
+- [CodexBar](https://github.com/steipete/CodexBar) (MIT) — reference for local AI quota endpoints and storage locations (no code copied).
+- [Sparkle](https://sparkle-project.org) (MIT), [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) (MIT), and [create-dmg](https://github.com/create-dmg/create-dmg) (MIT).
+
+---
+
+## Also by Sergey V.
+
+- [**Hearth**](https://hearth.moduix.dev) — Local dev environment dashboard for runtimes, projects, Docker, Kubernetes, databases, and AI agents.
+- [**Rebind**](https://rebind.moduix.dev) — Native macOS utility for remapping keys, mouse buttons, Logitech mice, and trackpad gestures.
+
+---
 
 ## License
 
-Monny is released under the [MIT License](LICENSE).
+Released under the [MIT License](LICENSE). Made by Sergey V. ([@TheBlinks182](https://x.com/TheBlinks182)).

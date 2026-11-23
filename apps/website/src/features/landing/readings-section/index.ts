@@ -1,1 +1,0 @@
-export { ReadingsSection } from './ReadingsSection'

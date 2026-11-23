@@ -1,0 +1,41 @@
+name: Bug Report
+description: Report incorrect readings, UI issues, battery charge limit bugs, or crashes
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! For security issues, please use [private vulnerability reporting](https://github.com/Blinks44/monny/security/advisories/new) instead.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe what you did, what happened, and what you expected.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Monny version
+      placeholder: "e.g. 1.8.2 (build 103)"
+    validations:
+      required: true
+
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version & Mac model
+      placeholder: "e.g. macOS 26.4, MacBook Pro 14\" M4 Pro"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: |
+        - For battery issues: charge limit shown in System Settings → Battery
+        - For wrong readings: what Activity Monitor or System Information reports
+        - Screenshots or logs if helpful (redact any personal hostnames or tokens)

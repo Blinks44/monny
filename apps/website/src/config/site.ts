@@ -1,12 +1,31 @@
 export const site = {
   name: 'Monny',
   origin: 'https://monny.moduix.dev',
-  repository: 'https://github.com/blinks44/monny',
-  releases: 'https://github.com/blinks44/monny/releases',
-  author: { name: 'Sergey V.', x: 'https://x.com/TheBlinks182', xHandle: '@TheBlinks182' },
-  // A versioned DMG stays valid after later releases; Sparkle updates the installed app.
-  downloadUrl: 'https://github.com/blinks44/monny/releases/latest/download/Monny.dmg' as
-    | string
-    | null,
+  repoOwner: 'Blinks44',
+  repoName: 'monny',
+  repository: 'https://github.com/Blinks44/monny',
+  releases: 'https://github.com/Blinks44/monny/releases',
+  latestRelease: 'https://github.com/Blinks44/monny/releases/latest',
+  latestDmg: 'https://github.com/Blinks44/monny/releases/latest/download/Monny.dmg',
+  issues: 'https://github.com/Blinks44/monny/issues',
+  discussions: 'https://github.com/Blinks44/monny/discussions',
+  security: 'https://github.com/Blinks44/monny/blob/main/SECURITY.md',
+  changelog: 'https://github.com/Blinks44/monny/blob/main/CHANGELOG.md',
+  contributing: 'https://github.com/Blinks44/monny/blob/main/CONTRIBUTING.md',
+  license: 'https://github.com/Blinks44/monny/blob/main/LICENSE',
+  docs: 'https://github.com/Blinks44/monny/blob/main/docs/README.md',
+  defaultVersion: '1.8.2',
+  brewCommand: 'brew install --cask blinks44/tap/monny',
+  quarantineCommand: 'xattr -dr com.apple.quarantine /Applications/Monny.app',
+  checksumCommand: 'shasum -a 256 -c SHA256SUMS.txt',
+  author: {
+    name: 'Sergey V.',
+    x: 'https://x.com/TheBlinks182',
+    xHandle: '@TheBlinks182',
+  },
+  suite: {
+    hearth: 'https://hearth.moduix.dev',
+    rebind: 'https://rebind.moduix.dev',
+  },
   indexingEnabled: true,
 } as const

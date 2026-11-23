@@ -1,31 +1,113 @@
-/* Monny.sketch > 05 · Website, reviewed 2026-10-23.
-   Semantic colors live here; section CSS uses moduix component tokens for design geometry. */
-:root,
-[data-moduix-color-scheme='dark'] {
-  color-scheme: dark;
-  --moduix-font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --moduix-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --moduix-background: #0b0b0d;
-  --moduix-foreground: #f5f5f7;
-  --moduix-primary: #f5f5f7;
-  --moduix-primary-foreground: #0b0b0d;
-  --moduix-card: #ffffff0d;
-  --moduix-card-foreground: #f5f5f7;
-  --moduix-border: #ffffff14;
-  --moduix-muted-foreground: #a1a1a6;
-  --monny-text-secondary: #a1a1a6;
-  --monny-text-tertiary: #8e8e93;
-  --monny-control: #ffffff24;
-  --monny-track: #ffffff14;
-  --monny-separator: #ffffff12;
-  --monny-metric-cpu: #9b82ff;
-  --monny-metric-memory: #2dd4bf;
-  --monny-metric-disk: #fbbf24;
-  --monny-metric-network: #60a5fa;
-  --monny-metric-upload: #e08af0;
-  --monny-metric-battery: #34d374;
-  --monny-metric-heat: #fda05a;
-  --monny-metric-heat-hot: #fb6f86;
-  --monny-content-width: 75rem;
-  --monny-page-gutter: clamp(1.25rem, 4vw, 3rem);
+:root {
+  --monny-bg: #fbfbfd;
+  --monny-surface: #f5f5f7;
+  --monny-surface-2: #ececf1;
+  --monny-card: #ffffff;
+  --monny-border: #e5e5ea;
+  --monny-border-strong: #d4d4dc;
+  --monny-text: #1d1d1f;
+  --monny-text-secondary: #5e5e66;
+  --monny-text-muted: #86868f;
+  --monny-accent: #7c5cff;
+  --monny-accent-hover: #6845f5;
+  --monny-accent-soft: #f2eeff;
+  --monny-accent-border: #dcd2ff;
+  --monny-accent-text: #5b3df0;
+  --monny-teal: #0ea5a4;
+  --monny-teal-soft: #e6f7f7;
+  --monny-green: #16a34a;
+  --monny-green-soft: #eaf8ef;
+  --monny-amber: #d97706;
+  --monny-amber-soft: #fef5e7;
+  --monny-blue: #2563eb;
+  --monny-heat: #ea580c;
+  --monny-danger: #dc2626;
+  --monny-danger-soft: #feeceb;
+
+  --monny-shadow-sm: 0 1px 2px rgba(17, 17, 20, 0.05);
+  --monny-shadow-md: 0 10px 30px rgba(17, 17, 20, 0.07), 0 2px 6px rgba(17, 17, 20, 0.04);
+  --monny-shadow-lg: 0 24px 70px rgba(17, 17, 20, 0.13), 0 6px 20px rgba(17, 17, 20, 0.06);
+
+  --monny-radius-sm: 8px;
+  --monny-radius-md: 12px;
+  --monny-radius-lg: 18px;
+  --monny-radius-xl: 24px;
+
+  --moduix-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+  --moduix-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Bind ModUIX Calm theme accents to Monny violet */
+  --moduix-primary: #7c5cff;
+  --moduix-primary-foreground: #ffffff;
+  --moduix-ring: rgba(124, 92, 255, 0.35);
+}
+
+:root[data-theme='dark'],
+:root[data-moduix-color-scheme='dark'] {
+  --monny-bg: #111114;
+  --monny-surface: #18181c;
+  --monny-surface-2: #222229;
+  --monny-card: #1b1b20;
+  --monny-border: #2c2c35;
+  --monny-border-strong: #3a3a46;
+  --monny-text: #f5f5f7;
+  --monny-text-secondary: #a1a1aa;
+  --monny-text-muted: #767682;
+  --monny-accent: #8b6eff;
+  --monny-accent-hover: #9c84ff;
+  --monny-accent-soft: rgba(139, 110, 255, 0.16);
+  --monny-accent-border: rgba(139, 110, 255, 0.34);
+  --monny-accent-text: #c4b5fd;
+  --monny-teal: #2dd4bf;
+  --monny-teal-soft: rgba(45, 212, 191, 0.14);
+  --monny-green: #34d374;
+  --monny-green-soft: rgba(52, 211, 116, 0.14);
+  --monny-amber: #fbbf24;
+  --monny-amber-soft: rgba(251, 191, 36, 0.15);
+  --monny-blue: #60a5fa;
+  --monny-heat: #fb923c;
+  --monny-danger: #f87171;
+  --monny-danger-soft: rgba(248, 113, 113, 0.15);
+
+  --monny-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --monny-shadow-md: 0 12px 34px rgba(0, 0, 0, 0.42), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --monny-shadow-lg: 0 32px 84px rgba(0, 0, 0, 0.58), 0 8px 24px rgba(0, 0, 0, 0.36);
+
+  --moduix-primary: #8b6eff;
+  --moduix-primary-foreground: #ffffff;
+  --moduix-ring: rgba(139, 110, 255, 0.42);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--monny-bg);
+  color: var(--monny-text);
+  font-family: var(--moduix-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--monny-bg);
+  color: var(--monny-text);
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+.mono {
+  font-family: var(--moduix-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.container {
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-inline: 1.1rem;
+  }
 }

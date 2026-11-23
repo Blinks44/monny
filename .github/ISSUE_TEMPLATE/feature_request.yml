@@ -1,0 +1,30 @@
+name: Feature Request
+description: Suggest a new sensor, AI quota provider, or UX improvement
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Monny stays focused: local readings, native battery charge limits, optional AI quota checks, zero telemetry, and no privileged root helper.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to monitor or solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: How should it work in the menu bar popover or dashboard?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives or references
+      description: Links to docs, APIs, or similar tools if relevant.

@@ -1,51 +1,5 @@
 @import '@moduix/react/reset.css';
 @import '@moduix/react/style.css';
 @import './styles/tokens.css';
-
-html {
-  background: var(--moduix-background);
-  color: var(--moduix-foreground);
-  font-family: var(--moduix-font-sans);
-}
-body {
-  margin: 0;
-  min-width: 20rem;
-}
-a:focus-visible:not([data-scope]):not([data-slot]) {
-  outline: 2px solid var(--monny-metric-network);
-  outline-offset: 4px;
-}
-::selection {
-  background: var(--monny-metric-cpu);
-  color: var(--moduix-background);
-}
-
-html {
-  scroll-behavior: smooth;
-}
-img {
-  max-width: 100%;
-}
-section[id] {
-  scroll-margin-top: 24px;
-}
-a {
-  text-underline-offset: 3px;
-}
-@media (max-width: 700px) {
-  :root {
-    --monny-page-gutter: 20px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
+@import './styles/hero-app.css';
+@import './styles/landing.css';

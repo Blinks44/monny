@@ -1,1 +1,0 @@
-export { InstallNotice } from './InstallNotice'

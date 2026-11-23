@@ -1,1 +1,0 @@
-export { SiteFooter } from './SiteFooter'

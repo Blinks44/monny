@@ -1,0 +1,34 @@
+Monny
+Copyright (c) 2026 Sergey V.
+Licensed under the MIT License (see LICENSE).
+
+Third-Party Components and References
+-------------------------------------
+
+1. Sparkle (https://sparkle-project.org)
+   License: MIT License
+   Used for signed in-app software updates.
+
+2. KeyboardShortcuts (https://github.com/sindresorhus/KeyboardShortcuts)
+   Copyright (c) Sindre Sorhus
+   License: MIT License
+   Used for global menu bar popover shortcut recording and dispatch.
+
+3. Stats (https://github.com/exelban/stats)
+   Copyright (c) Serhiy Mytrovtsiy
+   License: MIT License
+   Reference for Apple silicon SMC temperature and fan sensor keys.
+
+4. CodexBar (https://github.com/steipete/CodexBar)
+   Copyright (c) Peter Steinberger and contributors
+   License: MIT License
+   Reference for local AI tool quota/session storage and endpoint discovery. No code copied.
+
+5. create-dmg (https://github.com/create-dmg/create-dmg)
+   License: MIT License
+   Build-time tool for packaging the macOS DMG installer.
+
+6. Third-Party Marks
+   Service names and logos (Claude, OpenAI/Codex, Cursor, Antigravity, GitHub Copilot,
+   JetBrains AI, Grok, Gemini, Windsurf, Cline, Kimi, Augment, and others) are trademarks
+   of their respective owners and are used solely to identify supported tools.

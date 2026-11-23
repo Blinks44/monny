@@ -7,12 +7,16 @@ Cline and JetBrains: catalog CC0-1.0.
 Amp: coral coding-agent color variant (not the blue amp.dev framework mark).
 Augment: official https://www.augmentcode.com/favicon.svg
 Codebuff: official https://www.codebuff.com/favicon/apple-touch-icon.png (bitmap converted to PNG).
-Google Antigravity: official full-color icon from https://antigravity.google/press.
+Additional theSVG marks (revision 551229c188b4ab6e2d8b5763b9633ec91206d04c): Antigravity and Kilo Code (MIT); Alibaba Cloud, CodeRabbit, Gemini and Hugging Face (CC0-1.0).
+Google Antigravity: monochrome silhouette from theSVG in the blue from https://antigravity.google/press.
+OpenCode: https://opencode.ai/brand. Windsurf: https://windsurf.com/brand.
+Kimi and Kiro: https://github.com/lobehub/lobe-icons (revision 05260484d9f4de68f90cc87a634ae68fa4043efd), MIT license below.
 Official vendor marks retain their owners' rights; the collection license does not grant trademark rights.
 
 MIT License
 
 Copyright (c) 2025 thesvg.org
+Copyright (c) 2023 LobeHub
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

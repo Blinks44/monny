@@ -68,9 +68,21 @@ extension AITool {
         case .jetBrains: Theme.aiJetBrains
         case .amp: Theme.aiAmp
         case .antigravity: Theme.aiAntigravity
-        case .copilot, .cline, .codebuff, .augment, .nous, .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf,
-            .codeRabbit, .gemini, .huggingFace:
-            Theme.aiCodex
+        case .copilot: Theme.aiCopilot
+        case .cline: Theme.aiCline
+        case .codebuff: Theme.aiCodebuff
+        case .augment: Theme.aiAugment
+        case .nous: Theme.aiNous
+        case .kimi: Theme.aiKimi
+        case .openCodeGo: Theme.aiOpenCode
+        case .kilo: Theme.aiKilo
+        case .kiro: Theme.aiKiro
+        case .alibabaToken: Theme.aiAlibabaToken
+        case .alibabaCoding: Theme.aiAlibabaCoding
+        case .windsurf: Theme.aiWindsurf
+        case .codeRabbit: Theme.aiCodeRabbit
+        case .gemini: Theme.aiGemini
+        case .huggingFace: Theme.aiHuggingFace
         }
     }
 
@@ -78,17 +90,13 @@ extension AITool {
     var iconColor: Color {
         switch self {
         case .claude: Theme.aiClaude
-        case .codex, .grok: Theme.aiIconWhite
-        case .cursor: Theme.aiIconBlack
-        case .jetBrains, .copilot, .codebuff: Theme.aiIconBlack
-        case .amp, .cline, .augment, .nous, .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit,
-            .gemini, .huggingFace, .antigravity:
-            Theme.aiIconWhite
+        case .cursor, .jetBrains, .copilot, .codebuff, .kilo: Theme.aiIconBlack
+        default: Theme.aiIconWhite
         }
     }
 
     /// The service's mark in the asset catalog (sources in research/ai-usage-limits.md).
-    var logo: ImageResource? {
+    var logo: ImageResource {
         switch self {
         case .claude: .aiClaude
         case .codex: .aiCodex
@@ -102,8 +110,15 @@ extension AITool {
         case .augment: .aiAugment
         case .nous: .aiNous
         case .antigravity: .aiAntigravity
-        case .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace:
-            nil
+        case .kimi: .aiKimi
+        case .openCodeGo: .aiOpenCode
+        case .kilo: .aiKilo
+        case .kiro: .aiKiro
+        case .alibabaToken, .alibabaCoding: .aiAlibabaCloud
+        case .windsurf: .aiWindsurf
+        case .codeRabbit: .aiCodeRabbit
+        case .gemini: .aiGemini
+        case .huggingFace: .aiHuggingFace
         }
     }
 
@@ -286,27 +301,21 @@ struct AIToolIcon: View {
     private var markScale: CGFloat {
         switch tool {
         case .jetBrains: 0.9
-        case .antigravity: 0.8  // The press asset includes transparent padding.
+        case .kimi, .kiro, .windsurf: 0.8
         default: 0.6
         }
     }
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
-        Group {
-            if let logo = tool.logo {
-                Image(logo).resizable().scaledToFit()
-            } else {
-                Text(verbatim: String(tool.name.prefix(1)))
-                    .font(.system(size: size * 0.6, weight: .semibold))
-                    .foregroundStyle(Theme.aiIconBlack)
-            }
-        }
-        .frame(width: size * markScale, height: size * markScale)
-        .frame(width: size, height: size)
-        .background(tool.iconColor, in: shape)
-        .overlay { shape.strokeBorder(Theme.aiIconStroke) }
-        .accessibilityHidden(true)
+        Image(tool.logo)
+            .resizable()
+            .scaledToFit()
+            .frame(width: size * markScale, height: size * markScale)
+            .frame(width: size, height: size)
+            .background(tool.iconColor, in: shape)
+            .overlay { shape.strokeBorder(Theme.aiIconStroke) }
+            .accessibilityHidden(true)
     }
 }
 

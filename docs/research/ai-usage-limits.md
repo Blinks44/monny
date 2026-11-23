@@ -185,7 +185,21 @@ App asset catalogs and website assets contain the same marks. MIT collection not
 
 ### Antigravity mark — 2026-11-23
 
-`AIAntigravity` bundles the unchanged [full-color PNG](https://antigravity.google/assets/image/brand/antigravity-icon__full-color.png) from the [Google Antigravity press kit](https://antigravity.google/press) with original rendering on the shared white tile. The single-color quota and history accent, `#3186FF`, comes from the base fill in Google's [matching SVG](https://antigravity.google/assets/image/brand/antigravity-icon__full-color.svg). The press asset retains Google's trademark rights.
+Build 101 bundled the unchanged [full-color PNG](https://antigravity.google/assets/image/brand/antigravity-icon__full-color.png) from the [Google Antigravity press kit](https://antigravity.google/press). The single-color quota and history accent, `#3186FF`, comes from the base fill in Google's [matching SVG](https://antigravity.google/assets/image/brand/antigravity-icon__full-color.svg).
+
+Xcode 27.2 `actool` accepted the official full-color SVG with vector preservation enabled and a macOS 15 deployment target. On macOS 27.2.1, AppKit renders from the compiled catalog showed hard-edged color patches where the SVG uses `feGaussianBlur` for smooth transitions. The official 540 × 540 PNG retained those transitions in the same comparison.
+
+The [theSVG color variant](https://github.com/glincker/thesvg/blob/main/public/icons/antigravity-google/color.svg) also compiled. It contains opaque color paths without a mask, so the color shapes fill almost the entire tile and obscure the Antigravity silhouette. AppKit and SwiftUI renders at 18, 28 and 30 pt (1× and 2×) confirmed the issue. The official PNG retained the mark at those sizes.
+
+Build 102 uses the [theSVG monochrome silhouette](https://github.com/glincker/thesvg/blob/551229c188b4ab6e2d8b5763b9633ec91206d04c/public/icons/antigravity-google/mono.svg), filled with `#3186FF` as requested, and completes the remaining AI tile assets:
+
+| Tools | Mark source and treatment |
+| --- | --- |
+| Kimi Code, Kiro | [Lobe Icons](https://github.com/lobehub/lobe-icons/tree/05260484d9f4de68f90cc87a634ae68fa4043efd/packages/static-svg/icons) `kimi-color.svg` and `kiro-color.svg`. Resolved Kimi's `currentColor` to `#121212`. |
+| OpenCode Go, Windsurf | [OpenCode brand kit](https://opencode.ai/brand) light-background mark; [Windsurf brand kit](https://windsurf.com/brand) black symbol. |
+| Kilo Code, Alibaba Token/Coding Plan, CodeRabbit, Gemini CLI, Hugging Face | [theSVG](https://github.com/glincker/thesvg/tree/551229c188b4ab6e2d8b5763b9633ec91206d04c/public/icons) `kilo-code/dark.svg`, `alibaba-cloud/default.svg`, `coderabbit/default.svg`, `google-gemini/default.svg`, `hugging-face/default.svg`. Kilo uses the catalog's yellow `#F8F676` on black; Gemini uses the violet variant after the gradient specimen rendered incomplete. |
+
+Image sets retain vector representation. Monochrome brands keep the original hues where applicable; chart colors are Monny's readable, appearance-aware accents and may differ from the mark, including neutral brands. The two Alibaba plans use the same mark and distinct orange tones. Trademark and collection notices are in the app's `ThirdPartyMarks.txt`.
 
 ## Privacy and cost
 

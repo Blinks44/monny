@@ -76,7 +76,7 @@ nonisolated struct HistoryTier: Codable, Equatable, Sendable {
         let start = Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / step).rounded(.down) * step)
         var closed = false
         if let pending, pending.date != start {
-            points.append(average(pending))
+            store(average(pending))
             self.pending = nil
             counts = [:]
             closed = true
@@ -96,10 +96,42 @@ nonisolated struct HistoryTier: Codable, Equatable, Sendable {
         return closed
     }
 
-    /// Finished buckets plus the one being filled, oldest first.
+    /// A clock correction can put the open bucket among previously finished buckets.
     func series(_ metric: HistoryMetric) -> [(date: Date, value: Double)] {
-        (points + [pending.map(average)].compactMap(\.self)).compactMap { point in
+        var series: [(date: Date, value: Double)] = points.compactMap { point in
             point.values[metric].map { (point.date, $0) }
+        }
+        guard let pending, let sum = pending.values[metric] else { return series }
+        let point = (pending.date, sum / Double(max(counts[metric] ?? 1, 1)))
+        if let last = series.last, pending.date <= last.date,
+            let index = series.firstIndex(where: { $0.date >= pending.date })
+        {
+            if series[index].date == pending.date { series[index] = point } else { series.insert(point, at: index) }
+        } else {
+            series.append(point)
+        }
+        return series
+    }
+
+    /// Repair older archives that appended buckets after a backwards clock change.
+    mutating func sortStoredBuckets() {
+        guard zip(points, points.dropFirst()).contains(where: { $0.0.date >= $0.1.date }) else { return }
+        let stored = points
+        points = []
+        for point in stored { store(point) }
+    }
+
+    private mutating func store(_ point: HistoryPoint) {
+        guard let last = points.last, point.date <= last.date,
+            let index = points.firstIndex(where: { $0.date >= point.date })
+        else {
+            points.append(point)
+            return
+        }
+        if points[index].date == point.date {
+            points[index].values.merge(point.values) { _, newer in newer }
+        } else {
+            points.insert(point, at: index)
         }
     }
 
@@ -175,7 +207,10 @@ final class History {
         let url = Self.fileURL
         let saved = await Task.detached(priority: .utility) { () -> Saved? in
             guard let data = try? Data(contentsOf: url) else { return nil }
-            return try? PropertyListDecoder().decode(Saved.self, from: data)
+            guard var saved = try? PropertyListDecoder().decode(Saved.self, from: data) else { return nil }
+            saved.day.sortStoredBuckets()
+            saved.week.sortStoredBuckets()
+            return saved
         }.value
         guard let saved, saved.day.step == day.step, saved.week.step == week.step else { return }
         day = saved.day

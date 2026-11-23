@@ -157,7 +157,7 @@ private struct QuotaHistoryCard: View {
             }
             if series.contains(where: { !$0.points.isEmpty }) {
                 let end = Date.now
-                AIQuotaHistoryChart(series: series, range: range, domain: end.addingTimeInterval(-tier.span)...end)
+                AIQuotaHistoryChart(series: series, range: range, domain: end.addingTimeInterval(-tier.span)...end, step: tier.step)
                     .frame(minHeight: 180)
                     .padding(.top, Theme.spaceL)
             } else {

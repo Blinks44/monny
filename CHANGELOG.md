@@ -2,6 +2,12 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.8.2: 2026-11-23
+
+- Weekly charts show weekday labels and leave gaps where no measurements were recorded. Saved readings are plotted in chronological order.
+- All AI services have logos and distinct quota colors. Antigravity uses a blue vector icon.
+- The AI quota chart shows its focus outline during keyboard navigation.
+
 ## 1.8.1: 2026-11-23
 
 - Antigravity uses its official full-color icon and blue accents for quota bars and history.

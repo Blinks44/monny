@@ -54,7 +54,7 @@ struct CPUHistoryCard: View {
     // Vectorized plots: one mark per series instead of one per point, redrawn every sample.
     @ChartContentBuilder private var loadPlots: some ChartContent {
         AreaPlot(
-            PlotPoint.series("P", performance), x: .value("Time", \.date), y: .value("Load", \.value),
+            PlotPoint.series("P", performance, step: tier.step), x: .value("Time", \.date), y: .value("Load", \.value),
             series: .value("Series", \.series)
         )
         .foregroundStyle(
@@ -62,38 +62,38 @@ struct CPUHistoryCard: View {
                 colors: [Theme.metricCPU.opacity(0.45), Theme.metricCPU.opacity(0.08)],
                 startPoint: .top, endPoint: .bottom)
         )
-        .interpolationMethod(.monotone)
+        .interpolationMethod(range.chartInterpolation)
         LinePlot(
-            PlotPoint.series("P", performance), x: .value("Time", \.date), y: .value("Load", \.value),
+            PlotPoint.series("P", performance, step: tier.step), x: .value("Time", \.date), y: .value("Load", \.value),
             series: .value("Series", \.series)
         )
         .foregroundStyle(Theme.metricCPU)
         .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
-        .interpolationMethod(.monotone)
+        .interpolationMethod(range.chartInterpolation)
         AreaPlot(
-            PlotPoint.series("E", efficiency), x: .value("Time", \.date), y: .value("Load", \.value),
+            PlotPoint.series("E", efficiency, step: tier.step), x: .value("Time", \.date), y: .value("Load", \.value),
             series: .value("Series", \.series)
         )
         .foregroundStyle(Theme.metricCPUEfficiency.opacity(0.2))
-        .interpolationMethod(.monotone)
+        .interpolationMethod(range.chartInterpolation)
         LinePlot(
-            PlotPoint.series("E", efficiency), x: .value("Time", \.date), y: .value("Load", \.value),
+            PlotPoint.series("E", efficiency, step: tier.step), x: .value("Time", \.date), y: .value("Load", \.value),
             series: .value("Series", \.series)
         )
         .foregroundStyle(Theme.metricCPUEfficiency)
         .lineStyle(StrokeStyle(lineWidth: 1.5))
-        .interpolationMethod(.monotone)
+        .interpolationMethod(range.chartInterpolation)
     }
 
     /// Temperature shares the load scale: 100 °C aligns with 100% load.
     private var temperaturePlot: some ChartContent {
         LinePlot(
-            PlotPoint.series("T", temperature, scale: 0.01), x: .value("Time", \.date), y: .value("Load", \.value),
+            PlotPoint.series("T", temperature, step: tier.step, scale: 0.01), x: .value("Time", \.date), y: .value("Load", \.value),
             series: .value("Series", \.series)
         )
         .foregroundStyle(LinearGradient(colors: [Theme.metricHeat, Theme.metricHeatHot], startPoint: .leading, endPoint: .trailing))
         .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, dash: [4, 4]))
-        .interpolationMethod(.monotone)
+        .interpolationMethod(range.chartInterpolation)
     }
 
     private var chart: some View {
@@ -118,7 +118,7 @@ struct CPUHistoryCard: View {
         .chartYScale(domain: 0...max(1, ((temperature.map(\.value).max() ?? 100) / 20).rounded(.up) / 5))
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 5)) { _ in
-                AxisValueLabel(format: range.timeFormat)
+                AxisValueLabel(format: range.axisTimeFormat)
                     .font(Theme.caption.weight(.regular))
                     .foregroundStyle(Theme.textTertiary)
             }
@@ -201,12 +201,19 @@ extension HistoryRange {
         }
     }
 
-    /// Axis and tooltip times: clock time, with the weekday for the week.
+    /// Weekly ticks identify days; the time of day belongs in the sample tooltip.
+    var axisTimeFormat: Date.FormatStyle {
+        self == .week ? .dateTime.weekday(.abbreviated) : timeFormat
+    }
+
+    var chartInterpolation: InterpolationMethod { self == .week ? .linear : .monotone }
+
+    /// Sample times in summaries and tooltips.
     var timeFormat: Date.FormatStyle {
         switch self {
         case .minute: .dateTime.hour().minute().second()
         case .hour, .day: .dateTime.hour().minute()
-        case .week: .dateTime.weekday(.abbreviated).hour()
+        case .week: .dateTime.weekday(.abbreviated).hour().minute()
         }
     }
 }

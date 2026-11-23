@@ -199,7 +199,7 @@ struct HistoryChart: View {
                     .foregroundStyle(band.color)
             }
             ForEach(series) { series in
-                let points = PlotPoint.series(series.id, series.points)
+                let points = PlotPoint.series(series.id, series.points, step: tier.step)
                 if series.filled {
                     AreaPlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
                         .foregroundStyle(
@@ -207,12 +207,15 @@ struct HistoryChart: View {
                                 colors: [series.color.opacity(0.3), series.color.opacity(0.02)],
                                 startPoint: .top, endPoint: .bottom)
                         )
-                        .interpolationMethod(.monotone)
+                        .interpolationMethod(range.chartInterpolation)
                 }
                 LinePlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
                     .foregroundStyle(series.color)
                     .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                    .interpolationMethod(.monotone)
+                    .interpolationMethod(range.chartInterpolation)
+                PointPlot(PlotPoint.isolated(in: points), x: .value("Time", \.date), y: .value("Value", \.value))
+                    .foregroundStyle(series.color)
+                    .symbolSize(16)
             }
             if let hovered {
                 RuleMark(x: .value("Time", hovered))
@@ -228,7 +231,7 @@ struct HistoryChart: View {
         .chartXAxis {
             if showsAxes {
                 AxisMarks(values: .automatic(desiredCount: 5)) { _ in
-                    AxisValueLabel(format: range.timeFormat).font(Theme.caption.weight(.regular)).foregroundStyle(Theme.textTertiary)
+                    AxisValueLabel(format: range.axisTimeFormat).font(Theme.caption.weight(.regular)).foregroundStyle(Theme.textTertiary)
                 }
             }
         }

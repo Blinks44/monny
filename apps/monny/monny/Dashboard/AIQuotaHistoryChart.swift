@@ -6,6 +6,7 @@ struct AIQuotaHistoryChart: View {
     let series: [AIQuotaHistory.Series]
     let range: HistoryRange
     let domain: ClosedRange<Date>
+    let step: TimeInterval
     @State private var selection: AIQuotaHistory.Selection?
     @State private var tooltipSize = CGSize(width: 176, height: 66)
     @FocusState private var isFocused: Bool
@@ -23,17 +24,13 @@ struct AIQuotaHistoryChart: View {
     var body: some View {
         Chart {
             ForEach(series) { item in
-                if item.points.count == 1, let point = item.points.first {
-                    PointMark(x: .value("Time", point.date), y: .value("Left", point.value))
-                        .foregroundStyle(item.tool.color)
-                } else {
-                    LinePlot(
-                        PlotPoint.series(item.tool.rawValue, item.points), x: .value("Time", \.date), y: .value("Left", \.value),
-                        series: .value("Series", \.series)
-                    )
+                let points = PlotPoint.series(item.tool.rawValue, item.points, step: step)
+                LinePlot(points, x: .value("Time", \.date), y: .value("Left", \.value), series: .value("Series", \.series))
                     .foregroundStyle(item.tool.color)
                     .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                }
+                PointPlot(PlotPoint.isolated(in: points), x: .value("Time", \.date), y: .value("Left", \.value))
+                    .foregroundStyle(item.tool.color)
+                    .symbolSize(16)
             }
             if let selected, domain.contains(selected.date) {
                 RuleMark(x: .value("Time", selected.date))
@@ -48,7 +45,7 @@ struct AIQuotaHistoryChart: View {
         .chartYScale(domain: 0...1)
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 5)) { _ in
-                AxisValueLabel(format: range == .day ? .dateTime.hour().minute() : .dateTime.weekday(.abbreviated))
+                AxisValueLabel(format: range.axisTimeFormat)
                     .font(Theme.caption.weight(.regular)).foregroundStyle(Theme.textTertiary)
             }
         }
@@ -96,10 +93,11 @@ struct AIQuotaHistoryChart: View {
                 }
             }
         }
-        .focusable()
+        .focusable(interactions: .edit)
+        .focusEffectDisabled(!FocusVisibility.shared.isVisible)
         .focused($isFocused)
         .onChange(of: isFocused) { _, focused in
-            if focused { move() } else { selection = nil }
+            if focused, FocusVisibility.shared.isVisible { move() } else if !focused { selection = nil }
         }
         .onChange(of: range) { selection = nil }
         .onMoveCommand { direction in

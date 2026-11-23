@@ -18,7 +18,7 @@ The 1.7.0 release includes [AI-history hover and keyboard details](tasks/DES-006
 
 1.8.0/build 98 publishes [Antigravity CLI quota](tasks/APP-015-ai-usage-limits.md#antigravity-cli--2026-11-21) (`retrieveUserQuotaSummary` via CLI Keychain token + bounded headless `agy models` refresh-on-expiry); live display and automatic hourly renewal were accepted on builds 96–97. Browser-free AI expansion is published ([source decision](research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08)). Website source changes are committed; the user owns deployment, whose completion is not confirmed.
 
-Installed Light/Dark review of [Antigravity's official color mark](tasks/APP-015-ai-usage-limits.md#antigravity-branding--2026-11-23) remains open. The user confirmed [AI card ordering](tasks/APP-015-ai-usage-limits.md#ai-card-order--2026-11-21) in build 99. The detailed keyboard and VoiceOver check remains open.
+Local build 102 completes [AI service marks and accents](tasks/APP-015-ai-usage-limits.md#complete-ai-branding--2026-11-23), including blue vector Antigravity, and fixes [weekly history labels, gaps and chart focus](tasks/APP-021-history-chart-regressions.md). Installed reporter-data and keyboard checks remain open. The user confirmed [AI card ordering](tasks/APP-015-ai-usage-limits.md#ai-card-order--2026-11-21) in build 99. The detailed keyboard and VoiceOver check remains open.
 
 ## Work and open checks
 
@@ -26,6 +26,7 @@ Installed Light/Dark review of [Antigravity's official color mark](tasks/APP-015
 | --- | --- | --- |
 | [AI recovery alerts, charging diagnosis and sleep reports](tasks/DES-007-recovery-charging-sleep.md) | awaiting_verification | Published in 1.7.0/build 94; verify a real quota recovery, unplugged sleep/wake and adapter reconnect. |
 | [Readable AI quota history](tasks/DES-006-ai-history-hover.md) | awaiting_verification | Published in 1.7.0/build 94; check installed hover, Tab/arrow/Escape and VoiceOver with real history. |
+| [Weekly history and chart focus](tasks/APP-021-history-chart-regressions.md) | awaiting_verification | Compare the reported Overview, CPU, Battery and AI graphs on build 102. |
 | [AI limits](tasks/APP-015-ai-usage-limits.md) | awaiting_verification | Antigravity published in 1.8.0/build 98 (live display and hourly renewal accepted 2026-11-21 on builds 96–97); side-by-side `/usage` comparison remains open. Nine published browser-free sources need real-account agreement; Kimi availability accepted on build 86; detailed quota/reset/expiry open. ClinePass/Codebuff and Amp/Augment/Nous need real-account comparison; multi-poll/new-period, other accounts/history/expiry/429 and service-mark gates remain. |
 | [Sensor and layout regressions](tasks/APP-018-sensor-and-layout-regressions.md) | awaiting_verification | Fixes shipped in 1.5.0; compare temperatures/core layout on the reporter's Mac. |
 | [Process network rates and daily traffic](tasks/APP-017-process-network.md) | awaiting_verification | Checked on macOS 27.2 including VPN; check macOS 15/26 when hardware is available. |

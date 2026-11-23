@@ -13,9 +13,17 @@
 
 Published **1.8.1/build 101** includes [Antigravity branding](#antigravity-branding--2026-11-23) and [AI card ordering](#ai-card-order--2026-11-21) from the local builds 100 and 99. [Publication evidence](#181-publication--2026-11-23).
 
+Local build 102 completes [AI service branding](#complete-ai-branding--2026-11-23) for all supported tools.
+
 Published **1.6.0/build 90** supports 21 AI sources. [November source decision](../research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08) owns exact credential/field restrictions; [publication evidence](#160-publication--2026-11-08) owns the final package and delivery failure. Dated sections below retain earlier artifacts and checks, not current release instructions.
 
 Open: real-account quota/reset/expiry agreement for the nine build-90 sources and earlier ClinePass/Codebuff/Amp/Augment/Nous; detailed Kimi quota/history checks; installed appearance/accessibility and fluent translations; installed update acceptance; service-mark review. Public appcast delivery was verified with [build 94](DES-007-recovery-charging-sleep.md#170-publication--2026-11-09). Website deployment belongs to the user and remains unconfirmed.
+
+## Complete AI branding — 2026-11-23
+
+Build 102 gives all 22 tools catalog marks and distinct quota/history accents. Alibaba's Token and Coding Plans share one logo with different orange tones. Antigravity uses a solid blue SVG; OpenCode and Windsurf use their official marks. The [source and treatment list](../research/ai-usage-limits.md#antigravity-mark--2026-11-23) records the other sources. Neutral brand marks retain their palette and the app assigns readable chart accents. Live Monny.sketch popover 23 and window 24 were inspected; the app reuses the shared tile with no layout or Sketch edits.
+
+All 21 unique compiled assets were reviewed in SwiftUI tile fixtures at 18 and 30 pt, 1× and 2×. A gradient Gemini candidate rendered incomplete and was replaced by the catalog's violet mark; the final capture includes the complete Gemini silhouette. Final build/test and package evidence: [APP-021](APP-021-history-chart-regressions.md). Next: review the marks, quota accents and mixed-provider chart in an installed Light/Dark session.
 
 ## 1.8.1 publication — 2026-11-23
 

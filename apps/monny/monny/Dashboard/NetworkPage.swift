@@ -15,10 +15,10 @@ struct NetworkPage: View {
             HStack(spacing: Theme.spaceL) {
                 KPICard(
                     title: "Download", symbol: "arrow.down", color: Theme.metricNetwork, value: network?.download.rateText,
-                    detail: peak(tier.series(.download)), points: tier.series(.download))
+                    detail: peak(tier.series(.download)), points: tier.series(.download), historyStep: tier.step)
                 KPICard(
                     title: "Upload", symbol: "arrow.up", color: Theme.metricUpload, value: network?.upload.rateText,
-                    detail: peak(tier.series(.upload)), points: tier.series(.upload))
+                    detail: peak(tier.series(.upload)), points: tier.series(.upload), historyStep: tier.step)
                 KPICard(
                     title: "Today", symbol: "calendar", color: Theme.metricMemory,
                     value: today.map { Int64($0.down + $0.up).storageText },

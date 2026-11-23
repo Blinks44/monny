@@ -194,10 +194,12 @@ private struct NetworkCard: View {
             rate(network?.upload, symbol: "arrow.up", color: Theme.metricUpload, font: Theme.bodyEmphasized)
                 .accessibilityLabel(Text("Upload"))
             Spacer(minLength: 0)
-            Sparkline(series: [
-                SparklineSeries(id: "download", points: history.series(.download), color: Theme.metricNetwork, filled: true),
-                SparklineSeries(id: "upload", points: history.series(.upload), color: Theme.metricUpload),
-            ])
+            Sparkline(
+                series: [
+                    SparklineSeries(id: "download", points: history.series(.download), color: Theme.metricNetwork, filled: true),
+                    SparklineSeries(id: "upload", points: history.series(.upload), color: Theme.metricUpload),
+                ], step: history.step
+            )
             .frame(height: 42)
         }
         .padding(14)

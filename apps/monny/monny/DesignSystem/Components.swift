@@ -651,13 +651,32 @@ struct BehindWindowBlur: NSViewRepresentable {
 /// One series of a sparkline: a line in its metric color, optionally with a soft area below.
 /// A point of a vectorized plot. `LinePlot` and `AreaPlot` join every point of a chart into one
 /// line unless each point names its series.
-struct PlotPoint {
+nonisolated struct PlotPoint {
     let series: String
     let date: Date
     let value: Double
 
-    static func series(_ id: String, _ points: [(date: Date, value: Double)], scale: Double = 1) -> [PlotPoint] {
-        points.map { PlotPoint(series: id, date: $0.date, value: $0.value * scale) }
+    static func series(
+        _ id: String, _ points: [(date: Date, value: Double)], step: TimeInterval, scale: Double = 1
+    ) -> [PlotPoint] {
+        var previousDate: Date?
+        var segment = id
+        return points.map { point in
+            if let previousDate, point.date.timeIntervalSince(previousDate) > step {
+                segment = "\(id)/\(point.date.timeIntervalSinceReferenceDate)"
+            }
+            previousDate = point.date
+            return PlotPoint(series: segment, date: point.date, value: point.value * scale)
+        }
+    }
+
+    static func isolated(in points: [PlotPoint]) -> [PlotPoint] {
+        points.indices.compactMap { index in
+            let point = points[index]
+            let connectsBefore = index > 0 && points[index - 1].series == point.series
+            let connectsAfter = index + 1 < points.count && points[index + 1].series == point.series
+            return connectsBefore || connectsAfter ? nil : point
+        }
     }
 }
 
@@ -673,6 +692,7 @@ struct SparklineSeries: Identifiable {
 /// nothing, so a fresh history never shows a flat zero line.
 struct Sparkline: View {
     let series: [SparklineSeries]
+    let step: TimeInterval
     /// The y range; `nil` means from zero to the largest value.
     var domain: ClosedRange<Double>?
     var showsLiveDot = true
@@ -681,7 +701,7 @@ struct Sparkline: View {
         Chart {
             // Vectorized plots: one mark per series instead of one per point, redrawn every sample.
             ForEach(series) { series in
-                let points = PlotPoint.series(series.id, series.points)
+                let points = PlotPoint.series(series.id, series.points, step: step)
                 if series.filled {
                     AreaPlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
                         .foregroundStyle(
@@ -689,12 +709,10 @@ struct Sparkline: View {
                                 colors: [series.color.opacity(0.3), series.color.opacity(0)],
                                 startPoint: .top, endPoint: .bottom)
                         )
-                        .interpolationMethod(.monotone)
                 }
                 LinePlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
                     .foregroundStyle(series.color)
                     .lineStyle(StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
-                    .interpolationMethod(.monotone)
             }
             if showsLiveDot, let first = series.first, first.points.count > 1, let last = first.points.last {
                 PointMark(x: .value("Time", last.date), y: .value("Value", last.value))

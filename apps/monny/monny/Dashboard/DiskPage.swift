@@ -20,10 +20,10 @@ struct DiskPage: View {
                     detail: disk.map { Text("of \($0.total.storageText) · \($0.usedFraction.percentText) used") }, points: nil)
                 KPICard(
                     title: "Read", symbol: "arrow.down", color: Theme.metricNetwork, value: disk?.readRate?.rateText,
-                    detail: peak(tier.series(.diskRead)), points: tier.series(.diskRead))
+                    detail: peak(tier.series(.diskRead)), points: tier.series(.diskRead), historyStep: tier.step)
                 KPICard(
                     title: "Write", symbol: "arrow.up", color: Theme.metricUpload, value: disk?.writeRate?.rateText,
-                    detail: peak(tier.series(.diskWrite)), points: tier.series(.diskWrite))
+                    detail: peak(tier.series(.diskWrite)), points: tier.series(.diskWrite), historyStep: tier.step)
                 KPICard(
                     title: "SSD health", symbol: ssd?.isVerified == false ? "exclamationmark.triangle.fill" : "checkmark.circle.fill",
                     color: ssd?.isVerified == false ? Theme.statusDanger : Theme.metricBattery,

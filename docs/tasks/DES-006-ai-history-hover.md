@@ -1,6 +1,6 @@
 # DES-006: Readable AI quota history
 
-- Updated: 2026-11-09
+- Updated: 2026-11-23
 - Stage: awaiting_verification
 - Owner: unassigned for installed UI verification; native implementation ownership released
 - Owned surfaces: Monny.sketch window AI history cards and interaction specimens; this record, DESIGN, SPEC, STATE and history
@@ -29,4 +29,4 @@ Temporary NSHostingView fixtures reviewed at native size: 48 states covering six
 
 Final `release.sh` passes app/nested-code/DMG signature checks, image verification and signed appcast generation. **Monny 1.6.0/build 92**, Apple Development signed, Hardened Runtime, not notarized: `apps/monny/build/release/Monny.dmg`, SHA-256 `af152cbc10c2e52fa5660447051d46ad23ceb09d29710b79603a157c90565d89`. No install or publication.
 
-Next: install build 92 and check real-history hover, Tab/arrow/Escape routing and VoiceOver traversal, including coincident same-color services. Those installed checks remain open; underlying account/reset acceptance stays in APP-015.
+Build 102 applies Monny's keyboard-visible focus policy to this chart and preserves hover, arrow-key and VoiceOver inspection. Gaps and provider colors are covered by [APP-021](APP-021-history-chart-regressions.md) and [APP-015](APP-015-ai-usage-limits.md#complete-ai-branding--2026-11-23). Next: check real-history hover, Tab/arrow/Escape routing and VoiceOver traversal in installed build 102, including coincident sample points.

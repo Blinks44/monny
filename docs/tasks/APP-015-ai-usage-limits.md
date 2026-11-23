@@ -13,7 +13,7 @@
 
 Published **1.8.1/build 101** includes [Antigravity branding](#antigravity-branding--2026-11-23) and [AI card ordering](#ai-card-order--2026-11-21) from the local builds 100 and 99. [Publication evidence](#181-publication--2026-11-23).
 
-Local build 102 completes [AI service branding](#complete-ai-branding--2026-11-23) for all supported tools.
+Published **1.8.2/build 103** completes [AI service branding](#complete-ai-branding--2026-11-23) for all supported tools.
 
 Published **1.6.0/build 90** supports 21 AI sources. [November source decision](../research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08) owns exact credential/field restrictions; [publication evidence](#160-publication--2026-11-08) owns the final package and delivery failure. Dated sections below retain earlier artifacts and checks, not current release instructions.
 

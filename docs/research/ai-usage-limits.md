@@ -183,6 +183,10 @@ Added at the user's request, using [thesvg](https://thesvg.org/) / [collection s
 
 App asset catalogs and website assets contain the same marks. MIT collection notice is shipped in `ThirdPartyMarks.txt` and website `/third-party-marks.txt`. Collection metadata does not grant trademark rights; the pre-publication brand-guideline gate remains. Website badges list all 11 tools for the user’s planned simultaneous app/site release, without a next-release label; names refer to tools/subscriptions, not a count of underlying models. No new dependencies, external asset requests or account flows.
 
+### Antigravity mark — 2026-11-23
+
+`AIAntigravity` bundles the unchanged [full-color PNG](https://antigravity.google/assets/image/brand/antigravity-icon__full-color.png) from the [Google Antigravity press kit](https://antigravity.google/press) with original rendering on the shared white tile. The single-color quota and history accent, `#3186FF`, comes from the base fill in Google's [matching SVG](https://antigravity.google/assets/image/brand/antigravity-icon__full-color.svg). The press asset retains Google's trademark rights.
+
 ## Privacy and cost
 
 - Opt-in (Settings › AI limits, off by default; each found tool can be unchecked, and an unchecked tool is not read). Off, Monny reads no credentials and makes no requests. On, the only requests go to the services of the shown tools, with the user's own tokens, which never leave memory or go anywhere else. Only quota readings (percentages, reset times, plan names, optional credit counters/unlimited categories) and the reading time are stored (`aiUsage` in UserDefaults, quota history in the existing history file).

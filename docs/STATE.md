@@ -1,6 +1,6 @@
 # Monny: current state
 
-Updated **2026-11-21**. **1.8.0/build 98 is published** as the latest [GitHub release](https://github.com/Blinks44/monny/releases/tag/v1.8.0): Antigravity CLI quota support with direct Keychain OAuth polling and on-demand `agy models` renewal across hourly expiry. All 209 tests and lint pass; signed DMG/appcast uploaded and verified ([evidence](tasks/APP-015-ai-usage-limits.md#antigravity-cli--2026-11-21)). Apple Development signed, not notarized, minimum macOS 15. Main uses the native charge limit without a helper or SMC writes; Discharge remains on **experiments/discharge** at `09595b5`.
+Updated **2026-11-23**. **1.8.0/build 98 is published** as the latest [GitHub release](https://github.com/Blinks44/monny/releases/tag/v1.8.0): Antigravity CLI quota support with direct Keychain OAuth polling and on-demand `agy models` renewal across hourly expiry. All 209 tests and lint pass; signed DMG/appcast uploaded and verified ([evidence](tasks/APP-015-ai-usage-limits.md#antigravity-cli--2026-11-21)). Apple Development signed, not notarized, minimum macOS 15. Main uses the native charge limit without a helper or SMC writes; Discharge remains on **experiments/discharge** at `09595b5`.
 
 Tooling: tests and packaging use temporary Library/Caches directories removed afterwards; `dev.sh clean` clears persistent build products ([DEVELOPMENT](DEVELOPMENT.md#build-and-test)). Since 2026-11-05 `dev.sh format`/`lint` run the Xcode-bundled swift-format; the formatting-only build 88 is local and unpublished ([history](history/2026-11.md#2026-11-05-swift-formatting-agent-permissions-and-website-skill-pointer)).
 
@@ -18,7 +18,7 @@ The 1.7.0 release includes [AI-history hover and keyboard details](tasks/DES-006
 
 1.8.0/build 98 publishes [Antigravity CLI quota](tasks/APP-015-ai-usage-limits.md#antigravity-cli--2026-11-21) (`retrieveUserQuotaSummary` via CLI Keychain token + bounded headless `agy models` refresh-on-expiry); live display and automatic hourly renewal were accepted on builds 96–97. Browser-free AI expansion is published ([source decision](research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08)). Website source changes are committed; the user owns deployment, whose completion is not confirmed.
 
-The user confirmed [AI card ordering](tasks/APP-015-ai-usage-limits.md#ai-card-order--2026-11-21) works in local build 99. The detailed keyboard and VoiceOver check remains open.
+Local build 100 adds [Antigravity's official color mark and blue quota accent](tasks/APP-015-ai-usage-limits.md#antigravity-branding--2026-11-23), pending installed Light/Dark review. It includes [AI card ordering](tasks/APP-015-ai-usage-limits.md#ai-card-order--2026-11-21), which the user confirmed in build 99. The detailed keyboard and VoiceOver check remains open.
 
 ## Work and open checks
 

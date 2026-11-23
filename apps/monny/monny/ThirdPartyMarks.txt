@@ -7,6 +7,7 @@ Cline and JetBrains: catalog CC0-1.0.
 Amp: coral coding-agent color variant (not the blue amp.dev framework mark).
 Augment: official https://www.augmentcode.com/favicon.svg
 Codebuff: official https://www.codebuff.com/favicon/apple-touch-icon.png (bitmap converted to PNG).
+Google Antigravity: official full-color icon from https://antigravity.google/press.
 Official vendor marks retain their owners' rights; the collection license does not grant trademark rights.
 
 MIT License

@@ -1,8 +1,8 @@
 # APP-015: AI usage limits
 
-- Updated: 2026-11-21
+- Updated: 2026-11-23
 - Stage: awaiting_verification
-- Owner: unassigned for remaining real-account and installed UI verification. Build 99 implementation scope covers AI card order in Settings, the popover and the dashboard.
+- Owner: unassigned for remaining real-account and installed UI verification.
 - Owned surfaces: `apps/monny/monny/AI/`, AI popover/dashboard, Settings/onboarding, alerts and quota history
 - Requirements: [SPEC](../SPEC.md) §§3–4, 6–8; [design](../DESIGN.md#readiness); [mechanisms and licensing](../research/ai-usage-limits.md)
 - Implementation: builds 43–49, baseline main `713defe` (build 50); repeated-alert fix in build 60, based on `e7db28d` (see the commit history for monitor/tests/project changes).
@@ -11,11 +11,23 @@
 
 **1.8.0/build 98** ships [Antigravity CLI](#antigravity-cli--2026-11-21) with direct Keychain OAuth quota polling and on-demand `agy models` renewal across hourly expiry.
 
-Local **1.8.0/build 99** adds [AI card ordering](#ai-card-order--2026-11-21). The settings order drives visible cards in both surfaces.
+**1.8.1/build 101** packages [Antigravity branding](#antigravity-branding--2026-11-23) and [AI card ordering](#ai-card-order--2026-11-21) from the local builds 100 and 99.
 
 Published **1.6.0/build 90** supports 21 AI sources. [November source decision](../research/ai-usage-candidates-2026-11.md#implementation-decision-and-result--2026-11-08) owns exact credential/field restrictions; [publication evidence](#160-publication--2026-11-08) owns the final package and delivery failure. Dated sections below retain earlier artifacts and checks, not current release instructions.
 
 Open: real-account quota/reset/expiry agreement for the nine build-90 sources and earlier ClinePass/Codebuff/Amp/Augment/Nous; detailed Kimi quota/history checks; installed appearance/accessibility and fluent translations; installed update acceptance; service-mark review. Public appcast delivery was verified with [build 94](DES-007-recovery-charging-sleep.md#170-publication--2026-11-09). Website deployment belongs to the user and remains unconfirmed.
+
+## Antigravity branding — 2026-11-23
+
+Implemented on main baseline `0bb2ff1`. The shared AI icon renders Google's original full-color Antigravity PNG on the white tile in the popover and dashboard. Its inset accounts for the asset's transparent margins, including at the 18 pt dashboard size. Quota bars and chart series use `#3186FF` from the official artwork. [Asset provenance](../research/ai-usage-limits.md#antigravity-mark--2026-11-23).
+
+Reviewed live Monny.sketch popover frame 23 Light/Dark and window frames 21/22 Light for the shared patterns. No Sketch edits. `dev.sh format`, `dev.sh lint` and `dev.sh test -quiet` passed on macOS 27.2.1/Xcode 27.2 (211 passed, 0 failed or skipped). The downloaded PNG and bundled source have identical SHA-256.
+
+`release.sh` packaged local `apps/monny/build/release/Monny.dmg` (1.8.0/build 100), verified app and DMG signatures and image integrity, and generated the signed appcast. `assetutil` confirmed the transparent full-color icon in the compiled asset catalog. SHA-256 `da95c770207331453d85a6a332e2801592a638861e81b115c65b542d3513c21c`. Apple Development signed, not notarized or published.
+
+The 1.8.1/build 101 package passed lint and all 211 tests on macOS 27.2.1, plus strict signature and integrity checks. A temporary copy from the mounted DMG launched successfully; the bundle version, build and compiled Antigravity asset matched. SHA-256 `6f06a01ce5c5d387475ca14fec5311483039147373cc924564125a5755242d42`.
+
+Next installed check: verify the Antigravity logo and blue accent in popover and dashboard in Light and Dark, including the smallest dashboard tile.
 
 ## AI card order — 2026-11-21
 

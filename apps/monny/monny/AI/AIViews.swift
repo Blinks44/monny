@@ -67,8 +67,9 @@ extension AITool {
         case .grok: Theme.aiGrok
         case .jetBrains: Theme.aiJetBrains
         case .amp: Theme.aiAmp
+        case .antigravity: Theme.aiAntigravity
         case .copilot, .cline, .codebuff, .augment, .nous, .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf,
-            .codeRabbit, .gemini, .huggingFace, .antigravity:
+            .codeRabbit, .gemini, .huggingFace:
             Theme.aiCodex
         }
     }
@@ -100,7 +101,8 @@ extension AITool {
         case .amp: .aiAmp
         case .augment: .aiAugment
         case .nous: .aiNous
-        case .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace, .antigravity:
+        case .antigravity: .aiAntigravity
+        case .kimi, .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace:
             nil
         }
     }
@@ -281,6 +283,14 @@ struct AIToolIcon: View {
     let tool: AITool
     var size: CGFloat = 30
 
+    private var markScale: CGFloat {
+        switch tool {
+        case .jetBrains: 0.9
+        case .antigravity: 0.8  // The press asset includes transparent padding.
+        default: 0.6
+        }
+    }
+
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
         Group {
@@ -292,7 +302,7 @@ struct AIToolIcon: View {
                     .foregroundStyle(Theme.aiIconBlack)
             }
         }
-        .frame(width: size * (tool == .jetBrains ? 0.9 : 0.6), height: size * (tool == .jetBrains ? 0.9 : 0.6))
+        .frame(width: size * markScale, height: size * markScale)
         .frame(width: size, height: size)
         .background(tool.iconColor, in: shape)
         .overlay { shape.strokeBorder(Theme.aiIconStroke) }

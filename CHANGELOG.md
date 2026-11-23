@@ -2,6 +2,11 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.8.1: 2026-11-23
+
+- Antigravity uses its official full-color icon and blue accents for quota bars and history.
+- Reorder AI limit cards in Settings. The same order appears in the menu bar panel and dashboard.
+
 ## 1.8.0: 2026-11-21
 
 - Added Antigravity limits using your Antigravity CLI sign-in, with separate Gemini and Claude/GPT 5-hour and weekly quotas, history, and alerts.

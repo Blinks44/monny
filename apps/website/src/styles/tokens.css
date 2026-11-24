@@ -91,6 +91,9 @@ body {
   background: var(--monny-bg);
   color: var(--monny-text);
   line-height: 1.55;
+}
+
+body:not([data-scroll-lock]) {
   overflow-x: clip;
 }
 

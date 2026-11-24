@@ -37,14 +37,14 @@
 
 ## Why Monny?
 
-Most Mac monitors either eat CPU themselves, require a privileged root helper just to cap battery charging, or miss the tools developers actually watch every day — like which process holds port `3002` or how much of your Claude Code, Codex, or Cursor limit is left.
+Most Mac monitors either eat CPU themselves, require a privileged root helper just to cap battery charging, or miss the tools developers actually watch every day, like which process holds port `3002` or how much of your Claude Code, Codex, or Cursor limit is left.
 
 Monny brings all of it into one lightweight SwiftUI/AppKit app:
 
 - **Instant menu bar popover (`⌥⌘M`):** live CPU, memory, disk, network, per-core load, battery status, and top processes in one click.
 - **Full dashboard with 7-day history:** Overview, CPU, Memory, Disk, Network, Battery, and Apple silicon thermal/fan Sensors with `1m` to `7d` charts and preserved sleep gaps.
 - **Port & process finder:** search by port or PID (`3002`, `localhost:3002`), see the working directory where a process started, and quit runaway tasks directly.
-- **Native battery charge limit (80–100%):** adjusts the built-in macOS 26.4+ charge limit as an ordinary user — **no root helper**, and macOS keeps enforcing it even after Monny quits.
+- **Native battery charge limit (80–100%):** adjusts the built-in macOS 26.4+ charge limit as an ordinary user (**no root helper**), and macOS keeps enforcing it even after Monny quits.
 - **AI subscription quotas (optional, off by default):** live remaining quota bars and reset timers for **22 AI coding tools** (Claude Code, Codex, Cursor, Antigravity, GitHub Copilot, JetBrains AI, Grok, Gemini, Windsurf, Cline, Kimi, Augment, and more) read locally via each tool's own sign-in.
 - **Smart notifications:** alerts for charge limit reached, high temperature, low battery, memory pressure, and runaway CPU processes.
 - **6 languages:** English, Русский, Deutsch, Français, Español, and 简体中文.
@@ -143,16 +143,16 @@ You can also open `apps/monny/monny.xcodeproj` in Xcode, select the **monny** sc
 
 See [NOTICE.txt](NOTICE.txt) for full third-party attributions and licenses.
 
-- [Stats](https://github.com/exelban/stats) (MIT) — SMC temperature and fan sensor key references.
-- [CodexBar](https://github.com/steipete/CodexBar) (MIT) — reference for local AI quota endpoints and storage locations (no code copied).
+- [Stats](https://github.com/exelban/stats) (MIT): SMC temperature and fan sensor key references.
+- [CodexBar](https://github.com/steipete/CodexBar) (MIT): reference for local AI quota endpoints and storage locations (no code copied).
 - [Sparkle](https://sparkle-project.org) (MIT), [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) (MIT), and [create-dmg](https://github.com/create-dmg/create-dmg) (MIT).
 
 ---
 
 ## Also by Sergey V.
 
-- [**Hearth**](https://hearth.moduix.dev) — Local dev environment dashboard for runtimes, projects, Docker, Kubernetes, databases, and AI agents.
-- [**Rebind**](https://rebind.moduix.dev) — Native macOS utility for remapping keys, mouse buttons, Logitech mice, and trackpad gestures.
+- [**Hearth**](https://hearth.moduix.dev): Local dev environment dashboard for runtimes, projects, Docker, Kubernetes, databases, and AI agents.
+- [**Rebind**](https://rebind.moduix.dev): Native macOS utility for remapping keys, mouse buttons, Logitech mice, and trackpad gestures.
 
 ---
 

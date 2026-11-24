@@ -2,6 +2,12 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.8.3: 2026-11-24
+
+- Weekly CPU load and sensor temperature charts plot hourly averages from stored ten-minute readings, keeping unrecorded gaps even within an hour.
+- Hover tooltips on 7-day charts show both hourly average and peak values, while the CPU header keeps reporting the peak from raw ten-minute buckets.
+- The combined weekly CPU load and temperature chart uses a dedicated temperature scale in the selected unit.
+
 ## 1.8.2: 2026-11-23
 
 - Weekly charts show weekday labels and leave gaps where no measurements were recorded. Saved readings are plotted in chronological order.

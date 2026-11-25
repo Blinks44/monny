@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import type { FeatureTabId } from '@/components/FeatureShowcase'
 import { site } from '@/config/site'
 import * as m from '@/integrations/i18n/paraglide/messages'
@@ -5,12 +6,12 @@ import type { ReleaseAssets } from '@/integrations/releases'
 
 interface FooterProps {
   release: ReleaseAssets
-  onSelectFeature: (tab: FeatureTabId) => void
+  onSelectFeature?: (tab: FeatureTabId) => void
 }
 
 export function Footer({ release, onSelectFeature }: FooterProps) {
   const jumpToFeature = (tab: FeatureTabId) => {
-    onSelectFeature(tab)
+    onSelectFeature?.(tab)
     const target = document.getElementById('features')
     target?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -20,7 +21,7 @@ export function Footer({ release, onSelectFeature }: FooterProps) {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <a href="#top" className="brand-link">
+            <Link to="/" className="brand-link">
               <img
                 src="/app-icon.png"
                 alt={site.name}
@@ -29,32 +30,77 @@ export function Footer({ release, onSelectFeature }: FooterProps) {
                 className="brand-icon"
               />
               <span>{site.name}</span>
-            </a>
+            </Link>
             <p>{m.footerTagline()}</p>
           </div>
 
           <div className="footer-col">
             <h4>{m.footerColProduct()}</h4>
             <ul>
+              {onSelectFeature ? (
+                <>
+                  <li>
+                    <button type="button" onClick={() => jumpToFeature('menubar')}>
+                      {m.tabMenubarLabel()}
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" onClick={() => jumpToFeature('battery')}>
+                      {m.tabBatteryLabel()}
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" onClick={() => jumpToFeature('ports')}>
+                      {m.tabPortsLabel()}
+                    </button>
+                  </li>
+                  <li>
+                    <button type="button" onClick={() => jumpToFeature('ai')}>
+                      {m.tabAiLabel()}
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link to="/" hash="features">
+                      {m.tabMenubarLabel()}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/" hash="features">
+                      {m.tabBatteryLabel()}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/" hash="features">
+                      {m.tabPortsLabel()}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/" hash="features">
+                      {m.tabAiLabel()}
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
+
+          <div className="footer-col">
+            <h4>{m.footerColComparisons()}</h4>
+            <ul>
               <li>
-                <button type="button" onClick={() => jumpToFeature('menubar')}>
-                  {m.tabMenubarLabel()}
-                </button>
+                <Link to="/alternatives/istat-menus/">{m.footerCompareIstat()}</Link>
               </li>
               <li>
-                <button type="button" onClick={() => jumpToFeature('battery')}>
-                  {m.tabBatteryLabel()}
-                </button>
+                <Link to="/alternatives/aldente/">{m.footerCompareAldente()}</Link>
               </li>
               <li>
-                <button type="button" onClick={() => jumpToFeature('ports')}>
-                  {m.tabPortsLabel()}
-                </button>
+                <Link to="/guides/ai-coding-quotas/">{m.footerGuideAi()}</Link>
               </li>
               <li>
-                <button type="button" onClick={() => jumpToFeature('ai')}>
-                  {m.tabAiLabel()}
-                </button>
+                <Link to="/guides/port-pid-finder/">{m.footerGuidePorts()}</Link>
               </li>
             </ul>
           </div>

@@ -10,33 +10,89 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AlternativesAldenteRouteImport } from './routes/alternatives/aldente'
+import { Route as AlternativesIstatMenusRouteImport } from './routes/alternatives/istat-menus'
+import { Route as GuidesAiCodingQuotasRouteImport } from './routes/guides/ai-coding-quotas'
+import { Route as GuidesPortPidFinderRouteImport } from './routes/guides/port-pid-finder'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AlternativesAldenteRoute = AlternativesAldenteRouteImport.update({
+  id: '/alternatives/aldente',
+  path: '/alternatives/aldente',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlternativesIstatMenusRoute = AlternativesIstatMenusRouteImport.update({
+  id: '/alternatives/istat-menus',
+  path: '/alternatives/istat-menus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesAiCodingQuotasRoute = GuidesAiCodingQuotasRouteImport.update({
+  id: '/guides/ai-coding-quotas',
+  path: '/guides/ai-coding-quotas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesPortPidFinderRoute = GuidesPortPidFinderRouteImport.update({
+  id: '/guides/port-pid-finder',
+  path: '/guides/port-pid-finder',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/alternatives/aldente': typeof AlternativesAldenteRoute
+  '/alternatives/istat-menus': typeof AlternativesIstatMenusRoute
+  '/guides/ai-coding-quotas': typeof GuidesAiCodingQuotasRoute
+  '/guides/port-pid-finder': typeof GuidesPortPidFinderRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/alternatives/aldente': typeof AlternativesAldenteRoute
+  '/alternatives/istat-menus': typeof AlternativesIstatMenusRoute
+  '/guides/ai-coding-quotas': typeof GuidesAiCodingQuotasRoute
+  '/guides/port-pid-finder': typeof GuidesPortPidFinderRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/alternatives/aldente': typeof AlternativesAldenteRoute
+  '/alternatives/istat-menus': typeof AlternativesIstatMenusRoute
+  '/guides/ai-coding-quotas': typeof GuidesAiCodingQuotasRoute
+  '/guides/port-pid-finder': typeof GuidesPortPidFinderRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/alternatives/aldente'
+    | '/alternatives/istat-menus'
+    | '/guides/ai-coding-quotas'
+    | '/guides/port-pid-finder'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/alternatives/aldente'
+    | '/alternatives/istat-menus'
+    | '/guides/ai-coding-quotas'
+    | '/guides/port-pid-finder'
+  id:
+    | '__root__'
+    | '/'
+    | '/alternatives/aldente'
+    | '/alternatives/istat-menus'
+    | '/guides/ai-coding-quotas'
+    | '/guides/port-pid-finder'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AlternativesAldenteRoute: typeof AlternativesAldenteRoute
+  AlternativesIstatMenusRoute: typeof AlternativesIstatMenusRoute
+  GuidesAiCodingQuotasRoute: typeof GuidesAiCodingQuotasRoute
+  GuidesPortPidFinderRoute: typeof GuidesPortPidFinderRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +104,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/alternatives/aldente': {
+      id: '/alternatives/aldente'
+      path: '/alternatives/aldente'
+      fullPath: '/alternatives/aldente'
+      preLoaderRoute: typeof AlternativesAldenteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alternatives/istat-menus': {
+      id: '/alternatives/istat-menus'
+      path: '/alternatives/istat-menus'
+      fullPath: '/alternatives/istat-menus'
+      preLoaderRoute: typeof AlternativesIstatMenusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/ai-coding-quotas': {
+      id: '/guides/ai-coding-quotas'
+      path: '/guides/ai-coding-quotas'
+      fullPath: '/guides/ai-coding-quotas'
+      preLoaderRoute: typeof GuidesAiCodingQuotasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/port-pid-finder': {
+      id: '/guides/port-pid-finder'
+      path: '/guides/port-pid-finder'
+      fullPath: '/guides/port-pid-finder'
+      preLoaderRoute: typeof GuidesPortPidFinderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AlternativesAldenteRoute: AlternativesAldenteRoute,
+  AlternativesIstatMenusRoute: AlternativesIstatMenusRoute,
+  GuidesAiCodingQuotasRoute: GuidesAiCodingQuotasRoute,
+  GuidesPortPidFinderRoute: GuidesPortPidFinderRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

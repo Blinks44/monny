@@ -19,9 +19,14 @@ import {
   MenuRadioItemGroup,
   MenuTrigger,
 } from '@moduix/react/menu'
+import { Link } from '@tanstack/react-router'
 import { Check, ChevronDown, Globe, Menu as MenuIcon, Moon, Sun } from 'lucide-react'
 import { useState } from 'react'
 import { type Locale, languageNames, locales } from '@/config/locales'
+import { site } from '@/config/site'
+import * as m from '@/integrations/i18n/paraglide/messages'
+import { getLocale, setLocale } from '@/integrations/i18n/paraglide/runtime'
+import type { ColorScheme } from '@/lib/theme'
 
 const LOCALE_CODES: Record<Locale, string> = {
   en: 'EN',
@@ -31,10 +36,6 @@ const LOCALE_CODES: Record<Locale, string> = {
   es: 'ES',
   'zh-Hans': '中文',
 }
-import { site } from '@/config/site'
-import * as m from '@/integrations/i18n/paraglide/messages'
-import { getLocale, setLocale } from '@/integrations/i18n/paraglide/runtime'
-import type { ColorScheme } from '@/lib/theme'
 
 function GitHubIcon({ size = 16 }: { size?: number }) {
   return (
@@ -49,16 +50,25 @@ interface NavbarProps {
   onToggleTheme: () => void
 }
 
+type NavItem =
+  | { id: string; to: '/'; hash: string; label: string }
+  | {
+      id: string
+      to: '/alternatives/istat-menus/' | '/guides/ai-coding-quotas/'
+      hash?: undefined
+      label: string
+    }
+
 export function Navbar({ theme, onToggleTheme }: NavbarProps) {
   const currentLocale = getLocale() as Locale
   const [drawerOpen, setDrawerOpen] = useState(false)
 
-  const navItems = [
-    { href: '#features', label: m.navFeatures() },
-    { href: '#bento', label: m.navHardware() },
-    { href: '#privacy', label: m.navPrivacy() },
-    { href: '#install', label: m.navInstall() },
-    { href: '#faq', label: m.navFaq() },
+  const navItems: NavItem[] = [
+    { id: 'features', to: '/', hash: 'features', label: m.navFeatures() },
+    { id: 'alternatives', to: '/alternatives/istat-menus/', label: m.navAlternatives() },
+    { id: 'guides', to: '/guides/ai-coding-quotas/', label: m.navGuides() },
+    { id: 'install', to: '/', hash: 'install', label: m.navInstall() },
+    { id: 'faq', to: '/', hash: 'faq', label: m.navFaq() },
   ]
 
   const onSelectLocale = (next: string) => {
@@ -70,16 +80,16 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
   return (
     <header className="navbar">
       <div className="container navbar-inner">
-        <a href="#top" className="brand-link">
+        <Link to="/" className="brand-link">
           <img src="/app-icon.png" alt={site.name} width={28} height={28} className="brand-icon" />
           <span>{site.name}</span>
-        </a>
+        </Link>
 
         <nav className="nav-links" aria-label="Primary">
           {navItems.map((item) => (
-            <a key={item.href} href={item.href} className="nav-link">
+            <Link key={item.id} to={item.to} hash={item.hash} className="nav-link">
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -142,9 +152,9 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
             )}
           </button>
 
-          <a href="#install" className="btn-monny-dark nav-download-btn">
+          <Link to="/" hash="install" className="btn-monny-dark nav-download-btn">
             {m.navDownload()}
-          </a>
+          </Link>
 
           <Drawer open={drawerOpen} onOpenChange={(details) => setDrawerOpen(details.open)}>
             <DrawerTrigger
@@ -163,14 +173,15 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
                 <DrawerBody>
                   <div className="drawer-nav-list">
                     {navItems.map((item) => (
-                      <a
-                        key={item.href}
-                        href={item.href}
+                      <Link
+                        key={item.id}
+                        to={item.to}
+                        hash={item.hash}
                         className="drawer-nav-link"
                         onClick={() => setDrawerOpen(false)}
                       >
                         {item.label}
-                      </a>
+                      </Link>
                     ))}
                     <a
                       href={site.repository}

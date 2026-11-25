@@ -9,6 +9,16 @@ import {
 export { type Locale, locales }
 export const defaultLocale = baseLocale
 
+export const siteRoutes = [
+  '/',
+  '/alternatives/istat-menus/',
+  '/alternatives/aldente/',
+  '/guides/ai-coding-quotas/',
+  '/guides/port-pid-finder/',
+] as const
+
+export type SiteRoutePath = (typeof siteRoutes)[number]
+
 export const languageNames: Record<Locale, string> = {
   en: 'English',
   ru: 'Русский',
@@ -17,6 +27,7 @@ export const languageNames: Record<Locale, string> = {
   es: 'Español',
   'zh-Hans': '简体中文',
 }
+
 export const openGraphLocales: Record<Locale, string> = {
   en: 'en_US',
   ru: 'ru_RU',
@@ -25,6 +36,13 @@ export const openGraphLocales: Record<Locale, string> = {
   es: 'es_ES',
   'zh-Hans': 'zh_CN',
 }
-export function localePath(locale: Locale) {
-  return localizeUrl(new URL('/', site.origin), { locale }).pathname
+
+function normalizePath(path: string): string {
+  if (!path || path === '/') return '/'
+  const withLeading = path.startsWith('/') ? path : `/${path}`
+  return withLeading.endsWith('/') ? withLeading : `${withLeading}/`
+}
+
+export function localePath(locale: Locale, path = '/') {
+  return localizeUrl(new URL(normalizePath(path), site.origin), { locale }).pathname
 }

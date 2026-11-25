@@ -1,13 +1,107 @@
-import { defaultLocale, type Locale, localePath, locales, openGraphLocales } from '@/config/locales'
+import {
+  defaultLocale,
+  type Locale,
+  localePath,
+  locales,
+  openGraphLocales,
+  siteRoutes,
+} from '@/config/locales'
 import { site } from '@/config/site'
 import * as m from '@/integrations/i18n/paraglide/messages'
 
-export function pageHead(locale: Locale, notFound = false) {
-  const title = notFound ? m.notFoundTitle({}, { locale }) : m.metaTitle({}, { locale })
+export interface FaqEntry {
+  question: string
+  answer: string
+}
+
+export interface BreadcrumbItem {
+  name: string
+  path: string
+}
+
+export interface PageHeadOptions {
+  notFound?: boolean
+  path?: string
+  title?: string
+  description?: string
+  includeSoftwareApplication?: boolean
+  faq?: FaqEntry[]
+  breadcrumbs?: BreadcrumbItem[]
+}
+
+export function pageHead(locale: Locale, options: boolean | PageHeadOptions = false) {
+  const opts: PageHeadOptions = typeof options === 'boolean' ? { notFound: options } : options
+  const notFound = opts.notFound ?? false
+  const routePath = opts.path ?? '/'
+
+  const title = notFound
+    ? m.notFoundTitle({}, { locale })
+    : (opts.title ?? m.metaTitle({}, { locale }))
   const description = notFound
     ? m.notFoundDescription({}, { locale })
-    : m.metaDescription({}, { locale })
-  const url = `${site.origin}${localePath(locale)}`
+    : (opts.description ?? m.metaDescription({}, { locale }))
+  const url = `${site.origin}${localePath(locale, routePath)}`
+
+  const scripts: Array<{ type: string; children: string }> = []
+
+  if (!notFound) {
+    if (opts.includeSoftwareApplication ?? routePath === '/') {
+      scripts.push({
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: site.name,
+          url,
+          description,
+          inLanguage: locale,
+          operatingSystem: 'macOS 15+',
+          applicationCategory: 'UtilitiesApplication',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+          author: {
+            '@type': 'Person',
+            name: site.author.name,
+            sameAs: [site.author.x, 'https://github.com/Blinks44'],
+          },
+        }),
+      })
+    }
+
+    if (opts.faq && opts.faq.length > 0) {
+      scripts.push({
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: opts.faq.map((item) => ({
+            '@type': 'Question',
+            name: item.question,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: item.answer,
+            },
+          })),
+        }),
+      })
+    }
+
+    if (opts.breadcrumbs && opts.breadcrumbs.length > 0) {
+      scripts.push({
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: opts.breadcrumbs.map((crumb, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: crumb.name,
+            item: `${site.origin}${localePath(locale, crumb.path)}`,
+          })),
+        }),
+      })
+    }
+  }
+
   return {
     meta: [
       { title },
@@ -41,46 +135,31 @@ export function pageHead(locale: Locale, notFound = false) {
           ...locales.map((value) => ({
             rel: 'alternate',
             hrefLang: value,
-            href: `${site.origin}${localePath(value)}`,
+            href: `${site.origin}${localePath(value, routePath)}`,
           })),
           {
             rel: 'alternate',
             hrefLang: 'x-default',
-            href: `${site.origin}${localePath(defaultLocale)}`,
+            href: `${site.origin}${localePath(defaultLocale, routePath)}`,
           },
         ],
-    scripts: notFound
-      ? []
-      : [
-          {
-            type: 'application/ld+json',
-            children: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'SoftwareApplication',
-              name: site.name,
-              url,
-              description,
-              inLanguage: locale,
-              operatingSystem: 'macOS 15+',
-              applicationCategory: 'UtilitiesApplication',
-              offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-              author: {
-                '@type': 'Person',
-                name: site.author.name,
-                sameAs: [site.author.x, 'https://github.com/Blinks44'],
-              },
-            }),
-          },
-        ],
+    scripts,
   }
 }
 
 export function sitemap() {
-  const alternates = locales
-    .map(
+  const entries = siteRoutes.flatMap((routePath) => {
+    const alternates = locales
+      .map(
+        (locale) =>
+          `<xhtml:link rel="alternate" hreflang="${locale}" href="${site.origin}${localePath(locale, routePath)}"/>`,
+      )
+      .join('')
+    const defaultHref = `${site.origin}${localePath(defaultLocale, routePath)}`
+    return locales.map(
       (locale) =>
-        `<xhtml:link rel="alternate" hreflang="${locale}" href="${site.origin}${localePath(locale)}"/>`,
+        `<url><loc>${site.origin}${localePath(locale, routePath)}</loc>${alternates}<xhtml:link rel="alternate" hreflang="x-default" href="${defaultHref}"/></url>`,
     )
-    .join('')
-  return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${locales.map((locale) => `<url><loc>${site.origin}${localePath(locale)}</loc>${alternates}<xhtml:link rel="alternate" hreflang="x-default" href="${site.origin}/"/></url>`).join('')}</urlset>`
+  })
+  return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${entries.join('')}</urlset>`
 }

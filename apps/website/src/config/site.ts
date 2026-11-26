@@ -14,7 +14,7 @@ export const site = {
   contributing: 'https://github.com/Blinks44/monny/blob/main/CONTRIBUTING.md',
   license: 'https://github.com/Blinks44/monny/blob/main/LICENSE',
   docs: 'https://github.com/Blinks44/monny/blob/main/docs/README.md',
-  defaultVersion: '1.8.2',
+  defaultVersion: '1.8.3',
   brewCommand: 'brew install --cask blinks44/tap/monny',
   quarantineCommand: 'xattr -dr com.apple.quarantine /Applications/Monny.app',
   checksumCommand: 'shasum -a 256 -c SHA256SUMS.txt',

@@ -48,7 +48,7 @@ apps/monny/scripts/dev.sh test -resultBundlePath /tmp/monny-tests-unique.xcresul
 
 The `HistoryTests` suite covers one-minute network history at 1, 2 and 5 s, including scheduler jitter, a wake within the normal refresh interval, a late sample and an unavailable reading. Build 105 passed lint and 219 tests. Native SwiftUI renders of the menu bar card and Network window showed both lines and a simulated sleep gap at all three rates in Light and Dark.
 
-The installed review build 105 was confirmed by the reporter before preparing 1.8.4.
+Build 105 also passed a check in the installed app.
 
 ## Project settings
 

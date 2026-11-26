@@ -64,16 +64,25 @@ nonisolated struct HistoryTier: Codable, Equatable, Sendable {
     /// The bucket being filled: its start, value sums and sample counts.
     private var pending: HistoryPoint?
     private var counts: [HistoryMetric: Int] = [:]
+    /// For the minute tier, an edge to the preceding sample when sampling was continuous.
+    /// Longer tiers use adjacent bucket dates and keep their existing archive format.
+    private(set) var samplePredecessors: [Date: Date]?
 
-    init(span: TimeInterval, step: TimeInterval) {
+    init(span: TimeInterval, step: TimeInterval, tracksSampleContinuity: Bool = false) {
         self.span = span
         self.step = step
+        samplePredecessors = tracksSampleContinuity ? [:] : nil
     }
 
     /// Returns true when the sample closed the previous bucket.
     @discardableResult
-    mutating func add(_ values: [HistoryMetric: Double], at date: Date) -> Bool {
+    mutating func add(_ values: [HistoryMetric: Double], at date: Date, continuesPreviousSample: Bool = false) -> Bool {
         let start = Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / step).rounded(.down) * step)
+        if !continuesPreviousSample {
+            samplePredecessors?[start] = nil
+        } else if let pending, pending.date != start {
+            samplePredecessors?[start] = pending.date < start ? pending.date : nil
+        }
         var closed = false
         if let pending, pending.date != start {
             store(average(pending))
@@ -89,8 +98,10 @@ nonisolated struct HistoryTier: Codable, Equatable, Sendable {
         pending = bucket
         let oldest = date.addingTimeInterval(-span)
         if let first = points.firstIndex(where: { $0.date >= oldest }) {
+            for point in points.prefix(first) { samplePredecessors?[point.date] = nil }
             points.removeFirst(first)
         } else {
+            samplePredecessors?.removeAll()
             points.removeAll()
         }
         return closed
@@ -159,10 +170,11 @@ final class History {
 
     @ObservationIgnored private var working: [HistoryTier]
     @ObservationIgnored private var lastSave = Date.now
+    @ObservationIgnored private var nextSampleDeadline: Date?
 
     init() {
         let tiers = [
-            HistoryTier(span: 60, step: 1), HistoryTier(span: 3_600, step: 10),
+            HistoryTier(span: 60, step: 1, tracksSampleContinuity: true), HistoryTier(span: 3_600, step: 10),
             HistoryTier(span: 86_400, step: 60), HistoryTier(span: 7 * 86_400, step: 600),
         ]
         (minute, hour, day, week) = (tiers[0], tiers[1], tiers[2], tiers[3])
@@ -178,13 +190,20 @@ final class History {
         }
     }
 
-    func record(_ snapshot: Snapshot, adding extra: [HistoryMetric: Double] = [:], at date: Date = .now) {
+    func markWake() {
+        nextSampleDeadline = nil
+    }
+
+    func record(_ snapshot: Snapshot, adding extra: [HistoryMetric: Double] = [:], interval: TimeInterval, at date: Date = .now) {
         let values = HistoryMetric.values(of: snapshot).merging(extra) { $1 }
-        let closed = working.indices.map { working[$0].add(values, at: date) }
-        if closed[0] { minute = working[0] }
-        if closed[1] { hour = working[1] }
-        if closed[2] { day = working[2] }
-        if closed[3] { week = working[3] }
+        let continuesPreviousSample = nextSampleDeadline.map { date <= $0 } ?? false
+        // Allow scheduler jitter while comparing full-resolution sample times.
+        nextSampleDeadline = date.addingTimeInterval(interval + working[0].step)
+        let closedMinute = working[0].add(values, at: date, continuesPreviousSample: continuesPreviousSample)
+        if closedMinute { minute = working[0] }
+        if working[1].add(values, at: date) { hour = working[1] }
+        if working[2].add(values, at: date) { day = working[2] }
+        if working[3].add(values, at: date) { week = working[3] }
         if date.timeIntervalSince(lastSave) >= 300 {
             lastSave = date
             save()

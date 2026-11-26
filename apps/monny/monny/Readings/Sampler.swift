@@ -148,14 +148,14 @@ final class Sampler {
                     watchesBusyApps: UserDefaults.standard.bool(forKey: PreferenceKey.notifyBusyApp),
                     includeNetworkProcesses: isVisible && self?.showsNetworkProcesses == true)
                 guard let self, !Task.isCancelled else { return }
-                self.snapshot = snapshot
-                busyProcesses.update(snapshot.processes, now: .now)
-                history.record(snapshot, adding: extraHistoryValues())
-                onSample?(snapshot)
                 // Settings shows 2 s until the user picks a rate; `integer(forKey:)` would read 0 then.
                 let refresh = max(UserDefaults.standard.object(forKey: PreferenceKey.refreshInterval) as? Int ?? 2, 1)
-                let isFrequent = isVisible || self.updatesMenuBar
-                let remaining = Duration.seconds(isFrequent ? refresh : 10) - (ContinuousClock.now - passStarted)
+                let interval = (isVisible || self.updatesMenuBar) ? refresh : 10
+                self.snapshot = snapshot
+                busyProcesses.update(snapshot.processes, now: .now)
+                history.record(snapshot, adding: extraHistoryValues(), interval: TimeInterval(interval))
+                onSample?(snapshot)
+                let remaining = Duration.seconds(interval) - (ContinuousClock.now - passStarted)
                 try? await Task.sleep(for: max(remaining, .milliseconds(50)))
             }
         }

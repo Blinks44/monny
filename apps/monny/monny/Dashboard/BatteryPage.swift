@@ -19,7 +19,7 @@ struct BatteryPage: View {
                 KPICard(
                     title: "Level", symbol: "battery.100percent", color: Theme.metricBattery,
                     value: battery?.level.percentText, detail: powerSource,
-                    points: tier.series(.battery), domain: 0...1, historyStep: tier.step)
+                    points: tier.series(.battery), domain: 0...1, historyTier: tier)
                 KPICard(
                     title: "Health", symbol: "checkmark.shield.fill", color: Theme.metricMemory,
                     value: sampler.batteryHealth?.maximumCapacity.percentText,

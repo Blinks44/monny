@@ -657,13 +657,19 @@ nonisolated struct PlotPoint {
     let value: Double
 
     static func series(
-        _ id: String, _ points: [(date: Date, value: Double)], step: TimeInterval, scale: Double = 1
+        _ id: String, _ points: [(date: Date, value: Double)], tier: HistoryTier, scale: Double = 1
     ) -> [PlotPoint] {
         var previousDate: Date?
         var segment = id
         return points.map { point in
-            if let previousDate, point.date.timeIntervalSince(previousDate) > step {
-                segment = "\(id)/\(point.date.timeIntervalSinceReferenceDate)"
+            if let previousDate {
+                let connects =
+                    if let predecessors = tier.samplePredecessors {
+                        predecessors[point.date] == previousDate
+                    } else {
+                        point.date.timeIntervalSince(previousDate) <= tier.step
+                    }
+                if !connects { segment = "\(id)/\(point.date.timeIntervalSinceReferenceDate)" }
             }
             previousDate = point.date
             return PlotPoint(series: segment, date: point.date, value: point.value * scale)
@@ -696,7 +702,7 @@ struct SparklineSeries: Identifiable {
 /// nothing, so a fresh history never shows a flat zero line.
 struct Sparkline: View {
     let series: [SparklineSeries]
-    let step: TimeInterval
+    let tier: HistoryTier
     /// The y range; `nil` means from zero to the largest value.
     var domain: ClosedRange<Double>?
     var showsLiveDot = true
@@ -705,7 +711,7 @@ struct Sparkline: View {
         Chart {
             // Vectorized plots: one mark per series instead of one per point, redrawn every sample.
             ForEach(series) { series in
-                let points = PlotPoint.series(series.id, series.points, step: step)
+                let points = PlotPoint.series(series.id, series.points, tier: tier)
                 if series.filled {
                     AreaPlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
                         .foregroundStyle(

@@ -2,6 +2,10 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.8.4: 2026-11-27
+
+- Restored the menu bar Network sparkline and one-minute dashboard chart lines at every refresh rate. The lines still break across sleep and missing readings.
+
 ## 1.8.3: 2026-11-24
 
 - Weekly CPU load and sensor temperature charts plot hourly averages from stored ten-minute readings, keeping unrecorded gaps even within an hour.

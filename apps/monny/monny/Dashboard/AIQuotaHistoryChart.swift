@@ -6,7 +6,7 @@ struct AIQuotaHistoryChart: View {
     let series: [AIQuotaHistory.Series]
     let range: HistoryRange
     let domain: ClosedRange<Date>
-    let step: TimeInterval
+    let tier: HistoryTier
     @State private var selection: AIQuotaHistory.Selection?
     @State private var tooltipSize = CGSize(width: 176, height: 66)
     @FocusState private var isFocused: Bool
@@ -24,7 +24,7 @@ struct AIQuotaHistoryChart: View {
     var body: some View {
         Chart {
             ForEach(series) { item in
-                let points = PlotPoint.series(item.tool.rawValue, item.points, step: step)
+                let points = PlotPoint.series(item.tool.rawValue, item.points, tier: tier)
                 LinePlot(points, x: .value("Time", \.date), y: .value("Left", \.value), series: .value("Series", \.series))
                     .foregroundStyle(item.tool.color)
                     .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))

@@ -29,7 +29,7 @@ struct SensorsPage: View {
                         title: kind.title, symbol: "thermometer.medium", color: kind.color,
                         value: kind.value?.temperatureText(temperatureUnit),
                         detail: points.map(\.value).max().map { Text("peak \($0.temperatureText(temperatureUnit))") },
-                        points: kind.value == nil ? nil : points, historyStep: tier.step)
+                        points: kind.value == nil ? nil : points, historyTier: tier)
                 }
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {

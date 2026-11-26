@@ -14,20 +14,20 @@ struct MemoryPage: View {
                 KPICard(
                     title: "Used", symbol: "memorychip", color: Theme.metricMemory, value: memory?.used.memoryText,
                     detail: memory.map { Text("of \($0.total.memoryText) · \($0.fraction.percentText)") },
-                    points: tier.series(.memory), domain: 0...1, historyStep: tier.step)
+                    points: tier.series(.memory), domain: 0...1, historyTier: tier)
                 KPICard(
                     title: "Pressure", symbol: "waveform.path.ecg", color: Theme.metricBattery,
                     value: memory?.pressureLevel?.percentText, detail: pressureDetail,
-                    points: tier.series(.memoryPressure), domain: 0...1, historyStep: tier.step)
+                    points: tier.series(.memoryPressure), domain: 0...1, historyTier: tier)
                 KPICard(
                     title: "Swap", symbol: "internaldrive", color: Theme.metricDisk, value: memory?.swapUsed.memoryText,
                     detail: memory?.swapInsPerMinute.map { Text("swap-ins \(Int($0.rounded())) / min") },
-                    points: tier.series(.swap), historyStep: tier.step)
+                    points: tier.series(.swap), historyTier: tier)
                 KPICard(
                     title: "Compressed", symbol: "rectangle.compress.vertical", color: Theme.metricCPU,
                     value: memory?.compressed.memoryText,
                     detail: memory?.compressionRatio.map { Text("ratio \($0.formatted(.number.precision(.fractionLength(1)))) ×") },
-                    points: tier.series(.compressed), historyStep: tier.step)
+                    points: tier.series(.compressed), historyTier: tier)
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
                 CompositionCard(memory: memory, pressure: tier, range: range)

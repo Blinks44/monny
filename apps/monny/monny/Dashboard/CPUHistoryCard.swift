@@ -24,7 +24,7 @@ struct CPUHistoryCard: View {
             }
             if load.points.count > 1 {
                 CPUHistoryPlot(
-                    range: range, domain: domain, step: tier.step, summary: summary, temperatureUnit: temperatureUnit,
+                    range: range, domain: domain, tier: tier, summary: summary, temperatureUnit: temperatureUnit,
                     load: load,
                     performance: series(.cpuPerformance, label: "Performance", color: Theme.metricCPU, domain: domain),
                     efficiency: series(.cpuEfficiency, label: "Efficiency", color: Theme.metricCPUEfficiency, domain: domain),
@@ -68,7 +68,7 @@ struct CPUHistoryCard: View {
 private struct CPUHistoryPlot: View {
     let range: HistoryRange
     let domain: ClosedRange<Date>
-    let step: TimeInterval
+    let tier: HistoryTier
     let summary: Text
     let temperatureUnit: TemperatureUnit
     let load: HistoryChart.Series
@@ -80,7 +80,7 @@ private struct CPUHistoryPlot: View {
     private var weekly: Bool { range == .week }
 
     var body: some View {
-        let temperaturePoints = temperature.plotPoints(step: step, scale: 0.01)
+        let temperaturePoints = temperature.plotPoints(tier: tier, scale: 0.01)
         let upper = max(1, ((temperaturePoints.map(\.value).max() ?? 1) * 5).rounded(.up) / 5)
         let loadTicks: [Double] = weekly ? [0, 0.25, 0.5, 0.75, 1] : [0, 0.33, 0.66, 1]
         Chart {
@@ -174,7 +174,7 @@ private struct CPUHistoryPlot: View {
 
     @ChartContentBuilder
     private func loadPlot(_ series: HistoryChart.Series, width: CGFloat, fillOpacity: Double) -> some ChartContent {
-        let points = series.plotPoints(step: step)
+        let points = series.plotPoints(tier: tier)
         if !weekly {
             AreaPlot(points, x: .value("Time", \.date), y: .value("Load", \.value), series: .value("Series", \.series))
                 .foregroundStyle(

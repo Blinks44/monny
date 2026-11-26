@@ -18,7 +18,7 @@ struct OverviewPage: View {
                 KPICard(
                     title: "CPU", symbol: "cpu", color: Theme.metricCPU, value: snapshot?.cpu?.total.percentText,
                     detail: Text("\(SystemInfo.performanceCores + SystemInfo.efficiencyCores) cores"),
-                    points: tier.series(.cpu), domain: 0...1, historyStep: tier.step)
+                    points: tier.series(.cpu), domain: 0...1, historyTier: tier)
                 KPICard(
                     title: "Memory", symbol: "memorychip", color: Theme.metricMemory, value: snapshot?.memory?.used.memoryText,
                     detail: snapshot?.memory.map { memory in
@@ -26,17 +26,17 @@ struct OverviewPage: View {
                             ? Text("of \(memory.total.memoryText) · swap \(memory.swapUsed.memoryText)")
                             : Text("of \(memory.total.memoryText)")
                     },
-                    points: tier.series(.memory), domain: 0...1, historyStep: tier.step)
+                    points: tier.series(.memory), domain: 0...1, historyTier: tier)
                 KPICard(
                     title: "Temperature", symbol: "thermometer.medium", color: Theme.metricHeat,
                     value: snapshot?.sensors?.cpu?.temperatureText(temperatureUnit),
-                    detail: temperatureDetail(tier), points: tier.series(.cpuTemperature), domain: nil, historyStep: tier.step)
+                    detail: temperatureDetail(tier), points: tier.series(.cpuTemperature), domain: nil, historyTier: tier)
                 if SystemInfo.hasBattery {
                     KPICard(
                         title: "Battery", symbol: "battery.100percent", color: Theme.metricBattery,
                         value: snapshot?.battery?.level.percentText,
                         detail: snapshot?.battery.map(BatteryStatusText.text(for:)),
-                        points: tier.series(.battery), domain: 0...1, historyStep: tier.step)
+                        points: tier.series(.battery), domain: 0...1, historyTier: tier)
                 }
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
@@ -79,7 +79,7 @@ struct KPICard: View {
     let points: [(date: Date, value: Double)]?
     /// The sparkline's y range; `nil` fits the values with some room.
     var domain: ClosedRange<Double>?
-    var historyStep: TimeInterval = 1
+    var historyTier: HistoryTier? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -92,10 +92,10 @@ struct KPICard: View {
             detail?.font(Theme.footnote).foregroundStyle(Theme.textSecondary).lineLimit(1)
             footnote?.font(Theme.footnote).foregroundStyle(Theme.textSecondary).lineLimit(1)
             Spacer(minLength: 0)
-            if let points, points.count > 1 {
+            if let points, let historyTier, points.count > 1 {
                 Sparkline(
                     series: [SparklineSeries(id: "value", points: points, color: color, filled: true)],
-                    step: historyStep, domain: domain ?? fittedDomain, showsLiveDot: false
+                    tier: historyTier, domain: domain ?? fittedDomain, showsLiveDot: false
                 )
                 .frame(height: 24)
             } else if points != nil {

@@ -198,7 +198,7 @@ private struct NetworkCard: View {
                 series: [
                     SparklineSeries(id: "download", points: history.series(.download), color: Theme.metricNetwork, filled: true),
                     SparklineSeries(id: "upload", points: history.series(.upload), color: Theme.metricUpload),
-                ], step: history.step
+                ], tier: history
             )
             .frame(height: 42)
         }

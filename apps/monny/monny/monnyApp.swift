@@ -88,6 +88,7 @@ final class MonnyAppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func systemDidWake() {
         guard !Self.runningTests else { return }
+        model.sampler.history.markWake()
         model.sleepBattery.woke()
         Task { await model.chargeLimit.refresh() }
     }

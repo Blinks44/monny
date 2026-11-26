@@ -16,11 +16,11 @@ struct CPUPage: View {
                 KPICard(
                     title: "Load", symbol: "cpu", color: Theme.metricCPU, value: snapshot?.cpu?.total.percentText,
                     detail: snapshot?.cpu.map { Text("user \($0.user.percentText) · system \($0.system.percentText)") },
-                    points: tier.series(.cpu), domain: 0...1, historyStep: tier.step)
+                    points: tier.series(.cpu), domain: 0...1, historyTier: tier)
                 KPICard(
                     title: "Die temperature", symbol: "thermometer.medium", color: Theme.metricHeat,
                     value: snapshot?.sensors?.cpu?.temperatureText(temperatureUnit),
-                    detail: temperatureDetail(tier), points: tier.series(.cpuTemperature), historyStep: tier.step)
+                    detail: temperatureDetail(tier), points: tier.series(.cpuTemperature), historyTier: tier)
                 KPICard(
                     title: "Frequency", symbol: "gauge.with.dots.needle.50percent", color: Theme.metricNetwork, value: nil,
                     detail: Text("Not available"), points: nil)
@@ -28,7 +28,7 @@ struct CPUPage: View {
                     title: "Load average", symbol: "waveform.path.ecg", color: Theme.metricMemory,
                     value: snapshot?.loadAverage?.first?.formatted(.number.precision(.fractionLength(2))),
                     detail: snapshot?.loadAverage.map { Text("1 min · 5 min \($0[1].formatted(.number.precision(.fractionLength(2))))") },
-                    points: tier.series(.loadAverage), historyStep: tier.step)
+                    points: tier.series(.loadAverage), historyTier: tier)
             }
             HStack(alignment: .top, spacing: Theme.spaceL) {
                 CPUHistoryCard(tier: tier, range: range)

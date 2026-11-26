@@ -188,9 +188,9 @@ struct HistoryChart: View {
             return series
         }
 
-        func plotPoints(step: TimeInterval, scale: Double = 1) -> [PlotPoint] {
+        func plotPoints(tier: HistoryTier, scale: Double = 1) -> [PlotPoint] {
             if let hours { return PlotPoint.hourlySeries(id, hours, scale: scale) }
-            return PlotPoint.series(id, points, step: step, scale: scale)
+            return PlotPoint.series(id, points, tier: tier, scale: scale)
         }
 
         func hourlyRow(at date: Date, format: (Double) -> String) -> HourlyHistoryTooltip.Row? {
@@ -218,7 +218,7 @@ struct HistoryChart: View {
                     .foregroundStyle(band.color)
             }
             ForEach(series) { series in
-                let points = series.plotPoints(step: tier.step)
+                let points = series.plotPoints(tier: tier)
                 if series.filled {
                     AreaPlot(points, x: .value("Time", \.date), y: .value("Value", \.value), series: .value("Series", \.series))
                         .foregroundStyle(

@@ -11,9 +11,17 @@ nonisolated private let logger = Logger(subsystem: "blinks44.monny", category: "
 /// on expiry so `agy` renews its own Keychain session).
 actor AIUsageReader {
     private let session: URLSession
+    struct GeminiProjectCacheEntry {
+        let project: String?
+        let expiresAt: Date
+    }
+
     /// Limits on-demand `agy models` refreshes so offline or revoked sessions never respawn on every poll.
     private var lastAntigravityRefreshAttempt: Date?
     static let antigravityRefreshCooldown: TimeInterval = 15 * 60
+    /// Caches Gemini's `loadCodeAssist` project lookup by token hash so routine polls make one request.
+    var geminiProjects: [String: GeminiProjectCacheEntry] = [:]
+    static let geminiProjectCacheTTL: TimeInterval = 2 * 3_600
 
     init(session: URLSession? = nil) {
         self.session = session ?? Self.makeSession()
@@ -69,22 +77,24 @@ actor AIUsageReader {
     }
 
     func read(_ tool: AITool, now: Date = .now) async -> Result<AIUsage, AIUsageProblem> {
-        switch tool {
-        case .claude: await readClaude(now: now)
-        case .codex: await readCodex(now: now)
-        case .cursor: await readCursor(now: now)
-        case .grok: await readGrok(now: now)
-        case .jetBrains: JetBrainsUsageReader.read(now: now)
-        case .copilot: await readCopilot(now: now)
-        case .cline: await readCline(now: now)
-        case .codebuff: await readCodebuff(now: now)
-        case .amp, .augment: await readCommand(tool, now: now)
-        case .antigravity: await readAntigravity(now: now)
-        case .nous: await readNous(now: now)
-        case .kimi: await readKimi(now: now)
-        case .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace:
-            await readAdditional(tool, now: now)
-        }
+        let result: Result<AIUsage, AIUsageProblem> =
+            switch tool {
+            case .claude: await readClaude(now: now)
+            case .codex: await readCodex(now: now)
+            case .cursor: await readCursor(now: now)
+            case .grok: await readGrok(now: now)
+            case .jetBrains: JetBrainsUsageReader.read(now: now)
+            case .copilot: await readCopilot(now: now)
+            case .cline: await readCline(now: now)
+            case .codebuff: await readCodebuff(now: now)
+            case .amp, .augment: await readCommand(tool, now: now)
+            case .antigravity: await readAntigravity(now: now)
+            case .nous: await readNous(now: now)
+            case .kimi: await readKimi(now: now)
+            case .openCodeGo, .kilo, .kiro, .alibabaToken, .alibabaCoding, .windsurf, .codeRabbit, .gemini, .huggingFace:
+                await readAdditional(tool, now: now)
+            }
+        return result.map { $0.normalized() }
     }
 
     func readAntigravity(

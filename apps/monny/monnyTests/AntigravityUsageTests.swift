@@ -17,11 +17,16 @@ struct AntigravityUsageTests {
                 {"bucketId":"3p-5h","remainingFraction":1},
                 {"bucketId":"gemini-argon-wtu-weekly","remainingFraction":0.25}
                 """), now: now)
-        #expect(reading.windows.map(\.left) == [0.75, 0.5, 0, 1, 0.25])
-        #expect(reading.windows.map(\.kind) == [.weekly, .session, .weekly, .session, .weekly])
-        #expect(reading.windows.map(\.duration) == [604_800, 18_000, 604_800, 18_000, 604_800])
-        #expect(reading.windows[0].resetsAt == (try Date("2027-01-18T08:00:00Z", strategy: .iso8601)))
-        #expect(reading.windows[1].resetsAt?.timeIntervalSince1970 == 1_800_009_000.5)
+        // Canonical order puts 5-hour windows before weekly inside each pool (Gemini, Claude/GPT, Argon).
+        #expect(reading.windows.map(\.left) == [0.5, 0.75, 1, 0, 0.25])
+        #expect(reading.windows.map(\.kind) == [.session, .weekly, .session, .weekly, .weekly])
+        #expect(
+            reading.windows.map(\.label) == [
+                .antigravityGemini, .antigravityGemini, .antigravityClaudeGPT, .antigravityClaudeGPT, .antigravityArgon,
+            ])
+        #expect(reading.windows.map(\.duration) == [18_000, 604_800, 18_000, 604_800, 604_800])
+        #expect(reading.windows[0].resetsAt?.timeIntervalSince1970 == 1_800_009_000.5)
+        #expect(reading.windows[1].resetsAt == (try Date("2027-01-18T08:00:00Z", strategy: .iso8601)))
         #expect(Set(reading.windows.map(\.id)).count == 5)
         #expect(reading.plan == nil)
     }

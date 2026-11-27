@@ -2,6 +2,12 @@
 
 Notable changes to Monny. Versions follow the app version shown in **Settings → About**.
 
+## 1.8.5: 2026-11-27
+
+- AI limit checks now run concurrently across installed tools and update each card as soon as its service responds.
+- Background AI polling adapts per tool: 5 minutes while active with notifications enabled, 14 minutes when idle or with notifications off, sleeping until reset when all windows are exhausted, and 30 minutes for signed-out or missing tools. Recent cached readings skip an immediate network fetch on launch.
+- Quota windows follow a consistent order across tools (5-hour windows before weekly, and Antigravity Gemini before Claude/GPT and Argon), and Gemini CLI caches its project lookup for two hours.
+
 ## 1.8.4: 2026-11-27
 
 - Restored the menu bar Network sparkline and one-minute dashboard chart lines at every refresh rate. The lines still break across sleep and missing readings.

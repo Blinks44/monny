@@ -1,5 +1,6 @@
 import Foundation
 import SQLite3
+import Synchronization
 import Testing
 
 @testable import monny
@@ -291,5 +292,97 @@ struct AIUsageTests {
             ], date: now.addingTimeInterval(-3_600))
         let monitor = AIUsageMonitor(installed: [.claude, .codex], states: [.claude: .init(usage: fresh), .codex: .init(usage: stale)])
         #expect(monitor.historyValues(at: now) == [.claudeWeekly: 0.7])
+    }
+
+    @Test func normalizesWindowsToSessionBeforeWeeklyAndPlanBeforeModel() {
+        let windows = [
+            AIQuotaWindow(kind: .weekly, used: 0.2, duration: 7 * 86_400, model: "Opus"),
+            AIQuotaWindow(kind: .monthly, used: 0.5, duration: 30 * 86_400),
+            AIQuotaWindow(kind: .weekly, used: 0.3, duration: 7 * 86_400),
+            AIQuotaWindow(kind: .session, used: 0.1, duration: 5 * 3_600, model: "Opus"),
+            AIQuotaWindow(kind: .session, used: 0.4, duration: 5 * 3_600),
+        ]
+        let sorted = AIQuotaWindow.normalized(windows)
+        #expect(sorted.map(\.model) == [nil, nil, nil, "Opus", "Opus"])
+        #expect(sorted.map(\.kind) == [.session, .weekly, .monthly, .session, .weekly])
+    }
+
+    @Test func adaptiveScheduleHandlesCacheIdleExhaustedMissingAndRateLimit() {
+        var schedule = AIPollSchedule()
+        let baseUsage = AIUsage(
+            windows: [AIQuotaWindow(kind: .session, used: 0.25, resetsAt: now.addingTimeInterval(3_600), duration: 18_000)],
+            date: now.addingTimeInterval(-30))
+
+        // Fresh persisted cache (< 2 min) skips an immediate startup check.
+        schedule.seed([.claude: baseUsage], now: now)
+        #expect(schedule.isDue(.claude, problem: nil, visible: false, notificationsOn: true, now: now) == false)
+        #expect(schedule.isDue(.claude, problem: nil, visible: true, notificationsOn: false, now: now.addingTimeInterval(100)))
+
+        // With notifications on: 5 min while active, then 14 min after 2 unchanged readings.
+        let t1 = now.addingTimeInterval(200)
+        let changed = AIUsage(
+            windows: [AIQuotaWindow(kind: .session, used: 0.4, resetsAt: t1.addingTimeInterval(3_600), duration: 18_000)],
+            date: t1)
+        schedule.record(.claude, result: .success(changed), notificationsOn: true, now: t1)
+        #expect(schedule.isDue(.claude, problem: nil, visible: false, notificationsOn: true, now: t1.addingTimeInterval(4 * 60)) == false)
+        #expect(schedule.isDue(.claude, problem: nil, visible: false, notificationsOn: true, now: t1.addingTimeInterval(5 * 60)))
+
+        schedule.record(.claude, result: .success(changed), notificationsOn: true, now: t1.addingTimeInterval(5 * 60))
+        let t3 = t1.addingTimeInterval(10 * 60)
+        schedule.record(.claude, result: .success(changed), notificationsOn: true, now: t3)
+        #expect(schedule.isDue(.claude, problem: nil, visible: false, notificationsOn: true, now: t3.addingTimeInterval(10 * 60)) == false)
+        #expect(schedule.isDue(.claude, problem: nil, visible: false, notificationsOn: true, now: t3.addingTimeInterval(14 * 60)))
+
+        // With notifications off: slow 14-minute history cadence.
+        schedule.record(.codex, result: .success(changed), notificationsOn: false, now: t1)
+        #expect(schedule.isDue(.codex, problem: nil, visible: false, notificationsOn: false, now: t1.addingTimeInterval(10 * 60)) == false)
+        #expect(schedule.isDue(.codex, problem: nil, visible: false, notificationsOn: false, now: t1.addingTimeInterval(14 * 60)))
+
+        // Exhausted tool sleeps until resetsAt + 15s (clamped to 2m..6h).
+        let reset = t1.addingTimeInterval(3_600)
+        let exhausted = AIUsage(windows: [AIQuotaWindow(kind: .session, used: 1.0, resetsAt: reset, duration: 18_000)], date: t1)
+        schedule.record(.cursor, result: .success(exhausted), notificationsOn: true, now: t1)
+        #expect(schedule.isDue(.cursor, problem: nil, visible: false, notificationsOn: true, now: reset) == false)
+        #expect(schedule.isDue(.cursor, problem: nil, visible: false, notificationsOn: true, now: reset.addingTimeInterval(15)))
+
+        // Signed-out/missing tools back off to 30 minutes.
+        schedule.record(.grok, result: .failure(.signedOut), notificationsOn: true, now: t1)
+        #expect(
+            schedule.isDue(.grok, problem: .signedOut, visible: false, notificationsOn: true, now: t1.addingTimeInterval(20 * 60)) == false)
+        #expect(schedule.isDue(.grok, problem: .signedOut, visible: false, notificationsOn: true, now: t1.addingTimeInterval(30 * 60)))
+
+        // HTTP 429 Retry-After overrides even visible UI.
+        let retryAfter = t1.addingTimeInterval(600)
+        #expect(
+            schedule.isDue(
+                .claude, problem: .unavailable(retryAfter: retryAfter),
+                visible: true, notificationsOn: true, now: t1.addingTimeInterval(300)) == false)
+    }
+
+    @MainActor @Test func pollsToolsConcurrentlyAndNormalizesResults() async {
+        let inFlight = Mutex(0)
+        let maxConcurrent = Mutex(0)
+        let tools: [AITool] = [.claude, .codex, .cursor, .antigravity]
+        let testNow = now
+        let monitor = AIUsageMonitor(installed: tools, states: [:]) { tool, _ in
+            let current = inFlight.withLock { value -> Int in
+                value += 1
+                return value
+            }
+            maxConcurrent.withLock { peak in peak = max(peak, current) }
+            try? await Task.sleep(for: .milliseconds(tool == .antigravity ? 10 : 60))
+            inFlight.withLock { $0 -= 1 }
+            let windows = [
+                AIQuotaWindow(kind: .weekly, used: 0.4, duration: 7 * 86_400),
+                AIQuotaWindow(kind: .session, used: 0.2, duration: 5 * 3_600),
+            ]
+            return .success(AIUsage(windows: windows, date: testNow))
+        }
+
+        await monitor.pollTools(tools, notificationsOn: false, now: testNow)
+        #expect(maxConcurrent.withLock { $0 } >= 2)
+        for tool in tools {
+            #expect(monitor.states[tool]?.usage?.windows.map(\.kind) == [.session, .weekly])
+        }
     }
 }

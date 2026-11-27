@@ -58,7 +58,7 @@ nonisolated enum AntigravityUsage {
             }
         }
         guard !windows.isEmpty else { throw .unavailable(retryAfter: nil) }
-        return AIUsage(windows: windows, date: now)
+        return AIUsage(windows: AIQuotaWindow.normalized(windows), date: now)
     }
 
     private struct StoredCredential: Decodable {

@@ -80,6 +80,56 @@ nonisolated struct AIQuotaWindow: Codable, Equatable, Sendable {
         let date = now.addingTimeInterval(left / (used / elapsed))
         return date < resetsAt ? date : nil
     }
+
+    /// Orders windows consistently across tools: plan limits before model-specific limits,
+    /// grouped pools in canonical order (Antigravity Gemini, Claude/GPT, Argon), and shortest
+    /// cadence first (`session`, `daily`, `weekly`, `monthly`) within each group.
+    static func normalized(_ windows: [AIQuotaWindow]) -> [AIQuotaWindow] {
+        guard windows.count > 1 else { return windows }
+        var modelOrder: [String: Int] = [:]
+        for window in windows {
+            if let model = window.model, modelOrder[model] == nil {
+                modelOrder[model] = modelOrder.count
+            }
+        }
+        return windows.enumerated().sorted { lhs, rhs in
+            let lKey = lhs.element.sortKey(modelRank: lhs.element.model.flatMap { modelOrder[$0] })
+            let rKey = rhs.element.sortKey(modelRank: rhs.element.model.flatMap { modelOrder[$0] })
+            if lKey != rKey { return lKey < rKey }
+            return lhs.offset < rhs.offset
+        }.map(\.element)
+    }
+
+    private func sortKey(modelRank: Int?) -> (Int, Int, Int, Int, Int) {
+        let isModel = modelRank == nil ? 0 : 1
+        let modelIndex = modelRank ?? 0
+        let groupRank =
+            switch label {
+            case .antigravityGemini: 1
+            case .antigravityClaudeGPT: 2
+            case .antigravityArgon: 3
+            case .overage: 10
+            default: 0
+            }
+        let kindRank: Int
+        if label == .daily {
+            kindRank = 1
+        } else {
+            switch kind {
+            case .session: kindRank = 0
+            case .weekly: kindRank = 2
+            case .monthly: kindRank = 3
+            }
+        }
+        let subRank =
+            switch label {
+            case .pro: 0
+            case .flash: 1
+            case .flashLite: 2
+            default: 0
+            }
+        return (isModel, modelIndex, groupRank, kindRank, subRank)
+    }
 }
 
 /// The last successful reading of one tool.
@@ -117,6 +167,12 @@ nonisolated struct AIUsage: Codable, Equatable, Sendable {
     func isStale(at now: Date = .now) -> Bool { sourceDateUnknown == true || now.timeIntervalSince(date) > Self.freshness }
 
     func window(_ kind: AIQuotaWindow.Kind) -> AIQuotaWindow? { windows.first { $0.kind == kind && $0.model == nil } }
+
+    func normalized() -> AIUsage {
+        var copy = self
+        copy.windows = AIQuotaWindow.normalized(windows)
+        return copy
+    }
 }
 
 /// Why a tool has no current reading.

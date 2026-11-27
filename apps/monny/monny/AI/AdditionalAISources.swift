@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 
 /// Discovery only checks metadata. Secrets and usage are read only for enabled tools.
@@ -60,24 +61,7 @@ extension AIUsageReader {
                 value.httpBody = try JSONSerialization.data(withJSONObject: ["profileArn": saved.profile])
                 request = value
             case .gemini:
-                guard let file = AdditionalAISources.path(tool, home: home), let data = SavedAISession.data(at: file) else {
-                    return .failure(.signedOut)
-                }
-                let token = try GeminiUsage.token(data, now: now)
-                var value = Self.bearerRequest("https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuota", token: token)
-                value.httpMethod = "POST"
-                value.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                var setup = Self.bearerRequest("https://cloudcode-pa.googleapis.com/v1internal:loadCodeAssist", token: token)
-                setup.httpMethod = "POST"
-                setup.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                setup.httpBody = Data(#"{"metadata":{"ideType":"GEMINI_CLI","pluginType":"GEMINI"}}"#.utf8)
-                let project: String?
-                switch await fetchData(setup, now: now) {
-                case .failure(let problem): return .failure(problem)
-                case .success(let data): project = try GeminiUsage.project(data)
-                }
-                value.httpBody = try JSONSerialization.data(withJSONObject: project.map { ["project": $0] } ?? [:])
-                request = value
+                return await readGemini(home: home, now: now)
             case .huggingFace:
                 guard let file = AdditionalAISources.path(tool, home: home), let data = SavedAISession.data(at: file),
                     let text = String(data: data, encoding: .utf8), let token = SavedAISession.token(text)
@@ -96,6 +80,48 @@ extension AIUsageReader {
                 }
             }
         } catch let problem as AIUsageProblem { return .failure(problem) } catch { return .failure(.unavailable(retryAfter: nil)) }
+    }
+
+    private func readGemini(home: URL, now: Date) async -> Result<AIUsage, AIUsageProblem> {
+        do {
+            guard let file = AdditionalAISources.path(.gemini, home: home), let data = SavedAISession.data(at: file) else {
+                return .failure(.signedOut)
+            }
+            let token = try GeminiUsage.token(data, now: now)
+            let tokenKey = Self.geminiTokenKey(token)
+            let project: String?
+            if let cached = geminiProjects[tokenKey], cached.expiresAt > now {
+                project = cached.project
+            } else {
+                var setup = Self.bearerRequest("https://cloudcode-pa.googleapis.com/v1internal:loadCodeAssist", token: token)
+                setup.httpMethod = "POST"
+                setup.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                setup.httpBody = Data(#"{"metadata":{"ideType":"GEMINI_CLI","pluginType":"GEMINI"}}"#.utf8)
+                switch await fetchData(setup, now: now) {
+                case .failure(let problem): return .failure(problem)
+                case .success(let data):
+                    project = try GeminiUsage.project(data)
+                    if geminiProjects.count >= 8 {
+                        geminiProjects = geminiProjects.filter { $0.value.expiresAt > now }
+                    }
+                    geminiProjects[tokenKey] = GeminiProjectCacheEntry(
+                        project: project, expiresAt: now.addingTimeInterval(Self.geminiProjectCacheTTL))
+                }
+            }
+            var request = Self.bearerRequest("https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuota", token: token)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try JSONSerialization.data(withJSONObject: project.map { ["project": $0] } ?? [:])
+            let result = await fetch(request, now: now) { try GeminiUsage.usage($0, now: now) }
+            if case .failure(.signedOut) = result {
+                geminiProjects.removeValue(forKey: tokenKey)
+            }
+            return result
+        } catch let problem as AIUsageProblem { return .failure(problem) } catch { return .failure(.unavailable(retryAfter: nil)) }
+    }
+
+    private static func geminiTokenKey(_ token: String) -> String {
+        SHA256.hash(data: Data(token.utf8)).map { String($0, radix: 16) }.joined(separator: ":")
     }
 
     private static func bearerRequest(_ endpoint: String, token: String) -> URLRequest {

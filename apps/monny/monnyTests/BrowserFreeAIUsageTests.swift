@@ -1,5 +1,6 @@
 import Foundation
 import SQLite3
+import Synchronization
 import Testing
 
 @testable import monny
@@ -208,6 +209,39 @@ struct BrowserFreeAIUsageTests {
         }
     }
 
+    @Test func geminiCachesProjectLookupAndInvalidatesOnAuthFailure() async throws {
+        let home = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: home) }
+        let file = try #require(AdditionalAISources.path(.gemini, home: home))
+        try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try Data(#"{"access_token":"cached-token","expiry_date":1800010000000}"#.utf8).write(to: file)
+
+        GeminiCacheFixtureProtocol.reset()
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [GeminiCacheFixtureProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let reader = AIUsageReader(session: session)
+
+        let first = await reader.readAdditional(.gemini, home: home, now: now)
+        #expect((try? first.get().windows.count) == 1)
+        #expect(GeminiCacheFixtureProtocol.loadCodeAssistCount() == 1)
+
+        // Second read within 2 hours skips loadCodeAssist and reuses the cached project.
+        let second = await reader.readAdditional(.gemini, home: home, now: now.addingTimeInterval(300))
+        #expect((try? second.get().windows.count) == 1)
+        #expect(GeminiCacheFixtureProtocol.loadCodeAssistCount() == 1)
+
+        // A 401/403 from retrieveUserQuota invalidates the cached project for the token.
+        GeminiCacheFixtureProtocol.setQuotaStatus(401)
+        #expect(await reader.readAdditional(.gemini, home: home, now: now.addingTimeInterval(600)) == .failure(.signedOut))
+
+        GeminiCacheFixtureProtocol.setQuotaStatus(200)
+        let third = await reader.readAdditional(.gemini, home: home, now: now.addingTimeInterval(660))
+        #expect((try? third.get().windows.count) == 1)
+        #expect(GeminiCacheFixtureProtocol.loadCodeAssistCount() == 2)
+    }
+
     nonisolated static func sql(_ file: URL, _ sql: String) throws {
         var db: OpaquePointer?
         guard sqlite3_open(file.path, &db) == SQLITE_OK else { throw AIUsageProblem.localDataMissing }
@@ -256,6 +290,37 @@ nonisolated private final class AdditionalAIFixtureProtocol: URLProtocol, @unche
         let status = auth == "Bearer rejected" ? 403 : auth == "Bearer rate-limit" ? 429 : 200
         guard let url = request.url,
             let response = HTTPURLResponse(url: url, statusCode: status, httpVersion: nil, headerFields: ["Retry-After": "0"])
+        else { return }
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: Data(body.utf8))
+        client?.urlProtocolDidFinishLoading(self)
+    }
+    override func stopLoading() {}
+}
+
+nonisolated private final class GeminiCacheFixtureProtocol: URLProtocol, @unchecked Sendable {
+    private static let state = Mutex<(loadCount: Int, quotaStatus: Int)>((0, 200))
+
+    static func reset() { state.withLock { $0 = (0, 200) } }
+    static func loadCodeAssistCount() -> Int { state.withLock { $0.loadCount } }
+    static func setQuotaStatus(_ status: Int) { state.withLock { $0.quotaStatus = status } }
+
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override func startLoading() {
+        let isSetup = request.url?.path().contains("loadCodeAssist") == true
+        let status: Int
+        let body: String
+        if isSetup {
+            Self.state.withLock { $0.loadCount += 1 }
+            status = 200
+            body = #"{"currentTier":{"id":"standard-tier"},"cloudaicompanionProject":"cached-proj"}"#
+        } else {
+            status = Self.state.withLock { $0.quotaStatus }
+            body = #"{"buckets":[{"modelId":"gemini-pro","remainingFraction":0.6}]}"#
+        }
+        guard let url = request.url,
+            let response = HTTPURLResponse(url: url, statusCode: status, httpVersion: nil, headerFields: nil)
         else { return }
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: Data(body.utf8))
